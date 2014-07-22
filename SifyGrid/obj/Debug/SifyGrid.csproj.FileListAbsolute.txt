@@ -15,3 +15,7 @@ E:\OptimaUpgrade\Optima-Upgrade\OptimaIndia\SifyGrid\bin\Debug\SifyGrid.dll
 E:\OptimaUpgrade\Optima-Upgrade\OptimaIndia\SifyGrid\bin\Debug\SifyGrid.pdb
 E:\OptimaUpgrade\Optima-Upgrade\OptimaIndia\SifyGrid\obj\Debug\SifyGrid.dll
 E:\OptimaUpgrade\Optima-Upgrade\OptimaIndia\SifyGrid\obj\Debug\SifyGrid.pdb
+E:\OptimaSifyDev\optimasifydev\SifyGrid\bin\Debug\SifyGrid.dll
+E:\OptimaSifyDev\optimasifydev\SifyGrid\bin\Debug\SifyGrid.pdb
+E:\OptimaSifyDev\optimasifydev\SifyGrid\obj\Debug\SifyGrid.dll
+E:\OptimaSifyDev\optimasifydev\SifyGrid\obj\Debug\SifyGrid.pdb
