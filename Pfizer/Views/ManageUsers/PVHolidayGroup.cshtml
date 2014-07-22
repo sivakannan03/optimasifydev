@@ -1,0 +1,36 @@
+﻿@model Dictionary<int, string>
+
+@if (ViewBag.Type == "Holidaygroup")
+{
+    <select>
+
+        <option value='0'>Select</option>
+        @foreach (KeyValuePair<int, string> value in Model)
+        {
+            <option value='@value.Key.ToString()'>@value.Value</option>
+        }
+    </select>
+}
+
+@if (ViewBag.Type == "NSHDay")
+{
+    <select id="HolidayDescription">
+
+        <option value='0'>Select</option>
+        @foreach (KeyValuePair<int, string> value in Model)
+        {
+             <option value='@value.Key.ToString()'>@value.Value</option>
+        }
+    </select>
+}
+@if (ViewBag.Type == "SHDay")
+{
+    <select multiple class="FormElement ui-widget-content ui-corner-all" id="SelHolidayDescription">
+
+        <option value='0'>Select</option>
+        @foreach (KeyValuePair<int, string> value in Model)
+        {
+             <option value='@value.Key.ToString()' selected="selected">@value.Value</option>
+        }
+    </select>
+}

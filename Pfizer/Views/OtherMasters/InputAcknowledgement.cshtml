@@ -1,0 +1,318 @@
+﻿@{
+    ViewBag.Title = "InputAcknowledgement";
+    Layout = "~/Views/Shared/MasterLayout.cshtml";
+}
+
+<h2>InputAcknowledgement</h2>
+
+
+<body>
+    @using (Html.BeginForm(FormMethod.Post))
+    {
+        <div>
+            <table border="0" style="width: 100%">
+                <tr>
+                    <td>
+                        <!--JqGrid Starts-->
+                        <table style="margin-top: 7px; width :100%" border="0">
+                            <tr>
+                                <td>
+                                    <table id="ajaxGrid" style="width: 100%" border="0"></table>
+                                    <div id="ajaxGridPager">
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td align="center" style="padding-top:20px;">
+                                    <table>
+                                        <tr>
+                                            <td style="padding-right:10px;">
+                                                @*<input type="button" class="blue_button" id="bntSubmit" title="Submit" value="Submit" />*@
+
+                                                <input type="button" class="blue_button" title="Submit" id="bntSubmit" value="Submit" />
+
+
+                                            </td>
+                                            <td>
+                                                <input type="button" class="orange_button" id="bntCancel" title="Cancel" value="Cancel" />
+                                            </td>
+                                        </tr>
+                                    </table>
+                                </td>
+                            </tr>
+                        </table>
+                        <!--Ends-->
+                    </td>
+                </tr>
+            </table>
+        </div>
+    }
+</body>
+
+<script type="text/javascript">
+
+    $("#bntSubmit").click(function () {
+        
+        jQuery('#ajaxGrid').jqGrid('saveRow', lastsel);
+        var gridData = jQuery("#ajaxGrid").getRowData();
+        var postData = JSON.stringify(gridData);
+        
+        $.ajax({
+            url: '@Url.Action("UpdateGridDataInputAcknowledgement")',
+            type: 'POST',
+            dataType: 'json',
+
+            data: { gridData: postData },
+
+            success: function (result) {
+
+            }
+        });
+        $("#ajaxGrid").setGridParam({ datatype: 'json', page: 1 }).trigger('reloadGrid');
+        return true;
+    });
+
+
+
+
+
+
+    function DisabledAckQty() {
+
+        var sel_id = $('#ajaxGrid').jqGrid('getGridParam', 'selrow');
+        var value = $('#ajaxGrid').jqGrid('getCell', sel_id, 'Pendingack')
+
+        if (value == 0) {
+            //alert("OK");
+        }
+    }
+
+
+
+    jQuery(document).ready(function () {
+
+        initGrid();
+    });
+    var lastsel;
+    function initGrid() {
+        jQuery("#ajaxGrid").jqGrid({
+            url: '@Url.Action("GridDataInputAcknowledgement")',
+
+            datatype: "json",
+            jsonReader: { repeatitems: false, id: "PKID" },
+            colNames: ['PKID', 'Input Name', 'Input Type', 'Alloc. Date', 'Alloc. By', 'Alloc. Qty', 'Old Ack. Qty', 'Issued Qty', 'Loss/Damage Qty', 'Return Qty', 'Closure Qty', 'Balance Qty', 'Ack. Qty', 'Damage Qty'],
+            colModel: [
+
+                 { name: 'PKID', index: 'PKID', align: 'left', hidden: true },
+                 { name: 'InputName', index: 'InputName', align: 'left', },
+                 {
+                     name: 'GenName', index: 'GenName', align: 'left',
+                 },
+                 {
+                     name: 'AllocatedDate', index: 'AllocatedDate', align: 'left',
+                 },
+                 {
+                     name: 'AllocBy', index: 'AllocBy', align: 'left',
+                 },
+                 {
+                     name: 'AllocatedQty', index: 'AllocatedQty', align: 'left'
+                 },
+                 {
+                     name: 'AcknowledgeQty', index: 'AcknowledgeQty', align: 'left'
+                 },
+                 {
+                     name: 'DistributedQty', index: 'DistributedQty', align: 'left'
+                 },
+                 {
+                     name: 'LossDamageQty', index: 'LossDamageQty', align: 'left'
+                 },
+                 {
+                     name: 'ReturnQty', index: 'ReturnQty', align: 'left'
+                 },
+                 {
+                     name: 'ClosureQty', index: 'ClosureQty', align: 'left'
+                 },
+                 {
+                     name: 'BalanceQty', index: 'BalanceQty', align: 'left'
+                 },
+
+                 {
+                     name: 'AckQty', index: 'AckQty', align: 'left', editable: true, edittype: 'text', sortable: true, sorttype: 'text', classes: 'colCell', sorttype: function (value) {
+                         return value;
+                     }
+                 },
+                 {
+                     name: 'DamageQty', index: 'DamageQty', align: 'left', editable: true, edittype: 'text', sortable: true, sorttype: 'text', classes: 'colCell', sorttype: function (value) {
+                         return value;
+                     }
+                 },
+            ],
+            caption: "Input Acknowledgement",
+            autowidth: true,
+            gridview: true,
+            hidegrid: true,
+            altRows: true,
+            rowTotal: 10,
+            rowNum: 10,
+            autoencode: true,
+            viewrecords: true,
+            pager: $('#ajaxGridPager'),
+            height: 'auto',
+            editable: true,
+            onSelectRow: function (id, selected) {
+                if (id != lastsel) {
+                    jQuery('#ajaxGrid').saveRow(lastsel);
+                    lastsel = id;
+                    //jQuery('#ajaxGrid').viewrecords();
+                }
+                jQuery('#ajaxGrid').editRow(id, true);
+
+                DisabledAckQty();
+            },
+            'cellsubmit': 'clientArray',
+            'editurl': 'clientArray',
+            editable: true
+
+        });
+
+
+        jQuery("#ajaxGrid").jqGrid('navGrid', '#ajaxGridPager', { edit: false, add: false, del: false, search: false },
+                 {
+                     // Edit Portion
+                     closeOnEscape: true,
+                     recreateform: true,
+                     width: 450,
+                     beforeShowForm: function (form) {
+
+                         //POP UP Screen Fit Screen
+
+                         var dlgDiv = $("#editmod" + jQuery("#ajaxGrid")[0].id);
+                         var parentDiv = dlgDiv.parent();
+                         var dlgWidth = dlgDiv.width();
+                         var parentWidth = parentDiv.width();
+                         var dlgHeight = dlgDiv.height();
+                         var parentHeight = parentDiv.height();
+                         // TODO: change parentWidth and parentHeight in case of the grid
+                         //       is   larger as the browser window
+                         //dlgDiv[0].style.top = Math.round((parentHeight-dlgHeight)/2) + "px";
+                         dlgDiv[0].style.left = Math.round((parentWidth - dlgWidth) / 2) + "px";
+
+                         //End POP UP Screen Fit Screen
+
+                     },
+                     afterSubmit: function (response, postdata) {
+                         alert('Information Saved Successfully');
+                         $("#ajaxGrid").jqGrid('setGridParam', { datatype: 'json' }).trigger('reloadGrid');
+                         return [true, "", ''];
+                     },
+                     closeAfterEdit: true,
+                 },
+
+             {
+                 //Add Portion
+
+                 closeOnEscape: true,
+                 closeAfterAdd: true,
+                 width: 450,
+                 beforeShowForm: function (form) {
+
+                     //POP UP Screen Fit Screen
+
+                     var dlgDiv = $("#editmod" + jQuery("#ajaxGrid")[0].id);
+                     var parentDiv = dlgDiv.parent();
+                     var dlgWidth = dlgDiv.width();
+                     var parentWidth = parentDiv.width();
+                     var dlgHeight = dlgDiv.height();
+                     var parentHeight = parentDiv.height();
+                     // TODO: change parentWidth and parentHeight in case of the grid
+                     //       is   larger as the browser window
+                     //dlgDiv[0].style.top = Math.round((parentHeight-dlgHeight)/2) + "px";
+                     dlgDiv[0].style.left = Math.round((parentWidth - dlgWidth) / 2) + "px";
+
+                     //End POP UP Screen Fit Screen
+
+                 },
+                 afterSubmit: function (response, postdata) {
+                     alert('Information Saved Successfully');
+                     $("#ajaxGrid").jqGrid('setGridParam', { datatype: 'json' }).trigger('reloadGrid');
+                     return [true, "", ''];
+                 }
+             },
+                 {
+                     //Delete
+                     width: 450,
+                     beforeShowForm: function (form) {
+
+                         //POP UP Screen Fit Screen
+
+                         var dlgDiv = $("#delmod" + jQuery("#ajaxGrid")[0].id);
+                         var parentDiv = dlgDiv.parent();
+                         var dlgWidth = dlgDiv.width();
+                         var parentWidth = parentDiv.width();
+                         var dlgHeight = dlgDiv.height();
+                         var parentHeight = parentDiv.height();
+                         // TODO: change parentWidth and parentHeight in case of the grid
+                         //       is   larger as the browser window
+                         //dlgDiv[0].style.top = Math.round((parentHeight-dlgHeight)/2) + "px";
+                         dlgDiv[0].style.left = Math.round((parentWidth - dlgWidth) / 2) + "px";
+
+                         //End POP UP Screen Fit Screen
+
+                     },
+                 }
+
+                     );
+
+
+        // setMethod('gridId', 'gridPager', 'pageTitle');
+        setMethod('ajaxGrid', 'ajaxGridPager', 'Customer Grid');
+
+    }
+
+    function setMethod(gid, id, pgTitle) {
+        // alert(1);
+        var btnTitle = 'Export to Excel';
+        $('#' + gid).jqGrid('navSeparatorAdd', '#' + id, { sepclass: "ui-separator" });
+        $('#' + gid).jqGrid('navButtonAdd', '#' + id, { caption: '', title: btnTitle, position: 'last', buttonicon: 'ui-icon-calculator', onClickButton: function () { ExcelExport(); } });
+
+        var btnTitle = 'Export to PDF';
+        $('#' + gid).jqGrid('navSeparatorAdd', '#' + id, { sepclass: "ui-separator" });
+        $('#' + gid).jqGrid('navButtonAdd', '#' + id, { caption: '', title: btnTitle, position: 'last', buttonicon: 'ui-icon-bookmark', onClickButton: function () { PDFExport(); } });
+
+        var btnTitle = 'Export to CSV';
+        $('#' + gid).jqGrid('navSeparatorAdd', '#' + id, { sepclass: "ui-separator" });
+        $('#' + gid).jqGrid('navButtonAdd', '#' + id, { caption: '', title: btnTitle, position: 'last', buttonicon: 'ui-icon-note', onClickButton: function () { CSVExport(); } });
+
+
+        var btnTitle = 'Print Grid';
+        $('#' + gid).jqGrid('navSeparatorAdd', '#' + id, { sepclass: "ui-separator" });
+        $('#' + gid).jqGrid('navButtonAdd', '#' + id, { caption: '', title: btnTitle, position: 'last', buttonicon: 'ui-icon-print', onClickButton: function () { PrintGrid(gid); } });
+    }
+    function ExcelExport() {
+        window.location = '@Url.Action("ExportUnlockUserToExcel")';
+    }
+    function PDFExport() {
+        window.location = '@Url.Action("ExportUnlockUserToPDF")';
+    }
+    function CSVExport() {
+        window.location = '@Url.Action("ExportUnlockUserToCsv")';
+    }
+    function PrintGrid(gid) {
+
+        // empty the print div container.
+        $('#prt-container').empty();
+        //alert(6);
+        // copy and append grid view to print div container.
+        $('#gview_' + gid).clone().appendTo('#prt-container').css({ 'page-break-after': 'auto' });
+        $(function () { printChrome('prt-container') });
+
+    }
+
+    function printChrome(divContainer) {
+
+        var printContent = document.getElementById(divContainer);
+        window.document.body.innerHTML = printContent.innerHTML;
+        window.print();
+        window.location.reload();
+    }
+</script>

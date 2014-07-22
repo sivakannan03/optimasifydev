@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="3.0" xmlns:edmx="http://schemas.microsoft.com/ado/2009/11/edmx">
+ <!-- EF Designer content (DO NOT EDIT MANUALLY BELOW HERE) -->
+  <edmx:Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
+    <!-- Diagram content (shape and connector positions) -->
+    <edmx:Diagrams>
+      <Diagram DiagramId="7d5eacedfd744d7da333e54f8ced3185" Name="Diagram1">
+        <EntityTypeShape EntityType="pfizerModel.UserMaster" Width="1.5" PointX="0.75" PointY="0.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="pfizerModel.vw_MeetingReminderReadstatus" Width="1.5" PointX="3.375" PointY="0.75" />
+        <EntityTypeShape EntityType="pfizerModel.GeneralMaster" Width="1.5" PointX="3.375" PointY="3.75" />
+        <EntityTypeShape EntityType="pfizerModel.EvaluationMaster" Width="1.5" PointX="0.75" PointY="4.75" />
+        <EntityTypeShape EntityType="pfizerModel.StrategicPlanningMaster" Width="1.5" PointX="5.25" PointY="2.125" />
+        <EntityTypeShape EntityType="pfizerModel.TailoredExecutionMaster" Width="1.5" PointX="5.75" PointY="4.75" />
+        <EntityTypeShape EntityType="pfizerModel.QualificationMaster" Width="1.5" PointX="7.125" PointY="0.5" />
+        <EntityTypeShape EntityType="pfizerModel.CycleDefinitionMaster" Width="1.5" PointX="7.375" PointY="3" />
+        <EntityTypeShape EntityType="pfizerModel.CycleMaster" Width="1.5" PointX="7.75" PointY="6.25" />
+        <EntityTypeShape EntityType="pfizerModel.QuestionMaster" Width="1.5" PointX="0.75" PointY="8.75" />
+        <EntityTypeShape EntityType="pfizerModel.SpecializationMaster" Width="1.5" PointX="3.375" PointY="8.75" />
+        <EntityTypeShape EntityType="pfizerModel.SpecializationTeamlinkMaster" Width="1.5" PointX="9.375" PointY="0.75" />
+        <EntityTypeShape EntityType="pfizerModel.TeamMaster" Width="1.5" PointX="10.375" PointY="4.75" />
+        <EntityTypeShape EntityType="pfizerModel.HolidayGroupMaster" Width="1.5" PointX="5.375" PointY="10.75" />
+        <EntityTypeShape EntityType="pfizerModel.RatingMaster" Width="1.5" PointX="7.375" PointY="10.75" />
+        <EntityTypeShape EntityType="pfizerModel.RegionMaster" Width="1.5" PointX="10.375" PointY="8.75" />
+        <EntityTypeShape EntityType="pfizerModel.AreaMaster" Width="1.5" PointX="11.75" PointY="0.75" />
+        <EntityTypeShape EntityType="pfizerModel.NodeTypeMaster" Width="1.5" PointX="0.75" PointY="12.75" />
+        <EntityTypeShape EntityType="pfizerModel.HolidayMaster" Width="1.5" PointX="12.375" PointY="4.75" />
+        <EntityTypeShape EntityType="pfizerModel.TownClassMaster" Width="1.5" PointX="12.375" PointY="8.75" />
+        <EntityTypeShape EntityType="pfizerModel.ActivityMaster" Width="1.5" PointX="10.375" PointY="12.75" />
+        <EntityTypeShape EntityType="pfizerModel.CityMaster" Width="1.5" PointX="12.375" PointY="12.75" />
+        <EntityTypeShape EntityType="pfizerModel.DivisionMaster" Width="1.5" PointX="8.125" PointY="14.875" />
+        <EntityTypeShape EntityType="pfizerModel.RoleMaster" Width="1.5" PointX="14.375" PointY="0.75" />
+        <EntityTypeShape EntityType="pfizerModel.TerritoryMaster" Width="1.5" PointX="3.375" PointY="14.75" />
+        <AssociationConnector Association="pfizerModel.FK_TeamMaster_DivisionMaster" />
+        <EntityTypeShape EntityType="pfizerModel.DistrictMaster" Width="1.5" PointX="14.375" PointY="4.75" />
+        <EntityTypeShape EntityType="pfizerModel.FormMaster" Width="1.5" PointX="5.375" PointY="14.75" />
+        <EntityTypeShape EntityType="pfizerModel.MoleculeMaster" Width="1.5" PointX="14.375" PointY="8.75" />
+        <EntityTypeShape EntityType="pfizerModel.OpinionPollView" Width="1.5" PointX="14.375" PointY="12.75" />
+        <EntityTypeShape EntityType="pfizerModel.FAQS1View" Width="1.5" PointX="14.375" PointY="15.75" />
+        <EntityTypeShape EntityType="pfizerModel.DesignationMaster" Width="1.5" PointX="16.375" PointY="0.75" />
+        <EntityTypeShape EntityType="pfizerModel.LocationMaster" Width="1.5" PointX="0.75" PointY="16.75" />
+        <EntityTypeShape EntityType="pfizerModel.SettingMaster" Width="1.5" PointX="16.375" PointY="4.75" />
+        <EntityTypeShape EntityType="pfizerModel.EmployeeMaster" Width="1.5" PointX="0.75" PointY="20.75" />
+        <AssociationConnector Association="pfizerModel.FK_UserMaster_EmployeeMaster" />
+        <EntityTypeShape EntityType="pfizerModel.Notification" Width="1.5" PointX="16.375" PointY="9.75" />
+        <EntityTypeShape EntityType="pfizerModel.Masters_Hospitalmaster_tb" Width="1.5" PointX="10.375" PointY="16.75" />
+        <EntityTypeShape EntityType="pfizerModel.Masters_Stockistmaster_Tb" Width="1.5" PointX="16.375" PointY="13.75" />
+      </Diagram>
+    </edmx:Diagrams>
+  </edmx:Designer>
+</edmx:Edmx>

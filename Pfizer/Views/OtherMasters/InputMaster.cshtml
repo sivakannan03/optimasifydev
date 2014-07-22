@@ -1,0 +1,500 @@
+﻿@{
+    ViewBag.Title = "InputMaster";
+    Layout = "~/Views/Shared/MasterLayout.cshtml";
+}
+
+ 
+
+<body>
+
+    @using (Html.BeginForm(FormMethod.Post))
+    {
+        <div>
+            <table border="0" style="width: 100%">
+                <tr>
+                    <td>
+                        <!--JqGrid Starts-->
+                        <table style="margin-top: 7px; width :100%" border="0">
+                            <tr>
+                                <td>
+                                    <table id="InputMaster" style="width: 100%" border="0"></table>
+                                    <div id="Pager">
+                                    </div>
+                                </td>
+                            </tr>
+                        </table>
+                        <!--Ends-->
+                    </td>
+                </tr>
+            </table>
+
+        </div>
+    }
+
+    <script type="text/javascript">
+
+
+    function validSpecial(objElement) {
+
+        var re = /^[a-zA-Z0-9-/\s.:]*/gi;
+        if (objElement.value.match(re) != objElement.value) {
+            alert('No Special Characters Allowed');
+            objElement.value = '';
+
+            return false;
+        }
+
+    }
+
+
+
+    jQuery(document).ready(function () {
+
+        initGrid();
+    });
+    function initGrid() {
+        jQuery("#InputMaster").jqGrid({
+            url: '@Url.Action("InputMasterGridData")',
+
+            datatype: "json",
+            jsonReader: { repeatitems: false, id: "PKID" },
+            colNames: ['PKID', 'Input Name', 'Input Type', 'Status', 'IBISCode'],
+            colModel: [
+                { name: 'PKID', index: 'PKID', align: 'left', hidden: true, editable: true },
+                 {
+                     name: 'InputName', index: 'InputName', align: 'left', hidden: false, editable: true, search: true, searchrules: { required: true }, editoptions: {
+                         maxlength: 20,
+                         dataEvents: [
+                                   {
+                                       type: 'keyup', // blur
+                                       fn: function (e) {
+                                           SingleCharacter(this);
+                                       }
+                                   }
+                         ]
+
+                     }, formoptions: {
+                         rowpos: 2, colpos: 2,
+                 elmprefix: "<span style='align:left;color:red'>*</span>&nbsp;"
+                     },searchoptions: { sopt: ['eq', 'bw', 'ew', 'cn'] }
+                 },
+                {
+                    name: 'GenName', index: 'GenName', align: 'left', editable: true, search: false, edittype: 'select', editrules: { required: true }, editoptions: {
+                        dataUrl: '@Url.Action("LoadInputType")',
+                    }, formoptions: {
+                        rowpos: 2, colpos: 1,
+                        elmprefix: "<span style='align:left;color:red'>*</span>&nbsp;"
+                    },searchoptions: { sopt: ['eq', 'bw', 'ew', 'cn'] }
+                },
+                {
+                    name: 'IsActive', index: 'IsActive', align: 'left', hidden: false, editable: true, edittype: 'checkbox', search: false, editrules: { edithidden: true },
+
+                },
+
+                   {
+                       name: 'IBISCode', index: 'IBISCode', align: 'left', hidden: true, editable: true, search: false, view: true, editrules: { edithidden: true }, editoptions: {
+                           maxlength: 20,
+                           dataEvents: [
+                                   {
+                                       type: 'keyup', // blur
+                                       fn: function (e) {
+                                           SingleCharacter(this);
+                                       }
+                                   }
+                           ],
+                          
+                       }, formoptions: {
+                           rowpos: 2, colpos: 3,
+                           elmprefix: "<span style='align:left;color:red'>*</span>&nbsp;"
+                       }
+                   },
+           
+            ],
+
+            autowidth: true,
+            gridview: true,
+            caption: 'Input Master',
+            jqModal: true,
+            rowTotal: 10,
+            rowNum: 10,
+            align: 'center',
+            sortable: true,
+            hidegrid: true,
+            altRows: true,
+            sortname: 'PKID',
+            sortorder: 'desc',
+            viewrecords: true,
+            pager: $('#Pager'),
+            height: 'auto',
+            editable: true,
+            gridComplete: function () {
+
+                if (jQuery("#InputMaster").getGridParam("records") == 0) {
+                    jQuery("#InputMaster").addRowData(
+                          "blankRow", { "GenName": "No records to view" });
+                }
+
+
+            },
+            editurl: '@Url.Action("EditInputMaster")'
+        });
+
+        jQuery("#InputMaster").jqGrid('navGrid', '#Pager', { edit: true, add: true, del: true, search: true, view: true },
+
+                {
+                    // Edit
+                    closeAfterEdit: true,
+                    closeOnEscape: true,
+                    modal: true,
+                    recreateForm: true,
+                    width: 650,
+                    checkOnSubmit: true,
+
+                    beforeShowForm: function (form) {
+
+                        var row_id = $('#InputMaster').getGridParam('selrow');
+                       
+                        $.getJSON('@Url.Action("JsonLoadIBIS")?id=' + row_id, function (data) {
+                           
+                            $('#IBISCode').val(data.IBISCode);
+                        });
+                        
+                    },
+
+                    afterShowForm: function (form_id) {
+
+                        var thisForm = form_id.selector.replace('FrmGrid_', 'editmod')
+                        var dialogHeight = $(thisForm).height();
+                        var dialogWidth = $(thisForm).width();
+                        var windowHeight = $(window).height();
+                        var windowWidth = $(window).width();
+                        $(thisForm).css('position', 'fixed');
+                        $(thisForm).css('top', ((windowHeight - dialogHeight) / 2));
+                        $(thisForm).css('left', ((windowWidth - dialogWidth) / 2));
+                    },
+
+                    beforeSubmit: function (response, postdata) {
+
+                        if ($("#InputName").val().charAt(0) == ' ' || $("#InputName").val().charAt($("#InputName").val().length - 1) == ' ') {
+                            $('#TblGrid_InputMaster td.ui-state-highlight').removeClass('ui-state-highlight').addClass('ui-state-error');
+                            $("#InputName").css("background-color", "#FFE8E8").css("border", "1px solid #FF6666");
+                            $('#InputName').focus();
+                            return [false, 'Enter Valid InputName'];
+                        }
+                        if ($("#IBISCode").val().charAt(0) == ' ' || $("#IBISCode").val().charAt($("#IBISCode").val().length - 1) == ' ') {
+                            $('#TblGrid_InputMaster td.ui-state-highlight').removeClass('ui-state-highlight').addClass('ui-state-error');
+                            $("#IBISCode").css("background-color", "#FFE8E8").css("border", "1px solid #FF6666");
+                            $('#IBISCode').focus();
+                            return [false, 'Enter Valid IBISCode'];
+                        }
+
+                        $('select').css("border", "1px solid #C0C0C0");
+                        $("input[type=text]").css("border", "1px solid #C0C0C0");
+                        var error = " ";
+                        if ($("#GenName").val() == 0) {
+                            error += "GenName";
+                            $('#FormError').html("<td class='ui-state-error' colspan='2'>" + error + ":Field is required</td>");
+                            $("#GenName").val('');
+                            $('#GenName').focus();
+                            $("#GenName").css("background-color", "#FFE8E8").css("border", "1px solid #FF6666");
+                            return [false, response.responseText];
+                        }
+                        else if ($("#InputName").val() == "") {
+                            error += "InputName";
+                            $('#FormError').html("<td class='ui-state-error' colspan='2'>" + error + ":Field is required</td>");
+                            $("#InputName").val('');
+                            $("#InputName").focus();
+                            $("#InputName").css("background-color", "#FFE8E8").css("border", "1px solid #FF6666");
+                            return [false, response.responseText];
+                        }
+                        else if ($("#IBISCode").val() == "") {
+                            error += "IBISCode";
+                            $('#FormError').html("<td class='ui-state-error' colspan='2'>" + error + ":Field is required</td>");
+                            $("#IBISCode").val('');
+                            $("#IBISCode").focus();
+                            $("#IBISCode").css("background-color", "#FFE8E8").css("border", "1px solid #FF6666");
+                            return [false, response.responseText];
+                        }
+
+                        else {
+                            return [true, response.responseText];
+                        }
+
+                    },
+                    afterSubmit: function (response, postdata) {
+
+                        $("#InputMaster").jqGrid('setGridParam', { datatype: 'json' }).trigger('reloadGrid');
+                        $('#TblGrid_InputMaster td.ui-state-error').removeClass('ui-state-error').addClass('ui-state-highlight');
+                        $('select').val(0);
+                        $("#InputName").val('');
+                        $("#IBISCode").val('');
+                        $("#IsActive").prop('checked', false);
+                        return [false, response.responseText];
+                    },
+
+                },
+
+            {
+
+                //Add
+                closeOnEscape: true,
+                recreateForm: true,
+                width: 680,
+                modal: true,               
+                afterShowForm: function (form_id) {
+                    var thisForm = form_id.selector.replace('FrmGrid_', 'editmod');
+                    var dialogHeight = $(thisForm).height();
+                    var dialogWidth = $(thisForm).width();
+                    var windowHeight = $(window).height();
+                    var windowWidth = $(window).width();
+                    $(thisForm).css('position', 'fixed');
+                    $(thisForm).css('top', ((windowHeight - dialogHeight) / 2));
+                    $(thisForm).css('left', ((windowWidth - dialogWidth) / 2));
+                },
+                beforeSubmit: function (response, postdata) {
+
+                    if ($("#InputName").val().charAt(0) == ' ' || $("#InputName").val().charAt($("#InputName").val().length - 1) == ' ') {
+                        $('#TblGrid_InputMaster td.ui-state-highlight').removeClass('ui-state-highlight').addClass('ui-state-error');
+                        $("#InputName").css("background-color", "#FFE8E8").css("border", "1px solid #FF6666");
+                        $('#InputName').focus();
+                        return [false, 'Enter Valid InputName'];
+                    }
+                    if ($("#IBISCode").val().charAt(0) == ' ' || $("#IBISCode").val().charAt($("#IBISCode").val().length - 1) == ' ') {
+                        $('#TblGrid_InputMaster td.ui-state-highlight').removeClass('ui-state-highlight').addClass('ui-state-error');
+                        $("#IBISCode").css("background-color", "#FFE8E8").css("border", "1px solid #FF6666");
+                        $('#IBISCode').focus();
+                        return [false, 'Enter Valid IBISCode'];
+                    }
+
+                    $('select').css("border", "1px solid #C0C0C0");
+                    $("input[type=text]").css("border", "1px solid #C0C0C0");
+                    var error = " ";
+                    if ($("#GenName").val() == 0) {
+                        error += "GenName";
+                        $('#FormError').html("<td class='ui-state-error' colspan='2'>" + error + ":Field is required</td>");
+                        $("#GenName").val(0);
+                        $('#GenName').focus();
+                        $("#GenName").css("background-color", "#FFE8E8").css("border", "1px solid #FF6666");
+                        return [false, response.responseText];
+                    }
+                    else if ($("#InputName").val() == "") {
+                        error += "InputName";
+                        $('#FormError').html("<td class='ui-state-error' colspan='2'>" + error + ":Field is required</td>");
+                        $("#InputName").val('');
+                        $("#InputName").focus();
+                        $("#InputName").css("background-color", "#FFE8E8").css("border", "1px solid #FF6666");
+                        return [false, response.responseText];
+                    }
+                    else if ($("#IBISCode").val() == "") {
+                        error += "IBISCode";
+                        $('#FormError').html("<td class='ui-state-error' colspan='2'>" + error + ":Field is required</td>");
+                        $("#IBISCode").val('');
+                        $("#IBISCode").focus();
+                        $("#IBISCode").css("background-color", "#FFE8E8").css("border", "1px solid #FF6666");
+                        return [false, response.responseText];
+                    }
+
+                    else {
+                        return [true, response.responseText];
+                    }
+
+                },
+
+
+                afterSubmit: function (response, postdata) {
+
+                    if (response.responseText == "Input Master already Exists") {
+                        $('#TblGrid_InputMaster td.ui-state-highlight').removeClass('ui-state-highlight').addClass('ui-state-error');
+                        return [false, response.responseText];
+                    }
+                    else {
+                        $("#InputMaster").jqGrid('setGridParam', { datatype: 'json' }).trigger('reloadGrid');
+                        $('#TblGrid_InputMaster td.ui-state-error').removeClass('ui-state-error').addClass('ui-state-highlight');
+                        $('select').val(0);
+                        $("#InputName").val('');
+                        $("#IBISCode").val('');
+                        return [false, response.responseText];
+                    }
+                }
+            },
+
+            //Delete
+            {
+                closeOnEscape: true,
+                recreateForm: true,
+                width: 600,
+                modal: true,
+                beforeShowForm: function (form) {
+
+                    var thisForm = $("#delmod" + jQuery("#InputMaster")[0].id);
+                    var dialogHeight = $(thisForm).height();
+                    var dialogWidth = $(thisForm).width();
+                    var windowHeight = $(window).height();
+                    var windowWidth = $(window).width();
+                    $(thisForm).css('position', 'fixed');
+                    $(thisForm).css('top', ((windowHeight - dialogHeight) / 2));
+                    $(thisForm).css('left', ((windowWidth - dialogWidth) / 2));
+
+
+                    var col1 = $('#InputMaster').jqGrid('getGridParam', 'selrow');
+
+
+                    $('tr td.delmsg').html('Delete selected record(s)?');
+
+                    $('#InputMaster').jqGrid('getGridParam', 'selrow');
+                    var IsActive = $('#InputMaster').jqGrid('getCell', col1, 'IsActive');
+                    if (IsActive == "In Active") {
+                        $('tr td.delmsg').html('Record Already Deleted');
+                        $('#dData').hide();
+                    }
+                    else
+                        $('#dData').show();
+
+                    //var GenName = $('#InputMaster').jqGrid('getCell', col1, 'GenName');
+                    //var InputName = $('#InputMaster').jqGrid('getCell', col1, 'InputName');
+
+
+                    //var html = "<form><table><tr><td class='CaptionTD'>Input Type </td><td class=='DataTD'>&nbsp;&nbsp;<input type='text' class='FormElement ui-widget-content ui-corner-all' readonly='true'  value='" + GenName + "'/></td><td class='CaptionTD'>Input Name </td><td class=='DataTD'>&nbsp;&nbsp;<input type='text' class='FormElement ui-widget-content ui-corner-all' readonly='true'  value='" + InputName + "'/></td> </tr>";
+
+
+                    //html += "</table></form>";
+                    //$("td.delmsg", form[0]).html(html);
+
+                },
+
+
+
+                afterSubmit: function (response, postdata) {
+                    $('tr td.delmsg').html('');
+                    $('#dData').hide();
+                    $("#InputMaster").jqGrid('setGridParam', { datatype: 'json' }).trigger('reloadGrid');
+                    $('#DelTbl_InputMaster td.ui-state-error').removeClass('ui-state-error').addClass('ui-state-highlight');
+                    $('select').val(0);
+                    $("#InputName").val('');
+                    $("#IBISCode").val('');
+                    return [false, response.responseText];
+                }
+            },
+            {
+                //Search
+
+                closeOnEscape: true,
+                modal: true,
+                recreateForm: true,
+                width: 600,
+                caption: "Search",
+                searchOnEnter: true,
+                beforeShowSearch: function (form) {
+
+                    $('#jqg1').val('');
+                    $('#fbox_InputMaster_reset').click();
+
+                    var dialogHeight = $("#searchmodfbox_InputMaster").height();
+                    var dialogWidth = $("#searchmodfbox_InputMaster").width();
+                    var windowHeight = $(window).height();
+                    var windowWidth = $(window).width();
+                    $("#searchmodfbox_InputMaster").css('position', 'fixed');
+                    $("#searchmodfbox_InputMaster").css('top', ((windowHeight - dialogHeight) / 2));
+                    $("#searchmodfbox_InputMaster").css('left', ((windowWidth - dialogWidth) / 2));
+
+                    return [true, ""];
+                }
+
+            },
+            {
+                //View :
+                closeOnEscape: true,
+                recreateForm: true,
+                width: 680,
+
+                beforeShowForm: function (form) {
+
+
+                    var thisForm = $("#viewmod" + jQuery("#InputMaster")[0].id);
+                    var dialogHeight = $(thisForm).height();
+                    var dialogWidth = $(thisForm).width();
+                    var windowHeight = $(window).height();
+                    var windowWidth = $(window).width();
+                    $(thisForm).css('position', 'fixed');
+                    $(thisForm).css('top', ((windowHeight - dialogHeight) / 2));
+                    $(thisForm).css('left', ((windowWidth - dialogWidth) / 2));
+
+
+                    $('#trv_InputName td:nth-child(5)').hide();
+                    $('#trv_InputName td:nth-child(6)').hide();
+                    $('#trv_IsActive', form).hide();
+
+                }
+
+            }
+
+                    );
+
+        setMethod('InputMaster', 'Pager', 'Input Master');
+    }
+    function setMethod(gid, id, pgTitle) {
+
+        var btnTitle = 'Export to Excel';
+        $('#' + gid).jqGrid('navSeparatorAdd', '#' + id, { sepclass: "ui-separator" });
+        $('#' + gid).jqGrid('navButtonAdd', '#' + id, { caption: '', title: btnTitle, position: 'last', buttonicon: 'ui-icon-calculator', onClickButton: function () { ExcelExport(); } });
+
+        var btnTitle = 'Export to PDF';
+        $('#' + gid).jqGrid('navSeparatorAdd', '#' + id, { sepclass: "ui-separator" });
+        $('#' + gid).jqGrid('navButtonAdd', '#' + id, { caption: '', title: btnTitle, position: 'last', buttonicon: 'ui-icon-bookmark', onClickButton: function () { PDFExport(); } });
+
+        var btnTitle = 'Export to CSV';
+        $('#' + gid).jqGrid('navSeparatorAdd', '#' + id, { sepclass: "ui-separator" });
+        $('#' + gid).jqGrid('navButtonAdd', '#' + id, { caption: '', title: btnTitle, position: 'last', buttonicon: 'ui-icon-note', onClickButton: function () { CSVExport(); } });
+
+
+        var btnTitle = 'Print Grid';
+        $('#' + gid).jqGrid('navSeparatorAdd', '#' + id, { sepclass: "ui-separator" });
+        $('#' + gid).jqGrid('navButtonAdd', '#' + id, { caption: '', title: btnTitle, position: 'last', buttonicon: 'ui-icon-print', onClickButton: function () { PrintGrid(gid); } });
+    }
+    function ExcelExport() {
+        window.location = '@Url.Action("ExportInputMasterToExcel")';
+    }
+    function PDFExport() {
+        window.location = '@Url.Action("ExportInputMasterToPDF")';
+    }
+    function CSVExport() {
+        window.location = '@Url.Action("ExportInputMasterPDFToCsv")';
+    }
+        function PrintGrid(gid) {
+
+            // empty the print div container.
+            var rows = $('#InputMaster').jqGrid('getRowData');
+            for (var i = 0; i < rows.length; i++) {
+                var row = rows[i];
+                $('#Table1').append("<tr><td>" + row.InputName + "</td><td>" + row.GenName + "</td><td>" + row.IsActive + "</td></tr>");
+
+            }
+            $(function () { printChrome('prt-container') });
+
+        }
+
+    function printChrome(divContainer) {
+
+        var printContent = document.getElementById(divContainer);
+        window.document.body.innerHTML = printContent.innerHTML;
+        window.print();
+        window.location.reload();
+    }
+
+
+    </script>
+    <div id='prt-container' style="display:none">
+        <table id="Table1" border="1" width="100%">
+            <thead>
+                <tr>
+                    <td><b>Input Name</b></td>
+                    <td><b>Input Type</b></td>
+                    <td><b>Status</b></td>
+                </tr>
+
+            </thead>
+            <tbody></tbody>
+
+        </table>
+    </div>
+</body>

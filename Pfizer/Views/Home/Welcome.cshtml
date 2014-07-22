@@ -1,0 +1,276 @@
+﻿@{
+    ViewBag.Title = "Welcome";
+    Layout = "~/Views/Shared/MasterLayout.cshtml";
+}
+
+
+
+<body>
+        @using (Html.BeginForm())
+{
+             <div id="openDiv"> </div>
+            
+    <div>    
+
+        <div class="clear"></div>
+        <h1>Dashboard</h1>
+        <div class="useful_links">
+            <label>Useful Link</label>
+            @Html.DropDownList("ddlUsefulLink", PfizerEntity.UsefulLink.DropDownListContents(), "Select")
+        </div>
+           
+           
+            <div class="clear"></div>
+            <div class="container">
+                <div class="dashboard spacer4">
+                    <h2><img src="@Url.Content("~/Content/images/news&announce.png")" width="24" height="24" align="absmiddle" />News & Announcements</h2>
+                    <div class="dashboard_inner">
+                        @Html.Raw(@ViewBag.News)
+                    </div>
+                </div>
+                <div class="dashboard spacer4">
+                    <h2><img src="@Url.Content("~/Content/images/success.png")" width="24" height="24" align="absmiddle" />Success Stories</h2>
+                    <div class="dashboard_inner">
+                        <div class="dashboard_content">
+                            @Html.Raw(@ViewBag.Success)
+
+                        </div>
+                    </div>
+                </div>
+                <div class="dashboard">
+                    <h2><img src="@Url.Content("~/Content/images/alert.png")" width="24" height="24" align="absmiddle" />Alerts</h2>
+                    <div class="dashboard_inner">
+                        <ul class="dashboard_content">
+                            @Html.Raw(@ViewData["Alert"])
+                        </ul>
+                    </div>
+                </div>
+                <div class="dashboard spacer4">
+                    <h2><img src="@Url.Content("~/Content/images/industry.png")" width="24" height="24" align="absmiddle" />Industry News</h2>
+                    <div class="dashboard_inner">
+                        @Html.Raw(@ViewData["Indus"])
+                    </div>
+                </div>
+                <div class="dashboard spacer4">
+                    <h2><img src="@Url.Content("~/Content/images/general_tips.png")" width="24" height="24" align="absmiddle" />General Tips</h2>
+                    <div class="dashboard_inner">
+                        @Html.Raw(@ViewBag.Tips)
+                    </div>
+                </div>
+                <div class="dashboard">
+                    <h2><img src="@Url.Content("~/Content/images/poll.png")" width="24" height="24" align="absmiddle" />Opinion Poll</h2>
+
+
+                    <div class="dashboard_inner">
+                        <div class="poll">
+                            @Html.Raw(@ViewBag.Opinion)
+                        </div>
+                    </div>
+                </div>
+                <div class="dashboard spacer4">
+                    <h2><img src="@Url.Content("~/Content/images/info_bank.png")" width="24" height="24" align="absmiddle" />Information Bank</h2>
+                    <div class="dashboard_inner">
+                        @Html.Raw(ViewData["InfoDesk"])
+                    </div>
+                </div>
+                <div class="dashboard spacer4">
+                    <h2><img src="@Url.Content("~/Content/images/notification.png")" width="24" height="24" align="absmiddle" />Notification</h2>
+                    <div class="dashboard_inner">
+                        @Html.Raw(ViewBag.Notifi)
+                    </div>
+                </div>
+                <div class="dashboard">
+                    <h2><img src="@Url.Content("~/Content/images/reminders.png")" width="24" height="24" align="absmiddle" />To Do Meeting Reminders</h2>
+                    <div class="dashboard_inner">
+                        <div class="meetings">
+                            <ul><li>Today  @ViewBag.Today </li></ul>
+                            <div class="meetings_date">
+                                <span>
+                                    @ViewBag.UnRead    -- UnRead
+
+                                </span>
+                            </div>
+                        </div>
+                        <div class="meetings">
+                            <ul>
+                                <li>
+                                    This Month @ViewBag.Month
+                                </li>
+                            </ul>
+                            <div class="meetings_date">
+                                <span>
+                                    @ViewBag.UnReadMonth    -- UnRead
+
+                                </span>
+                            </div>
+                        </div>
+
+
+                    </div>
+                </div>
+
+
+            </div>
+        </div>
+    
+
+
+}
+   
+
+    <script>
+
+        function VoteOpinion(pkid)
+        {
+            
+            $.getJSON('@Url.Action("JsonUpdateVote")?pkid=' + pkid+'&Ans='+$("input:radio[name=Yes]:checked").val(), function (data) {
+
+            });
+            alert('Your Vote Updated');
+
+            $("input:radio[name=Yes]").attr("checked", false);
+        }
+
+
+       
+
+        function PopUp(val)
+        {
+            $('#openDiv').dialog({
+                resizable: false,
+                title:val,
+                height: 170,
+                width: 350,
+               
+                show: { effect: 'drop', direction: "up" },
+                modal: true,
+                draggable: true,
+                open: function (event, ui) {
+                    $(".ui-dialog-titlebar-close").show();
+
+                },
+
+                buttons: {
+                    "Close": function () {
+                        $(this).dialog("close");
+
+                    },
+                },
+
+            });
+        }
+
+
+
+        function AlertPopUp(val, pkid) {
+           
+            /* $.noConflict(true);*/
+            jQuery('#openDiv').dialog({
+               
+                resizable: false,
+                title: val,
+                height: 170,
+                width: 350,
+                show: { effect: 'drop', direction: "up" },
+                modal: true,
+                draggable: true,
+                open: function (event, ui) {
+                    jQuery(".ui-dialog-titlebar-close").show();
+
+                },
+
+                buttons:
+                    {
+                        "Mark as Read": function () {
+                            jQuery.getJSON('@Url.Action("JsonChageStatus")?pkid=' + pkid, function (data) {
+
+                            });
+                            alert('Alert status updated successfully');
+                            jQuery(this).dialog("close");
+
+                        },
+
+                    "Close": function () {
+                        jQuery(this).dialog("close");
+
+                    },
+
+                    },
+
+                
+            });
+          
+
+        }
+
+
+
+        function CalModalWindow(pkid,val)
+        {
+
+                $.getJSON('@Url.Action("JsonCal")?pkid=' + pkid+'&val='+val, function (data) {
+
+                    $('#openDiv').html("<table><tr><td>" + data.title + "</td></tr> <tr><td>" + data.body + "</td></tr></table>");
+                    PopUp(data.genName);
+                });
+
+
+
+        }
+
+        function CalPopUp(pkid)
+        {
+
+            $.getJSON('@Url.Action("JsonAlertCal")?pkid=' + pkid, function (data) {
+
+                $('#openDiv').html("<table><tr><td>" + data.Body1 + "</td></tr><tr><td>" + data.Body3 + "</td></tr><tr><td>" + data.Body + "</td></tr></table>");
+                AlertPopUp("Alert Message",pkid);
+            });
+
+
+        }
+
+
+      /*  $(function () {
+
+
+            $('#test').dialog({
+
+                resizable: false,
+                height: 170,
+                width: 350,
+                show: { effect: 'drop', direction: "up" },
+                modal: true,
+                draggable: true,
+                open: function (event, ui) {
+                    $(".ui-dialog-titlebar-close").hide();
+                },
+                buttons: {
+                    "OK": function () {
+                        $(this).dialog("close");
+
+                    },
+                    "Cancel": function () {
+                        $(this).dialog("close");
+                    }
+                },
+
+            });
+
+        });*/
+    </script>
+
+</body>
+
+
+
+
+
+
+
+
+
+
+
+
+ 

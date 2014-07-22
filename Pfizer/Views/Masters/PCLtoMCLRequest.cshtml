@@ -1,0 +1,385 @@
+﻿@{
+    ViewBag.Title = "PCLtoMCLRequest";
+    Layout = "~/Views/Shared/MasterLayout.cshtml";
+}
+
+<style>
+    .colCell {
+        cursor: pointer;
+    }
+</style>
+
+
+
+<body>
+
+    @using (Html.BeginForm(FormMethod.Post))
+    {
+        <div>
+            <table width="100%" class="inner_tb">
+                <tr>
+                    <td class="tb-r1">
+                        Search
+                    </td>
+                    <td class="tb-r1">Brick</td>
+                    <td class="tb-r1">
+                        @Html.ListBox("lstBrick", PfizerEntity.UsefulLink.GetBricks(Convert.ToInt32(@Session["Territory_FKID"].ToString())),"All")
+
+                    </td>
+                    <td class="tb-r1">Customer Type</td>
+
+                    <td class="tb-r1">
+                        <select  name="lstCustomer" multiple style=" width:150px !important;">
+                            <option value="All" selected>All</option>
+                            <option value="Doctor">Doctor</option>
+                            <option value="Chemist">Chemist</option>
+                            <option value="Nurse">Nurse</option>
+                            <option value="Patient">Patient</option>
+                            <option value="Hospital">Hospital</option>
+                            <option value="Stockist">Stockist</option>
+                        </select>
+
+                    </td>
+                    <td class="tb-r1">Status</td>
+                    <td class="tb-r1">
+
+                        <select  name="lstStatus" style=" width:120px !important;" >
+                            <option value="New Request" selected>New Request</option>
+                            <option value="Pending Request">Pending Request</option>
+                            <option value="Approved Request">Approved Request</option>
+                            <option value="Rejected Request">Rejected Request</option>
+                        </select>
+
+                    </td>
+                    <td class="tb-r1"><input type='button' class=" blue_button" value="Fetch" name="btnFetch" /></td>
+                </tr>
+
+            </table>
+
+            <table border="0" style="width: 100%">
+                
+                <tr>
+
+                    <td>
+                    <table class="inner_tb">
+                        <tr>
+                            <td class="DataTD">
+                                <input type="text" value="New Request" name="txtStatus" />
+                            </td>
+
+                        </tr>
+
+                    </table>
+                    </td>
+
+                </tr>
+
+                <tr>
+                    <td>
+                        <!--JqGrid Starts-->
+                        <table style="margin-top: 7px; width :100%" border="0">
+                            <tr>
+                                <td>
+                                    <table id="PCLtoMCLGrid" style="width: 100%" border="0"></table>
+                                    <div id="Pager">
+                                    </div>
+                                </td>
+                            </tr>
+                        </table>
+                        <!--Ends-->
+                    </td>
+                </tr>
+            </table>
+
+        </div>
+        <div id="openDiv"> </div>
+
+
+
+        <script type="text/javascript"> 
+
+
+            $("#lstBrick").on('change', function () {
+                if ($(this).val() == "All") {
+                    $("select > option").prop("selected", true);
+                }
+            });
+
+            $("#lstCustomer").on('change', function () {
+                if ($(this).val() == "All") {
+                    $("select > option").prop("selected", true);
+                }
+            });
+
+            $("#lstStatus").on('change', function () {
+                $("#txtStatus").val($(this).val()); 
+            });
+
+            
+            $('#lstBrick ')
+
+            jQuery(document).ready(function () {
+             
+            //      initGrid();
+            });
+
+             
+
+
+
+            function initGrid() {
+                jQuery("#PCLtoMCLGrid").jqGrid({
+                    url: '@Url.Action("PCLtoMCLGrid")',
+                    datatype: "json",
+                    jsonReader: { repeatitems: false, id: "PKID" },
+                    colNames: ['PKID', 'Customer Name', 'Cus. Type', 'Brick', 'Speciality', 'Reason for Request'],
+                    colModel: [
+                        { name: 'PKID', index: 'PKID', align: 'left', hidden: true, editable: true },
+                        { name: 'Element', index: 'Customer Name', align: 'left', editable: true, searchoptions: { sopt: ['eq', 'bw', 'ew', 'cn'] }, formoptions: { rowpos: 2, colpos: 1 } },
+                        { name: 'Type', index: 'Type', align: 'left', hidden: false, editable: true, formoptions: { rowpos: 3, colpos: 1 } },
+                        { name: 'AreaName', index: 'AreaName', align: 'left', hidden: false, editable: true, formoptions: { rowpos: 3, colpos: 2 } },
+                        { name: 'Specialization', index: 'Specialization', align: 'left', hidden: false, edit: false },
+                        {
+                            name: 'Reason', index: 'Reason', align: 'left', hidden: false, edittype: 'text', sortable: true, editrules: { required: true }, classes: 'colCell', sorttype: function (value) {
+                                return value;
+                            }
+                        }
+                         
+
+
+                    ],
+
+                    autowidth: true,
+                    gridview: true,
+                    caption: 'Opinion Poll',
+                    jqModal: true,
+                    align: 'center',
+                    sortable: true,
+                    hidegrid: true,
+                    altRows: true,
+                    sortname: 'PKID',
+                    sortorder: 'desc',
+                    rowTotal: 10,
+                    rowNum: 1,
+                    viewrecords: true,
+                    pager: $('#Pager'),
+                    height: 'auto',
+                    editable: true,
+                    'cellEdit': true, 
+                    'cellsubmit': 'clientArray',
+                    editurl: 'clientArray',
+                    gridComplete: function () {
+
+                        if (jQuery("#PCLtoMCLGrid").getGridParam("records") == 0) {
+                            jQuery("#PCLtoMCLGrid").addRowData(
+                            "blankRow", { "Title": "No records to view" });
+                        }
+
+
+                        //var ids = jQuery("#PCLtoMCLGrid").jqGrid('getDataIDs');
+
+                        //for (var i = 0; i < ids.length; i++) {
+                        //    var c6 = jQuery('#PCLtoMCLGrid').jqGrid('getCell', ids[i], 6);
+
+                        //    pop2 = "<input type='text' name='txtReason'/>";
+
+                        //    jQuery("#ajaxGrid").jqGrid('setRowData', ids[i], { fileToUpload: pop2 });
+                        //}
+
+
+                    },
+                    editurl: '@Url.Action("EditOpinionGrid")',
+
+                });
+
+
+                @*jQuery("#PCLtoMCLGrid").jqGrid('navGrid', '#Pager', { edit: true, add: true, del: true, search: true, view: true },
+
+                    {
+                        // Edit
+                        closeOnEscape: true,
+                        recreateForm: true,
+                        width: 650,
+                        checkOnSubmit: true,
+                        bSubmit: "Vote",
+                        beforeShowForm: function (form) {
+
+
+                            var col1 = $('#PCLtoMCLGrid').jqGrid('getGridParam', 'selrow');
+
+                            var pkid = $('#PCLtoMCLGrid').jqGrid('getCell', col1, 'PKID');
+
+                            $.getJSON('@Url.Action("JsGetOpinionPoll")?pkid=' + pkid, function (data) {
+
+                                $('#Question').val(data.question);
+                                $('#Option1').val(data.option1);
+                                $('#Option2').val(data.option2);
+                                $('#Option3').val(data.option3);
+                                $('#Option4').val(data.option4);
+                                $('#Option5').val(data.option5);
+
+                            });
+
+
+                        },
+                        afterShowForm: function (form_id) {
+                            var thisForm = form_id.selector.replace('FrmGrid_', 'editmod')
+                            var dialogHeight = $(thisForm).height();
+                            var dialogWidth = $(thisForm).width();
+                            var windowHeight = $(window).height();
+                            var windowWidth = $(window).width();
+                            $(thisForm).css('position', 'fixed');
+                            $(thisForm).css('top', ((windowHeight - dialogHeight) / 2));
+                            $(thisForm).css('left', ((windowWidth - dialogWidth) / 2));
+                        },
+
+
+                        afterSubmit: function (response, postdata) {
+
+
+                            $("#PCLtoMCLGrid").jqGrid('setGridParam', { datatype: 'json' }).trigger('reloadGrid');
+                            $('#TblGrid_OpinionGrid td.ui-state-error').removeClass('ui-state-error').addClass('ui-state-highlight');
+                            return [false, response.responseText];
+                        },
+                        closeAfterEdit: true,
+                    },
+
+                {
+
+                    //Add
+                    closeOnEscape: true,
+                    closeAfterAdd: true,
+                    recreateForm: true,
+                    width: 650,
+                    bSubmit: "Vote",
+                    beforeShowForm: function (form) {
+
+
+                    },
+                    afterShowForm: function (form_id) {
+                        var thisForm = form_id.selector.replace('FrmGrid_', 'editmod')
+                        var dialogHeight = $(thisForm).height();
+                        var dialogWidth = $(thisForm).width();
+                        var windowHeight = $(window).height();
+                        var windowWidth = $(window).width();
+                        $(thisForm).css('position', 'fixed');
+                        $(thisForm).css('top', ((windowHeight - dialogHeight) / 2));
+                        $(thisForm).css('left', ((windowWidth - dialogWidth) / 2));
+                    },
+                    afterShowForm: function (form_id) {
+                        var thisForm = form_id.selector.replace('FrmGrid_', 'editmod')
+                        var dialogHeight = $(thisForm).height();
+                        var dialogWidth = $(thisForm).width();
+                        var windowHeight = $(window).height();
+                        var windowWidth = $(window).width();
+                        $(thisForm).css('position', 'fixed');
+                        $(thisForm).css('top', ((windowHeight - dialogHeight) / 2));
+                        $(thisForm).css('left', ((windowWidth - dialogWidth) / 2));
+                    },
+
+                    afterSubmit: function (response, postdata) {
+                        alert('Information Added Successfully');
+                        $("#PCLtoMCLGrid").jqGrid('setGridParam', { datatype: 'json' }).trigger('reloadGrid');
+                        return [true, "", ''];
+                    }
+                },
+
+                //Delete
+                {
+                    closeOnEscape: true,
+                    recreateForm: true,
+                    width: 600,
+
+                    beforeShowForm: function (form) {
+
+
+                    },
+
+
+
+                    afterSubmit: function (response, postdata) {
+
+                        $("#PCLtoMCLGrid").jqGrid('setGridParam', { datatype: 'json' }).trigger('reloadGrid');
+                        return [false, response.responseText];
+                    }
+                },
+
+                {
+                    //View :
+                    closeOnEscape: true,
+                    recreateForm: true,
+                    width: 600,
+
+                    beforeShowForm: function (form) {
+
+
+                        var thisForm = $("#viewmod" + jQuery("#PCLtoMCLGrid")[0].id);
+                        var dialogHeight = $(thisForm).height();
+                        var dialogWidth = $(thisForm).width();
+                        var windowHeight = $(window).height();
+                        var windowWidth = $(window).width();
+                        $(thisForm).css('position', 'fixed');
+                        $(thisForm).css('top', ((windowHeight - dialogHeight) / 2));
+                        $(thisForm).css('left', ((windowWidth - dialogWidth) / 2));
+
+                    }
+
+                }
+
+                        );
+
+                setMethod('HolidayGroup', 'Pager', 'Holiday Group Master');
+            }
+            function setMethod(gid, id, pgTitle) {
+
+                var btnTitle = 'Export to Excel';
+                $('#' + gid).jqGrid('navSeparatorAdd', '#' + id, { sepclass: "ui-separator" });
+                $('#' + gid).jqGrid('navButtonAdd', '#' + id, { caption: '', title: btnTitle, position: 'last', buttonicon: 'ui-icon-calculator', onClickButton: function () { ExcelExport(); } });
+
+                var btnTitle = 'Export to PDF';
+                $('#' + gid).jqGrid('navSeparatorAdd', '#' + id, { sepclass: "ui-separator" });
+                $('#' + gid).jqGrid('navButtonAdd', '#' + id, { caption: '', title: btnTitle, position: 'last', buttonicon: 'ui-icon-bookmark', onClickButton: function () { PDFExport(); } });
+
+                var btnTitle = 'Export to CSV';
+                $('#' + gid).jqGrid('navSeparatorAdd', '#' + id, { sepclass: "ui-separator" });
+                $('#' + gid).jqGrid('navButtonAdd', '#' + id, { caption: '', title: btnTitle, position: 'last', buttonicon: 'ui-icon-note', onClickButton: function () { CSVExport(); } });
+
+
+                var btnTitle = 'Print Grid';
+                $('#' + gid).jqGrid('navSeparatorAdd', '#' + id, { sepclass: "ui-separator" });
+                $('#' + gid).jqGrid('navButtonAdd', '#' + id, { caption: '', title: btnTitle, position: 'last', buttonicon: 'ui-icon-print', onClickButton: function () { PrintGrid(gid); } });
+            }
+            function ExcelExport() {
+                window.location = '@Url.Action("ExportHolidayGroupMasToExcel")';
+            }
+            function PDFExport() {
+                window.location = '@Url.Action("ExportHolidayGroupMasToPDF")';
+            }
+            function CSVExport() {
+                window.location = '@Url.Action("ExportHolidayGroupMasToCsv")';
+            }
+            function PrintGrid(gid) {
+
+                // empty the print div container.
+                $('#prt-container').empty();
+
+                // copy and append grid view to print div container.
+                $('#gview_' + gid).clone().appendTo('#prt-container').css({ 'page-break-after': 'auto' });
+                $(function () { printChrome('prt-container') });
+
+            }
+
+            function printChrome(divContainer) {
+
+                var printContent = document.getElementById(divContainer);
+                window.document.body.innerHTML = printContent.innerHTML;
+                window.print();
+                window.location.reload();
+            }*@
+
+
+        </script>
+        <div id='prt-container' style="display:none">
+        </div>
+    }
+</body>

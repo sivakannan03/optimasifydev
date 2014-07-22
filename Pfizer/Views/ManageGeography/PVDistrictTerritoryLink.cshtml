@@ -1,0 +1,33 @@
+﻿ @model Dictionary<int, string>
+@if (ViewBag.Type != "TerritoryCode" && ViewBag.Type != "SelLoadTerCode")
+{
+    <select>
+        <option value='0'>Select</option>
+        @foreach (KeyValuePair<int, string> value in Model)
+        {
+            <option value='@value.Key.ToString()'>@value.Value</option>
+        }
+    </select>
+}
+
+@if (ViewBag.Type == "TerritoryCode")
+{
+    <select id="TerCode" multiple>
+        <option value='0'>Select</option>
+        @foreach (KeyValuePair<int, string> value in Model)
+        {
+            <option value='@value.Key.ToString()'>@value.Value</option>
+        }
+    </select>
+}
+
+@if (ViewBag.Type == "SelLoadTerCode")
+{
+    <select multiple class="FormElement ui-widget-content ui-corner-all" id="SelTerCode">
+        <option value='0'>Select</option>
+        @foreach (KeyValuePair<int, string> value in Model)
+        {
+            <option value='@value.Key.ToString()' selected="selected">@value.Value</option>
+        }
+    </select>
+}

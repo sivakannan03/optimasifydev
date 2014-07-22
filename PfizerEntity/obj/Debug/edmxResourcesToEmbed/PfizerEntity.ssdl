@@ -1,0 +1,1517 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Schema Namespace="pfizerModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+  <EntityType Name="ActivityMaster">
+    <Key>
+      <PropertyRef Name="PKID" />
+    </Key>
+    <Property Name="PKID" Type="numeric" Precision="10" Scale="0" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="ActivityCode" Type="varchar" MaxLength="10" Nullable="false" />
+    <Property Name="ActivityName" Type="varchar" MaxLength="20" Nullable="false" />
+    <Property Name="Defaultflag" Type="bit" Nullable="false" />
+    <Property Name="Specialflag" Type="bit" Nullable="false" />
+    <Property Name="Fieldwork" Type="bit" Nullable="false" />
+    <Property Name="IsActive" Type="bit" Nullable="false" />
+    <Property Name="CreatedBy" Type="numeric" Precision="10" Scale="0" Nullable="false" />
+    <Property Name="CreatedDate" Type="datetime" Nullable="false" />
+    <Property Name="ModifiedBy" Type="numeric" Precision="10" Scale="0" />
+    <Property Name="ModifiedDate" Type="datetime" />
+  </EntityType>
+  <EntityType Name="AreaMaster">
+    <Key>
+      <PropertyRef Name="PKID" />
+    </Key>
+    <Property Name="PKID" Type="numeric" Precision="10" Scale="0" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="CityFKID" Type="numeric" Precision="10" Scale="0" Nullable="false" />
+    <Property Name="AreaCode" Type="varchar" MaxLength="20" Nullable="false" />
+    <Property Name="AreaName" Type="varchar" MaxLength="225" Nullable="false" />
+    <Property Name="Specialflag" Type="bit" Nullable="false" />
+    <Property Name="IsActive" Type="bit" Nullable="false" />
+    <Property Name="CreatedDate" Type="datetime" Nullable="false" />
+    <Property Name="CreatedBy" Type="numeric" Precision="10" Scale="0" Nullable="false" />
+    <Property Name="ModifiedDate" Type="datetime" />
+    <Property Name="ModifiedBy" Type="numeric" Precision="10" Scale="0" />
+  </EntityType>
+  <EntityType Name="CityMaster">
+    <Key>
+      <PropertyRef Name="PKID" />
+    </Key>
+    <Property Name="PKID" Type="numeric" Precision="10" Scale="0" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="CityCode" Type="varchar" MaxLength="20" />
+    <Property Name="CityName" Type="varchar" MaxLength="225" />
+    <Property Name="IsActive" Type="bit" />
+    <Property Name="CreatedDate" Type="datetime" />
+    <Property Name="CreatedBy" Type="numeric" Precision="10" Scale="0" />
+    <Property Name="ModifiedDate" Type="datetime" />
+    <Property Name="ModifiedBy" Type="numeric" Precision="10" Scale="0" />
+    <Property Name="HQFLAG" Type="bit" />
+  </EntityType>
+  <EntityType Name="CycleDefinitionMaster">
+    <Key>
+      <PropertyRef Name="PKID" />
+    </Key>
+    <Property Name="PKID" Type="numeric" Precision="10" Scale="0" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="Year" Type="int" Nullable="false" />
+    <Property Name="NoOfCycles" Type="int" Nullable="false" />
+    <Property Name="CycleStartYear" Type="int" Nullable="false" />
+    <Property Name="IsActive" Type="bit" Nullable="false" />
+    <Property Name="CreatedDate" Type="datetime" Nullable="false" />
+    <Property Name="CreatedBy" Type="numeric" Precision="10" Scale="0" Nullable="false" />
+    <Property Name="ModifiedDate" Type="datetime" />
+    <Property Name="ModifiedBy" Type="numeric" Precision="10" Scale="0" />
+    <Property Name="CycleStartMonth" Type="int" Nullable="false" />
+  </EntityType>
+  <EntityType Name="CycleMaster">
+    <Key>
+      <PropertyRef Name="PKID" />
+    </Key>
+    <Property Name="PKID" Type="numeric" Precision="10" Scale="0" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="Year" Type="numeric" Precision="10" Scale="0" Nullable="false" />
+    <Property Name="CycleNo" Type="numeric" Precision="10" Scale="0" Nullable="false" />
+    <Property Name="CycleName" Type="varchar" MaxLength="30" Nullable="false" />
+    <Property Name="CycleFromMonth" Type="varchar" MaxLength="10" Nullable="false" />
+    <Property Name="CycleFromYear" Type="numeric" Precision="10" Scale="0" Nullable="false" />
+    <Property Name="CycleToMonth" Type="varchar" MaxLength="10" Nullable="false" />
+    <Property Name="CycleToYear" Type="numeric" Precision="10" Scale="0" Nullable="false" />
+    <Property Name="IsActive" Type="bit" />
+    <Property Name="CreatedDate" Type="datetime" Nullable="false" />
+    <Property Name="CreatedBy" Type="numeric" Precision="10" Scale="0" Nullable="false" />
+    <Property Name="ModifiedDate" Type="datetime" />
+    <Property Name="ModifiedBy" Type="numeric" Precision="10" Scale="0" />
+  </EntityType>
+  <EntityType Name="DesignationMaster">
+    <Key>
+      <PropertyRef Name="PKID" />
+    </Key>
+    <Property Name="PKID" Type="numeric" Precision="10" Scale="0" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="DesignationCode" Type="varchar" MaxLength="20" Nullable="false" />
+    <Property Name="DesignationName" Type="varchar" MaxLength="50" Nullable="false" />
+    <Property Name="NodeTypeFKID" Type="numeric" Precision="10" Scale="0" Nullable="false" />
+    <Property Name="IsActive" Type="bit" Nullable="false" />
+    <Property Name="CreatedDate" Type="datetime" Nullable="false" />
+    <Property Name="CreatedBy" Type="numeric" Precision="10" Scale="0" Nullable="false" />
+    <Property Name="ModifiedDate" Type="datetime" />
+    <Property Name="ModifiedBy" Type="numeric" Precision="10" Scale="0" />
+  </EntityType>
+  <EntityType Name="DistrictMaster">
+    <Key>
+      <PropertyRef Name="PKID" />
+    </Key>
+    <Property Name="PKID" Type="numeric" Precision="10" Scale="0" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="DistrictCode" Type="varchar" MaxLength="10" />
+    <Property Name="DistrictName" Type="varchar" MaxLength="75" />
+    <Property Name="IsActive" Type="bit" />
+    <Property Name="CreatedDate" Type="datetime" />
+    <Property Name="CreatedBy" Type="numeric" Precision="10" Scale="0" />
+    <Property Name="ModifiedDate" Type="datetime" />
+    <Property Name="ModifiedBy" Type="numeric" Precision="10" Scale="0" />
+  </EntityType>
+  <EntityType Name="DivisionMaster">
+    <Key>
+      <PropertyRef Name="PKID" />
+    </Key>
+    <Property Name="PKID" Type="numeric" Precision="10" Scale="0" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="DivCode" Type="varchar" MaxLength="20" Nullable="false" />
+    <Property Name="DivName" Type="varchar" MaxLength="225" Nullable="false" />
+    <Property Name="IsActive" Type="bit" Nullable="false" />
+    <Property Name="CreatedDate" Type="datetime" Nullable="false" />
+    <Property Name="CreatedBy" Type="numeric" Precision="10" Scale="0" Nullable="false" />
+    <Property Name="ModifiedDate" Type="datetime" />
+    <Property Name="ModifiedBy" Type="numeric" Precision="10" Scale="0" />
+  </EntityType>
+  <EntityType Name="EmployeeMaster">
+    <Key>
+      <PropertyRef Name="PKID" />
+    </Key>
+    <Property Name="PKID" Type="numeric" Precision="10" Scale="0" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="EmpCode" Type="varchar" MaxLength="20" />
+    <Property Name="TitleFKID" Type="numeric" Precision="10" Scale="0" />
+    <Property Name="FirstName" Type="varchar" MaxLength="30" />
+    <Property Name="MiddleName" Type="varchar" MaxLength="30" />
+    <Property Name="LastName" Type="varchar" MaxLength="30" />
+    <Property Name="ShortName" Type="varchar" MaxLength="20" />
+    <Property Name="Sex" Type="varchar" MaxLength="10" />
+    <Property Name="DateOfBirth" Type="datetime" />
+    <Property Name="JoiningDate" Type="datetime" />
+    <Property Name="Address" Type="varchar" MaxLength="100" />
+    <Property Name="Street" Type="varchar" MaxLength="100" />
+    <Property Name="Area" Type="varchar" MaxLength="100" />
+    <Property Name="ZipCode" Type="varchar" MaxLength="20" />
+    <Property Name="PhoneNo" Type="varchar" MaxLength="20" />
+    <Property Name="Mobile" Type="varchar" MaxLength="20" />
+    <Property Name="Email" Type="varchar" MaxLength="100" />
+    <Property Name="HQ" Type="varchar" MaxLength="20" />
+    <Property Name="MartialStatusFKID" Type="int" />
+    <Property Name="DesignationFKID" Type="int" />
+    <Property Name="OldEmployeeCode" Type="varchar" MaxLength="20" />
+    <Property Name="TempAddress1" Type="varchar" MaxLength="100" />
+    <Property Name="TempAddress2" Type="varchar" MaxLength="100" />
+    <Property Name="TempCity" Type="varchar" MaxLength="50" />
+    <Property Name="TempArea" Type="varchar" MaxLength="50" />
+    <Property Name="TempZipCode" Type="varchar" MaxLength="20" />
+    <Property Name="LastAddresUpdateDate" Type="datetime" />
+    <Property Name="IsActive" Type="bit" />
+    <Property Name="CreatedDate" Type="datetime" />
+    <Property Name="CreatedBy" Type="numeric" Precision="10" Scale="0" />
+    <Property Name="ModifiedDate" Type="datetime" />
+    <Property Name="ModifiedBy" Type="numeric" Precision="10" Scale="0" />
+    <Property Name="PhoneSTDCode" Type="varchar" MaxLength="10" />
+    <Property Name="PhoneISDCode" Type="varchar" MaxLength="10" />
+  </EntityType>
+  <EntityType Name="EvaluationMaster">
+    <Key>
+      <PropertyRef Name="PKID" />
+    </Key>
+    <Property Name="PKID" Type="numeric" Precision="10" Scale="0" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="FormName" Type="varchar" MaxLength="20" Nullable="false" />
+    <Property Name="IsActive" Type="bit" Nullable="false" />
+    <Property Name="CreatedBy" Type="numeric" Precision="10" Scale="0" />
+    <Property Name="CreatedDate" Type="datetime" />
+    <Property Name="ModifiedBy" Type="numeric" Precision="10" Scale="0" />
+    <Property Name="ModifiedDate" Type="datetime" />
+  </EntityType>
+  <EntityType Name="FormMaster">
+    <Key>
+      <PropertyRef Name="PKID" />
+    </Key>
+    <Property Name="PKID" Type="numeric" Precision="10" Scale="0" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="FormName" Type="varchar" MaxLength="20" Nullable="false" />
+    <Property Name="IsActive" Type="bit" Nullable="false" />
+    <Property Name="CreatedDate" Type="datetime" Nullable="false" />
+    <Property Name="CreatedBy" Type="numeric" Precision="10" Scale="0" Nullable="false" />
+    <Property Name="ModifiedDate" Type="datetime" />
+    <Property Name="ModifiedBy" Type="numeric" Precision="10" Scale="0" />
+  </EntityType>
+  <EntityType Name="GeneralMaster">
+    <Key>
+      <PropertyRef Name="PKID" />
+    </Key>
+    <Property Name="PKID" Type="numeric" Precision="10" Scale="0" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="GenFKID" Type="numeric" Precision="10" Scale="0" Nullable="false" />
+    <Property Name="GenCode" Type="varchar" MaxLength="20" />
+    <Property Name="GenName" Type="varchar" MaxLength="255" />
+    <Property Name="IsActive" Type="bit" Nullable="false" />
+    <Property Name="CreatedDate" Type="datetime" Nullable="false" />
+    <Property Name="CreatedBy" Type="numeric" Precision="10" Scale="0" Nullable="false" />
+    <Property Name="ModifiedDate" Type="datetime" />
+    <Property Name="ModifiedBy" Type="numeric" Precision="10" Scale="0" />
+  </EntityType>
+  <EntityType Name="HolidayGroupMaster">
+    <Key>
+      <PropertyRef Name="PKID" />
+    </Key>
+    <Property Name="PKID" Type="numeric" Precision="10" Scale="0" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="HolidayGroupCode" Type="varchar" MaxLength="20" />
+    <Property Name="HolidayGroupName" Type="varchar" MaxLength="100" Nullable="false" />
+    <Property Name="IsActive" Type="bit" Nullable="false" />
+    <Property Name="CreatedDate" Type="datetime" Nullable="false" />
+    <Property Name="CreatedBy" Type="numeric" Precision="10" Scale="0" Nullable="false" />
+    <Property Name="ModifiedDate" Type="datetime" />
+    <Property Name="ModifiedBy" Type="numeric" Precision="10" Scale="0" />
+  </EntityType>
+  <EntityType Name="HolidayMaster">
+    <Key>
+      <PropertyRef Name="PKID" />
+    </Key>
+    <Property Name="PKID" Type="numeric" Precision="10" Scale="0" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="HolidayCode" Type="numeric" Precision="10" Scale="0" />
+    <Property Name="HolidayDescription" Type="varchar" MaxLength="20" Nullable="false" />
+    <Property Name="HolidayDate" Type="datetime" Nullable="false" />
+    <Property Name="DisplayName" Type="varchar" MaxLength="50" />
+    <Property Name="IsActive" Type="bit" Nullable="false" />
+    <Property Name="CreatedDate" Type="datetime" Nullable="false" />
+    <Property Name="CreatedBy" Type="numeric" Precision="10" Scale="0" Nullable="false" />
+    <Property Name="ModifiedDate" Type="datetime" />
+    <Property Name="ModifiedBy" Type="numeric" Precision="10" Scale="0" />
+  </EntityType>
+  <EntityType Name="LocationMaster">
+    <Key>
+      <PropertyRef Name="PKID" />
+    </Key>
+    <Property Name="PKID" Type="numeric" Precision="10" Scale="0" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="LocationCode" Type="varchar" MaxLength="20" />
+    <Property Name="LocationDesc" Type="varchar" MaxLength="225" Nullable="false" />
+    <Property Name="IsActive" Type="bit" Nullable="false" />
+    <Property Name="CreatedDate" Type="datetime" Nullable="false" />
+    <Property Name="CreatedBy" Type="numeric" Precision="10" Scale="0" Nullable="false" />
+    <Property Name="ModifiedDate" Type="datetime" />
+    <Property Name="ModifiedBy" Type="numeric" Precision="10" Scale="0" />
+    <Property Name="TerritoryFKID" Type="numeric" Precision="10" Scale="0" Nullable="false" />
+  </EntityType>
+  <EntityType Name="Masters_Hospitalmaster_tb">
+    <Key>
+      <PropertyRef Name="HospitalId" />
+    </Key>
+    <Property Name="HospitalId" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="NameofHospital" Type="varchar" MaxLength="100" Nullable="false" />
+    <Property Name="HotelAddress" Type="varchar" MaxLength="50" Nullable="false" />
+    <Property Name="Street" Type="varchar" MaxLength="50" Nullable="false" />
+    <Property Name="City" Type="int" Nullable="false" />
+    <Property Name="Area" Type="int" Nullable="false" />
+    <Property Name="ZipCode" Type="numeric" Precision="18" Scale="0" />
+    <Property Name="PhoneNumber" Type="varchar" MaxLength="10" />
+    <Property Name="Email" Type="varchar" MaxLength="50" />
+    <Property Name="MCLflag" Type="char" MaxLength="2" />
+    <Property Name="IsActive" Type="bit" />
+    <Property Name="ApprovalStatus" Type="char" MaxLength="2" />
+    <Property Name="ReasonForRequest" Type="varchar" MaxLength="100" />
+    <Property Name="CreatedBy" Type="numeric" Precision="10" Scale="0" />
+    <Property Name="CreatedDate" Type="datetime" />
+    <Property Name="TerFKID" Type="numeric" Precision="10" Scale="0" />
+  </EntityType>
+  <EntityType Name="Masters_Stockistmaster_Tb">
+    <Key>
+      <PropertyRef Name="StockistId" />
+    </Key>
+    <Property Name="StockistId" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="NameofStockist" Type="varchar" MaxLength="100" />
+    <Property Name="StockistAddress" Type="varchar" MaxLength="50" />
+    <Property Name="Street" Type="varchar" MaxLength="50" />
+    <Property Name="City" Type="int" />
+    <Property Name="Area" Type="int" />
+    <Property Name="ZipCode" Type="numeric" Precision="18" Scale="0" />
+    <Property Name="PhoneNumber" Type="varchar" MaxLength="10" Nullable="false" />
+    <Property Name="Email" Type="varchar" MaxLength="50" />
+    <Property Name="MCLflag" Type="char" MaxLength="2" />
+    <Property Name="IsActive" Type="bit" />
+    <Property Name="ApprovalStatus" Type="char" MaxLength="2" />
+    <Property Name="ReasonForRequest" Type="varchar" MaxLength="100" />
+    <Property Name="CreatedBy" Type="numeric" Precision="10" Scale="0" />
+    <Property Name="CreatedDate" Type="datetime" />
+    <Property Name="TerFKID" Type="numeric" Precision="10" Scale="0" />
+  </EntityType>
+  <EntityType Name="MoleculeMaster">
+    <Key>
+      <PropertyRef Name="PKID" />
+    </Key>
+    <Property Name="PKID" Type="numeric" Precision="10" Scale="0" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="MoleculeName" Type="varchar" MaxLength="60" />
+    <Property Name="IsActive" Type="bit" Nullable="false" />
+    <Property Name="CreatedBy" Type="numeric" Precision="10" Scale="0" Nullable="false" />
+    <Property Name="CreatedDate" Type="datetime" Nullable="false" />
+    <Property Name="ModifiedBy" Type="numeric" Precision="10" Scale="0" />
+    <Property Name="ModifiedDate" Type="datetime" />
+  </EntityType>
+  <EntityType Name="NodeTypeMaster">
+    <Key>
+      <PropertyRef Name="PKID" />
+    </Key>
+    <Property Name="PKID" Type="numeric" Precision="10" Scale="0" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="NodeCode" Type="varchar" MaxLength="50" Nullable="false" />
+    <Property Name="NodeName" Type="varchar" MaxLength="100" Nullable="false" />
+    <Property Name="DailyReportFlag" Type="bit" Nullable="false" />
+    <Property Name="IsActive" Type="bit" Nullable="false" />
+    <Property Name="CreatedDate" Type="datetime" Nullable="false" />
+    <Property Name="CreatedBy" Type="numeric" Precision="10" Scale="0" Nullable="false" />
+    <Property Name="ModifiedDate" Type="datetime" />
+    <Property Name="ModifiedBy" Type="numeric" Precision="10" Scale="0" />
+  </EntityType>
+  <EntityType Name="Notification">
+    <Key>
+      <PropertyRef Name="PKID" />
+    </Key>
+    <Property Name="PKID" Type="numeric" Precision="10" Scale="0" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="Notification" Type="varchar" MaxLength="50" Nullable="false" />
+    <Property Name="ExpiryDate" Type="datetime" Nullable="false" />
+    <Property Name="IsActive" Type="bit" Nullable="false" />
+    <Property Name="CreatedDate" Type="datetime" Nullable="false" />
+    <Property Name="CreatedBy" Type="numeric" Precision="10" Scale="0" Nullable="false" />
+    <Property Name="ModifiedDate" Type="datetime" />
+    <Property Name="ModifiedBy" Type="numeric" Precision="10" Scale="0" />
+  </EntityType>
+  <EntityType Name="QualificationMaster">
+    <Key>
+      <PropertyRef Name="PKID" />
+    </Key>
+    <Property Name="PKID" Type="numeric" Precision="10" Scale="0" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="QualificationName" Type="varchar" MaxLength="50" />
+    <Property Name="IsActive" Type="bit" />
+    <Property Name="CreatedDate" Type="datetime" />
+    <Property Name="CreatedBy" Type="numeric" Precision="10" Scale="0" />
+    <Property Name="ModifiedDate" Type="datetime" />
+    <Property Name="ModifiedBy" Type="numeric" Precision="10" Scale="0" />
+  </EntityType>
+  <EntityType Name="QuestionMaster">
+    <Key>
+      <PropertyRef Name="PKID" />
+    </Key>
+    <Property Name="PKID" Type="numeric" Precision="10" Scale="0" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="Question" Type="varchar" MaxLength="50" Nullable="false" />
+    <Property Name="IsActive" Type="bit" Nullable="false" />
+    <Property Name="CreatedDate" Type="datetime" Nullable="false" />
+    <Property Name="CreatedBy" Type="numeric" Precision="10" Scale="0" Nullable="false" />
+    <Property Name="ModifiedDate" Type="datetime" />
+    <Property Name="ModifiedBy" Type="numeric" Precision="10" Scale="0" />
+  </EntityType>
+  <EntityType Name="RatingMaster">
+    <Key>
+      <PropertyRef Name="PKID" />
+    </Key>
+    <Property Name="PKID" Type="numeric" Precision="10" Scale="0" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="RatingCode" Type="varchar" MaxLength="20" Nullable="false" />
+    <Property Name="RatingName" Type="varchar" MaxLength="225" Nullable="false" />
+    <Property Name="IsActive" Type="bit" Nullable="false" />
+    <Property Name="CreatedDate" Type="datetime" Nullable="false" />
+    <Property Name="CreatedBy" Type="numeric" Precision="10" Scale="0" Nullable="false" />
+    <Property Name="ModifiedDate" Type="datetime" />
+    <Property Name="ModifiedBy" Type="numeric" Precision="10" Scale="0" />
+  </EntityType>
+  <EntityType Name="RegionMaster">
+    <Key>
+      <PropertyRef Name="PKID" />
+    </Key>
+    <Property Name="RegionCode" Type="varchar" MaxLength="10" />
+    <Property Name="RegionName" Type="varchar" MaxLength="75" />
+    <Property Name="IsActive" Type="bit" />
+    <Property Name="CreatedDate" Type="datetime" />
+    <Property Name="CreatedBy" Type="numeric" Precision="10" Scale="0" />
+    <Property Name="ModifiedDate" Type="datetime" />
+    <Property Name="ModifiedBy" Type="numeric" Precision="10" Scale="0" />
+    <Property Name="PKID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+  </EntityType>
+  <EntityType Name="RoleMaster">
+    <Key>
+      <PropertyRef Name="PKID" />
+    </Key>
+    <Property Name="PKID" Type="numeric" Precision="10" Scale="0" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="RoleTypeFKID" Type="numeric" Precision="10" Scale="0" Nullable="false" />
+    <Property Name="RoleCode" Type="varchar" MaxLength="20" />
+    <Property Name="RoleName" Type="varchar" MaxLength="225" Nullable="false" />
+    <Property Name="IsActive" Type="bit" Nullable="false" />
+    <Property Name="CreatedDate" Type="datetime" Nullable="false" />
+    <Property Name="CreatedBy" Type="numeric" Precision="10" Scale="0" Nullable="false" />
+    <Property Name="ModifiedDate" Type="datetime" />
+    <Property Name="ModifiedBy" Type="numeric" Precision="10" Scale="0" />
+  </EntityType>
+  <!--Errors Found During Generation:
+warning 6002: The table/view 'pfizer.dbo.SettingMaster' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
+  <EntityType Name="SettingMaster">
+    <Key>
+      <PropertyRef Name="PKID" />
+    </Key>
+    <Property Name="PKID" Type="numeric" Precision="10" Scale="0" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="ImpactScreenName" Type="varchar" MaxLength="200" />
+    <Property Name="SettingDescription" Type="varchar" MaxLength="200" />
+    <Property Name="SettingType" Type="varchar" MaxLength="50" />
+    <Property Name="FromValue" Type="varchar" MaxLength="100" />
+    <Property Name="ToValue" Type="varchar" MaxLength="100" />
+    <Property Name="IsActive" Type="bit" />
+    <Property Name="CreatedDate" Type="datetime" />
+    <Property Name="CreatedBy" Type="numeric" Precision="10" Scale="0" />
+    <Property Name="ModifiedBy" Type="numeric" Precision="10" Scale="0" />
+    <Property Name="ModifiedDate" Type="datetime" />
+    <Property Name="Code" Type="varchar" MaxLength="10" />
+  </EntityType>
+  <EntityType Name="SpecializationMaster">
+    <Key>
+      <PropertyRef Name="PKID" />
+    </Key>
+    <Property Name="PKID" Type="numeric" Precision="10" Scale="0" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="Specialization" Type="varchar" MaxLength="225" Nullable="false" />
+    <Property Name="IsActive" Type="bit" Nullable="false" />
+    <Property Name="CreatedDate" Type="datetime" Nullable="false" />
+    <Property Name="CreatedBy" Type="numeric" Precision="10" Scale="0" Nullable="false" />
+    <Property Name="ModifiedDate" Type="datetime" />
+    <Property Name="ModifiedBy" Type="numeric" Precision="10" Scale="0" />
+  </EntityType>
+  <EntityType Name="SpecializationTeamlinkMaster">
+    <Key>
+      <PropertyRef Name="PKID" />
+    </Key>
+    <Property Name="PKID" Type="numeric" Precision="10" Scale="0" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="TeamFKID" Type="numeric" Precision="10" Scale="0" Nullable="false" />
+    <Property Name="SpecializationFKID" Type="numeric" Precision="10" Scale="0" Nullable="false" />
+    <Property Name="IsActive" Type="bit" Nullable="false" />
+    <Property Name="CreatedDate" Type="datetime" Nullable="false" />
+    <Property Name="CreatedBy" Type="numeric" Precision="10" Scale="0" Nullable="false" />
+    <Property Name="ModifiedDate" Type="datetime" />
+    <Property Name="ModifiedBy" Type="numeric" Precision="10" Scale="0" />
+  </EntityType>
+  <EntityType Name="StrategicPlanningMaster">
+    <Key>
+      <PropertyRef Name="PKID" />
+    </Key>
+    <Property Name="PKID" Type="numeric" Precision="10" Scale="0" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="FormName" Type="varchar" MaxLength="20" Nullable="false" />
+    <Property Name="IsActive" Type="bit" Nullable="false" />
+    <Property Name="CreatedBy" Type="numeric" Precision="10" Scale="0" />
+    <Property Name="CreatedDate" Type="datetime" />
+    <Property Name="ModifiedBy" Type="numeric" Precision="10" Scale="0" />
+    <Property Name="ModifiedDate" Type="datetime" />
+  </EntityType>
+  <EntityType Name="TailoredExecutionMaster">
+    <Key>
+      <PropertyRef Name="PKID" />
+    </Key>
+    <Property Name="PKID" Type="numeric" Precision="10" Scale="0" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="FormName" Type="varchar" MaxLength="20" Nullable="false" />
+    <Property Name="IsActive" Type="bit" Nullable="false" />
+    <Property Name="CreatedBy" Type="numeric" Precision="10" Scale="0" />
+    <Property Name="CreatedDate" Type="datetime" />
+    <Property Name="ModifiedBy" Type="numeric" Precision="10" Scale="0" />
+    <Property Name="ModifiedDate" Type="datetime" />
+  </EntityType>
+  <EntityType Name="TeamMaster">
+    <Key>
+      <PropertyRef Name="PKID" />
+    </Key>
+    <Property Name="PKID" Type="numeric" Precision="10" Scale="0" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="DivFKID" Type="numeric" Precision="10" Scale="0" Nullable="false" />
+    <Property Name="TeamCode" Type="varchar" MaxLength="20" Nullable="false" />
+    <Property Name="TeamName" Type="varchar" MaxLength="225" Nullable="false" />
+    <Property Name="IsActive" Type="bit" Nullable="false" />
+    <Property Name="CreatedDate" Type="datetime" Nullable="false" />
+    <Property Name="CreatedBy" Type="numeric" Precision="10" Scale="0" Nullable="false" />
+    <Property Name="ModifiedDate" Type="datetime" />
+    <Property Name="ModifiedBy" Type="numeric" Precision="10" Scale="0" />
+  </EntityType>
+  <EntityType Name="TerritoryMaster">
+    <Key>
+      <PropertyRef Name="PKID" />
+    </Key>
+    <Property Name="PKID" Type="numeric" Precision="10" Scale="0" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="DivFKID" Type="numeric" Precision="10" Scale="0" Nullable="false" />
+    <Property Name="TerCode" Type="varchar" MaxLength="20" Nullable="false" />
+    <Property Name="TerName" Type="varchar" MaxLength="225" />
+    <Property Name="TownclassFKID" Type="numeric" Precision="10" Scale="0" Nullable="false" />
+    <Property Name="IsActive" Type="bit" Nullable="false" />
+    <Property Name="CreatedDate" Type="datetime" Nullable="false" />
+    <Property Name="CreatedBy" Type="numeric" Precision="10" Scale="0" Nullable="false" />
+    <Property Name="ModifiedDate" Type="datetime" />
+    <Property Name="ModifiedBy" Type="numeric" Precision="10" Scale="0" />
+  </EntityType>
+  <EntityType Name="TownClassMaster">
+    <Key>
+      <PropertyRef Name="PKID" />
+    </Key>
+    <Property Name="PKID" Type="numeric" Precision="10" Scale="0" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="Townclasscode" Type="varchar" MaxLength="20" />
+    <Property Name="Townclassname" Type="varchar" MaxLength="50" Nullable="false" />
+    <Property Name="IsActive" Type="bit" Nullable="false" />
+    <Property Name="CreatedDate" Type="datetime" Nullable="false" />
+    <Property Name="CreatedBy" Type="numeric" Precision="10" Scale="0" Nullable="false" />
+    <Property Name="ModifiedDate" Type="datetime" />
+    <Property Name="ModifiedBy" Type="numeric" Precision="10" Scale="0" />
+  </EntityType>
+  <EntityType Name="UserMaster">
+    <Key>
+      <PropertyRef Name="EmpFKID" />
+    </Key>
+    <Property Name="PKID" Type="numeric" Precision="10" Scale="0" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="EmpFKID" Type="numeric" Precision="10" Scale="0" Nullable="false" />
+    <Property Name="RoleFKID" Type="numeric" Precision="10" Scale="0" Nullable="false" />
+    <Property Name="Loginname" Type="varchar" MaxLength="20" Nullable="false" />
+    <Property Name="Password" Type="varchar" MaxLength="100" />
+    <Property Name="IsActive" Type="bit" Nullable="false" />
+    <Property Name="CreatedDate" Type="datetime" Nullable="false" />
+    <Property Name="CreatedBy" Type="numeric" Precision="10" Scale="0" Nullable="false" />
+    <Property Name="ModifiedDate" Type="datetime" />
+    <Property Name="ModifiedBy" Type="numeric" Precision="10" Scale="0" />
+  </EntityType>
+  <!--Errors Found During Generation:
+warning 6002: The table/view 'pfizer.dbo.FAQS1View' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
+  <EntityType Name="FAQS1View">
+    <Key>
+      <PropertyRef Name="PKID" />
+      <PropertyRef Name="CategoryFKID" />
+      <PropertyRef Name="IsActive" />
+    </Key>
+    <Property Name="PKID" Type="numeric" Precision="10" Scale="0" Nullable="false" />
+    <Property Name="CategoryFKID" Type="numeric" Precision="10" Scale="0" Nullable="false" />
+    <Property Name="GenName" Type="varchar" MaxLength="255" />
+    <Property Name="Question" Type="varchar" MaxLength="100" />
+    <Property Name="Answer" Type="varchar" MaxLength="100" />
+    <Property Name="IsActive" Type="varchar" MaxLength="8" Nullable="false" />
+  </EntityType>
+  <!--Errors Found During Generation:
+warning 6002: The table/view 'pfizer.dbo.OpinionPollView' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
+  <EntityType Name="OpinionPollView">
+    <Key>
+      <PropertyRef Name="PKID" />
+      <PropertyRef Name="Option1" />
+      <PropertyRef Name="Option2" />
+      <PropertyRef Name="status" />
+      <PropertyRef Name="IsActive" />
+    </Key>
+    <Property Name="PKID" Type="numeric" Precision="10" Scale="0" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="Question" Type="varchar" MaxLength="255" />
+    <Property Name="Option1" Type="varchar" MaxLength="20" Nullable="false" />
+    <Property Name="Option2" Type="varchar" MaxLength="20" Nullable="false" />
+    <Property Name="status" Type="varchar" MaxLength="8" Nullable="false" />
+    <Property Name="IsActive" Type="bit" Nullable="false" />
+  </EntityType>
+  <!--Errors Found During Generation:
+warning 6002: The table/view 'pfizer.dbo.vw_MeetingReminderReadstatus' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
+  <EntityType Name="vw_MeetingReminderReadstatus">
+    <Key>
+      <PropertyRef Name="Element" />
+    </Key>
+    <Property Name="Element" Type="varchar" MaxLength="6" Nullable="false" />
+    <Property Name="UnReadstatusCurrentDate" Type="int" />
+  </EntityType>
+  <Association Name="FK_TeamMaster_DivisionMaster">
+    <End Role="DivisionMaster" Type="Self.DivisionMaster" Multiplicity="1" />
+    <End Role="TeamMaster" Type="Self.TeamMaster" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="DivisionMaster">
+        <PropertyRef Name="PKID" />
+      </Principal>
+      <Dependent Role="TeamMaster">
+        <PropertyRef Name="DivFKID" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_UserMaster_EmployeeMaster">
+    <End Role="EmployeeMaster" Type="Self.EmployeeMaster" Multiplicity="1" />
+    <End Role="UserMaster" Type="Self.UserMaster" Multiplicity="0..1" />
+    <ReferentialConstraint>
+      <Principal Role="EmployeeMaster">
+        <PropertyRef Name="PKID" />
+      </Principal>
+      <Dependent Role="UserMaster">
+        <PropertyRef Name="EmpFKID" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Function Name="AddDistrictTerritorylinkMaster" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+    <Parameter Name="DistrictFKID" Type="numeric" Mode="In" />
+    <Parameter Name="xml" Type="ntext" Mode="In" />
+    <Parameter Name="IsActive" Type="bit" Mode="In" />
+    <Parameter Name="CreatedBy" Type="numeric" Mode="In" />
+  </Function>
+  <Function Name="AddEmployeeMaster" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+    <Parameter Name="EmpCode" Type="varchar" Mode="In" />
+    <Parameter Name="TitleFKID" Type="numeric" Mode="In" />
+    <Parameter Name="FirstName" Type="varchar" Mode="In" />
+    <Parameter Name="MiddleName" Type="varchar" Mode="In" />
+    <Parameter Name="LastName" Type="varchar" Mode="In" />
+    <Parameter Name="ShortName" Type="varchar" Mode="In" />
+    <Parameter Name="Sex" Type="varchar" Mode="In" />
+    <Parameter Name="DateOfBirth" Type="datetime" Mode="In" />
+    <Parameter Name="JoiningDate" Type="datetime" Mode="In" />
+    <Parameter Name="Address" Type="varchar" Mode="In" />
+    <Parameter Name="Street" Type="varchar" Mode="In" />
+    <Parameter Name="Area" Type="varchar" Mode="In" />
+    <Parameter Name="ZipCode" Type="varchar" Mode="In" />
+    <Parameter Name="PhoneNo" Type="varchar" Mode="In" />
+    <Parameter Name="Mobile" Type="varchar" Mode="In" />
+    <Parameter Name="Email" Type="varchar" Mode="In" />
+    <Parameter Name="HQ" Type="varchar" Mode="In" />
+    <Parameter Name="MartialStatusFKID" Type="numeric" Mode="In" />
+    <Parameter Name="DesignationFKID" Type="numeric" Mode="In" />
+    <Parameter Name="OldEmployeeCode" Type="varchar" Mode="In" />
+    <Parameter Name="ISDCode" Type="int" Mode="In" />
+    <Parameter Name="STDCode" Type="int" Mode="In" />
+    <Parameter Name="IsActive" Type="bit" Mode="In" />
+    <Parameter Name="CreatedBy" Type="numeric" Mode="In" />
+  </Function>
+  <Function Name="AddFAQS" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+    <Parameter Name="CategoryFKID" Type="numeric" Mode="In" />
+    <Parameter Name="Question" Type="varchar" Mode="In" />
+    <Parameter Name="Answer" Type="varchar" Mode="In" />
+    <Parameter Name="IsActive" Type="bit" Mode="In" />
+    <Parameter Name="CreatedBy" Type="numeric" Mode="In" />
+  </Function>
+  <Function Name="AddGeneralMaster" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+    <Parameter Name="GeneralFKID" Type="numeric" Mode="In" />
+    <Parameter Name="GenCode" Type="varchar" Mode="In" />
+    <Parameter Name="GenName" Type="varchar" Mode="In" />
+    <Parameter Name="IsActive" Type="bit" Mode="In" />
+    <Parameter Name="CreatedBy" Type="numeric" Mode="In" />
+  </Function>
+  <Function Name="AddHolidayGroupLinkMaster" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+    <Parameter Name="HolidaygroupFKID" Type="numeric" Mode="In" />
+    <Parameter Name="xmlHolidayFKID" Type="nvarchar" Mode="In" />
+    <Parameter Name="CreatedBy" Type="int" Mode="In" />
+  </Function>
+  <Function Name="AddHolidayGroupTerritoryLinkMaster" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+    <Parameter Name="HolidaygroupFKID" Type="numeric" Mode="In" />
+    <Parameter Name="xmlTerritoryFKID" Type="text" Mode="In" />
+    <Parameter Name="CreatedBy" Type="int" Mode="In" />
+  </Function>
+  <Function Name="AddHolidayMaster" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+    <Parameter Name="HolidayDescription" Type="varchar" Mode="In" />
+    <Parameter Name="DisplayName" Type="varchar" Mode="In" />
+    <Parameter Name="HolidayDate" Type="datetime" Mode="In" />
+    <Parameter Name="IsActive" Type="bit" Mode="In" />
+    <Parameter Name="CreatedBy" Type="numeric" Mode="In" />
+  </Function>
+  <Function Name="AddInfoCategory" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+    <Parameter Name="CategoryDesc" Type="varchar" Mode="In" />
+    <Parameter Name="ParentFKID" Type="numeric" Mode="In" />
+    <Parameter Name="IsActive" Type="char" Mode="In" />
+    <Parameter Name="CreatedBy" Type="numeric" Mode="In" />
+  </Function>
+  <Function Name="AddiNPUTMaster" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+    <Parameter Name="InputTypeFKID" Type="numeric" Mode="In" />
+    <Parameter Name="InputName" Type="varchar" Mode="In" />
+    <Parameter Name="IBISCode" Type="varchar" Mode="In" />
+    <Parameter Name="UsrFKID" Type="numeric" Mode="In" />
+  </Function>
+  <Function Name="AddInputProductLinkMaser" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+    <Parameter Name="InputFKID" Type="numeric" Mode="In" />
+    <Parameter Name="XmlStr" Type="text" Mode="In" />
+    <Parameter Name="CreatedBy" Type="int" Mode="In" />
+  </Function>
+  <Function Name="AddInputTeamLinkMaser" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+    <Parameter Name="InputFKID" Type="numeric" Mode="In" />
+    <Parameter Name="XmlStr" Type="text" Mode="In" />
+    <Parameter Name="CreatedBy" Type="int" Mode="In" />
+  </Function>
+  <Function Name="AddNotification1" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+    <Parameter Name="Notification" Type="varchar" Mode="In" />
+    <Parameter Name="ExpiryDate" Type="datetime" Mode="In" />
+    <Parameter Name="CreatedBy" Type="numeric" Mode="In" />
+  </Function>
+  <Function Name="AddOpinionPoll" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+    <Parameter Name="TeamFKID" Type="varchar" Mode="In" />
+    <Parameter Name="Question" Type="varchar" Mode="In" />
+    <Parameter Name="Option1" Type="varchar" Mode="In" />
+    <Parameter Name="Option2" Type="varchar" Mode="In" />
+    <Parameter Name="Option3" Type="varchar" Mode="In" />
+    <Parameter Name="Option4" Type="varchar" Mode="In" />
+    <Parameter Name="Option5" Type="varchar" Mode="In" />
+    <Parameter Name="IsActive" Type="numeric" Mode="In" />
+  </Function>
+  <Function Name="AddProductMoleculeLinkMaster" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+    <Parameter Name="ProductFKID" Type="numeric" Mode="In" />
+    <Parameter Name="xmlMoleculeFKID" Type="nvarchar" Mode="In" />
+    <Parameter Name="CreatedBy" Type="int" Mode="In" />
+  </Function>
+  <Function Name="AddProductSpecialityLinkMaster" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+    <Parameter Name="ProductFKID" Type="numeric" Mode="In" />
+    <Parameter Name="xmlSpecialityFKID" Type="nvarchar" Mode="In" />
+    <Parameter Name="CreatedBy" Type="int" Mode="In" />
+  </Function>
+  <Function Name="AddRBMFTMLinkMaster" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+    <Parameter Name="RBMFKID" Type="int" Mode="In" />
+    <Parameter Name="FTMFKID" Type="int" Mode="In" />
+  </Function>
+  <Function Name="AddRegionDistrictLinkMaster" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+    <Parameter Name="RegionFKID" Type="numeric" Mode="In" />
+    <Parameter Name="xml" Type="varchar" Mode="In" />
+    <Parameter Name="IsActive" Type="bit" Mode="In" />
+    <Parameter Name="CreatedBy" Type="numeric" Mode="In" />
+  </Function>
+  <Function Name="AddSampleInputReconcileSettings" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+    <Parameter Name="StartDate" Type="varchar" Mode="In" />
+    <Parameter Name="XmlStr" Type="text" Mode="In" />
+    <Parameter Name="CreatedBy" Type="int" Mode="In" />
+  </Function>
+  <Function Name="AddSettingMaster" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+    <Parameter Name="ImpactScreenName" Type="varchar" Mode="In" />
+    <Parameter Name="SettingDescription" Type="varchar" Mode="In" />
+    <Parameter Name="SettingType" Type="varchar" Mode="In" />
+    <Parameter Name="FromValue" Type="varchar" Mode="In" />
+    <Parameter Name="ToValue" Type="varchar" Mode="In" />
+    <Parameter Name="IsActive" Type="bit" Mode="In" />
+    <Parameter Name="CreatedBy" Type="int" Mode="In" />
+    <Parameter Name="Code" Type="varchar" Mode="In" />
+  </Function>
+  <Function Name="AddSettingMasterTeamWiseNew" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+    <Parameter Name="PSOFKID" Type="numeric" Mode="In" />
+    <Parameter Name="XmlStr" Type="ntext" Mode="In" />
+    <Parameter Name="ModifiedBy" Type="numeric" Mode="In" />
+  </Function>
+  <Function Name="AddSpecializationTeamlinkMaster" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+    <Parameter Name="Specialization" Type="varchar" Mode="In" />
+    <Parameter Name="xml" Type="varchar" Mode="In" />
+    <Parameter Name="IsActive" Type="bit" Mode="In" />
+    <Parameter Name="CreatedBy" Type="numeric" Mode="In" />
+  </Function>
+  <Function Name="AddTeamRegionLinkMaster" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+    <Parameter Name="TeamFKID" Type="numeric" Mode="In" />
+    <Parameter Name="xmlRegionFKID" Type="nvarchar" Mode="In" />
+    <Parameter Name="CreatedBy" Type="int" Mode="In" />
+  </Function>
+  <Function Name="AddTerritoryAreaLinkMaster" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+    <Parameter Name="TerritoryFKID" Type="numeric" Mode="In" />
+    <Parameter Name="IsActive" Type="int" Mode="In" />
+    <Parameter Name="CreatedBy" Type="int" Mode="In" />
+    <Parameter Name="xmlAreaFKID" Type="text" Mode="In" />
+  </Function>
+  <Function Name="AddTerritoryHQLinkMaster" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+    <Parameter Name="HQFKID" Type="numeric" Mode="In" />
+    <Parameter Name="xmlTerFKID" Type="nvarchar" Mode="In" />
+    <Parameter Name="CreatedBy" Type="int" Mode="In" />
+  </Function>
+  <Function Name="AddUserMaster" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+    <Parameter Name="EmpFKID" Type="numeric" Mode="In" />
+    <Parameter Name="RoleFKID" Type="varchar" Mode="In" />
+    <Parameter Name="Loginname" Type="varchar" Mode="In" />
+    <Parameter Name="Password" Type="varchar" Mode="In" />
+    <Parameter Name="IsActive" Type="char" Mode="In" />
+    <Parameter Name="CreatedBy" Type="numeric" Mode="In" />
+    <Parameter Name="XmlStr" Type="varchar" Mode="In" />
+  </Function>
+  <Function Name="AllPendingCustomer" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+    <Parameter Name="PSOFKID" Type="numeric" Mode="In" />
+    <Parameter Name="AreaFKID" Type="varchar" Mode="In" />
+    <Parameter Name="XMLCusCode" Type="varchar" Mode="In" />
+  </Function>
+  <Function Name="AuthenticateUser" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+    <Parameter Name="Loginname" Type="varchar" Mode="In" />
+    <Parameter Name="Password" Type="varchar" Mode="In" />
+    <Parameter Name="QuestionFKID" Type="numeric" Mode="In" />
+    <Parameter Name="Answer" Type="varchar" Mode="In" />
+  </Function>
+  <Function Name="buildInfoBank" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo" />
+  <Function Name="BuildMenu" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+    <Parameter Name="RoleFKID" Type="numeric" Mode="In" />
+  </Function>
+  <Function Name="DefaultAnswer" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo" />
+  <Function Name="DeleteDistrictTerritoryLinkMaster" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+    <Parameter Name="PKID" Type="numeric" Mode="In" />
+  </Function>
+  <Function Name="DeleteEmployeeMaster" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+    <Parameter Name="PKID" Type="numeric" Mode="In" />
+    <Parameter Name="ModifiedBy" Type="numeric" Mode="In" />
+  </Function>
+  <Function Name="DeleteFAQS" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+    <Parameter Name="PKID" Type="numeric" Mode="In" />
+  </Function>
+  <Function Name="DeleteGeneralMaster" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+    <Parameter Name="PKID" Type="numeric" Mode="In" />
+  </Function>
+  <Function Name="DeleteInfoCategory" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+    <Parameter Name="PKID" Type="numeric" Mode="In" />
+    <Parameter Name="IsActive" Type="char" Mode="In" />
+    <Parameter Name="ModifiedBy" Type="numeric" Mode="In" />
+  </Function>
+  <Function Name="DeleteINPUTMaster" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+    <Parameter Name="PKID" Type="numeric" Mode="In" />
+    <Parameter Name="UsrFKID" Type="numeric" Mode="In" />
+  </Function>
+  <Function Name="DeleteInputProductLinkMaser" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+    <Parameter Name="PKID" Type="numeric" Mode="In" />
+    <Parameter Name="CreatedBy" Type="int" Mode="In" />
+  </Function>
+  <Function Name="DeleteInputTeamLinkMaser" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+    <Parameter Name="PKID" Type="numeric" Mode="In" />
+    <Parameter Name="CreatedBy" Type="int" Mode="In" />
+  </Function>
+  <Function Name="DeleteMoleculeProductMaster" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+    <Parameter Name="ProductFKID" Type="numeric" Mode="In" />
+    <Parameter Name="MoleculeFKID" Type="numeric" Mode="In" />
+  </Function>
+  <Function Name="DeleteNotification" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+    <Parameter Name="PKID" Type="numeric" Mode="In" />
+  </Function>
+  <Function Name="DeleteOpinionPoll" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+    <Parameter Name="PKID" Type="numeric" Mode="In" />
+  </Function>
+  <Function Name="DeleteProductSpecialityLinkMaster" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+    <Parameter Name="ProductFKID" Type="numeric" Mode="In" />
+    <Parameter Name="SpecialityFKID" Type="numeric" Mode="In" />
+  </Function>
+  <Function Name="DeleteRBMFTMLinkMaster" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+    <Parameter Name="PKID" Type="numeric" Mode="In" />
+  </Function>
+  <Function Name="DeleteRegionDistrictLinkMaster" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+    <Parameter Name="PKID" Type="numeric" Mode="In" />
+  </Function>
+  <Function Name="DeleteSampleInputReconcileSettings" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+    <Parameter Name="PKID" Type="numeric" Mode="In" />
+    <Parameter Name="CreatedBy" Type="int" Mode="In" />
+  </Function>
+  <Function Name="DeleteSettingMaster" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+    <Parameter Name="PKID" Type="numeric" Mode="In" />
+  </Function>
+  <Function Name="DeleteSpecializationTeamlinkMaster" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+    <Parameter Name="PKID" Type="numeric" Mode="In" />
+    <Parameter Name="ModifiedBy" Type="numeric" Mode="In" />
+  </Function>
+  <Function Name="DeleteTeamRegionLinkMaster" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+    <Parameter Name="TeamFKID" Type="numeric" Mode="In" />
+    <Parameter Name="RegionFKID" Type="numeric" Mode="In" />
+  </Function>
+  <Function Name="DeleteTerritoryAreaLinkMaster" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+    <Parameter Name="TerritoryFKID" Type="numeric" Mode="In" />
+    <Parameter Name="AreaFKID" Type="numeric" Mode="In" />
+  </Function>
+  <Function Name="DeleteTerritoryHQLinkMaster" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+    <Parameter Name="HQFkid" Type="numeric" Mode="In" />
+    <Parameter Name="TerritoryFKID" Type="numeric" Mode="In" />
+  </Function>
+  <Function Name="DeleteTerritoryMaster" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+    <Parameter Name="PKID" Type="numeric" Mode="In" />
+    <Parameter Name="ModifiedBy" Type="numeric" Mode="In" />
+  </Function>
+  <Function Name="EditEmployeeMaster" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+    <Parameter Name="PKID" Type="numeric" Mode="In" />
+    <Parameter Name="EmpCode" Type="varchar" Mode="In" />
+    <Parameter Name="TitleFKID" Type="numeric" Mode="In" />
+    <Parameter Name="FirstName" Type="varchar" Mode="In" />
+    <Parameter Name="MiddleName" Type="varchar" Mode="In" />
+    <Parameter Name="LastName" Type="varchar" Mode="In" />
+    <Parameter Name="ShortName" Type="varchar" Mode="In" />
+    <Parameter Name="Sex" Type="varchar" Mode="In" />
+    <Parameter Name="DateOfBirth" Type="datetime" Mode="In" />
+    <Parameter Name="JoiningDate" Type="datetime" Mode="In" />
+    <Parameter Name="Address" Type="varchar" Mode="In" />
+    <Parameter Name="Street" Type="varchar" Mode="In" />
+    <Parameter Name="Area" Type="varchar" Mode="In" />
+    <Parameter Name="ZipCode" Type="varchar" Mode="In" />
+    <Parameter Name="PhoneNo" Type="varchar" Mode="In" />
+    <Parameter Name="Mobile" Type="varchar" Mode="In" />
+    <Parameter Name="Email" Type="varchar" Mode="In" />
+    <Parameter Name="HQ" Type="varchar" Mode="In" />
+    <Parameter Name="MartialStatusFKID" Type="numeric" Mode="In" />
+    <Parameter Name="DesignationFKID" Type="numeric" Mode="In" />
+    <Parameter Name="OldEmployeeCode" Type="varchar" Mode="In" />
+    <Parameter Name="ISDCode" Type="int" Mode="In" />
+    <Parameter Name="STDCode" Type="int" Mode="In" />
+    <Parameter Name="IsActive" Type="bit" Mode="In" />
+    <Parameter Name="ModifiedBy" Type="numeric" Mode="In" />
+  </Function>
+  <Function Name="EditFAQS" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+    <Parameter Name="PKID" Type="numeric" Mode="In" />
+    <Parameter Name="CategoryFKID" Type="numeric" Mode="In" />
+    <Parameter Name="Question" Type="varchar" Mode="In" />
+    <Parameter Name="Answer" Type="varchar" Mode="In" />
+    <Parameter Name="IsActive" Type="bit" Mode="In" />
+    <Parameter Name="ModifiedBy" Type="numeric" Mode="In" />
+  </Function>
+  <Function Name="EditGeneralMaster" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+    <Parameter Name="PKID" Type="numeric" Mode="In" />
+    <Parameter Name="GeneralFKID" Type="numeric" Mode="In" />
+    <Parameter Name="GenCode" Type="varchar" Mode="In" />
+    <Parameter Name="GenName" Type="varchar" Mode="In" />
+    <Parameter Name="IsActive" Type="bit" Mode="In" />
+    <Parameter Name="ModifiedBy" Type="numeric" Mode="In" />
+  </Function>
+  <Function Name="EditHolidayGroupLinkMaster" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+    <Parameter Name="HolidaygroupFKID" Type="numeric" Mode="In" />
+    <Parameter Name="xmlHolidayFKID" Type="nvarchar" Mode="In" />
+    <Parameter Name="CreatedBy" Type="int" Mode="In" />
+  </Function>
+  <Function Name="EditHolidayGroupTerritoryLinkMaster" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+    <Parameter Name="HolidaygroupFKID" Type="numeric" Mode="In" />
+    <Parameter Name="xmlTerritoryFKID" Type="text" Mode="In" />
+    <Parameter Name="CreatedBy" Type="int" Mode="In" />
+  </Function>
+  <Function Name="EditInfoCategory" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+    <Parameter Name="PKID" Type="numeric" Mode="In" />
+    <Parameter Name="CategoryDesc" Type="varchar" Mode="In" />
+    <Parameter Name="ParentFKID" Type="numeric" Mode="In" />
+    <Parameter Name="IsActive" Type="char" Mode="In" />
+    <Parameter Name="ModifiedBy" Type="numeric" Mode="In" />
+  </Function>
+  <Function Name="EditINPUTMaster" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+    <Parameter Name="PKID" Type="numeric" Mode="In" />
+    <Parameter Name="InputTypeFKID" Type="numeric" Mode="In" />
+    <Parameter Name="InputName" Type="varchar" Mode="In" />
+    <Parameter Name="IBISCode" Type="varchar" Mode="In" />
+    <Parameter Name="Status" Type="int" Mode="In" />
+    <Parameter Name="UsrFKID" Type="numeric" Mode="In" />
+  </Function>
+  <Function Name="EditMoleculetest1" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+    <Parameter Name="MoleculeFKID" Type="int" Mode="In" />
+    <Parameter Name="ProductFKID" Type="numeric" Mode="In" />
+    <Parameter Name="xmlMoleculeFKID" Type="nvarchar" Mode="In" />
+    <Parameter Name="CreatedBy" Type="int" Mode="In" />
+    <Parameter Name="IsActive" Type="int" Mode="In" />
+  </Function>
+  <Function Name="EditNotification" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+    <Parameter Name="PKID" Type="numeric" Mode="In" />
+    <Parameter Name="Notification" Type="varchar" Mode="In" />
+    <Parameter Name="ExpiryDate" Type="datetime" Mode="In" />
+    <Parameter Name="IsActive" Type="bit" Mode="In" />
+    <Parameter Name="ModifiedBy" Type="numeric" Mode="In" />
+  </Function>
+  <Function Name="EditOpinionPoll" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+    <Parameter Name="TeamFKID" Type="varchar" Mode="In" />
+    <Parameter Name="Question" Type="varchar" Mode="In" />
+    <Parameter Name="Option1" Type="varchar" Mode="In" />
+    <Parameter Name="Option2" Type="varchar" Mode="In" />
+    <Parameter Name="Option3" Type="varchar" Mode="In" />
+    <Parameter Name="Option4" Type="varchar" Mode="In" />
+    <Parameter Name="Option5" Type="varchar" Mode="In" />
+    <Parameter Name="IsActive" Type="numeric" Mode="In" />
+    <Parameter Name="PKID" Type="numeric" Mode="In" />
+  </Function>
+  <Function Name="EditRBMFTMLinkMaster" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+    <Parameter Name="PKID" Type="numeric" Mode="In" />
+    <Parameter Name="RBMFKID" Type="int" Mode="In" />
+    <Parameter Name="FTMFKID" Type="int" Mode="In" />
+    <Parameter Name="IsActive" Type="bit" Mode="In" />
+  </Function>
+  <Function Name="EditSampleInputReconcileSettings" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+    <Parameter Name="StartDate" Type="varchar" Mode="In" />
+    <Parameter Name="XmlStr" Type="text" Mode="In" />
+    <Parameter Name="CreatedBy" Type="int" Mode="In" />
+    <Parameter Name="PKID" Type="bigint" Mode="In" />
+  </Function>
+  <Function Name="EditSettingMaster" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+    <Parameter Name="PKID" Type="numeric" Mode="In" />
+    <Parameter Name="ImpactScreenName" Type="varchar" Mode="In" />
+    <Parameter Name="SettingDescription" Type="varchar" Mode="In" />
+    <Parameter Name="SettingType" Type="varchar" Mode="In" />
+    <Parameter Name="FromValue" Type="varchar" Mode="In" />
+    <Parameter Name="ToValue" Type="varchar" Mode="In" />
+    <Parameter Name="IsActive" Type="bit" Mode="In" />
+    <Parameter Name="ModifiedBy" Type="int" Mode="In" />
+    <Parameter Name="Code" Type="varchar" Mode="In" />
+  </Function>
+  <Function Name="EditSpecializationMaster2" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+    <Parameter Name="PKID" Type="numeric" Mode="In" />
+    <Parameter Name="xml" Type="varchar" Mode="In" />
+    <Parameter Name="Specialization" Type="varchar" Mode="In" />
+    <Parameter Name="IsActive" Type="bit" Mode="In" />
+    <Parameter Name="ModifiedBy" Type="numeric" Mode="In" />
+  </Function>
+  <Function Name="EditSpecMaster" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+    <Parameter Name="SpecialityFKID" Type="int" Mode="In" />
+    <Parameter Name="ProductFKID" Type="numeric" Mode="In" />
+    <Parameter Name="xmlSpecialityFKID" Type="nvarchar" Mode="In" />
+    <Parameter Name="CreatedBy" Type="int" Mode="In" />
+    <Parameter Name="IsActive" Type="int" Mode="In" />
+  </Function>
+  <Function Name="EditTeamRegionLinkMaster" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+    <Parameter Name="TeamFKID" Type="numeric" Mode="In" />
+    <Parameter Name="IsActive" Type="int" Mode="In" />
+    <Parameter Name="CreatedBy" Type="int" Mode="In" />
+    <Parameter Name="xmlRegionFKID" Type="ntext" Mode="In" />
+    <Parameter Name="ModifiedBy" Type="int" Mode="In" />
+  </Function>
+  <Function Name="EditTerritoryAreaLinkMaster" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+    <Parameter Name="TerritoryFKID" Type="numeric" Mode="In" />
+    <Parameter Name="IsActive" Type="int" Mode="In" />
+    <Parameter Name="CreatedBy" Type="int" Mode="In" />
+    <Parameter Name="xmlAreaFKID" Type="ntext" Mode="In" />
+    <Parameter Name="ModifiedBy" Type="int" Mode="In" />
+  </Function>
+  <Function Name="EditTerritoryHQLinkMaster" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+    <Parameter Name="HQFKID" Type="numeric" Mode="In" />
+    <Parameter Name="IsActive" Type="int" Mode="In" />
+    <Parameter Name="CreatedBy" Type="int" Mode="In" />
+    <Parameter Name="xmlTerFKID" Type="ntext" Mode="In" />
+    <Parameter Name="ModifiedBy" Type="int" Mode="In" />
+  </Function>
+  <Function Name="GetAlertsByXML" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+    <Parameter Name="PKID" Type="int" Mode="In" />
+  </Function>
+  <Function Name="GetAlertsTextByXML" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+    <Parameter Name="PKID" Type="varchar" Mode="In" />
+  </Function>
+  <Function Name="GetAllBrickDetailsByXML" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+    <Parameter Name="CityFKID" Type="int" Mode="In" />
+  </Function>
+  <Function Name="GetAllCityByTerritory" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+    <Parameter Name="PSOFKID" Type="numeric" Mode="In" />
+  </Function>
+  <Function Name="GetAllMetisProductName" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo" />
+  <Function Name="GetAllRegionNotAssignedTeamByXml" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo" />
+  <Function Name="GetAllTeamRegionLinkByXml" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+    <Parameter Name="TeamFKID" Type="varchar" Mode="In" />
+  </Function>
+  <Function Name="GetAreaDetailsPCL" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+    <Parameter Name="TerritoryFKID" Type="int" Mode="In" />
+  </Function>
+  <Function Name="GetBrickforTerritoryByXml" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+    <Parameter Name="TerritoryFKID" Type="numeric" Mode="In" />
+    <Parameter Name="AreaFKID" Type="numeric" Mode="In" />
+  </Function>
+  <Function Name="GetBrickNameforCityByXml" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+    <Parameter Name="CityFKID" Type="varchar" Mode="In" />
+    <Parameter Name="TerritoryFKID" Type="varchar" Mode="In" />
+  </Function>
+  <Function Name="GetCActivityType" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo" />
+  <Function Name="GetCategoryByID" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo" />
+  <Function Name="GetCityByXML" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo" />
+  <Function Name="GetCityFCforTerritoryByXML" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo" />
+  <Function Name="GetCityforTerritoryByXML" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+    <Parameter Name="FCCName" Type="varchar" Mode="In" />
+  </Function>
+  <Function Name="GetCityNameForAreaXML" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+    <Parameter Name="AreaFKID" Type="numeric" Mode="In" />
+  </Function>
+  <Function Name="GetCityNameforTerritoryByXML" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+    <Parameter Name="TerritoryFKID" Type="numeric" Mode="In" />
+    <Parameter Name="AreaFKID" Type="numeric" Mode="In" />
+  </Function>
+  <Function Name="GetContentBodyTextByXML" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+    <Parameter Name="PKID" Type="varchar" Mode="In" />
+  </Function>
+  <Function Name="GetContentByXML" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+    <Parameter Name="SecFKID" Type="int" Mode="In" />
+    <Parameter Name="UserDiv" Type="varchar" Mode="In" />
+  </Function>
+  <Function Name="GetCreateUserByPKID" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+    <Parameter Name="PKID" Type="numeric" Mode="In" />
+  </Function>
+  <Function Name="GetCycleYearMonth" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo" />
+  <Function Name="GetDesignationByXML" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo" />
+  <Function Name="GetDesignationMasterDetail" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo" />
+  <Function Name="GetDistrictCodeByXml" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo" />
+  <Function Name="GetDistrictNameExcludeforTerittoryByXml" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+    <Parameter Name="RegionFKID" Type="varchar" Mode="In" />
+  </Function>
+  <Function Name="GetDistrictNameforTerittoryByXml" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+    <Parameter Name="RegionFKID" Type="varchar" Mode="In" />
+  </Function>
+  <Function Name="getDistrictNameWSNew" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo" />
+  <Function Name="GetDistrictTerritoryLink" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo" />
+  <Function Name="GetDivisionByXML" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo" />
+  <Function Name="GetDivisonMasterByPkid" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo" />
+  <Function Name="GetDivUserByXml" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+    <Parameter Name="NodeID" Type="varchar" Mode="In" />
+    <Parameter Name="DivID" Type="varchar" Mode="In" />
+  </Function>
+  <Function Name="GetEmployeeCreateUserMasterByXml" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo" />
+  <Function Name="GetEmployeMaster" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo" />
+  <Function Name="GetEmpNameByNodeTypeFKIDXml" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+    <Parameter Name="NodeTypeFKID" Type="int" Mode="In" />
+  </Function>
+  <Function Name="GetForgetPassword" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+    <Parameter Name="Loginname" Type="varchar" Mode="In" />
+    <Parameter Name="QuestionFKID" Type="numeric" Mode="In" />
+    <Parameter Name="Answer" Type="varchar" Mode="In" />
+  </Function>
+  <Function Name="GetFormMaster" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo" />
+  <Function Name="GetFTMName" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo" />
+  <Function Name="GetGencodeCount" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+    <Parameter Name="GenCode" Type="varchar" Mode="In" />
+    <Parameter Name="GenFKID" Type="int" Mode="In" />
+  </Function>
+  <Function Name="GetHolidayDescriptionByXml" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo" />
+  <Function Name="GetHolidaygroup" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo" />
+  <Function Name="GetHolidayGroupLinkmasterByXml" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+    <Parameter Name="HolidaygroupFKID" Type="numeric" Mode="In" />
+  </Function>
+  <Function Name="GetHolidayGroupNameByXml" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo" />
+  <Function Name="GetHolidayGroupTerritoryLinkmasterByXml" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+    <Parameter Name="HolidaygroupFKID" Type="numeric" Mode="In" />
+  </Function>
+  <Function Name="GetHospitalMaster_PSO" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+    <Parameter Name="PSOFKID" Type="numeric" Mode="In" />
+  </Function>
+  <Function Name="GetHQNameByXML" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo" />
+  <Function Name="GetHQNameForTerByXML" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+    <Parameter Name="HQFKID" Type="varchar" Mode="In" />
+  </Function>
+  <Function Name="GetInfoCategory" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo" />
+  <Function Name="GetInputMasterbyID" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+    <Parameter Name="PKID" Type="numeric" Mode="In" />
+  </Function>
+  <Function Name="GetInputNamebyXML" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo" />
+  <Function Name="GetInputProductLinkMaster" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo" />
+  <Function Name="GetInputteamlink" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo" />
+  <Function Name="getInputTypebyInputMaster" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+    <Parameter Name="InputFKID" Type="numeric" Mode="In" />
+    <Parameter Name="ActType" Type="varchar" Mode="In" />
+  </Function>
+  <Function Name="getInputTypebyInputProdLinkMaster" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+    <Parameter Name="InputFKID" Type="numeric" Mode="In" />
+    <Parameter Name="ActType" Type="varchar" Mode="In" />
+  </Function>
+  <Function Name="GetLinkUserTeamMasterforDrpuserfillByXml" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+    <Parameter Name="TeamFKID" Type="numeric" Mode="In" />
+    <Parameter Name="NodeTypeFKID" Type="numeric" Mode="In" />
+  </Function>
+  <Function Name="GetLocatioNameByXml" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo" />
+  <Function Name="GetLocationMaster" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo" />
+  <Function Name="GetMoleculeforProductByXML" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo" />
+  <Function Name="GetMoleculeforProductPKIDByXMLNotInN" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+    <Parameter Name="ProductFKID" Type="int" Mode="In" />
+  </Function>
+  <Function Name="GetMoleculeMaster" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo" />
+  <Function Name="GetNodeTypeByXML" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo" />
+  <Function Name="GetNotification" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo" />
+  <Function Name="GetNotificationByXML" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo" />
+  <Function Name="GetNotificationTextByXML" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+    <Parameter Name="PKID" Type="varchar" Mode="In" />
+  </Function>
+  <Function Name="GetOpinionPollByXML" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+    <Parameter Name="PKID" Type="numeric" Mode="In" />
+  </Function>
+  <Function Name="GetOpinionPollSelectedValues1" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+    <Parameter Name="PKID" Type="numeric" Mode="In" />
+  </Function>
+  <Function Name="GetOpinionPollTotalCount" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+    <Parameter Name="GetColumn" Type="varchar" Mode="In" />
+    <Parameter Name="SearchLike" Type="varchar" Mode="In" />
+    <Parameter Name="PollFKID" Type="numeric" Mode="In" />
+  </Function>
+  <Function Name="GetPassword" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+    <Parameter Name="LoginId" Type="varchar" Mode="In" />
+  </Function>
+  <Function Name="GetProductforProductMatrixByXml" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo" />
+  <Function Name="GetProductforSpecialityByXML" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+    <Parameter Name="PKID" Type="numeric" Mode="In" />
+  </Function>
+  <Function Name="GetProductMoleculeLink" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo" />
+  <Function Name="GetProductNameByXml" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo" />
+  <Function Name="GetProductNamefromInputMaster" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+    <Parameter Name="PKID" Type="numeric" Mode="In" />
+    <Parameter Name="ActType" Type="varchar" Mode="In" />
+  </Function>
+  <Function Name="GetProductType" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+    <Parameter Name="GenFKID" Type="varchar" Mode="In" />
+  </Function>
+  <Function Name="GetPSOInputSample" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+    <Parameter Name="UserFKID" Type="numeric" Mode="In" />
+  </Function>
+  <Function Name="GetPSOSample" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+    <Parameter Name="UserFKID" Type="numeric" Mode="In" />
+  </Function>
+  <Function Name="GetQuestion" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo" />
+  <Function Name="GetRBMName" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo" />
+  <Function Name="GetRegionCodeByXml" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo" />
+  <Function Name="GetRegionDistrictLink" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo" />
+  <Function Name="getRegionNameNew" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo" />
+  <Function Name="GetReportingByXml" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo" />
+  <Function Name="GetRoles" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo" />
+  <Function Name="GetSettingMasterTeamWise" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo" />
+  <Function Name="GetSpecforProductPKIDByXMLN" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+    <Parameter Name="ProductFKID" Type="int" Mode="In" />
+  </Function>
+  <Function Name="GetSpecforProductPKIDByXMLNNotInN" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+    <Parameter Name="ProductFKID" Type="int" Mode="In" />
+  </Function>
+  <Function Name="GetSpecializationforProductMatrixByXML" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo" />
+  <Function Name="GetSpecializationMasterByPKID" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+    <Parameter Name="PKID" Type="numeric" Mode="In" />
+  </Function>
+  <Function Name="GetSplSelectedTeamByXml" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+    <Parameter Name="PKID" Type="numeric" Mode="In" />
+  </Function>
+  <Function Name="GetSplTeamByXml" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo" />
+  <Function Name="GetStockistMaster_PSO" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+    <Parameter Name="PSOFKID" Type="numeric" Mode="In" />
+  </Function>
+  <Function Name="GetTCodeFCforTerritoryByXML" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo" />
+  <Function Name="GetTCodeforTerritoryByXML" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+    <Parameter Name="FCTCode" Type="varchar" Mode="In" />
+  </Function>
+  <Function Name="GetTeamMasteByPKIDByXML" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+    <Parameter Name="TeamFKID" Type="int" Mode="In" />
+  </Function>
+  <Function Name="GetTeamMasterByXML" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo" />
+  <Function Name="GetTeamMasterByXML_New" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+    <Parameter Name="DivFKID" Type="numeric" Mode="In" />
+  </Function>
+  <Function Name="GetTeamNameForReconcileByPKID" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+    <Parameter Name="PKID" Type="numeric" Mode="In" />
+  </Function>
+  <Function Name="GetTeamNamefromInputMaster" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+    <Parameter Name="PKID" Type="numeric" Mode="In" />
+    <Parameter Name="ActType" Type="varchar" Mode="In" />
+  </Function>
+  <Function Name="GetTeamsByXML" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo" />
+  <Function Name="GetTerritoryByXml" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+    <Parameter Name="DivFKID" Type="int" Mode="In" />
+  </Function>
+  <Function Name="GetTerritoryforBrickXml" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+    <Parameter Name="TerritoryFKID" Type="numeric" Mode="In" />
+  </Function>
+  <Function Name="GetTerritoryNameExcludeforDistrictByXml" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+    <Parameter Name="DistrictFKID" Type="varchar" Mode="In" />
+  </Function>
+  <Function Name="GetTerritoryNameforDistrictByXml" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+    <Parameter Name="DistrictFKID" Type="varchar" Mode="In" />
+  </Function>
+  <Function Name="GetTerritoryNameforHQByXml" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+    <Parameter Name="HQFKID" Type="varchar" Mode="In" />
+  </Function>
+  <Function Name="GetTerritoryNameforHQEditByXml" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+    <Parameter Name="HQFKID" Type="varchar" Mode="In" />
+    <Parameter Name="TerritoryFKID" Type="varchar" Mode="In" />
+  </Function>
+  <Function Name="GetTerritoryNameforHQTerByXml" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+    <Parameter Name="HQFKID" Type="varchar" Mode="In" />
+    <Parameter Name="TerritoryFKID" Type="varchar" Mode="In" />
+  </Function>
+  <Function Name="GetTopAlertsByXML" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+    <Parameter Name="PKID" Type="int" Mode="In" />
+  </Function>
+  <Function Name="GetTopOneOpinionByXML" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+    <Parameter Name="UserFKID" Type="numeric" Mode="In" />
+  </Function>
+  <Function Name="GetUsefulLinks" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo" />
+  <Function Name="GetUserByXml" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo" />
+  <Function Name="GetUserDefault" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo" />
+  <Function Name="GetUserQuestionMaster" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+    <Parameter Name="UserFKID" Type="numeric" Mode="In" />
+  </Function>
+  <Function Name="GetUserSelectedRoles" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+    <Parameter Name="PKID" Type="numeric" Mode="In" />
+  </Function>
+  <Function Name="getUserTeamLink" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo" />
+  <Function Name="InputAllocationAck" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+    <Parameter Name="XmlStr" Type="varchar" Mode="In" />
+  </Function>
+  <Function Name="InputMasterAck" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+    <Parameter Name="XmlStr" Type="text" Mode="In" />
+    <Parameter Name="UserFKID" Type="numeric" Mode="In" />
+    <Parameter Name="TerritoryFKID" Type="numeric" Mode="In" />
+  </Function>
+  <Function Name="LoginLock" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+    <Parameter Name="Loginname" Type="varchar" Mode="In" />
+  </Function>
+  <Function Name="RR_GetAllTeam" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo" />
+  <Function Name="RR_InsertUserReminderLink" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+    <Parameter Name="XmlStr" Type="ntext" Mode="In" />
+    <Parameter Name="UserFKID" Type="int" Mode="In" />
+  </Function>
+  <Function Name="SampleAllocationAck" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+    <Parameter Name="XmlStr" Type="varchar" Mode="In" />
+  </Function>
+  <Function Name="ShowOpinionPollRating" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+    <Parameter Name="PKID" Type="int" Mode="In" />
+  </Function>
+  <Function Name="sp_delete_Hospitaldetails" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+    <Parameter Name="hospitalId" Type="int" Mode="In" />
+  </Function>
+  <Function Name="sp_delete_Stockistdetails" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+    <Parameter Name="StockistId" Type="int" Mode="In" />
+  </Function>
+  <Function Name="sp_insert_hospitaldetails" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+    <Parameter Name="NameofHospital" Type="varchar" Mode="In" />
+    <Parameter Name="HotelAddress" Type="varchar" Mode="In" />
+    <Parameter Name="Street" Type="varchar" Mode="In" />
+    <Parameter Name="City" Type="int" Mode="In" />
+    <Parameter Name="Area" Type="int" Mode="In" />
+    <Parameter Name="Zip" Type="numeric" Mode="In" />
+    <Parameter Name="PhoneNumber" Type="varchar" Mode="In" />
+    <Parameter Name="Email" Type="varchar" Mode="In" />
+    <Parameter Name="PSOFKID" Type="numeric" Mode="In" />
+  </Function>
+  <Function Name="sp_insert_Stockistdetails" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+    <Parameter Name="NameofStockist" Type="varchar" Mode="In" />
+    <Parameter Name="StockistAddress" Type="varchar" Mode="In" />
+    <Parameter Name="Street" Type="varchar" Mode="In" />
+    <Parameter Name="City" Type="int" Mode="In" />
+    <Parameter Name="Area" Type="int" Mode="In" />
+    <Parameter Name="Zip" Type="numeric" Mode="In" />
+    <Parameter Name="PhoneNumber" Type="varchar" Mode="In" />
+    <Parameter Name="Email" Type="varchar" Mode="In" />
+    <Parameter Name="PSOFKID" Type="numeric" Mode="In" />
+  </Function>
+  <Function Name="sp_update_hospitaldetails" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+    <Parameter Name="HospitalId" Type="int" Mode="In" />
+    <Parameter Name="NameofHospital" Type="varchar" Mode="In" />
+    <Parameter Name="HotelAddress" Type="varchar" Mode="In" />
+    <Parameter Name="Street" Type="varchar" Mode="In" />
+    <Parameter Name="City" Type="int" Mode="In" />
+    <Parameter Name="Area" Type="int" Mode="In" />
+    <Parameter Name="Zip" Type="numeric" Mode="In" />
+    <Parameter Name="PhoneNumber" Type="varchar" Mode="In" />
+    <Parameter Name="Email" Type="varchar" Mode="In" />
+    <Parameter Name="IsActive" Type="char" Mode="In" />
+  </Function>
+  <Function Name="sp_update_Stockistdetails" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+    <Parameter Name="StockistId" Type="int" Mode="In" />
+    <Parameter Name="NameofStockist" Type="varchar" Mode="In" />
+    <Parameter Name="StockistAddress" Type="varchar" Mode="In" />
+    <Parameter Name="Street" Type="varchar" Mode="In" />
+    <Parameter Name="City" Type="int" Mode="In" />
+    <Parameter Name="Area" Type="int" Mode="In" />
+    <Parameter Name="Zip" Type="numeric" Mode="In" />
+    <Parameter Name="PhoneNumber" Type="varchar" Mode="In" />
+    <Parameter Name="Email" Type="varchar" Mode="In" />
+    <Parameter Name="Isactive" Type="char" Mode="In" />
+  </Function>
+  <Function Name="TimeSetting" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo" />
+  <Function Name="UpdateOpinionPollAnswer" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+    <Parameter Name="OpFKID" Type="numeric" Mode="In" />
+    <Parameter Name="Feedback" Type="numeric" Mode="In" />
+    <Parameter Name="UserID" Type="numeric" Mode="In" />
+  </Function>
+  <Function Name="UpdatReadAlert" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+    <Parameter Name="PKID" Type="numeric" Mode="In" />
+  </Function>
+  <Function Name="USerTeamLinkAddLatest" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+    <Parameter Name="TeamFKID" Type="numeric" Mode="In" />
+    <Parameter Name="NodeTypeFKID" Type="numeric" Mode="In" />
+    <Parameter Name="XmlStr" Type="text" Mode="In" />
+    <Parameter Name="CreatedBy" Type="int" Mode="In" />
+    <Parameter Name="IsActive" Type="bit" Mode="In" />
+  </Function>
+  <Function Name="USerTeamLinkAddNew" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+    <Parameter Name="TeamFKID" Type="numeric" Mode="In" />
+    <Parameter Name="NodeTypeFKID" Type="numeric" Mode="In" />
+    <Parameter Name="XmlStr" Type="text" Mode="In" />
+    <Parameter Name="CreatedBy" Type="int" Mode="In" />
+    <Parameter Name="IsActive" Type="bit" Mode="In" />
+  </Function>
+  <Function Name="USerTeamLinkDelete" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+    <Parameter Name="PKID" Type="numeric" Mode="In" />
+  </Function>
+  <Function Name="usp_AuthenticateUser" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+    <Parameter Name="Loginname" Type="varchar" Mode="In" />
+    <Parameter Name="Password" Type="varchar" Mode="In" />
+    <Parameter Name="QuestionFKID" Type="numeric" Mode="In" />
+    <Parameter Name="Answer" Type="varchar" Mode="In" />
+  </Function>
+  <Function Name="USP_DELETE_ACTIVITYMASTER" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+    <Parameter Name="PKID" Type="numeric" Mode="In" />
+  </Function>
+  <Function Name="USP_DELETE_UNLOCKUSERDETAILS" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+    <Parameter Name="GetPKID" Type="varchar(max)" Mode="In" />
+  </Function>
+  <Function Name="USP_GET_ACTIVITY_MASTER" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo" />
+  <Function Name="USP_GET_BRICKMASTER" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo" />
+  <Function Name="usp_Get_CampTypeMaster" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo" />
+  <Function Name="USP_GET_CYCLE_DEFINITION_MASTER" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo" />
+  <Function Name="USP_GET_CYCLE_SETTING_MASTER" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo" />
+  <Function Name="USP_GET_EVALUATIONMASTER" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo" />
+  <Function Name="USP_GET_InfoBankUpLoad" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo" />
+  <Function Name="USP_GET_LOCALITY_MASTER" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo" />
+  <Function Name="USP_GET_LOCALITYMASTER" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+    <Parameter Name="PkId" Type="int" Mode="In" />
+  </Function>
+  <Function Name="USP_GET_MONTH" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo" />
+  <Function Name="USP_GET_MU_HOLIDAYMASTER" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo" />
+  <Function Name="USP_GET_MU_NODETYPEMASTER" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo" />
+  <Function Name="USP_GET_MU_TEAMMASTER" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo" />
+  <Function Name="USP_GET_NODETYPE_MASTER" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo" />
+  <Function Name="USP_GET_NODETYPEMASTER" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+    <Parameter Name="PkId" Type="int" Mode="In" />
+  </Function>
+  <Function Name="USP_GET_PROD_NODETYPEMASTER" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+    <Parameter Name="PkId" Type="int" Mode="In" />
+  </Function>
+  <Function Name="USP_GET_PROD_TEAMMASTER" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+    <Parameter Name="PkId" Type="int" Mode="In" />
+  </Function>
+  <Function Name="USP_GET_ProductDetailingMatrix" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo" />
+  <Function Name="USP_GET_PRODUCTMASTER" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo" />
+  <Function Name="USP_GET_QUALIFICATIONMASTER" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo" />
+  <Function Name="USP_GET_ROLEMASTER" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo" />
+  <Function Name="USP_GET_STRATEGICPLANNINGMASTER" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo" />
+  <Function Name="USP_GET_TAILOREDEXECUTIONMASTER" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo" />
+  <Function Name="USP_GET_TEAM_MASTER" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo" />
+  <Function Name="USP_GET_TEAMMASTER" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+    <Parameter Name="PkId" Type="int" Mode="In" />
+  </Function>
+  <Function Name="USP_GET_TeamRegionLink" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo" />
+  <Function Name="USP_GET_TERRITORY_MASTER" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo" />
+  <Function Name="USP_GET_TerritoryHQLink" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo" />
+  <Function Name="USP_GETLOGDEAILS" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo" />
+  <Function Name="Usp_GetPSOsForCyclePlanUnlock" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+    <Parameter Name="CycleFKID" Type="int" Mode="In" />
+    <Parameter Name="DivPKID" Type="int" Mode="In" />
+    <Parameter Name="TeamPKID" Type="int" Mode="In" />
+  </Function>
+  <Function Name="usp_GetRBMMaster" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo" />
+  <Function Name="usp_GetSalesHierarchy" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo" />
+  <Function Name="usp_GetTerritory" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo" />
+  <Function Name="USP_MoleculeProductMasterGrid" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo" />
+  <Function Name="usp_ReconcileSettings" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo" />
+  <Function Name="USP_UPDATE_NODETYPEMASTER" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+    <Parameter Name="oper" Type="varchar" Mode="In" />
+    <Parameter Name="NodetypeFKID" Type="varchar(max)" Mode="In" />
+    <Parameter Name="TeamFKID" Type="varchar(max)" Mode="In" />
+    <Parameter Name="ActivityName" Type="varchar(max)" Mode="In" />
+    <Parameter Name="Defaultflag" Type="bit" Mode="In" />
+    <Parameter Name="Specialflag" Type="bit" Mode="In" />
+    <Parameter Name="Fieldwork" Type="bit" Mode="In" />
+    <Parameter Name="ActivityFKID" Type="varchar(max)" Mode="In" />
+    <Parameter Name="IsActive" Type="varchar(max)" Mode="In" />
+    <Parameter Name="CreatedBy" Type="varchar(max)" Mode="In" />
+    <Parameter Name="CreatedDate" Type="varchar(max)" Mode="In" />
+    <Parameter Name="ModifiedBy" Type="varchar(max)" Mode="In" />
+    <Parameter Name="ModifiedDate" Type="varchar(max)" Mode="In" />
+  </Function>
+  <Function Name="USP_UPDATE_TERRITORYMASTER" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+    <Parameter Name="oper" Type="varchar" Mode="In" />
+    <Parameter Name="LocalityFKID" Type="varchar(max)" Mode="In" />
+    <Parameter Name="PKID" Type="varchar(max)" Mode="In" />
+    <Parameter Name="DivFKID" Type="varchar(max)" Mode="In" />
+    <Parameter Name="TerCode" Type="varchar" Mode="In" />
+    <Parameter Name="TerName" Type="varchar(max)" Mode="In" />
+    <Parameter Name="TownclassFKID" Type="varchar(max)" Mode="In" />
+    <Parameter Name="IsActive" Type="varchar(max)" Mode="In" />
+    <Parameter Name="CreatedBy" Type="varchar(max)" Mode="In" />
+    <Parameter Name="ModifiedBy" Type="varchar(max)" Mode="In" />
+  </Function>
+  <Function Name="uspGetHolidayMaster" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo" />
+  <Function Name="uspGetInputMaster" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo" />
+  <Function Name="uspGetInputType" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo" />
+  <Function Name="uspGetSettingMaster" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo" />
+  <EntityContainer Name="pfizerModelStoreContainer">
+    <EntitySet Name="ActivityMaster" EntityType="Self.ActivityMaster" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="AreaMaster" EntityType="Self.AreaMaster" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="CityMaster" EntityType="Self.CityMaster" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="CycleDefinitionMaster" EntityType="Self.CycleDefinitionMaster" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="CycleMaster" EntityType="Self.CycleMaster" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="DesignationMaster" EntityType="Self.DesignationMaster" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="DistrictMaster" EntityType="Self.DistrictMaster" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="DivisionMaster" EntityType="Self.DivisionMaster" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="EmployeeMaster" EntityType="Self.EmployeeMaster" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="EvaluationMaster" EntityType="Self.EvaluationMaster" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="FormMaster" EntityType="Self.FormMaster" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="GeneralMaster" EntityType="Self.GeneralMaster" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="HolidayGroupMaster" EntityType="Self.HolidayGroupMaster" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="HolidayMaster" EntityType="Self.HolidayMaster" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="LocationMaster" EntityType="Self.LocationMaster" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="Masters_Hospitalmaster_tb" EntityType="Self.Masters_Hospitalmaster_tb" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="Masters_Stockistmaster_Tb" EntityType="Self.Masters_Stockistmaster_Tb" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="MoleculeMaster" EntityType="Self.MoleculeMaster" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="NodeTypeMaster" EntityType="Self.NodeTypeMaster" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="Notification" EntityType="Self.Notification" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="QualificationMaster" EntityType="Self.QualificationMaster" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="QuestionMaster" EntityType="Self.QuestionMaster" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="RatingMaster" EntityType="Self.RatingMaster" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="RegionMaster" EntityType="Self.RegionMaster" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="RoleMaster" EntityType="Self.RoleMaster" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="SpecializationMaster" EntityType="Self.SpecializationMaster" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="SpecializationTeamlinkMaster" EntityType="Self.SpecializationTeamlinkMaster" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="StrategicPlanningMaster" EntityType="Self.StrategicPlanningMaster" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="TailoredExecutionMaster" EntityType="Self.TailoredExecutionMaster" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="TeamMaster" EntityType="Self.TeamMaster" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="TerritoryMaster" EntityType="Self.TerritoryMaster" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="TownClassMaster" EntityType="Self.TownClassMaster" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="UserMaster" EntityType="Self.UserMaster" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="SettingMaster" EntityType="Self.SettingMaster" store:Type="Tables" store:Schema="dbo">
+      <DefiningQuery>SELECT 
+    [SettingMaster].[PKID] AS [PKID], 
+    [SettingMaster].[ImpactScreenName] AS [ImpactScreenName], 
+    [SettingMaster].[SettingDescription] AS [SettingDescription], 
+    [SettingMaster].[SettingType] AS [SettingType], 
+    [SettingMaster].[FromValue] AS [FromValue], 
+    [SettingMaster].[ToValue] AS [ToValue], 
+    [SettingMaster].[IsActive] AS [IsActive], 
+    [SettingMaster].[CreatedDate] AS [CreatedDate], 
+    [SettingMaster].[CreatedBy] AS [CreatedBy], 
+    [SettingMaster].[ModifiedBy] AS [ModifiedBy], 
+    [SettingMaster].[ModifiedDate] AS [ModifiedDate], 
+    [SettingMaster].[Code] AS [Code]
+    FROM [dbo].[SettingMaster] AS [SettingMaster]</DefiningQuery>
+    </EntitySet>
+    <EntitySet Name="FAQS1View" EntityType="Self.FAQS1View" store:Type="Views" store:Schema="dbo">
+      <DefiningQuery>SELECT 
+    [FAQS1View].[PKID] AS [PKID], 
+    [FAQS1View].[CategoryFKID] AS [CategoryFKID], 
+    [FAQS1View].[GenName] AS [GenName], 
+    [FAQS1View].[Question] AS [Question], 
+    [FAQS1View].[Answer] AS [Answer], 
+    [FAQS1View].[IsActive] AS [IsActive]
+    FROM [dbo].[FAQS1View] AS [FAQS1View]</DefiningQuery>
+    </EntitySet>
+    <EntitySet Name="OpinionPollView" EntityType="Self.OpinionPollView" store:Type="Views" store:Schema="dbo">
+      <DefiningQuery>SELECT 
+    [OpinionPollView].[PKID] AS [PKID], 
+    [OpinionPollView].[Question] AS [Question], 
+    [OpinionPollView].[Option1] AS [Option1], 
+    [OpinionPollView].[Option2] AS [Option2], 
+    [OpinionPollView].[status] AS [status], 
+    [OpinionPollView].[IsActive] AS [IsActive]
+    FROM [dbo].[OpinionPollView] AS [OpinionPollView]</DefiningQuery>
+    </EntitySet>
+    <EntitySet Name="vw_MeetingReminderReadstatus" EntityType="Self.vw_MeetingReminderReadstatus" store:Type="Views" store:Schema="dbo">
+      <DefiningQuery>SELECT 
+    [vw_MeetingReminderReadstatus].[Element] AS [Element], 
+    [vw_MeetingReminderReadstatus].[UnReadstatusCurrentDate] AS [UnReadstatusCurrentDate]
+    FROM [dbo].[vw_MeetingReminderReadstatus] AS [vw_MeetingReminderReadstatus]</DefiningQuery>
+    </EntitySet>
+    <AssociationSet Name="FK_TeamMaster_DivisionMaster" Association="Self.FK_TeamMaster_DivisionMaster">
+      <End Role="DivisionMaster" EntitySet="DivisionMaster" />
+      <End Role="TeamMaster" EntitySet="TeamMaster" />
+    </AssociationSet>
+    <AssociationSet Name="FK_UserMaster_EmployeeMaster" Association="Self.FK_UserMaster_EmployeeMaster">
+      <End Role="EmployeeMaster" EntitySet="EmployeeMaster" />
+      <End Role="UserMaster" EntitySet="UserMaster" />
+    </AssociationSet>
+  </EntityContainer>
+</Schema>

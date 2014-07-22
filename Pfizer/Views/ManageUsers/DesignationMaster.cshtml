@@ -1,0 +1,402 @@
+﻿@{
+    ViewBag.Title = "DesignationMaster";
+    Layout = "~/Views/Shared/MasterLayout.cshtml";
+}
+
+<script src="~/Content/js/GridExport.js"></script>
+<script src="~/Content/js/jquery.printElement.js"></script>
+<script src="~/Content/js/table2CSV.js"></script>
+<body>
+    @using (Html.BeginForm(FormMethod.Post))
+    {
+        <div>
+            <table border="0" style="width: 100%">
+                <tr>
+                    <td>
+                        <!--JqGrid Starts-->
+                        <table style="margin-top: 7px; width :100%" border="0">
+                            <tr>
+                                <td>
+                                    <table id="DesigMaster" style="width: 100%" border="0"></table>
+                                    <div id="DesigMasterPager">
+                                    </div>
+                                </td>
+                            </tr>
+                        </table>
+                        <!--Ends-->
+                    </td>
+                </tr>
+            </table>
+
+        </div>
+    }
+
+   
+    <script type="text/javascript">
+
+    jQuery(document).ready(function () {
+
+        initGrid();
+    });
+
+    function initGrid() {
+        jQuery("#DesigMaster").jqGrid({
+            url: '@Url.Action("GetDesigMaster")',
+
+            datatype: "json",
+             jsonReader: { repeatitems: false, id: "PKID" },
+            colNames: ['PKID',  'Designation Name', 'Node Type', 'Status'],
+            colModel: [
+                        
+                        { name: 'PKID', index: 'PKID', align: 'left', viewable: true, key: true, hidden: true, editrules: { edithidden: false } },
+                        {
+                            name: 'DesignationName', index: 'DesignationName', align: 'left', editable: true, editrules: { required: false },
+                            editoptions: {
+                                maxlength: 50,
+                                dataEvents: [{
+                                    type: 'keyup', fn: function (e) {                                       
+                                        SingleCharacter(this);
+                                    }
+                                }]
+                            }, formoptions: { elmsuffix: "<span style='align:left;color:red'>*</span>&nbsp;" }, searchoptions: { sopt: ['eq', 'bw', 'ew', 'cn'] }, searchrules: { required: true }, search: true
+                        },
+                        { name: 'NodeName', index: 'NodeName', align: 'left', editable: true, edittype: 'select', editoptions: { dataUrl: '@Url.Action("Nodetype")' }, editrules: { required: false }, formoptions: { elmsuffix: "<span style='align:left;color:red'>*</span>&nbsp;" }, search: false },
+                        { name: 'Status', index: 'Status', align: 'left', editable: true, editrules: { required: false }, edittype: 'checkbox', editoptions: { value: "Active:Passive", defaultValue: "Active" }, search: false },
+
+            ],
+            caption: "Designation Master",
+            autowidth: true,
+            gridview: true,
+            sortable: true,
+            hidegrid: false,
+            gridComplete: function () {
+
+                if (jQuery("#DesigMaster").getGridParam("records") == 0) {
+                    jQuery("#DesigMaster").addRowData(
+                    "blankRow", { "DesignationName": "No records to view" });
+                }
+            },
+            altRows: true,
+            rowTotal: 10,
+            sortname: 'PKID',
+            sortorder: 'asc',
+            rowNum: 10,
+            viewrecords: true,
+            pager: $('#DesigMasterPager'),
+            height: 'auto',
+            editable: true,
+            editurl: '@Url.Action("EditDesigMaster")'
+        });
+
+        jQuery("#DesigMaster").jqGrid('navGrid', '#DesigMasterPager', { edit: true, add: true, del: true, search: true, view: true },
+            {
+                //EDIT
+                width: 552,                
+                closeOnEscape: true, //Closes the popup on pressing escape key
+                reloadAfterSubmit: true,
+                modal: true,
+                drag: true,
+                afterShowForm: function (form) {
+                    form.closest('div.ui-jqdialog').center();
+                },
+
+                beforeSubmit: function (response, postdata) {
+                $('select').css("border", "1px solid #C0C0C0");
+                $("input[type=text]").css("border", "1px solid #C0C0C0");
+
+
+                if ($("#DesignationName").val().charAt(0) == ' ' || $("#DesignationName").val().charAt($("#DesignationName").val().length - 1) == ' ' || $("#DesignationName").val() == "") {
+                    $('#TblGrid_DesigMasterPager td.ui-state-highlight').removeClass('ui-state-highlight').addClass('ui-state-error');
+                    $("#DesignationName").css("background-color", "#FFE8E8").css("border", "1px solid #FF6666");
+                    $('#DesignationName').val('');
+                    $('#DesignationName').focus();
+
+                    return [false, 'Enter Valid Designation Name'];
+                }
+
+            var error = " ";
+            if ($.trim($("#DesignationName").val()) == "") {
+                error += "DesignationName";
+                $('#FormError').html("<td class='ui-state-error' colspan='2'>" + error + ":Field is required</td>");
+                $("#DesignationName").val('');
+                $('#DesignationName').focus();
+                $("#DesignationName").css("background-color", "#FFE8E8").css("border", "1px solid #FF6666");
+                return [false, response.responseText];
+            }
+            else if ($("#NodeName").val() == 0) {
+                error += "NodeName";
+                $('#FormError').html("<td class='ui-state-error' colspan='2'>" + error + ":Field is required</td>");
+                $('select option:first-child').attr("selected", "selected");
+                
+                $("#NodeName").css("background-color", "#FFE8E8").css("border", "1px solid #FF6666");
+                return [false, response.responseText];
+            }
+            else if (!$("#Status").is(':checked'))
+            {
+                error += "Status";
+                $('#FormError').html("<td class='ui-state-error' colspan='2'>" + error + ":Field is required</td>");
+                return [false, response.responseText];
+            }
+
+            else {
+                return [true, response.responseText];
+            }
+
+        },
+                afterSubmit: function (response, postdata) {
+
+                    $("#DesigMaster").jqGrid('setGridParam', { datatype: 'json' }).trigger('reloadGrid');
+                    $('#TblGrid_DesigMaster td.ui-state-error').removeClass('ui-state-error').addClass('ui-state-highlight');
+                    $("input[type=text]").val('');
+                    $('select option:first-child').attr("selected", "selected"); 
+                    $("#Status").prop('checked', false);
+
+                    return [false, response.responseText];                  
+                },
+                
+               
+            },
+
+        {
+            //Add Portion
+            closeOnEscape: true,
+            width: 552,           
+            modal:true,
+            afterShowForm: function (form) {
+                form.closest('div.ui-jqdialog').center();
+            },
+            beforeSubmit: function (response, postdata) {
+
+
+                if ($("#DesignationName").val().charAt(0) == ' ' || $("#DesignationName").val().charAt($("#DesignationName").val().length - 1) == ' ' || $("#DesignationName").val() == "") {
+                    $('#TblGrid_DesigMaster td.ui-state-highlight').removeClass('ui-state-highlight').addClass('ui-state-error');
+                    $("#DesignationName").css("background-color", "#FFE8E8").css("border", "1px solid #FF6666");
+                    $('#DesignationName').val('');
+                    $('#DesignationName').focus();
+
+                    return [false, 'Enter Valid Designation Name'];
+                }
+
+
+                $("input[type=text]").css("border", "1px solid #C0C0C0");
+                $('select').css("border", "1px solid #C0C0C0");
+                var error = " ";
+                if ($.trim($("#DesignationName").val()) == "") {
+                    error += "DesignationName";
+                    $('#FormError').html("<td class='ui-state-error' colspan='2'>" + error + ":Field is required</td>");
+                    $("#DesignationName").val('');
+                    $('#DesignationName').focus();
+                    $("#DesignationName").css("background-color", "#FFE8E8").css("border", "1px solid #FF6666");
+                    return [false, response.responseText];
+                }
+                else if ($("#NodeName").val() == 0) {
+                    error += "NodeName";
+                    $('#FormError').html("<td class='ui-state-error' colspan='2'>" + error + ":Field is required</td>"); 
+                    $("#NodeName").css("background-color", "#FFE8E8").css("border", "1px solid #FF6666");
+                    return [false, response.responseText];
+                }
+                else if (!$("#Status").is(':checked'))
+                {
+                    error += "Status";
+                    $('#FormError').html("<td class='ui-state-error' colspan='2'>" + error + ":Field is required</td>");
+                    return [false, response.responseText];
+                }
+
+                else {
+                    return [true, response.responseText];
+                }
+
+            },
+            afterSubmit: function (response, postdata) {
+
+                if (response.responseText == "\"Designation already Exists\"") {
+                    $('#TblGrid_DesigMaster td.ui-state-highlight').removeClass('ui-state-highlight').addClass('ui-state-error');
+                    return [false, response.responseText];
+                }
+                else {
+                    $("#DesigMaster").jqGrid('setGridParam', { datatype: 'json' }).trigger('reloadGrid');
+                    $('#TblGrid_DesigMaster td.ui-state-error').removeClass('ui-state-error').addClass('ui-state-highlight');
+                    $("input[type=text]").val('');
+                    
+                    $('select option:first-child').attr("selected", "selected");   
+                    $("#Status").prop('checked', false);
+
+                    return [false, response.responseText];
+                }
+                 
+            },
+            onclickSubmit: function (params, posdata) {
+                params.url = '@Url.Action("AddDesigMaster")?DesignationName=' + $('#DesignationName').val() + '&NodeName=' + $('#NodeName').val() + '&Status=' + $('#Status').val();
+            },
+        },
+        {
+            //DELETE
+            closeOnEscape: true,
+            // closeAfterDelete: true,
+            reloadAfterSubmit: true,
+            closeOnEscape: true,
+            drag: true,
+            modal: true,
+            width:400,
+            afterShowForm: function (form) {
+                form.closest('div.ui-jqdialog').center();
+            },
+            beforeShowForm: function (form) {
+
+                var col1 = $('#DesigMaster').jqGrid('getGridParam', 'selrow');
+
+                var IsActive = $('#DesigMaster').jqGrid('getCell', col1, 'Status');
+               
+                $('tr td.delmsg').html('Delete selected record(s)?');
+               
+                if (IsActive == "InActive") {
+                    $('tr td.delmsg').html('Record Already Deleted');
+                    $('#dData').hide();
+                }
+                else
+                    $('#dData').show();
+
+
+               
+
+            },
+            afterSubmit: function (response, postdata) {
+                $('tr td.delmsg').html('');
+                $('#dData').hide();
+                $("#DesigMaster").jqGrid('setGridParam', { datatype: 'json' }).trigger('reloadGrid');
+                $('#DelTbl_DesigMaster td.ui-state-error').removeClass('ui-state-error').addClass('ui-state-highlight');
+               
+                return [false, response.responseText];
+
+ 
+            },
+            
+
+        },
+        {
+            //search
+            closeOnEscape: true,
+            modal: true,
+            recreateForm: true,
+            width: 552,
+            caption: "Search",
+            searchOnEnter: true,
+            beforeShowSearch: function (form) {
+
+                $('#jqg1').val('');
+                $('#fbox_DesigMaster_reset').click();
+
+                var dialogHeight = $("#searchmodfbox_DesigMaster").height();
+                var dialogWidth = $("#searchmodfbox_DesigMaster").width();
+                var windowHeight = $(window).height();
+                var windowWidth = $(window).width();
+                $("#searchmodfbox_DesigMaster").css('position', 'fixed');
+                $("#searchmodfbox_DesigMaster").css('top', ((windowHeight - dialogHeight) / 2));
+                $("#searchmodfbox_DesigMaster").css('left', ((windowWidth - dialogWidth) / 2));
+
+                return [true, ""];
+            },
+        },
+        {
+        //View
+            width: 552,
+            modal: true,
+        beforeShowForm: function (form) {
+            form.closest('div.ui-jqdialog').center();
+        }
+
+
+    }
+
+                );
+        
+        setMethod('DesigMaster', 'DesigMasterPager', 'Customer Grid');
+
+    }
+        //Center Popup
+        jQuery.fn.center = function () {
+            this.css("position", "absolute");
+            this.css("top", ($(window).height() - this.height()) / 2 + $(window).scrollTop() + "px");
+            this.css("left", ($(window).width() - this.width()) / 2 + $(window).scrollLeft() + "px");
+            return this;
+
+        }
+        function validSpecial(objElement) {
+
+            var re = /^[a-zA-Z0-9-/\s.:]*/gi;
+            if (objElement.value.match(re) != objElement.value) {
+                alert('Special Characters are Not Allowed');
+                objElement.value = '';
+
+                return false;
+            }
+
+        }
+
+    function setMethod(gid, id, pgTitle) {
+        // alert(1);
+        var btnTitle = 'Export to Excel';
+        $('#' + gid).jqGrid('navSeparatorAdd', '#' + id, { sepclass: "ui-separator" });
+        $('#' + gid).jqGrid('navButtonAdd', '#' + id, { caption: '', title: btnTitle, position: 'last', buttonicon: 'ui-icon-calculator', onClickButton: function () { ExcelExport(); } });
+
+        var btnTitle = 'Export to PDF';
+        $('#' + gid).jqGrid('navSeparatorAdd', '#' + id, { sepclass: "ui-separator" });
+        $('#' + gid).jqGrid('navButtonAdd', '#' + id, { caption: '', title: btnTitle, position: 'last', buttonicon: 'ui-icon-bookmark', onClickButton: function () { PDFExport(); } });
+
+        var btnTitle = 'Export to CSV';
+        $('#' + gid).jqGrid('navSeparatorAdd', '#' + id, { sepclass: "ui-separator" });
+        $('#' + gid).jqGrid('navButtonAdd', '#' + id, { caption: '', title: btnTitle, position: 'last', buttonicon: 'ui-icon-note', onClickButton: function () { CSVExport(); } });
+
+
+        var btnTitle = 'Print Grid';
+        $('#' + gid).jqGrid('navSeparatorAdd', '#' + id, { sepclass: "ui-separator" });
+        $('#' + gid).jqGrid('navButtonAdd', '#' + id, { caption: '', title: btnTitle, position: 'last', buttonicon: 'ui-icon-print', onClickButton: function () { PrintGrid(gid); } });
+    }
+    function ExcelExport() {
+        window.location = '@Url.Action("ExportDesignationMasterToExcel")';
+    }
+    function PDFExport() {
+        window.location = '@Url.Action("ExportDesignationMasterToPDF")';
+    }
+    function CSVExport() {
+
+         window.location = '@Url.Action("ExportDesignationMasterCsv")';
+       // $('#DesigMaster').table2CSV({ header: ['PKID', 'Designation Name','Node Type', 'Status'] });
+    }
+    function PrintGrid(gid) {
+        // empty the print div container.
+        var rows = $('#DesigMaster').jqGrid('getRowData');
+        for (var i = 0; i < rows.length; i++) {
+            var row = rows[i];
+            $('#Table1').append("<tr><td>" + row.DesignationName + "</td><td>" + row.NodeName + "</td><td>" + row.Status + "</td></tr>");
+
+        }
+        $(function () { printChrome('prt-container') });
+    }
+
+    function printChrome(divContainer) {
+
+        //  alert(9);
+        var printContent = document.getElementById(divContainer);
+        // alert(printContent.innerHTML);
+        window.document.body.innerHTML = printContent.innerHTML;
+        window.print();
+        window.location.reload();
+    }
+
+
+    </script>
+    <div id='prt-container' style="display:none">
+        <table id="Table1" border="1" width="100%">
+            <thead>
+                <tr>
+                    <td><b>Designation Name</b></td>
+                    <td><b>Node Type</b></td>
+                    <td><b>Status</b></td>
+                </tr>
+            </thead>
+            <tbody></tbody>
+
+        </table>
+    </div>
+</body>

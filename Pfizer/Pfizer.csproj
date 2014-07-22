@@ -1,0 +1,543 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="12.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProductVersion>
+    </ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{C9BEBA92-44F0-48F8-A989-2293F1A4ADE5}</ProjectGuid>
+    <ProjectTypeGuids>{E3E379DF-F4C6-4180-9B81-6769533ABE47};{349c5851-65df-11da-9384-00065b846f21};{fae04ec0-301f-11d3-bf4b-00c04f79efbc}</ProjectTypeGuids>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>Pfizer</RootNamespace>
+    <AssemblyName>Pfizer</AssemblyName>
+    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+    <MvcBuildViews>false</MvcBuildViews>
+    <UseIISExpress>true</UseIISExpress>
+    <IISExpressSSLPort />
+    <IISExpressAnonymousAuthentication />
+    <IISExpressWindowsAuthentication />
+    <IISExpressUseClassicPipelineMode />
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Compile Include="Controllers\AdminSettingController.cs" />
+    <Compile Include="Controllers\ContentController.cs" />
+    <Compile Include="Controllers\GeneralMasterController.cs" />
+    <Compile Include="Controllers\HomeController.cs" />
+    <Compile Include="Controllers\ManageGeographyController.cs" />
+    <Compile Include="Controllers\ManageProductsController.cs" />
+    <Compile Include="Controllers\ManageUsersController.cs" />
+    <Compile Include="Controllers\MastersController.cs" />
+    <Compile Include="Controllers\OtherMastersController.cs" />
+    <Compile Include="Global.asax.cs">
+      <DependentUpon>Global.asax</DependentUpon>
+    </Compile>
+    <Compile Include="Properties\AssemblyInfo.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="App_Start\FilterConfig.cs" />
+    <Compile Include="App_Start\RouteConfig.cs" />
+    <Compile Include="App_Start\WebApiConfig.cs" />
+    <Content Include="Content\css\accord_style.css" />
+    <Content Include="Content\css\flipcountdown.css" />
+    <Content Include="Content\css\reset.css" />
+    <Content Include="Content\css\style.css" />
+    <Content Include="Content\custom.js\Validation.js" />
+    <Content Include="Content\dashboard.html" />
+    <Content Include="Content\Grid\css\jquery-ui-1.9.2.custom.css" />
+    <Content Include="Content\Grid\css\jquery-ui.css" />
+    <Content Include="Content\Grid\css\ui.jqgrid.css" />
+    <Content Include="Content\Grid\css\images\ui-bg_diagonals-thick_18_b81900_40x40.png" />
+    <Content Include="Content\Grid\css\images\ui-bg_diagonals-thick_20_666666_40x40.png" />
+    <Content Include="Content\Grid\css\images\ui-bg_flat_10_000000_40x100.png" />
+    <Content Include="Content\Grid\css\images\ui-bg_glass_100_f6f6f6_1x400.png" />
+    <Content Include="Content\Grid\css\images\ui-bg_glass_100_fdf5ce_1x400.png" />
+    <Content Include="Content\Grid\css\images\ui-bg_glass_65_ffffff_1x400.png" />
+    <Content Include="Content\Grid\css\images\ui-bg_gloss-wave_35_f6a828_500x100.png" />
+    <Content Include="Content\Grid\css\images\ui-bg_highlight-soft_100_eeeeee_1x100.png" />
+    <Content Include="Content\Grid\css\images\ui-bg_highlight-soft_75_ffe45c_1x100.png" />
+    <Content Include="Content\Grid\css\images\ui-icons_222222_256x240.png" />
+    <Content Include="Content\Grid\css\images\ui-icons_228ef1_256x240.png" />
+    <Content Include="Content\Grid\css\images\ui-icons_ef8c08_256x240.png" />
+    <Content Include="Content\Grid\css\images\ui-icons_ffd27a_256x240.png" />
+    <Content Include="Content\Grid\css\images\ui-icons_ffffff_256x240.png" />
+    <Content Include="Content\Grid\js\grid.locale-en.js" />
+    <Content Include="Content\Grid\js\jquery-1.11.0.min.js" />
+    <Content Include="Content\Grid\js\jquery-1.9.0.min.js" />
+    <Content Include="Content\Grid\js\jquery.jqGrid.src.js" />
+    <Content Include="Content\Grid\js\jquery.js" />
+    <Content Include="Content\Grid\js\multiselectfilter.js" />
+    <Content Include="Content\images\add.png" />
+    <Content Include="Content\images\alert.png" />
+    <Content Include="Content\images\answer_textbox_bg.jpg" />
+    <Content Include="Content\images\arrow.png" />
+    <Content Include="Content\images\arrow2.png" />
+    <Content Include="Content\images\arrow_left.jpg" />
+    <Content Include="Content\images\arrow_left_plus.jpg" />
+    <Content Include="Content\images\arrow_right.jpg" />
+    <Content Include="Content\images\arrow_right_plus.jpg" />
+    <Content Include="Content\images\awards.png" />
+    <Content Include="Content\images\banner_img.jpg" />
+    <Content Include="Content\images\blue_btn.jpg" />
+    <Content Include="Content\images\blue_btn2.jpg" />
+    <Content Include="Content\images\blue_btn2_h.jpg" />
+    <Content Include="Content\images\blue_btn_h.jpg" />
+    <Content Include="Content\images\calendar.png" />
+    <Content Include="Content\images\change_password.png" />
+    <Content Include="Content\images\close.png" />
+    <Content Include="Content\images\cloud.png" />
+    <Content Include="Content\images\digit-sm.png" />
+    <Content Include="Content\images\divider.jpg" />
+    <Content Include="Content\images\download.png" />
+    <Content Include="Content\images\entrust.png" />
+    <Content Include="Content\images\error_bottombg.jpg" />
+    <Content Include="Content\images\expand.png" />
+    <Content Include="Content\images\fs-selecter-arrow.png" />
+    <Content Include="Content\images\general_tips.png" />
+    <Content Include="Content\images\grey_btn.jpg" />
+    <Content Include="Content\images\grey_btn_h.jpg" />
+    <Content Include="Content\images\industry.png" />
+    <Content Include="Content\images\info_bank.png" />
+    <Content Include="Content\images\inpage_logo.jpg" />
+    <Content Include="Content\images\login_bodybg.jpg" />
+    <Content Include="Content\images\login_mainbg.jpg" />
+    <Content Include="Content\images\menu_head_active.jpg" />
+    <Content Include="Content\images\menu_head_bg.jpg" />
+    <Content Include="Content\images\menu_spacer.jpg" />
+    <Content Include="Content\images\menu_spacer_last.jpg" />
+    <Content Include="Content\images\minimize.png" />
+    <Content Include="Content\images\navigation_arrow.png" />
+    <Content Include="Content\images\navigation_arrow_h.png" />
+    <Content Include="Content\images\nav_bg.jpg" />
+    <Content Include="Content\images\news&amp;announce.png" />
+    <Content Include="Content\images\news.png" />
+    <Content Include="Content\images\notification.png" />
+    <Content Include="Content\images\optilearn.png" />
+    <Content Include="Content\images\optima.jpg" />
+    <Content Include="Content\images\optima2.jpg" />
+    <Content Include="Content\images\Optimail.png" />
+    <Content Include="Content\images\page_not_found.png" />
+    <Content Include="Content\images\pfizer.png" />
+    <Content Include="Content\images\poll.png" />
+    <Content Include="Content\images\reminders.png" />
+    <Content Include="Content\images\remove.png" />
+    <Content Include="Content\images\search_mainbg.jpg" />
+    <Content Include="Content\images\select_bg.jpg" />
+    <Content Include="Content\images\slide_arrow.png" />
+    <Content Include="Content\images\success.png" />
+    <Content Include="Content\images\tbl_headingbg.jpg" />
+    <Content Include="Content\images\textbox_bg.jpg" />
+    <Content Include="Content\images\website-maintenance.jpg" />
+    <Content Include="Content\innerpage.html" />
+    <Content Include="Content\innerpage_components.html" />
+    <Content Include="Content\js\ajaxfileupload.js" />
+    <Content Include="Content\js\ddaccordion.js" />
+    <Content Include="Content\js\jquery-1.8.2.min.js" />
+    <Content Include="Content\js\jquery-ui-1.10.4.js" />
+    <Content Include="Content\js\jquery-ui-1.8.24.min.js" />
+    <Content Include="Content\js\jquery-ui.min.js" />
+    <Content Include="Content\js\jquery.flipcountdown.js" />
+    <Content Include="Content\js\jquery.flipcountdownold.js" />
+    <Content Include="Content\js\jquery.js" />
+    <Content Include="Content\js\jquery.layout.js" />
+    <Content Include="Content\js\jquery.layoutold.js" />
+    <Content Include="Content\js\jquery.mb.browser.js" />
+    <Content Include="Content\js\jquery.min.js" />
+    <Content Include="Content\js\jquery.ui.all.js" />
+    <Content Include="Content\js\PIE.htc" />
+    <Content Include="Content\login.html" />
+    <Content Include="Content\Popup\jquery-ui.css" />
+    <Content Include="Global.asax" />
+    <Content Include="maintenance.html" />
+    <Content Include="Web.config" />
+    <Content Include="Web.Debug.config">
+      <DependentUpon>Web.config</DependentUpon>
+    </Content>
+    <Content Include="Web.Release.config">
+      <DependentUpon>Web.config</DependentUpon>
+    </Content>
+    <Content Include="Views\Web.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="App_Data\" />
+    <Folder Include="PDF\" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Views\Shared\MasterLayout.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Views\Shared\MenuBuilder.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Views\Home\AlertPopUp.cshtml" />
+    <Content Include="Views\Home\ForgetPassword.cshtml" />
+    <Content Include="Views\Home\Login.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Views\Home\Welcome.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Views\Shared\LoadYear.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Views\Shared\ForgetPassword.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Views\Shared\TermsofUse.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Views\AdminSetting\SettingMaster.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Views\AdminSetting\PV_SettingType.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Views\AdminSetting\UserQuestionLink.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Views\GeneralMaster\CampObjective.cshtml" />
+    <Content Include="Views\GeneralMaster\CamType.cshtml" />
+    <Content Include="Views\GeneralMaster\ConfTypeMaster.cshtml" />
+    <Content Include="Views\GeneralMaster\CoreMeetingObjective.cshtml" />
+    <Content Include="Views\GeneralMaster\EvaluationMaster.cshtml" />
+    <Content Include="Views\GeneralMaster\GroupMeetingObjective.cshtml" />
+    <Content Include="Views\GeneralMaster\LeaveTypeMaster.cshtml" />
+    <Content Include="Views\GeneralMaster\ObjectiveMaster.cshtml" />
+    <Content Include="Views\GeneralMaster\QualificationMaster.cshtml" />
+    <Content Include="Views\GeneralMaster\SeminarObjective.cshtml" />
+    <Content Include="Views\GeneralMaster\StallObjective.cshtml" />
+    <Content Include="Views\GeneralMaster\StrategicPlanningMaster.cshtml" />
+    <Content Include="Views\GeneralMaster\TailoredExecutionMaster.cshtml" />
+    <Content Include="Views\GeneralMaster\UsefulLinks.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Views\Shared\NodeTypeMaster.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Views\AdminSetting\CycleDefinitionMaster.cshtml" />
+    <Content Include="Views\AdminSetting\CycleSettingMaster.cshtml" />
+    <Content Include="Views\AdminSetting\LockUserDetails.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Views\Home\Error.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Views\Shared\ErrorLayout.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Views\AdminSetting\RelocateMenu.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Views\TemplateView.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Views\OtherMasters\QuestionMaster.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Views\OtherMasters\SpecializationMaster.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Views\OtherMasters\RatingMaster.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Views\OtherMasters\InputMaster.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Views\OtherMasters\RBMFTMLinkMaster.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Views\OtherMasters\PVLoadIBIS.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Views\AdminSetting\ActivityMaster.cshtml" />
+    <Content Include="Views\AdminSetting\SettingMasterTeamWise.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Views\ManageGeography\BrickMaster.cshtml" />
+    <Content Include="Views\ManageGeography\CityMaster.cshtml" />
+    <Content Include="Views\ManageGeography\DistrictMaster.cshtml" />
+    <Content Include="Views\ManageGeography\DivisionMaster.cshtml" />
+    <Content Include="Views\ManageGeography\PVLoadCityMaster.cshtml" />
+    <Content Include="Views\ManageGeography\RegionMaster.cshtml" />
+    <Content Include="Views\ManageGeography\TerritoryMaster.cshtml" />
+    <Content Include="Views\ManageProducts\PVProductGroup.cshtml" />
+    <Content Include="Views\Masters\HospitalMaster.cshtml" />
+    <Content Include="Views\Masters\PVMasters.cshtml" />
+    <Content Include="Views\Masters\StockiestMaster.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Views\Content\InfoCategory.cshtml" />
+    <Content Include="Views\Content\NotificationMaster.cshtml" />
+    <Content Include="Views\Content\SubCategory.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Views\ManageProducts\FormMaster.cshtml" />
+    <Content Include="Views\ManageProducts\Molecule.cshtml" />
+    <Content Include="Views\ManageProducts\ProductGroup.cshtml" />
+    <Content Include="Views\ManageProducts\ProductMolecule.cshtml" />
+    <Content Include="Views\ManageProducts\ProductType.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Views\Home\UnderConstruction.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Views\Content\OpinionPoll.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Views\Content\PVLoadDivision.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Views\Content\PVLoadNode.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Views\AdminSetting\SampleInputReconcileSettings.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Views\AdminSetting\PVLoadReconcileTeam.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Views\Masters\CyclePlanDoctorUnlock.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Views\ManageGeography\TeamRegionLink.cshtml" />
+    <Content Include="Views\ManageGeography\TerritoryHQLink.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Views\ManageGeography\PVSelectedDDL.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Views\ManageProducts\ProductDetailingMatrix.cshtml" />
+    <Content Include="Views\ManageProducts\PVMPSelectedDDL.cshtml" />
+    <Content Include="Views\ManageProducts\SampleAcknowledgement.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Views\ManageProducts\ProductMaster.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Views\Masters\CFSAMaster.cshtml" />
+    <Content Include="Views\Masters\ChemistMasterAdmin.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Views\OtherMasters\InputAcknowledgement.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Views\GeneralMaster\FAQ.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Views\Content\InfoBankUpLoad.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Views\ManageGeography\DistrictTerritoryLink.cshtml" />
+    <Content Include="Views\ManageGeography\RegionDistrictLink.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Views\OtherMasters\InputProductLinkMaster.cshtml" />
+    <Content Include="Views\OtherMasters\InputTeamLink.cshtml" />
+    <Content Include="Views\OtherMasters\TeamReminderLinkMaster.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Views\Masters\PCLtoMCLRequest.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Views\Content\PVLoadBankDivision.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Views\ManageGeography\PVRegionDistrictLink.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Views\ManageGeography\PVDistrictTerritoryLink.cshtml" />
+    <Content Include="Views\ManageGeography\PVTerBrickLinkChaCityName.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Views\OtherMasters\PVInputTeamLink.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Views\OtherMasters\PVProductLink.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Views\ManageProducts\ProductMoleculeLinkMaster.cshtml" />
+    <Content Include="Views\ManageProducts\PVProductMoleculeLinkMaster.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Views\Content\FAQ.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Views\ManageGeography\PVTerritoryBrickLinks.cshtml" />
+    <Content Include="Views\ManageGeography\TerritoryBrickLinkMaster.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Views\ManageGeography\PVGetTerritoryDivision.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Views\ManageUsers\CreateUser.cshtml" />
+    <Content Include="Views\ManageUsers\DesignationMaster.cshtml" />
+    <Content Include="Views\ManageUsers\EmployeeMaster.cshtml" />
+    <Content Include="Views\ManageUsers\HolidayGroup.cshtml" />
+    <Content Include="Views\ManageUsers\HolidayGrouplink.cshtml" />
+    <Content Include="Views\ManageUsers\HolidayGroupTerritory.cshtml" />
+    <Content Include="Views\ManageUsers\HolidayMaster.cshtml" />
+    <Content Include="Views\ManageUsers\LocationMaster.cshtml" />
+    <Content Include="Views\ManageUsers\Nodetype.cshtml" />
+    <Content Include="Views\ManageUsers\Nodetypemaster.cshtml" />
+    <Content Include="Views\ManageUsers\PVEmpMaster.cshtml" />
+    <Content Include="Views\ManageUsers\PVHolidayGroup.cshtml" />
+    <Content Include="Views\ManageUsers\PVLoadHolidayTeritory.cshtml" />
+    <Content Include="Views\ManageUsers\PVLoadNodeType.cshtml" />
+    <Content Include="Views\ManageUsers\PVLoadReportValue.cshtml" />
+    <Content Include="Views\ManageUsers\PVLoadRoleMaster.cshtml" />
+    <Content Include="Views\ManageUsers\PVUserTeamLink.cshtml" />
+    <Content Include="Views\ManageUsers\RoleMaster.cshtml" />
+    <Content Include="Views\ManageUsers\RoleTypeMaster.cshtml" />
+    <Content Include="Views\ManageUsers\SalesHierarchy.cshtml" />
+    <Content Include="Views\ManageUsers\Teammaster.cshtml" />
+    <Content Include="Views\ManageUsers\UserTeamLink.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Views\Masters\PVHospitalMaster.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Views\OtherMasters\PVFirstLoadspecial.cshtml" />
+    <Content Include="Views\OtherMasters\PVLoadspecial.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Views\Masters\PVCityCodeMaster.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Views\ManageUsers\PVUserTeam.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\PfizerEntity\PfizerEntity.csproj">
+      <Project>{d7c47dcf-cfa1-4497-ba68-6719a54df34c}</Project>
+      <Name>PfizerEntity</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\SifyGrid\SifyGrid.csproj">
+      <Project>{8b02f544-c4d0-4120-834e-3df5087514da}</Project>
+      <Name>SifyGrid</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Reference Include="EntityFramework, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\EntityFramework.6.1.1\lib\net45\EntityFramework.dll</HintPath>
+    </Reference>
+    <Reference Include="EntityFramework.SqlServer, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\EntityFramework.6.1.1\lib\net45\EntityFramework.SqlServer.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="Newtonsoft.Json, Version=6.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\Newtonsoft.Json.6.0.3\lib\net45\Newtonsoft.Json.dll</HintPath>
+    </Reference>
+    <Reference Include="Sify, Version=1.0.2706.19145, Culture=neutral">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\library\Sify.dll</HintPath>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.ComponentModel.DataAnnotations" />
+    <Reference Include="System.Configuration" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Data.Linq" />
+    <Reference Include="System.Net.Http" />
+    <Reference Include="System.Net.Http.Formatting, Version=5.2.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\Microsoft.AspNet.WebApi.Client.5.2.0\lib\net45\System.Net.Http.Formatting.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Web" />
+    <Reference Include="System.Web.Extensions" />
+    <Reference Include="System.Web.Helpers, Version=2.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <Private>True</Private>
+      <HintPath>..\packages\Microsoft.AspNet.WebPages.2.0.30506.0\lib\net40\System.Web.Helpers.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Web.Http, Version=5.2.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\Microsoft.AspNet.WebApi.Core.5.2.0\lib\net45\System.Web.Http.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Web.Http.WebHost, Version=5.2.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\Microsoft.AspNet.WebApi.WebHost.5.2.0\lib\net45\System.Web.Http.WebHost.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Web.Mvc, Version=4.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <Private>True</Private>
+      <HintPath>..\packages\Microsoft.AspNet.Mvc.4.0.30506.0\lib\net40\System.Web.Mvc.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Web.Mvc.Extensions, Version=1.0.9.0, Culture=neutral, PublicKeyToken=17e35335fc9f8fc8, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\System.Web.Mvc.Extensions.Mvc.4.1.0.9\lib\net40\System.Web.Mvc.Extensions.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Web.Razor, Version=2.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <Private>True</Private>
+      <HintPath>..\packages\Microsoft.AspNet.Razor.2.0.30506.0\lib\net40\System.Web.Razor.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Web.WebPages, Version=2.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <Private>True</Private>
+      <HintPath>..\packages\Microsoft.AspNet.WebPages.2.0.30506.0\lib\net40\System.Web.WebPages.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Web.WebPages.Deployment, Version=2.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <Private>True</Private>
+      <HintPath>..\packages\Microsoft.AspNet.WebPages.2.0.30506.0\lib\net40\System.Web.WebPages.Deployment.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Web.WebPages.Razor, Version=2.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <Private>True</Private>
+      <HintPath>..\packages\Microsoft.AspNet.WebPages.2.0.30506.0\lib\net40\System.Web.WebPages.Razor.dll</HintPath>
+    </Reference>
+    <Reference Include="System.XML" />
+    <Reference Include="System.Xml.Linq" />
+  </ItemGroup>
+  <PropertyGroup>
+    <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>
+    <VSToolsPath Condition="'$(VSToolsPath)' == ''">$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)</VSToolsPath>
+  </PropertyGroup>
+  <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
+  <Import Project="$(VSToolsPath)\WebApplications\Microsoft.WebApplication.targets" Condition="'$(VSToolsPath)' != ''" />
+  <Import Project="$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v10.0\WebApplications\Microsoft.WebApplication.targets" Condition="false" />
+  <Target Name="MvcBuildViews" AfterTargets="AfterBuild" Condition="'$(MvcBuildViews)'=='true'">
+    <AspNetCompiler VirtualPath="temp" PhysicalPath="$(WebProjectOutputDir)" />
+  </Target>
+  <ProjectExtensions>
+    <VisualStudio>
+      <FlavorProperties GUID="{349c5851-65df-11da-9384-00065b846f21}">
+        <WebProjectProperties>
+          <UseIIS>True</UseIIS>
+          <AutoAssignPort>True</AutoAssignPort>
+          <DevelopmentServerPort>49368</DevelopmentServerPort>
+          <DevelopmentServerVPath>/</DevelopmentServerVPath>
+          <IISUrl>http://localhost:50045/</IISUrl>
+          <NTLMAuthentication>False</NTLMAuthentication>
+          <UseCustomServer>False</UseCustomServer>
+          <CustomServerUrl>
+          </CustomServerUrl>
+          <SaveServerSettingsInUserFile>False</SaveServerSettingsInUserFile>
+        </WebProjectProperties>
+      </FlavorProperties>
+    </VisualStudio>
+  </ProjectExtensions>
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target> -->
+</Project>

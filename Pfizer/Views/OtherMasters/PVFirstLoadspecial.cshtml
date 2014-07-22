@@ -1,0 +1,14 @@
+﻿@model Dictionary<int, string>
+
+
+@if (ViewBag.Type == "Loadspecial")
+{
+    <select id="InputName">
+        <option value="0">Select</option>
+
+        @foreach (KeyValuePair<int, string> value in Model)
+        {
+            <option value='@value.Key.ToString()'>@value.Value</option>
+        }
+    </select>
+}

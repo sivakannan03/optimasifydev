@@ -1,0 +1,17 @@
+F:\28-04-14(12pm)\Pfizer\SifyGrid\bin\Debug\SifyGrid.dll
+F:\28-04-14(12pm)\Pfizer\SifyGrid\bin\Debug\SifyGrid.pdb
+F:\28-04-14(12pm)\Pfizer\SifyGrid\obj\Debug\SifyGrid.dll
+F:\28-04-14(12pm)\Pfizer\SifyGrid\obj\Debug\SifyGrid.pdb
+F:\30-04-14\Pfizer\SifyGrid\bin\Debug\SifyGrid.dll
+F:\30-04-14\Pfizer\SifyGrid\bin\Debug\SifyGrid.pdb
+F:\30-04-14\Pfizer\SifyGrid\obj\Debug\SifyGrid.dll
+F:\30-04-14\Pfizer\SifyGrid\obj\Debug\SifyGrid.pdb
+F:\30-04-14\Pfizer\SifyGrid\obj\Debug\SifyGrid.csprojResolveAssemblyReference.cache
+E:\Live\Pfizer26Jun2014\Pfizer\SifyGrid\bin\Debug\SifyGrid.dll
+E:\Live\Pfizer26Jun2014\Pfizer\SifyGrid\bin\Debug\SifyGrid.pdb
+E:\Live\Pfizer26Jun2014\Pfizer\SifyGrid\obj\Debug\SifyGrid.dll
+E:\Live\Pfizer26Jun2014\Pfizer\SifyGrid\obj\Debug\SifyGrid.pdb
+E:\OptimaUpgrade\Optima-Upgrade\OptimaIndia\SifyGrid\bin\Debug\SifyGrid.dll
+E:\OptimaUpgrade\Optima-Upgrade\OptimaIndia\SifyGrid\bin\Debug\SifyGrid.pdb
+E:\OptimaUpgrade\Optima-Upgrade\OptimaIndia\SifyGrid\obj\Debug\SifyGrid.dll
+E:\OptimaUpgrade\Optima-Upgrade\OptimaIndia\SifyGrid\obj\Debug\SifyGrid.pdb

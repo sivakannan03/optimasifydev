@@ -1,0 +1,426 @@
+﻿@{
+    ViewBag.Title = "UsefulLinks";
+    Layout = "~/Views/Shared/MasterLayout.cshtml";
+}
+
+
+
+
+<body>
+    @using (Html.BeginForm(FormMethod.Post))
+    {
+        <div>
+            <table border="0" style="width: 100%">
+                <tr>
+                    <td>
+                        <!--JqGrid Starts-->
+                        <table style="margin-top: 7px; width :100%" border="0">
+                            <tr>
+                                <td>
+                                    <table id="ajaxGrid" style="width: 100%" border="0"></table>
+                                    <div id="ajaxGridPager">
+                                    </div>
+                                </td>
+                            </tr>
+                        </table>
+                        <!--Ends-->
+                    </td>
+                </tr>
+            </table>
+            <input type="hidden" id="hdnFkId" name="hdnFkId" value="@Session["generalfkid"]" />
+        </div>
+    }
+</body>
+
+<script type="text/javascript">
+
+    jQuery(document).ready(function () {
+
+        initGrid();
+    });
+    function validSpecial(objElement) {
+
+        var re = /^[a-zA-Z0-9-/\s.:]*/gi;
+        if (objElement.value.match(re) != objElement.value) {
+            alert('No Special Characters Allowed');
+            objElement.value = '';
+
+            return false;
+        }
+
+    }
+
+    function initGrid() {
+        jQuery("#ajaxGrid").jqGrid({
+            url: '@Url.Action("UsefullinkGridData")?fkId=' + jQuery("#hdnFkId").val(),
+
+            datatype: "json",
+            jsonReader: { repeatitems: false, id: "PKID" },
+            colNames: ['PKID', 'Table Type', 'Code', 'Name', 'Status'],
+            colModel: [
+                 { name: 'PKID', index: 'PKID', align: 'left', hidden: true, editable: true },
+                {
+                    name: 'TableName', index: 'TableName', align: 'left', editable: true, editoptions: { defaultValue: '@ViewData["TableName"]', readonly: "readonly" }, formoptions: {
+                        size: 35,
+                        elmprefix: "<span style='align:left;color:red'>*</span>&nbsp;"
+                    }, searchoptions: { sopt: ['eq', 'bw', 'ew', 'cn'] }, search: false
+                },
+                 {
+                     name: 'GenCode', index: 'GenCode', align: 'left', hidden: true, editable: true, editrules: { edithidden: true, required: false }, editoptions: {
+                         size: 35,
+                         maxlength: 10,
+                         dataEvents: [
+                             {
+                                 type: 'keyup', // blur
+                                 fn: function (e) {
+                                     validSpecial(this);
+                                 }
+                             }
+                         ]
+                     }, formoptions: {
+                         elmprefix: "<span style='align:left;color:red'>*</span>&nbsp;"
+                     }, search: false
+                 },
+                {
+                    name: 'GenName', index: 'GenName', align: 'left', resizable: false, editable: true, editrules: { edithidden: true, required: false }, searchoptions: { sopt: ['eq', 'bw', 'ew', 'cn'] }, editoptions: {
+                        size: 35,
+                                             
+                    }, formoptions: {
+                        elmprefix: "<span style='align:left;color:red'>*</span>&nbsp;"
+                    }, search: true, searchrules: { required: true }
+                },
+                {
+                    name: 'IsActive', index: 'IsActive', align: 'left', resizable: false, editable: true, edittype: 'checkbox',  searchoptions: { sopt: ['eq', 'bw', 'ew', 'cn'] }, formoptions: {
+                        elmprefix: "&nbsp;&nbsp;&nbsp;"
+
+                    }, search: false
+                },
+
+            ],
+            caption: "UseFull Links",
+            autowidth: true,
+            gridview: true,
+            sortable: true,
+            hidegrid: true,
+            altRows: true,
+            
+            rowTotal: 10,
+            rowNum: 10,
+            viewrecords: true,
+            pager: $('#ajaxGridPager'),
+            height: 'auto',
+            editable: true,
+          
+            gridComplete: function () {
+                                              
+                var ids = jQuery("#ajaxGrid").jqGrid('getDataIDs');
+
+
+                for (var i = 0; i < ids.length; i++) {
+
+                    var col0 = jQuery('#ajaxGrid').jqGrid('getCell', ids[i], 3);
+                    pop2 = "<a href='" + col0 + "', style='cursor:pointer;color:#2f72c3;font-size: 12px;text-decoration:underline;font: normal 12px Arial, Helvetica, sans-serif;font-weight: bold;' target='blank'>" + col0 + "</a>";
+                    jQuery("#ajaxGrid").jqGrid('setRowData', ids[i], { GenName: pop2 });
+                }
+                   
+                      
+                if (jQuery("#ajaxGrid").getGridParam("records") == 0)
+                {
+                    jQuery("#ajaxGrid").addRowData(
+                        "blankRow", { "GenName": "No records to view" });
+                }
+                   
+
+                          
+            },
+            editurl: '@Url.Action("EditUsefullink")?fkId=' + jQuery("#hdnFkId").val(),
+        });
+
+
+
+       
+
+        jQuery("#ajaxGrid").jqGrid('navGrid', '#ajaxGridPager', { edit: true, add: true, del: true, search: true },
+            {
+                // Edit Portion
+                closeOnEscape: true,
+                width: 600,
+                recreateForm: true,
+                modal: true,
+                checkOnSubmit: true,
+
+                afterShowForm: function (form_id) {
+                    var thisForm = form_id.selector.replace('FrmGrid_', 'editmod')
+                    var dialogHeight = $(thisForm).height();
+                    var dialogWidth = $(thisForm).width();
+                    var windowHeight = $(window).height();
+                    var windowWidth = $(window).width();
+                    $(thisForm).css('position', 'fixed');
+                    $(thisForm).css('top', ((windowHeight - dialogHeight) / 2));
+                    $(thisForm).css('left', ((windowWidth - dialogWidth) / 2));
+                },
+                
+                beforeShowForm: function (form) {
+                    autoencode: true,
+                    $("#GenName").val();
+                   
+                },
+
+                beforeSubmit: function (response, postdata) {
+
+                    if ($("#GenCode").val().charAt(0) == ' ' || $("#GenCode").val().charAt($("#GenCode").val().length - 1) == ' ') {
+                        $('#TblGrid_ajaxGrid td.ui-state-highlight').removeClass('ui-state-highlight').addClass('ui-state-error');
+                        $("#GenCode").css("background-color", "#FFE8E8").css("border", "1px solid #FF6666");
+                        $('#GenCode').focus();
+                        return [false, 'Enter Valid GenCode'];
+                    }
+
+                    if ($("#GenName").val().charAt(0) == ' ' || $("#GenName").val().charAt($("#GenName").val().length - 1) == ' ') {
+                        $('#TblGrid_ajaxGrid td.ui-state-highlight').removeClass('ui-state-highlight').addClass('ui-state-error');
+                        $("#GenName").css("background-color", "#FFE8E8").css("border", "1px solid #FF6666");
+                        $('#GenName').focus();
+                        return [false, 'Enter Valid GenName'];
+                    }
+
+                    $('select').css("border", "1px solid #C0C0C0");
+                    $("input[type=text]").css("border", "1px solid #C0C0C0");
+                    var error = " ";
+                    if ($.trim($("#TableName").val()) == "") {
+                        error += "TableName";
+                        $('#FormError').html("<td class='ui-state-error' colspan='2'>" + error + ":Field is required</td>");
+                        $("#TableName").val();
+                        $('#TableName').focus();
+                        $("#TableName").css("background-color", "#FFE8E8").css("border", "1px solid #FF6666");
+                        return [false, response.responseText];
+                    }
+                    else if ($.trim($("#GenCode").val()) == "") {
+                        error += "GenCode";
+                        $('#FormError').html("<td class='ui-state-error' colspan='2'>" + error + ":Field is required</td>");
+                        $("#GenCode").val('');
+                        $('#GenCode').focus();
+                        $("#GenCode").css("background-color", "#FFE8E8").css("border", "1px solid #FF6666");
+                        return [false, response.responseText];
+                    }
+
+                    else if ($.trim($("#GenName").val()) == "") {
+                        error += "GenName";
+                        $('#FormError').html("<td class='ui-state-error' colspan='2'>" + error + ":Field is required</td>");
+                        $("#GenName").val('');
+                        $('#GenName').focus();
+                        $("#GenName").css("background-color", "#FFE8E8").css("border", "1px solid #FF6666");
+                        return [false, response.responseText];
+                    }
+                    else {
+                        return [true, response.responseText];
+                    }
+
+                },
+               
+                afterSubmit: function (response, postdata) {
+                    
+                    $("#ajaxGrid").jqGrid('setGridParam', { datatype: 'json' }).trigger('reloadGrid');
+                    //$("input[type=text]").val('');
+                    $("#GenCode").val('');
+                    $("#GenName").val('');
+                    $("#IsActive").prop('checked', false);
+                    return [false, response.responseText];
+                },
+            },
+
+        {
+            //Add Portion
+            closeOnEscape: true,
+            closeAfterAdd: true,
+            modal: true,
+            recreateForm: true,
+            width: 450,
+            afterShowForm: function (form_id) {
+                var thisForm = form_id.selector.replace('FrmGrid_', 'editmod');
+                var dialogHeight = $(thisForm).height();
+                var dialogWidth = $(thisForm).width();
+                var windowHeight = $(window).height();
+                var windowWidth = $(window).width();
+                $(thisForm).css('position', 'fixed');
+                $(thisForm).css('top', ((windowHeight - dialogHeight) / 2));
+                $(thisForm).css('left', ((windowWidth - dialogWidth) / 2));
+            },
+            beforeShowForm: function (form) {
+                $('#tr_IsActive', form).hide();
+            },
+            beforeSubmit: function (response, postdata) {
+
+                if ($("#GenCode").val().charAt(0) == ' ' || $("#GenCode").val().charAt($("#GenCode").val().length - 1) == ' ') {
+                    $('#TblGrid_ajaxGrid td.ui-state-highlight').removeClass('ui-state-highlight').addClass('ui-state-error');
+                    $("#GenCode").css("background-color", "#FFE8E8").css("border", "1px solid #FF6666");
+                    $('#GenCode').focus();
+                    return [false, 'Enter Valid GenCode'];
+                }
+
+                if ($("#GenName").val().charAt(0) == ' ' || $("#GenName").val().charAt($("#GenName").val().length - 1) == ' ') {
+                    $('#TblGrid_ajaxGrid td.ui-state-highlight').removeClass('ui-state-highlight').addClass('ui-state-error');
+                    $("#GenName").css("background-color", "#FFE8E8").css("border", "1px solid #FF6666");
+                    $('#GenName').focus();
+                    return [false, 'Enter Valid GenName'];
+                }
+
+                $('select').css("border", "1px solid #C0C0C0");
+                $("input[type=text]").css("border", "1px solid #C0C0C0");
+                var error = " ";
+                if ($.trim($("#TableName").val()) == "") {
+                    error += "TableName";
+                    $('#FormError').html("<td class='ui-state-error' colspan='2'>" + error + ":Field is required</td>");
+                    $("#TableName").val();
+                    $('#TableName').focus();
+                    $("#TableName").css("background-color", "#FFE8E8").css("border", "1px solid #FF6666");
+                    return [false, response.responseText];
+                }
+                else if ($.trim($("#GenCode").val()) == "") {
+                    error += "GenCode";
+                    $('#FormError').html("<td class='ui-state-error' colspan='2'>" + error + ":Field is required</td>");
+                    $("#GenCode").val('');
+                    $('#GenCode').focus();
+                    $("#GenCode").css("background-color", "#FFE8E8").css("border", "1px solid #FF6666");
+                    return [false, response.responseText];
+                }
+
+                else if ($.trim($("#GenName").val()) == "") {
+                    error += "GenName";
+                    $('#FormError').html("<td class='ui-state-error' colspan='2'>" + error + ":Field is required</td>");
+                    $("#GenName").val('');
+                    $('#GenName').focus();
+                    $("#GenName").css("background-color", "#FFE8E8").css("border", "1px solid #FF6666");
+                    return [false, response.responseText];
+                }
+                else {
+                    return [true, response.responseText];
+                }
+                return [true, ''];
+            },
+            afterSubmit: function (response, postdata) {
+
+                if (response.responseText == "already Exists") {
+                    return [false, response.responseText];
+                }
+                else {
+                    $("#ajaxGrid").jqGrid('setGridParam', { datatype: 'json' }).trigger('reloadGrid');
+                    // $("input[type=text]").val('');
+                    $("#GenCode").val('');
+                    $("#GenName").val('');
+                    $("#IsActive").prop('checked', false);
+                    return [false, response.responseText];
+                }
+
+            }
+        },
+                {
+                    //Delete
+                    closeOnEscape: true,
+                    recreateForm: true,
+                    modal: true,
+                    width: 450,
+                    beforeShowForm: function (form) {
+
+                        //POP UP Screen Fit Screen
+
+                        var thisForm = $("#delmod" + jQuery("#ajaxGrid")[0].id);
+                        var dialogHeight = $(thisForm).height();
+                        var dialogWidth = $(thisForm).width();
+                        var windowHeight = $(window).height();
+                        var windowWidth = $(window).width();
+                        $(thisForm).css('position', 'fixed');
+                        $(thisForm).css('top', ((windowHeight - dialogHeight) / 2));
+                        $(thisForm).css('left', ((windowWidth - dialogWidth) / 2));
+
+
+                        var col1 = $('#ajaxGrid').jqGrid('getGridParam', 'selrow');
+                        $('tr td.delmsg').html('Delete selected record(s)?');
+
+                        $('#ajaxGrid').jqGrid('getGridParam', 'selrow');
+                        var IsActive = $('#ajaxGrid').jqGrid('getCell', col1, 'IsActive');
+                        if (IsActive == "Inactive") {
+                            $('tr td.delmsg').html('Record Already Deleted');
+                            $('#dData').hide();
+                        }
+                        else
+                            $('#dData').show();
+
+                        //var TableName = $('#ajaxGrid').jqGrid('getCell', col1, 'TableName');
+                        //var GenCode = $('#ajaxGrid').jqGrid('getCell', col1, 'GenCode');
+                        //var GenName = $('#ajaxGrid').jqGrid('getCell', col1, 'GenName');
+                        //var IsActive = $('#ajaxGrid').jqGrid('getCell', col1, 'IsActive');
+
+                        //var html = "<form><table><tr><td class='CaptionTD'>Table Type </td><td class=='DataTD'>&nbsp;&nbsp;<input type='text' class='FormElement ui-widget-content ui-corner-all' readonly='true'  value='" + TableName + "'/></td> </tr>";
+                        //html += "<tr><td class='CaptionTD'>Code</td><td class=='DataTD'>&nbsp;&nbsp;<input type='text' class='FormElement ui-widget-content ui-corner-all' readonly='true'  value='" + GenCode + "'/></td></tr>";
+                        //html += "<tr><td class='CaptionTD'>Name</td><td class=='DataTD'>&nbsp;&nbsp;<input type='text' class='FormElement ui-widget-content ui-corner-all' readonly='true'  value='" + GenName + "'/></td></tr>";
+                        //if (IsActive == "Active")
+                        //    html += "<tr><td class='CaptionTD'>Status</td><td class=='DataTD'>&nbsp;&nbsp;<input class='FormElement ui-widget-content ui-corner-all' id='IsActive'   type='checkbox' checked  disabled/></td>";
+                        //if (IsActive == "Inactive")
+                        //    html += "<tr><td class='CaptionTD'>Status</td><td class=='DataTD'>&nbsp;&nbsp; <input class='FormElement ui-widget-content ui-corner-all'   type='checkbox' disabled /></td></tr>";
+                        //html += "</table></form>";
+                        //$("td.delmsg", form[0]).html(html);
+
+
+                        //End POP UP Screen Fit Screen
+
+
+                    },
+                    afterSubmit: function (response, postdata) {
+                        $('tr td.delmsg').html('');
+                        $('#dData').hide();
+                        $("#ajaxGrid").jqGrid('setGridParam', { datatype: 'json' }).trigger('reloadGrid');
+                        $("input[type=text]").val('');
+                        $("#IsActive").prop('checked', false);
+                        return [false, response.responseText];
+                    }
+                },
+            {
+                //Search
+
+                closeOnEscape: true,
+                modal: true,
+                recreateForm: true,
+                width: 600,
+                caption: "Search",
+                searchOnEnter: true,
+                beforeShowSearch: function (form) {
+
+                    $('#jqg1').val('');
+                    $('#fbox_ajaxGrid_reset').click();
+
+                    var dialogHeight = $("#searchmodfbox_ajaxGrid").height();
+                    var dialogWidth = $("#searchmodfbox_ajaxGrid").width();
+                    var windowHeight = $(window).height();
+                    var windowWidth = $(window).width();
+                    $("#searchmodfbox_ajaxGrid").css('position', 'fixed');
+                    $("#searchmodfbox_ajaxGrid").css('top', ((windowHeight - dialogHeight) / 2));
+                    $("#searchmodfbox_ajaxGrid").css('left', ((windowWidth - dialogWidth) / 2));
+
+                    return [true, ""];
+                }
+            },
+            {
+                //View :
+                closeOnEscape: true,
+                recreateForm: true,
+                width: 600,
+                modal: true,
+                beforeShowForm: function (form) {
+
+                    var thisForm = $("#viewmod" + jQuery("#ajaxGrid")[0].id);
+                    var dialogHeight = $(thisForm).height();
+                    var dialogWidth = $(thisForm).width();
+                    var windowHeight = $(window).height();
+                    var windowWidth = $(window).width();
+                    $(thisForm).css('position', 'fixed');
+                    $(thisForm).css('top', ((windowHeight - dialogHeight) / 2));
+                    $(thisForm).css('left', ((windowWidth - dialogWidth) / 2));
+
+                }
+
+            }
+                );
+
+    }
+
+
+</script>

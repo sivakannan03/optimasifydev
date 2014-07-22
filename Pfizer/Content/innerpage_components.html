@@ -1,0 +1,1096 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+
+	<title>Simple Layout Demo</title>
+
+	<script type="text/javascript" src="js/jquery.js"></script>
+	<script type="text/javascript" src="js/jquery.ui.all.js"></script>
+	<script type="text/javascript" src="js/jquery.layout.js"></script>
+
+	<!--<script type="text/javascript" src="js/complex.js"></script>-->
+
+	<script type="text/javascript">
+
+	var myLayout; // a var is required because this page utilizes: myLayout.allowOverflow() method
+
+	$(document).ready(function () {
+		myLayout = $('body').layout({
+			// enable showOverflow on west-pane so popups will overlap north pane
+			west__showOverflowOnHover: true
+
+		//,	west__fxSettings_open: { easing: "easeOutBounce", duration: 750 }
+		});
+ 	});
+
+	</script>
+
+
+	
+	
+    
+ <link href="css/style.css" rel="stylesheet" type="text/css" />
+ <link href="css/reset.css" rel="stylesheet" type="text/css" />
+<link rel="stylesheet" type="text/css" href="css/accord_style.css" />
+<script type="text/javascript" src="js/ddaccordion.js"></script>
+
+<script type="text/javascript">
+ddaccordion.init({
+	headerclass: "submenuheader", //Shared CSS class name of headers group
+	contentclass: "submenu", //Shared CSS class name of contents group
+	revealtype: "click", //Reveal content when user clicks or onmouseover the header? Valid value: "click", "clickgo", or "mouseover"
+	mouseoverdelay: 200, //if revealtype="mouseover", set delay in milliseconds before header expands onMouseover
+	collapseprev: true, //Collapse previous content (so only one open at any time)? true/false 
+	defaultexpanded: [], //index of content(s) open by default [index1, index2, etc] [] denotes no content
+	onemustopen: false, //Specify whether at least one header should be open always (so never all headers closed)
+	animatedefault: false, //Should contents open by default be animated into view?
+	persiststate: false, //persist state of opened contents within browser session?
+	toggleclass: ["prefix", "menuitemactive"],  //Two CSS classes to be applied to the header when it's collapsed and expanded, respectively ["class1", "class2"]
+	togglehtml: ["suffix", "<img src='images/expand.png' class='statusicon' />", "<img src='images/minimize.png' class='statusicon' />"], //Additional HTML added to the header when it's collapsed and expanded, respectively  ["position", "html1", "html2"] (see docs)
+	animatespeed: "fast", //speed of animation: integer in milliseconds (ie: 200), or keywords "fast", "normal", or "slow"
+	oninit:function(headers, expandedindices){ //custom code to run when headers have initalized
+		//do nothing
+	},
+	onopenclose:function(header, index, state, isuseractivated){ //custom code to run whenever a header is opened or closed
+		//do nothing
+	}
+})
+
+
+</script>
+
+</head>
+<body>
+
+<!-- manually attach allowOverflow method to pane -->
+<div class="ui-layout-north" onmouseover="myLayout.allowOverflow('north')" onmouseout="myLayout.resetOverflow(this)"><div class="inpage_header">
+    <div class="inpage_logo"><img src="images/inpage_logo.jpg" width="292" height="65" /></div>
+    <div class="inpage_menu">
+      <div class="navigation">
+        <ul id="main-menu" class="main-menu">
+          <li><img src="images/menu_spacer.jpg" width="2" height="44" /><a id="download" href="">Download</a></li>
+          <li><img src="images/menu_spacer.jpg" width="2" height="44" /><a id="optimail" href="">Optimail</a></li>
+          <li><img src="images/menu_spacer.jpg" width="2" height="44" /><a id="optilearn" href="">OptiLearn</a></li>
+          <li><img src="images/menu_spacer.jpg" width="2" height="44" /><a id="password" href="">Change Password</a></li>
+        </ul>
+      </div>
+    </div>
+  </div>
+  <div class="clear"></div>
+<div class="inpage_navigation_bar">
+    <div class="navigationmenu"><a href="#" onclick="myLayout.close('west')">NAVIGATION MENU </a></div>
+    
+    <div class=" admin">
+      <select name="select2">
+        <option>Workflow Admin</option>
+        <option>Workflow Admin</option>
+        <option>Workflow Admin</option>
+        <option>Workflow Admin</option>
+        <option>Workflow Admin</option>
+      </select>
+    </div>
+    <div class="navigation_bar_rightsec">
+      <div class="welcome">Welcome <span>villsong@gmail.com</span></div>
+      <div class="divider"><img src="images/divider.jpg" width="1" height="20" /></div>
+      <div class="last_login">
+        <h4>Last Login  : <span><SCRIPT LANGUAGE="JAVASCRIPT" class="text4">
+var mydate=new Date()
+var year=mydate.getYear()
+if (year < 1000)
+year+=1900
+var day=mydate.getDay()
+var month=mydate.getMonth()
+var daym=mydate.getDate()
+if (daym < 10)
+daym="0"+daym
+var dayarray=new Array("Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday")
+var montharray=new Array("Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec")
+document.write(daym+ "-"+montharray[month] + "-"+ year +" </P>")
+</SCRIPT></span></h4>
+      </div>
+      <div class="last_login divider2"><span><script type="text/javascript">
+function DisplayTime(){
+if (!document.all && !document.getElementById)
+	return
+	timeElement=document.getElementById? document.getElementById("curTime"): document.all.tick2
+	var CurrentDate=new Date()
+	var hours=CurrentDate.getHours()
+	var minutes=CurrentDate.getMinutes()
+	var seconds=CurrentDate.getSeconds()
+	var DayNight="PM"
+	if (hours<12) DayNight="AM";
+	if (hours>12) hours=hours-12;
+	if (hours==0) hours=12;
+	if (minutes<=9) minutes="0"+minutes;
+	if (seconds<=9) seconds="0"+seconds;
+	var currentTime=hours+":"+minutes+":"+seconds+" "+DayNight;
+	timeElement.innerHTML="<center>"+currentTime+"</center>"
+	setTimeout("DisplayTime()",1000)
+}
+	window.onload=DisplayTime
+</script></span>
+        <h4 id=curTime></h4>
+      </div>
+      <div class="divider"><img src="images/divider.jpg" width="1" height="20" /></div>
+      <div class="logout"><a href="login.html">Logout</a></div>
+    </div>
+  </div>	
+
+</div>
+
+<!-- allowOverflow auto-attached by option: west__showOverflowOnHover = true -->
+<div class="ui-layout-west">
+<div class="glossymenu"><a class="menuitem submenuheader" href="#" >Admin Setting</a>
+        <div class="submenu">
+          <ul>
+            <li><a href="#">Sub Link1</a></li>
+            <li><a href="#">Sub Link2</a></li>
+            <li><a href="#">Sub Link3</a></li>
+            <li><a href="#">Sub Link4</a></li>
+            <li><a href="#">Sub Link5</a></li>
+            <li><a href="#" class="active">Sub Link6</a></li>
+            <li><a href="#">Sub Link7</a></li>
+            <li><a href="#">Sub Link8</a></li>
+            <li><a href="#">Sub Link9</a></li>
+            <li><a href="#">Sub Link10</a></li>
+          </ul>
+        </div>
+        <a class="menuitem submenuheader" href="#" >Manage Users</a>
+        <div class="submenu">
+          <ul>
+            <li><a href="#">Sub Link2</a></li>
+            <li><a href="#">Sub Link3</a></li>
+            <li><a href="#">Sub Link4</a></li>
+            <li><a href="#">Sub Link5</a></li>
+            <li><a href="#">Sub Link6</a></li>
+            <li><a href="#">Sub Link7</a></li>
+          </ul>
+        </div>
+        <a class="menuitem submenuheader" href="#" >Manage Geography</a>
+        <div class="submenu">
+          <ul>
+            <li><a href="#">Sub Link2</a></li>
+            <li><a href="#">Sub Link3</a></li>
+            <li><a href="#">Sub Link4</a></li>
+            <li><a href="#">Sub Link5</a></li>
+            <li><a href="#">Sub Link6</a></li>
+            <li><a href="#">Sub Link7</a></li>
+          </ul>
+        </div>
+        <a class="menuitem submenuheader" href="#" >General Master</a>
+        <div class="submenu">
+          <ul>
+            <li><a href="#">Sub Link2</a></li>
+            <li><a href="#">Sub Link3</a></li>
+            <li><a href="#">Sub Link4</a></li>
+            <li><a href="#">Sub Link5</a></li>
+            <li><a href="#">Sub Link6</a></li>
+          </ul>
+        </div>
+        <a class="menuitem submenuheader" href="#" >Other Masters</a>
+        <div class="submenu">
+          <ul>
+            <li><a href="#">Sub Link2</a></li>
+            <li><a href="#">Sub Link3</a></li>
+            <li><a href="#">Sub Link4</a></li>
+            <li><a href="#">Sub Link5</a></li>
+            <li><a href="#">Sub Link6</a></li>
+          </ul>
+        </div>
+        <a class="menuitem submenuheader" href="#" >Manage Products</a>
+        <div class="submenu">
+          <ul>
+            <li><a href="#">Sub Link2</a></li>
+            <li><a href="#">Sub Link3</a></li>
+            <li><a href="#">Sub Link4</a></li>
+            <li><a href="#">Sub Link5</a></li>
+            <li><a href="#">Sub Link6</a></li>
+          </ul>
+        </div>
+        <a class="menuitem submenuheader" href="#" >Transactions</a>
+        <div class="submenu">
+          <ul>
+            <li><a href="#">Sub Link2</a></li>
+            <li><a href="#">Sub Link3</a></li>
+            <li><a href="#">Sub Link4</a></li>
+            <li><a href="#">Sub Link5</a></li>
+            <li><a href="#">Sub Link6</a></li>
+          </ul>
+        </div>
+        <a class="menuitem submenuheader" href="#" >Masters</a>
+        <div class="submenu">
+          <ul>
+            <li><a href="#">Sub Link2</a></li>
+            <li><a href="#">Sub Link3</a></li>
+            <li><a href="#">Sub Link4</a></li>
+            <li><a href="#">Sub Link5</a></li>
+            <li><a href="#">Sub Link6</a></li>
+          </ul>
+        </div>
+        <a class="menuitem submenuheader" href="#" >Content</a>
+        <div class="submenu">
+          <ul>
+            <li><a href="#">Sub Link2</a></li>
+            <li><a href="#">Sub Link3</a></li>
+            <li><a href="#">Sub Link4</a></li>
+            <li><a href="#">Sub Link5</a></li>
+            <li><a href="#">Sub Link6</a></li>
+          </ul>
+        </div>
+        <a class="menuitem submenuheader" href="#" >Mgr Transactions</a>
+        <div class="submenu">
+          <ul>
+            <li><a href="#">Sub Link2</a></li>
+            <li><a href="#">Sub Link3</a></li>
+
+            <li><a href="#">Sub Link4</a></li>
+            <li><a href="#">Sub Link5</a></li>
+            <li><a href="#">Sub Link6</a></li>
+          </ul>
+        </div>
+        <a class="menuitem submenuheader" href="#" >Reports</a>
+        <div class="submenu">
+          <ul>
+            <li><a href="#">Sub Link2</a></li>
+            <li><a href="#">Sub Link3</a></li>
+            <li><a href="#">Sub Link4</a></li>
+            <li><a href="#">Sub Link5</a></li>
+            <li><a href="#">Sub Link6</a></li>
+          </ul>
+        </div>
+        <a class="menuitem submenuheader" href="#" >Audit Trial</a>
+        <div class="submenu">
+          <ul>
+            <li><a href="#">Sub Link2</a></li>
+            <li><a href="#">Sub Link3</a></li>
+            <li><a href="#">Sub Link4</a></li>
+            <li><a href="#">Sub Link5</a></li>
+            <li><a href="#">Sub Link6</a></li>
+          </ul>
+        </div>
+        <a class="menuitem submenuheader" href="#" >Phase II</a>
+        <div class="submenu">
+          <ul>
+            <li><a href="#">Sub Link2</a></li>
+            <li><a href="#">Sub Link3</a></li>
+            <li><a href="#">Sub Link4</a></li>
+            <li><a href="#">Sub Link5</a></li>
+            <li><a href="#">Sub Link6</a></li>
+          </ul>
+        </div>
+        <a class="menuitem submenuheader" href="#" >METIS</a>
+        <div class="submenu">
+          <ul>
+            <li><a href="#">Sub Link2</a></li>
+            <li><a href="#">Sub Link3</a></li>
+            <li><a href="#">Sub Link4</a></li>
+            <li><a href="#">Sub Link5</a></li>
+            <li><a href="#">Sub Link6</a></li>
+          </ul>
+        </div>
+      </div>
+</div>
+
+<div class="ui-layout-south">
+	<div class="footer">Copyright 2014, <a href="#">Pfizer.</a> All rights reserved.</div>
+</div>
+<!--
+<div class="ui-layout-east">
+	This is the east pane, closable, slidable and resizable
+
+	
+	<ul onmouseover="myLayout.allowOverflow(this)" onmouseout="myLayout.resetOverflow('east')">
+		<li>
+			<ul>
+				<li>one</li>
+				<li>two</li>
+				<li>three</li>
+				<li>four</li>
+				<li>five</li>
+			</ul>
+			Pop-Up  put this below so IE and FF render the same! 
+		</li>
+	</ul>
+
+	<p><button onclick="myLayout.close('east')">Close Me</button></p>
+
+	<p>...</p><p>...</p><p>...</p><p>...</p><p>...</p><p>...</p><p>...</p><p>...</p><p>...</p>
+	<p>...</p><p>...</p><p>...</p><p>...</p><p>...</p><p>...</p><p>...</p><p>...</p><p>...</p>
+	<p>...</p><p>...</p><p>...</p><p>...</p><p>...</p><p>...</p><p>...</p><p>...</p><p>...</p>
+	<p>...</p><p>...</p><p>...</p><p>...</p><p>...</p><p>...</p><p>...</p><p>...</p><p>...</p>
+</div>-->
+
+<div class="ui-layout-center">
+<div class="inpage_body_container">
+    <div class="bread_crumbs"><a href="#">Home</a><span>>></span>Sample CSS</div>
+    <div class="clear"></div>
+    <h1>Sample CSS</h1>
+    <div class="container">
+      <h2>Sample Paragraph</h2>
+      <p>Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the <a href="#">industry's standard</a> dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.<br />
+        <br />
+        Contrary to popular belief, Lorem Ipsum is not simply random text. It has roots in a piece of classical Latin literature from 45 BC, making it over 2000 years old. Richard McClintock, a Latin professor at Hampden-Sydney College in Virginia, looked up one of the more obscure Latin words, consectetur, from a Lorem Ipsum passage, and going through the cites of the word in classical literature, discovered the undoubtable source. Lorem Ipsum comes from sections 1.10.32 and 1.10.33 of "de Finibus Bonorum et Malorum" (The Extremes of Good and Evil) by Cicero, written in 45 BC. This book is a treatise on the theory of ethics, very popular during the Renaissance. The first line of Lorem Ipsum, "Lorem ipsum dolor sit amet..", comes from a line in section 1.10.32. </p>
+      <br />
+      <div class="content">
+        <ul>
+          <li>It is a long established fact that a reader will be distracted by the readable content of a page when looking at its layout
+            <ul>
+              <li>Contrary to popular belief, Lorem Ipsum is not simply random text.</li>
+              <li>Richard McClintock, a Latin professor at Hampden-Sydney College in Virginia</li>
+            </ul>
+          </li>
+          <li>This book is a treatise on the theory of ethics, very popular during the Renaissance.</li>
+        </ul>
+        <ul>
+          <li>The standard chunk of Lorem Ipsum <a href="#">used since the 1500s is reproduced below for those interested.</a></li>
+          <li>There are many variations of passages of Lorem Ipsum available, but the majority have suffered alteration in some form</li>
+          <li>The generated Lorem Ipsum is therefore always free from repetition, injected humour, or non-characteristic words etc</li>
+        </ul>
+      </div>
+    </div>
+    <div class="container spacer2">
+      <h2>Single Column Grid Form</h2>
+      <div class="man_field">* Mandatory Field</div>
+      <table width="100%" border="0" cellspacing="0" cellpadding="0" align="left" class="inner_tb" >
+        <tr>
+          <th colspan="2">Heading</th>
+        </tr>
+        <tr>
+          <td width="35%"  class="tb-r1">Radiio Button<span class="star">*</span></td>
+          <td width="65%" class="tb-r1" ><input name="Yes" type="radio" value="Yes" class="r_btn"/>
+            <span class="gn-op">yes</span>
+            <input name="Yes" type="radio" value="No" class="r_btn"/>
+            <span class="gn-op">No</span>
+        </tr>
+        <tr >
+          <td width="35%" class="tb-r2">Select Menu<span class="star">*</span></td>
+          <td width="65%" class="tb-r2"><select name="select2" class="dropdownbox2">
+              <option>Select</option>
+              <option>Select</option>
+              <option>Select</option>
+              <option>Select</option>
+              <option>Select</option>
+            </select></td>
+        </tr>
+        <tr >
+          <td width="35%" class="tb-r2">text Filed</td>
+          <td width="65%" class="tb-r2"><input type="text" class="tboxlarge" value="" /></td>
+        </tr>
+        <tr >
+          <td width="35%" class="tb-r2">Checkbox </td>
+          <td width="65%" class="tb-r2"><input type="checkbox" name="checkbox" id="checkbox"  class="checkbox"/>
+            <span class="checkbox_txt">one</span>
+            <input type="checkbox" name="checkbox" id="checkbox"  class="checkbox"/>
+            <span class="checkbox_txt">Two</span>
+            <input type="checkbox" name="checkbox" id="checkbox"  class="checkbox"/>
+            <span class="checkbox_txt">Three</span>
+            <input type="checkbox" name="checkbox" id="checkbox"  class="checkbox"/>
+            <span class="checkbox_txt">Four</span></td>
+        </tr>
+        <tr >
+          <td width="35%" class="tb-r1">Textarea</td>
+          <td width="65%" class="tb-r1"><textarea name="address3" cols="" rows="" class="txt_area"></textarea></td>
+        </tr>
+        <tr >
+          <td width="35%" class="tb-r1">Select List<span class="star">*</span></td>
+          <td width="65%" class="tb-r1"><select name="select2" size="15" multiple="multiple" class="listbox">
+              <option>Select</option>
+              <option>Select</option>
+              <option>Select</option>
+              <option>Select</option>
+              <option>Select</option>
+          </select></td>
+        </tr>
+        <tr >
+          <td class="tb-r2">Date of Birth sample1<span class="star">*</span></td>
+          <td class="tb-r2"><input type="text" class="tboxsmall" value=""/>
+            <span class="calendar"><img src="images/calendar.png" width="24" height="24" align="absmiddle" /></span></td>
+        </tr>
+        <tr >
+          <td class="tb-r1">Date of Birth sample2<span class="star">*</span></td>
+          <td class="tb-r1"><select name="select3" class="dob_dropdownbox">
+              <option>Select</option>
+              <option>Select</option>
+              <option>Select</option>
+              <option>Select</option>
+              <option>Select</option>
+            </select>
+            <select name="select3" class="dob_dropdownbox">
+              <option>Select</option>
+              <option>Select</option>
+              <option>Select</option>
+              <option>Select</option>
+              <option>Select</option>
+            </select>
+            <select name="select3" class="dob_dropdownbox">
+              <option>Select</option>
+              <option>Select</option>
+              <option>Select</option>
+              <option>Select</option>
+              <option>Select</option>
+            </select></td>
+        </tr>
+        <tr >
+          <td class="tb-r1">Upload</td>
+          <td class="tb-r1"><input name="fileField" type="file" id="fileField" class="upload"   /></td>
+        </tr>
+      </table>
+    </div>
+    <div class="inner_tbldiv">
+      <h2>Sample Grid Table</h2>
+      <div class="add">
+        <input class="orange_button add_btn" type="button" value="+ Add New">
+      </div>
+      <table width="100%" border="0" cellspacing="0" cellpadding="0" align="left" class="inner_tb" >
+        <tr>
+          <th width="2%">SI.No</th>
+          <th width="38%">Table Type</th>
+          <th width="36%">Name</th>
+          <th width="10%">Status</th>
+          <th width="7%">Edit</th>
+          <th width="7%">Delete</th>
+        </tr>
+        <tr>
+          <td width="2%"  class="tb-r1">1.</td>
+          <td width="38%" class="tb-r1" >ProductTypeMaster</td>
+          <td width="36%" class="tb-r1" ><a href="#">ointment</a></td>
+          <td width="10%" class="tb-r1" >In Active</td>
+          <td width="7%" class="tb-r1" ><a href="#">Edit</a></td>
+          <td width="7%" class="tb-r1" ><a href="#">Delete</a></td>
+        </tr>
+        <tr>
+          <td width="2%" class="tb-r2">2.</td>
+          <td width="38%" class="tb-r2">ProductTypeMaster</td>
+          <td width="36%" class="tb-r2"><a href="#">Chewable</a></td>
+          <td width="10%" class="tb-r2">In Active</td>
+          <td width="7%" class="tb-r2"><a href="#">Edit</a></td>
+          <td width="7%" class="tb-r2"><a href="#">Delete</a></td>
+        </tr>
+        <tr >
+          <td width="2%" class="tb-r1" >3.</td>
+          <td width="38%" class="tb-r1" >ProductTypeMaster</td>
+          <td width="36%" class="tb-r1" ><a href="#">Syrup</a></td>
+          <td width="10%" class="tb-r1" >In Active</td>
+          <td width="7%" class="tb-r1" ><a href="#">Edit</a></td>
+          <td width="7%" class="tb-r1" ><a href="#">Delete</a></td>
+        </tr>
+        <tr >
+          <td width="2%" class="tb-r2">4.</td>
+          <td width="38%" class="tb-r2">ProductTypeMaster</td>
+          <td width="36%" class="tb-r2"><a href="#">Product type</a></td>
+          <td width="10%" class="tb-r2">In Active</td>
+          <td width="7%" class="tb-r2"><a href="#">Edit</a></td>
+          <td width="7%" class="tb-r2"><a href="#">Delete</a></td>
+        </tr>
+        <tr >
+          <td width="2%" class="tb-r1">5.</td>
+          <td width="38%" class="tb-r1">ProductTypeMaster</td>
+          <td width="36%" class="tb-r1"><a href="#">Chewable</a></td>
+          <td width="10%" class="tb-r1" >In Active</td>
+          <td width="7%" class="tb-r1" ><a href="#">Edit</a></td>
+          <td width="7%" class="tb-r1" ><a href="#">Delete</a></td>
+        </tr>
+        <tr >
+          <td width="2%" class="tb-r2">6.</td>
+          <td width="38%" class="tb-r2">ProductTypeMaster</td>
+          <td width="36%" class="tb-r2"><a href="#">Capsules</a></td>
+          <td width="10%" class="tb-r2">In Active</td>
+          <td width="7%" class="tb-r2"><a href="#">Edit</a></td>
+          <td width="7%" class="tb-r2"><a href="#">Delete</a></td>
+        </tr>
+        <tr >
+          <td width="2%" class="tb-r1">7.</td>
+          <td width="38%" class="tb-r1">ProductTypeMaster</td>
+          <td width="36%" class="tb-r1"><a href="#">Chewable</a></td>
+          <td width="10%" class="tb-r1" >In Active</td>
+          <td width="7%" class="tb-r1" ><a href="#">Edit</a></td>
+          <td width="7%" class="tb-r1" ><a href="#">Delete</a></td>
+        </tr>
+        <tr >
+          <td width="2%" class="tb-r2">8.</td>
+          <td width="38%" class="tb-r2">ProductTypeMaster</td>
+          <td width="36%" class="tb-r2"><a href="#">Syrup</a></td>
+          <td width="10%" class="tb-r2">In Active</td>
+          <td width="7%" class="tb-r2"><a href="#">Edit</a></td>
+          <td width="7%" class="tb-r2"><a href="#">Delete</a></td>
+        </tr>
+        <tr >
+          <td width="2%" class="tb-r1">9.</td>
+          <td width="38%" class="tb-r1">ProductTypeMaster</td>
+          <td width="36%" class="tb-r1"><a href="#">Product type</a></td>
+          <td width="10%" class="tb-r1" >In Active</td>
+          <td width="7%" class="tb-r1" ><a href="#">Edit</a></td>
+          <td width="7%" class="tb-r1" ><a href="#">Delete</a></td>
+        </tr>
+      </table>
+      <div class="clear"></div>
+      <h2 class="spacer2">View</h2>
+      <table width="100%" border="0" cellspacing="0" cellpadding="0" align="left" class="inner_tb" >
+        <tr>
+          <td width="50%"  class="tb-r1">Node Name </td>
+          <td width="50%" class="tb-r2" >Admin</td>
+        </tr>
+        <tr>
+          <td width="50%" class="tb-r1">Daily Report Flag </td>
+          <td width="50%" class="tb-r2">True</td>
+        </tr>
+        <tr>
+          <td width="50%" class="tb-r1">Is Active </td>
+          <td width="50%" class="tb-r2">True</td>
+        </tr>
+      </table>
+    </div>
+    <div class="clear"></div>
+    <div class="container spacer2">
+      <h2>Double Column Form</h2>
+      <div class="man_field">* Mandatory Field</div>
+      <table width="100%" border="0" cellspacing="0" cellpadding="0" align="left" class="inner_tb" >
+        <tr>
+          <td width="20%"  class="tb-r1">Doctor Code</td>
+          <td width="30%" class="tb-r2" ><input type="text" class="tboxlarge" value="" /></td>
+          <td width="20%" class="tb-r1" >Middle Name</td>
+          <td width="30%" class="tb-r2" ><input type="text" class="tboxlarge" value="" /></td>
+        </tr>
+        <tr>
+          <td width="20%" class="tb-r1">First Name<span class="star">*</span></td>
+          <td width="30%" class="tb-r2"><input type="text" class="tboxlarge" value="" /></td>
+          <td width="20%" class="tb-r1">ShortName</td>
+          <td width="30%" class="tb-r2"><input type="text" class="tboxlarge" value="" /></td>
+        </tr>
+        <tr >
+          <td width="20%" class="tb-r1" >Last Name<span class="star">*</span></td>
+          <td width="30%" class="tb-r2" ><input type="text" class="tboxlarge" value="" /></td>
+          <td width="20%" class="tb-r1" >DOB (dd/mm/yyyy)<span class="star">*</span></td>
+          <td width="30%" class="tb-r2" ><input type="text" class="tboxsmall" value=""/>
+            <span class="calendar"><img src="images/calendar.png" width="24" height="24" align="absmiddle" /></span></td>
+        </tr>
+        <tr >
+          <td width="20%" class="tb-r1">Gender<span class="star">*</span></td>
+          <td width="30%" class="tb-r2"><select name="select3" class="dob_dropdownbox">
+              <option>Select</option>
+              <option>Select</option>
+              <option>Select</option>
+              <option>Select</option>
+              <option>Select</option>
+            </select></td>
+          <td width="20%" class="tb-r1">Practicing Speciality<span class="star">*</span></td>
+          <td width="30%" class="tb-r2"><select name="select4" class="dropdownbox2">
+              <option>Select</option>
+              <option>Select</option>
+              <option>Select</option>
+              <option>Select</option>
+              <option>Select</option>
+            </select></td>
+        </tr>
+        <tr >
+          <td width="20%" class="tb-r1">Speciality<span class="star">*</span></td>
+          <td width="30%" class="tb-r2"><select name="select2" class="dropdownbox2">
+              <option>Select</option>
+              <option>Select</option>
+              <option>Select</option>
+              <option>Select</option>
+              <option>Select</option>
+            </select></td>
+          <td width="20%" class="tb-r1">KOL<span class="star">*</span></td>
+          <td width="30%" class="tb-r2" ><select name="select" class="dob_dropdownbox">
+              <option>Select</option>
+              <option>Select</option>
+              <option>Select</option>
+              <option>Select</option>
+              <option>Select</option>
+            </select></td>
+        </tr>
+        <tr >
+          <td width="20%" class="tb-r1">Doctor Status</td>
+          <td width="30%" class="tb-r2"><select name="select3" class="dob_dropdownbox">
+              <option>Select</option>
+              <option>Select</option>
+              <option>Select</option>
+              <option>Select</option>
+              <option>Select</option>
+            </select></td>
+          <td width="20%" class="tb-r1">Affiliation</td>
+          <td width="30%" class="tb-r2"><select name="select4" class="dropdownbox2">
+              <option>Select</option>
+              <option>Select</option>
+              <option>Select</option>
+              <option>Select</option>
+              <option>Select</option>
+            </select></td>
+        </tr>
+        <tr >
+          <td width="20%" class="tb-r1">Patients/Week</td>
+          <td width="30%" class="tb-r2"><input type="text" class="tboxlarge" value="" /></td>
+          <td width="20%" class="tb-r1">Consultation Fees<span class="star">*</span></td>
+          <td width="30%" class="tb-r2" ><input type="text" class="tboxlarge" value="" /></td>
+        </tr>
+        <tr >
+          <td width="20%" class="tb-r1">Age<span class="star">*</span></td>
+          <td width="30%" class="tb-r2"><input type="text" class="tboxsmall" value=""/></td>
+          <td width="20%" class="tb-r1">&nbsp;</td>
+          <td width="30%" class="tb-r2">&nbsp;</td>
+        </tr>
+      </table>
+      <div class="clear"></div>
+      <h3 class="spacer3">Communication Details</h3>
+      <table width="100%" border="0" cellspacing="0" cellpadding="0" align="left" class="inner_tb " >
+        <tr>
+          <td width="20%"  class="tb-r1">Address1<span class="star">*</span></td>
+          <td width="30%" class="tb-r2" ><input type="text" class="tboxlarge" value="" /></td>
+          <td width="20%" class="tb-r1" >Address2</td>
+          <td width="30%" class="tb-r2" ><input type="text" class="tboxlarge" value="" /></td>
+        </tr>
+        <tr>
+          <td width="20%" class="tb-r1">City<span class="star">*</span></td>
+          <td width="30%" class="tb-r2"><select name="select2" class="dropdownbox2">
+              <option>Select</option>
+              <option>Select</option>
+              <option>Select</option>
+              <option>Select</option>
+              <option>Select</option>
+            </select></td>
+          <td width="20%" class="tb-r1">Brick<span class="star">*</span></td>
+          <td width="30%" class="tb-r2"><input type="text" class="tboxlarge" value="" /></td>
+        </tr>
+        <tr >
+          <td width="20%" class="tb-r1" >Zip Code<span class="star">*</span></td>
+          <td width="30%" class="tb-r2" ><input type="text" class="tboxlarge" value="" /></td>
+          <td width="20%" class="tb-r1" >Tel (R)</td>
+          <td width="30%" class="tb-r2"><input type="text" class="tel_tboxsm" value="" />
+            <input type="text" class="tel_tboxmd" value="" />
+            <input type="text" class="tel_tboxlr" value="" /></td>
+        </tr>
+        <tr >
+          <td width="20%" class="tb-r1">Tel (Clinic)</td>
+          <td width="30%" class="tb-r2"><input type="text" class="tel_tboxsm" value="" />
+            <input type="text" class="tel_tboxmd" value="" />
+            <input type="text" class="tel_tboxlr" value="" /></td>
+          <td width="20%" class="tb-r1">Practicing Speciality<span class="star">*</span></td>
+          <td width="30%" class="tb-r2" ><input type="text" class="tboxlarge" value="" /></td>
+        </tr>
+        <tr >
+          <td width="20%" class="tb-r1">Service Provider</td>
+          <td width="30%" class="tb-r2"><input type="text" class="tboxlarge" value="" /></td>
+          <td width="20%" class="tb-r1">Mobile</td>
+          <td width="30%" class="tb-r2" ><input type="text" class="tboxlarge" value="" /></td>
+        </tr>
+        <tr >
+          <td width="20%" class="tb-r1">e-Mail</td>
+          <td width="30%" class="tb-r2"><input type="text" class="tboxlarge" value="" /></td>
+          <td width="20%" class="tb-r1">Fax</td>
+          <td width="30%" class="tb-r2"><input type="text" class="tboxlarge" value="" /></td>
+        </tr>
+      </table>
+      <div class="clear"></div>
+      <h3 class="spacer3">Preferred Meeting Time</h3>
+      <table width="100%" border="0" cellspacing="0" cellpadding="0" align="left" class="inner_tb " >
+        <tr>
+          <th width="2%">S.No
+            </h>
+          <th width="28%">Week</th>
+          <th width="28%" >Day</th>
+          <th width="26%">Time</th>
+          <th width="4%">Delete</th>
+          <th width="10%">Action</th>
+        </tr>
+        <tr>
+          <td width="2%" class="tb-r1">1</td>
+          <td width="28%" class="tb-r2"><select name="select2" class="dropdownbox2">
+              <option>Select</option>
+              <option>Select</option>
+              <option>Select</option>
+              <option>Select</option>
+              <option>Select</option>
+            </select></td>
+          <td width="28%" class="tb-r1"><select name="select2" class="dropdownbox2">
+              <option>Select</option>
+              <option>Select</option>
+              <option>Select</option>
+              <option>Select</option>
+              <option>Select</option>
+            </select></td>
+          <td width="26%" class="tb-r2"><input type="text" class="tboxlarge" value="" /></td>
+          <td width="4%" align="center" class="tb-r1"><input type="checkbox" name="checkbox" id="checkbox"  class="checkbox"/></td>
+          <td width="10%" class="tb-r1"><ul class="action" >
+              <li><a href="#"><img src="images/add.png" width="16" height="16" align="absmiddle" /></a></li>
+              <li><a href="#"><img src="images/remove.png" width="16" height="16" align="absmiddle" /></a></li>
+            </ul></td>
+        </tr>
+        <tr >
+          <td width="2%" class="tb-r1" >2</td>
+          <td width="28%" class="tb-r2" ><select name="select2" class="dropdownbox2">
+              <option>Select</option>
+              <option>Select</option>
+              <option>Select</option>
+              <option>Select</option>
+              <option>Select</option>
+            </select></td>
+          <td width="28%" class="tb-r1" ><select name="select2" class="dropdownbox2">
+              <option>Select</option>
+              <option>Select</option>
+              <option>Select</option>
+              <option>Select</option>
+              <option>Select</option>
+            </select></td>
+          <td width="26%" class="tb-r2"><input type="text" class="tboxlarge" value="" /></td>
+          <td width="4%" align="center" class="tb-r1"><input type="checkbox" name="checkbox" id="checkbox"  class="checkbox"/></td>
+          <td width="10%" class="tb-r1"><ul class="action" >
+              <li><a href="#"><img src="images/add.png" width="16" height="16" align="absmiddle" /></a></li>
+              <li><a href="#"><img src="images/remove.png" width="16" height="16" align="absmiddle" /></a></li>
+            </ul></td>
+        </tr>
+      </table>
+    </div>
+    <div class="clear"></div>
+    <div class="container spacer2">
+      <table width="100%" border="0" cellspacing="0" cellpadding="5" align="left" >
+        <tr >
+          <td height="30" colspan="2"><h2>Sample Text</h2></td>
+        </tr>
+        <tr >
+          <td height="30"  class="text_style"  >Text style1</td>
+          <td  class="text_style_bd" >Text style bold 1</td>
+        </tr>
+        <tr >
+          <td height="30"   class="text_style2" >Text style2</td>
+          <td  class="text_style2_bd"  >Text style bold 2</td>
+        </tr>
+        <tr >
+          <td height="30" class="text_style3" >Text style3</td>
+          <td class="text_style3_bd">Text style bold 3</td>
+        </tr>
+        <tr >
+          <td height="30"  class="text_style4" >Text style4</td>
+          <td class="text_style4_bd" >Text style bold4</td>
+        </tr>
+        <tr >
+          <td height="30"  class="text_style4" >&nbsp;</td>
+          <td class="text_style4_bd" >&nbsp;</td>
+        </tr>
+        <tr >
+          <td height="30" colspan="2"  ><h2>Sample Links</h2></td>
+        </tr>
+        <tr  >
+          <td width="11%" height="30" class="link" ><a href="#">Sample link</a></td>
+          <td width="89%" class="link2" >&nbsp;</td>
+        </tr>
+        <tr class="tb-r3" >
+          <td width="11%" height="30" class="link2" ><a href="#">Sample link2</a></td>
+          <td width="89%" class="link4" >&nbsp;</td>
+        </tr>
+        <tr>
+          <td width="11%" height="30" class="link3" ><a href="#">Sample link3</a></td>
+          <td width="89%" class="tb-r3">&nbsp;</td>
+        </tr>
+        <tr>
+          <td height="30" class="link4" ><a href="#">Sample link4</a></td>
+          <td class="tb-r3">&nbsp;</td>
+        </tr>
+        <tr>
+          <td height="30" class="link5" ><a href="#">Sample link5</a></td>
+          <td class="tb-r3">&nbsp;</td>
+        </tr>
+        <tr>
+          <td height="30" class="link6" ><a href="#">Sample link6</a></td>
+          <td class="tb-r3">&nbsp;</td>
+        </tr>
+      </table>
+    </div>
+    <div class="clear"></div>
+    <div class="container spacer2" >
+      <h2>Button Styles</h2>
+      <input class="orange_button add_btn" type="button" value="Button">
+      <input class="blue_button" type="button" value="Button" align="middle">
+      <input class="blue_button2" type="button" value="Button" align="middle">
+      <input class="grey_button" type="button" value="Button" align="middle">
+    </div>
+    <br />
+    <br />
+    <div class="clear"></div>
+    <div class="container">
+      <div class="popup"><div class="close"><a href="#"><img src="images/close.png" width="26" height="26" /></a></div>
+        <h1>Pop up Heading</h1>
+        <div class="popup_inner"> <p>Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.</p><br />
+          <table width="98%" border="0" cellspacing="0" cellpadding="0" align="left" class="inner_tb" >
+            <tr>
+              <td width="30%"  class="tb-r1">Doctor Code</td>
+              <td width="70%" class="tb-r2" ><input type="text" class="tboxlarge" value="" /></td>
+            </tr>
+            <tr>
+              <td width="30%" class="tb-r1">First Name<span class="star">*</span></td>
+              <td width="70%" class="tb-r2"><input type="text" class="tboxlarge" value="" /></td>
+            </tr>
+            <tr >
+              <td width="30%" class="tb-r1" >Last Name<span class="star">*</span></td>
+              <td width="70%" class="tb-r2" ><input type="text" class="tboxlarge" value="" /></td>
+            </tr>
+            <tr >
+              <td width="30%" class="tb-r1">Speciality<span class="star">*</span></td>
+              <td width="70%" class="tb-r2"><select name="select2" class="dropdownbox2">
+                  <option>Select</option>
+                  <option>Select</option>
+                  <option>Select</option>
+                  <option>Select</option>
+                  <option>Select</option>
+                </select></td>
+            </tr>
+            <tr >
+              <td width="30%" class="tb-r1">Patients/Week</td>
+              <td width="70%" class="tb-r2"><input type="text" class="tboxlarge" value="" /></td>
+            </tr>
+            <tr >
+              <td width="30%" class="tb-r1">Age<span class="star">*</span></td>
+              <td width="70%" class="tb-r2"><input type="text" class="tboxsmall" value=""/></td>
+            </tr>
+          </table>
+        </div>
+      </div>
+    </div>
+    <div class="clear"></div>
+    <br />
+    <br />
+    <div class="container spacer2">
+      <div class=" popup2"><div class="close"><a href="#"><img src="images/close.png" width="26" height="26" /></a></div>
+        <h1>Pop up Heading</h1>
+        <div class="popup_inner"><table width="98%" border="0" cellspacing="0" cellpadding="0" align="left" class="inner_tb" >
+            <tr>
+              <th width="2%">SI.No</th>
+              <th width="38%">Table Type</th>
+              <th width="34%">Name</th>
+              <th width="12%">Status</th>
+              <th width="7%">Edit</th>
+              <th width="7%">Delete</th>
+            </tr>
+            <tr>
+              <td width="2%"  class="tb-r1">1.</td>
+              <td width="38%" class="tb-r1" >ProductTypeMaster</td>
+              <td width="34%" class="tb-r1" ><a href="#">ointment</a></td>
+              <td width="12%" class="tb-r1" >In Active</td>
+              <td width="7%" class="tb-r1" ><a href="#">Edit</a></td>
+              <td width="7%" class="tb-r1" ><a href="#">Delete</a></td>
+            </tr>
+            <tr>
+              <td width="2%" class="tb-r2">2.</td>
+              <td width="38%" class="tb-r2">ProductTypeMaster</td>
+              <td width="34%" class="tb-r2"><a href="#">Chewable</a></td>
+              <td width="12%" class="tb-r2">In Active</td>
+              <td width="7%" class="tb-r2"><a href="#">Edit</a></td>
+              <td width="7%" class="tb-r2"><a href="#">Delete</a></td>
+            </tr>
+            <tr >
+              <td width="2%" class="tb-r1" >3.</td>
+              <td width="38%" class="tb-r1" >ProductTypeMaster</td>
+              <td width="34%" class="tb-r1" ><a href="#">Syrup</a></td>
+              <td width="12%" class="tb-r1" >In Active</td>
+              <td width="7%" class="tb-r1" ><a href="#">Edit</a></td>
+              <td width="7%" class="tb-r1" ><a href="#">Delete</a></td>
+            </tr>
+            <tr >
+              <td width="2%" class="tb-r2">4.</td>
+              <td width="38%" class="tb-r2">ProductTypeMaster</td>
+              <td width="34%" class="tb-r2"><a href="#">Product type</a></td>
+              <td width="12%" class="tb-r2">In Active</td>
+              <td width="7%" class="tb-r2"><a href="#">Edit</a></td>
+              <td width="7%" class="tb-r2"><a href="#">Delete</a></td>
+            </tr>
+            <tr >
+              <td width="2%" class="tb-r1">5.</td>
+              <td width="38%" class="tb-r1">ProductTypeMaster</td>
+              <td width="34%" class="tb-r1"><a href="#">Chewable</a></td>
+              <td width="12%" class="tb-r1" >In Active</td>
+              <td width="7%" class="tb-r1" ><a href="#">Edit</a></td>
+              <td width="7%" class="tb-r1" ><a href="#">Delete</a></td>
+            </tr>
+            <tr >
+              <td width="2%" class="tb-r2">6.</td>
+              <td width="38%" class="tb-r2">ProductTypeMaster</td>
+              <td width="34%" class="tb-r2"><a href="#">Capsules</a></td>
+              <td width="12%" class="tb-r2">In Active</td>
+              <td width="7%" class="tb-r2"><a href="#">Edit</a></td>
+              <td width="7%" class="tb-r2"><a href="#">Delete</a></td>
+            </tr>
+            <tr >
+              <td width="2%" class="tb-r1">7.</td>
+              <td width="38%" class="tb-r1">ProductTypeMaster</td>
+              <td width="34%" class="tb-r1"><a href="#">Chewable</a></td>
+              <td width="12%" class="tb-r1" >In Active</td>
+              <td width="7%" class="tb-r1" ><a href="#">Edit</a></td>
+              <td width="7%" class="tb-r1" ><a href="#">Delete</a></td>
+            </tr>
+            <tr >
+              <td width="2%" class="tb-r2">8.</td>
+              <td width="38%" class="tb-r2">ProductTypeMaster</td>
+              <td width="34%" class="tb-r2"><a href="#">Syrup</a></td>
+              <td width="12%" class="tb-r2">In Active</td>
+              <td width="7%" class="tb-r2"><a href="#">Edit</a></td>
+              <td width="7%" class="tb-r2"><a href="#">Delete</a></td>
+            </tr>
+            <tr >
+              <td width="2%" class="tb-r1">9.</td>
+              <td width="38%" class="tb-r1">ProductTypeMaster</td>
+              <td width="34%" class="tb-r1"><a href="#">Product type</a></td>
+              <td width="12%" class="tb-r1" >In Active</td>
+              <td width="7%" class="tb-r1" ><a href="#">Edit</a></td>
+              <td width="7%" class="tb-r1" ><a href="#">Delete</a></td>
+            </tr>
+          </table>
+        </div>
+      </div>
+    </div>
+    <div class="clear"></div>
+   <div class="container spacer2" >
+      <h2>Accordion Style</h2>
+      <div class="glossymenu" style=" float:left" > <a class="menuitem submenuheader" href="#" >Admin Setting</a>
+        <div class="submenu">
+          <ul>
+            <li><a href="#">Sub Link1</a></li>
+            <li><a href="#">Sub Link2</a></li>
+            <li><a href="#">Sub Link3</a></li>
+            <li><a href="#">Sub Link4</a></li>
+            <li><a href="#">Sub Link5</a></li>
+            <li><a href="#" class="active">Sub Link6</a></li>
+            <li><a href="#">Sub Link7</a></li>
+            <li><a href="#">Sub Link8</a></li>
+            <li><a href="#">Sub Link9</a></li>
+            <li><a href="#">Sub Link10</a></li>
+          </ul>
+        </div>
+        <a class="menuitem submenuheader" href="#" >Manage Users</a>
+        <div class="submenu">
+          <ul>
+            <li><a href="#">Sub Link2</a></li>
+            <li><a href="#">Sub Link3</a></li>
+            <li><a href="#">Sub Link4</a></li>
+            <li><a href="#">Sub Link5</a></li>
+            <li><a href="#">Sub Link6</a></li>
+            <li><a href="#">Sub Link7</a></li>
+          </ul>
+        </div>
+        <a class="menuitem submenuheader" href="#" >Manage Geography</a>
+        <div class="submenu">
+          <ul>
+            <li><a href="#">Sub Link2</a></li>
+            <li><a href="#">Sub Link3</a></li>
+            <li><a href="#">Sub Link4</a></li>
+            <li><a href="#">Sub Link5</a></li>
+            <li><a href="#">Sub Link6</a></li>
+            <li><a href="#">Sub Link7</a></li>
+          </ul>
+        </div>
+        <a class="menuitem submenuheader" href="#" >General Master</a>
+        <div class="submenu">
+          <ul>
+            <li><a href="#">Sub Link2</a></li>
+            <li><a href="#">Sub Link3</a></li>
+            <li><a href="#">Sub Link4</a></li>
+            <li><a href="#">Sub Link5</a></li>
+            <li><a href="#">Sub Link6</a></li>
+          </ul>
+        </div>
+        <a class="menuitem submenuheader" href="#" >Other Masters</a>
+        <div class="submenu">
+          <ul>
+            <li><a href="#">Sub Link2</a></li>
+            <li><a href="#">Sub Link3</a></li>
+            <li><a href="#">Sub Link4</a></li>
+            <li><a href="#">Sub Link5</a></li>
+            <li><a href="#">Sub Link6</a></li>
+          </ul>
+        </div>
+        <a class="menuitem submenuheader" href="#" >Manage Products</a>
+        <div class="submenu">
+          <ul>
+            <li><a href="#">Sub Link2</a></li>
+            <li><a href="#">Sub Link3</a></li>
+            <li><a href="#">Sub Link4</a></li>
+            <li><a href="#">Sub Link5</a></li>
+            <li><a href="#">Sub Link6</a></li>
+          </ul>
+        </div>
+        <a class="menuitem submenuheader" href="#" >Transactions</a>
+        <div class="submenu">
+          <ul>
+            <li><a href="#">Sub Link2</a></li>
+            <li><a href="#">Sub Link3</a></li>
+            <li><a href="#">Sub Link4</a></li>
+            <li><a href="#">Sub Link5</a></li>
+            <li><a href="#">Sub Link6</a></li>
+          </ul>
+        </div>
+        <a class="menuitem submenuheader" href="#" >Masters</a>
+        <div class="submenu">
+          <ul>
+            <li><a href="#">Sub Link2</a></li>
+            <li><a href="#">Sub Link3</a></li>
+            <li><a href="#">Sub Link4</a></li>
+            <li><a href="#">Sub Link5</a></li>
+            <li><a href="#">Sub Link6</a></li>
+          </ul>
+        </div>
+        <a class="menuitem submenuheader" href="#" >Content</a>
+        <div class="submenu">
+          <ul>
+            <li><a href="#">Sub Link2</a></li>
+            <li><a href="#">Sub Link3</a></li>
+            <li><a href="#">Sub Link4</a></li>
+            <li><a href="#">Sub Link5</a></li>
+            <li><a href="#">Sub Link6</a></li>
+          </ul>
+        </div>
+        <a class="menuitem submenuheader" href="#" >Mgr Transactions</a>
+        <div class="submenu">
+          <ul>
+            <li><a href="#">Sub Link2</a></li>
+            <li><a href="#">Sub Link3</a></li>
+            <li><a href="#">Sub Link4</a></li>
+            <li><a href="#">Sub Link5</a></li>
+            <li><a href="#">Sub Link6</a></li>
+          </ul>
+        </div>
+        <a class="menuitem submenuheader" href="#" >Reports</a>
+        <div class="submenu">
+          <ul>
+            <li><a href="#">Sub Link2</a></li>
+            <li><a href="#">Sub Link3</a></li>
+            <li><a href="#">Sub Link4</a></li>
+            <li><a href="#">Sub Link5</a></li>
+            <li><a href="#">Sub Link6</a></li>
+          </ul>
+        </div>
+        <a class="menuitem submenuheader" href="#" >Audit Trial</a>
+        <div class="submenu">
+          <ul>
+            <li><a href="#">Sub Link2</a></li>
+            <li><a href="#">Sub Link3</a></li>
+            <li><a href="#">Sub Link4</a></li>
+            <li><a href="#">Sub Link5</a></li>
+            <li><a href="#">Sub Link6</a></li>
+          </ul>
+        </div>
+        <a class="menuitem submenuheader" href="#" >Phase II</a>
+        <div class="submenu">
+          <ul>
+            <li><a href="#">Sub Link2</a></li>
+            <li><a href="#">Sub Link3</a></li>
+            <li><a href="#">Sub Link4</a></li>
+            <li><a href="#">Sub Link5</a></li>
+            <li><a href="#">Sub Link6</a></li>
+          </ul>
+        </div>
+        <a class="menuitem submenuheader" href="#" >METIS</a>
+        <div class="submenu">
+          <ul>
+            <li><a href="#">Sub Link2</a></li>
+            <li><a href="#">Sub Link3</a></li>
+            <li><a href="#">Sub Link4</a></li>
+            <li><a href="#">Sub Link5</a></li>
+            <li><a href="#">Sub Link6</a></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+</body>
+</html>

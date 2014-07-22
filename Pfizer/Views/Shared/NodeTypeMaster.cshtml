@@ -1,0 +1,16 @@
+﻿@model Dictionary<int, string>
+<select> 
+    <option >select</option>
+@foreach (KeyValuePair<int, string> value in Model)
+{        
+    if (@value.Value.Substring(@value.Value.Length-1,1) == "1")
+    {           
+        <option value="@value.Key.ToString()" selected="selected" >@value.Value.Substring(0, @value.Value.Length - 1)</option>
+    }
+    else
+    {
+        <option value='@value.Key.ToString()' >@value.Value.Substring(0, @value.Value.Length - 1)</option>
+    }
+}
+</select>
+

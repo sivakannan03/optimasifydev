@@ -1,0 +1,38 @@
+﻿@model Dictionary<int, string>
+
+@if (ViewBag.Type == "group")
+{
+    <select>
+
+        <option value='0'>Select</option>
+        @foreach (KeyValuePair<int, string> value in Model)
+        {
+            <option value='@value.Key.ToString()'>@value.Value</option>
+        }
+    </select>
+}
+
+@if(ViewBag.Type=="NSHDay")
+{
+<select>
+    
+    <option value='0'>Select</option>
+    @foreach (KeyValuePair<int, string> value in Model)
+    {
+        <option value='@value.Key.ToString()'>@value.Value</option>
+    }
+</select>
+}
+@if (ViewBag.Type == "SHDay")
+{
+<select>
+
+    <option value='0'>Select</option>
+    @foreach (KeyValuePair<int, string> value in Model)
+    {
+        <option value='@value.Key.ToString()' selected="selected">@value.Value</option>
+    }
+</select>
+}
+
+

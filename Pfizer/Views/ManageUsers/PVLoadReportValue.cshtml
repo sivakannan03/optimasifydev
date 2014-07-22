@@ -1,0 +1,68 @@
+﻿@model Dictionary<int, string>
+
+@if (ViewBag.Type == "location")
+{
+
+    <select>
+        <option value='select'>Select</option>
+        @foreach (KeyValuePair<int, string> value in Model)
+        {
+            <option value='@value.Key.ToString()'>@value.Value</option>
+        }
+    </select>
+}
+
+@if (ViewBag.Type == "Team")
+{
+
+    <select>
+        <option value='select'>Select</option>
+        @foreach (KeyValuePair<int, string> value in Model)
+        {
+            <option value='@value.Key.ToString()'>@value.Value</option>
+        }
+    </select>
+}
+
+
+@if (ViewBag.Type == "Region")
+{
+
+    <select>
+        <option value='select'>Select</option>
+        @foreach (KeyValuePair<int, string> value in Model)
+        {
+            <option value='@value.Key.ToString()'>@value.Value</option>
+        }
+    </select>
+}
+
+@if (ViewBag.Type == "Territory")
+{
+
+    <select>
+        <option value='select'>Select</option>
+        @foreach (KeyValuePair<int, string> value in Model)
+        {
+            <option value='@value.Key.ToString()'>@value.Value</option>
+        }
+    </select>
+}
+
+
+@if (ViewBag.Type == "HQ")
+{
+
+    <select>
+        <option value='select'>Select</option>
+        @foreach (KeyValuePair<int, string> value in Model)
+        {
+            <option value='@value.Key.ToString()'>@value.Value</option>
+        }
+    </select>
+}
+
+
+
+
+

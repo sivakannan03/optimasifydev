@@ -1,0 +1,31 @@
+﻿   @model Dictionary<int, string>
+
+    @if (ViewBag.Type == "Loadspecial132133")
+{
+    <select id="TeamName" name="TeamName" multiple>
+        <option value="0">Select</option>
+
+        @foreach (KeyValuePair<int, string> value in Model)
+        {
+            <option value='@value.Key.ToString()' selected="selected">@value.Value</option>
+        }
+    </select>
+}
+
+@if (ViewBag.Type == "Loadspecial")
+{
+<select>
+    <<option value="0">Select</option>
+    @foreach (KeyValuePair<int, string> value in Model)
+    {
+        if (@value.Value.Substring(@value.Value.Length - 1, 1) == "1")
+        {
+            <option value="@value.Key.ToString()" selected="selected">@value.Value.Substring(0, @value.Value.Length - 1)</option>
+        }
+        else
+        {
+            <option value='@value.Key.ToString()'>@value.Value.Substring(0, @value.Value.Length - 1)</option>
+        }
+    }
+</select>
+}

@@ -1,0 +1,782 @@
+﻿@{
+    ViewBag.Title = "StockiestMaster";
+    Layout = "~/Views/Shared/MasterLayout.cshtml";
+}
+
+
+
+
+<body>
+    @using (Html.BeginForm(FormMethod.Post))
+    {
+        <div>
+            <table border="0" style="width: 100%">
+                <tr>
+                    <td>
+                        <!--JqGrid Starts-->
+                        <table style="margin-top: 7px; width :100%" border="0">
+                            <tr>
+                                <td>
+                                    <table id="ajaxGrid" style="width: 100%" border="0"></table>
+                                    <div id="ajaxGridPager">
+                                    </div>
+                                </td>
+                            </tr>
+                        </table>
+                        <!--Ends-->
+                    </td>
+                </tr>
+            </table>
+        </div>
+   
+
+
+<script type="text/javascript">
+
+    jQuery(document).ready(function () {
+
+        initGrid();
+    });
+
+    function initGrid() {
+        jQuery("#ajaxGrid").jqGrid({
+            url: '@Url.Action("GridDataStockiestMaster")',
+
+            datatype: "json",
+            jsonReader: { repeatitems: false, id: "StockistID" },
+            colNames: ['PKID', 'Stockiest Name', 'Address', 'Street', 'City', 'CityCode', 'Area', 'ZipCode', 'Phone Number', 'Email', 'Status'],
+            colModel: [
+
+                 { name: 'StockistID', index: 'PKID', align: 'left', hidden: true, editrules: { edithidden: true, required: true } },
+
+                 {
+
+                     name: 'NameofStockist', index: 'NameofStockist', align: 'left', editable: true, editrules: { edithidden: true, required: false }, formoptions: {
+                         size: 35,
+                         elmprefix: "<span style='align:left;color:red'>*</span>&nbsp;"
+                     }, searchoptions: { sopt: ['eq', 'bw', 'ew', 'cn'] }, search: true, searchrules: { required: true },
+                     editoptions: {
+                         size: 35,
+                         maxlength: 50,
+                         dataEvents: [
+                             {
+                                 type: 'keyup', // blur
+                                 fn: function (e) {
+                                     $('#FormError').hide();
+                                     SingleCharacter(this);
+                                 }
+
+                             }
+                         ]
+                     }
+                 },
+
+                 {
+                     name: 'StockistAddress', index: 'StockistAddress', align: 'left', editable: true, editrules: { edithidden: true, required: false },
+                     editoptions: {
+                         size: 35,
+                         maxlength: 70,
+                         //dataEvents: [
+                         //    {
+                         //        type: 'keyup', // blur
+                         //        fn: function (e) {
+                         //            $('#FormError').hide();
+                         //            CharacterAndNumber(this);
+                         //        }
+
+                         //    }
+                         //]
+                     },
+                     formoptions: {
+                         size: 35,
+                         elmprefix: "<span style='align:left;color:red'>*</span>&nbsp;"
+                     }, searchoptions: { sopt: ['eq', 'bw', 'ew', 'cn'] }, search: false
+                 },
+
+                 {
+                     name: 'Street', index: 'Street', align: 'left', editable: true, editrules: { edithidden: true, required: false }, formoptions: {
+                         size: 35,
+                         elmprefix: "<span style='align:left;color:red'>*</span>&nbsp;"
+                     }, searchoptions: { sopt: ['eq', 'bw', 'ew', 'cn'] }, search: false,
+                     editoptions: {
+                         size: 35,
+                         maxlength: 50,
+                         dataEvents: [
+                             {
+                                 type: 'keyup', // blur
+                                 fn: function (e) {
+                                     $('#FormError').hide();
+                                     SingleCharacter(this);
+                                 }
+
+                             }
+                         ]
+                     }
+                 },
+
+
+                  {
+                      name: 'City', index: 'City', align: 'left', editable: true, editrules: { edithidden: true }, editrules: { edithidden: true, required: false }, edittype: 'select', editoptions: {
+                          dataUrl: function () {
+
+                              var row_id = $('#ajaxGrid').getGridParam('selrow');
+                              return 'AllCityTerritoryMaster?type=' + 'City' + '&data=' + row_id;
+
+                          },
+
+                          dataEvents: [{
+                              type: 'change',
+                              fn: function (e) {
+                                  var postData = e.currentTarget.value;
+                                  
+                                  $.ajax({
+                                      type: 'POST',
+                                      url: '@Url.Action("AreaNameLoad")?type=' + 'AreaName',
+                                      data: { AreaCode: postData },
+                                      success: function (data) {
+                                          $('#tr_Area td:nth-child(2)').html("<span style='align:left;color:red'>*</span><td class='DataTD'>" + data + "</td>");
+
+                                      }
+                                  });
+
+                              }
+                          }],
+                      }
+                          , formoptions: {
+                              size: 35,
+                              elmprefix: "<span style='align:left;color:red'>*</span>&nbsp;"
+                          }, searchoptions: { sopt: ['eq', 'bw', 'ew', 'cn'] }, search: false
+                  },
+                  { name: 'CityCode', index: 'CityCode', align: 'left', hidden: true, editrules: { edithidden: true, required: false } },
+                {
+                    name: 'Area', index: 'Area', align: 'left', editable: true, hidden: false, editrules: { edithidden: true, required: false }, edittype: 'select',
+                    formoptions: {
+                        size: 35,
+                        elmprefix: "<span style='align:left;color:red'>*</span>&nbsp;"
+                    }, searchoptions: { sopt: ['eq', 'bw', 'ew', 'cn'] }, search: false,
+                    editoptions: {
+                        dataUrl: function () {
+                            var row_id = $('#ajaxGrid').getGridParam('selrow');
+                            var City = $('#ajaxGrid').jqGrid('getCell', row_id, 'CityCode');
+                            return 'AreaCodeLoad?type=' + 'CityName' + '&City=' + City;
+                        },
+                       
+                    },
+                },
+
+                  {
+                      name: 'ZipCode', index: 'ZipCode', align: 'left', editable: true, editrules: { edithidden: true, required: false },
+                      //OnlyNumber
+                      editoptions: {
+                          size: 35,
+                          maxlength: 6,
+                          dataEvents: [
+                              {
+                                  type: 'keyup', // blur
+                                  fn: function (e) {
+                                      $('#FormError').hide();
+                                      OnlyNumber(this);
+                                  }
+
+                              }
+                          ]
+                      },
+
+                      formoptions: {
+                          size: 35,
+                          elmprefix: "<span style='align:left;color:red'>*</span>&nbsp;"
+                      }, searchoptions: { sopt: ['eq', 'bw', 'ew', 'cn'] }, search: false
+                  },
+
+                 {
+                     name: 'PhoneNumber', index: 'PhoneNumber', align: 'left', editable: true, editrules: { edithidden: true, required: false },
+
+                     editoptions: {
+                         size: 35,
+                         maxlength: 12,
+                         dataEvents: [
+                             {
+                                 type: 'keyup', // blur
+                                 fn: function (e) {
+                                     $('#FormError').hide();
+                                     OnlyNumber(this);
+                                 }
+
+                             }
+                         ]
+                     },
+                     formoptions: {
+                         size: 35,
+                         elmprefix: "&nbsp;&nbsp;"
+                     }, searchoptions: { sopt: ['eq', 'bw', 'ew', 'cn'] }, search: false
+                 },
+
+                 {
+                     name: 'Email', index: 'Email', align: 'left', editable: true, editrules: { edithidden: true },
+                     editoptions: {
+                         size: 35,
+                         maxlength: 50,
+                         dataEvents: [
+                             {
+                                 type: 'keyup', // blur
+                                 fn: function (e) {
+                                     $('#FormError').hide();
+                                     email(this);
+                                 }
+
+                             }
+                         ]
+                     },
+
+
+                     formoptions: {
+                         size: 35,
+                         elmprefix: "&nbsp;&nbsp;"
+                     }, searchoptions: { sopt: ['eq', 'bw', 'ew', 'cn'] }, search: false,
+                     
+                 },
+
+
+                 {
+                     name: 'Status', index: 'Status', align: 'left', resizable: false, editable: true, edittype: 'checkbox', editoptions: { value: "Active:Passive", defaultValue: "Active" }, formoptions: {
+                         elmprefix: "&nbsp;&nbsp;"
+
+                     }, search: false
+                 },
+            ],
+            caption: "Stockiest Master",
+            autowidth: true,
+            gridview: true,
+            hidegrid: true,
+            altRows: true,
+            rowTotal: 10,
+            rowNum: 10,
+            gridComplete: function () {
+
+                if (jQuery("#ajaxGrid").getGridParam("records") == 0) {
+                    jQuery("#ajaxGrid").addRowData(
+                    "blankRow", { "Street": "No records to view" });
+                }
+            },
+            viewrecords: true,
+            pager: $('#ajaxGridPager'),
+            height: 'auto',
+            editable: true,
+            editurl: '@Url.Action("EditStockiestMaster")'
+        });
+
+
+
+
+        jQuery("#ajaxGrid").jqGrid('navGrid', '#ajaxGridPager', { edit: true, add: true, del: true, search: true, view: true, enableClear: false },
+            {
+                // Edit Portion
+                closeOnEscape: true,
+                width: 450,
+                closeOnEscape: true,
+                width: 600,
+                modal: true,
+                recreateForm: true,
+                checkOnSubmit: true,
+                afterShowForm: function (form_id) {
+                    var thisForm = form_id.selector.replace('FrmGrid_', 'editmod')
+                    var dialogHeight = $(thisForm).height();
+                    var dialogWidth = $(thisForm).width();
+                    var windowHeight = $(window).height();
+                    var windowWidth = $(window).width();
+                    $(thisForm).css('position', 'fixed');
+                    $(thisForm).css('top', ((windowHeight - dialogHeight) / 2));
+                    $(thisForm).css('left', ((windowWidth - dialogWidth) / 2));
+                },
+                beforeShowForm: function (form) {
+
+                    var sel_id = $('#ajaxGrid').jqGrid('getGridParam', 'selrow');
+                    var value = $('#ajaxGrid').jqGrid('getCell', sel_id, 'Status');
+
+                    if (value == 'Inactive') {
+                        $('#tr_Status', form).show();
+                    }
+                    else {
+
+                        $('#tr_Status', form).hide();
+                    }
+
+
+                    @*var City = $('#ajaxGrid').jqGrid('getCell', sel_id, 'City');
+
+                    $.ajax({
+                        type: 'POST',
+                        url: '@Url.Action("AreaNameLoadforEdit")?type=' + 'AreaName',
+                        data: { AreaCode: City },
+                        success: function (data) {
+                            $('#tr_Area td:nth-child(2)').html("<span style='align:left;color:red'>*</span><td class='DataTD'>" + data + "</td>");
+
+                        }
+                    });*@
+
+                },
+                beforeSubmit: function (response, postdata) {
+                    if ($("#NameofStockist").val().charAt(0) == ' ' || $("#NameofStockist").val().charAt($("#NameofStockist").val().length - 1) == ' ') {
+                        $('#TblGrid_ajaxGrid td.ui-state-highlight').removeClass('ui-state-highlight').addClass('ui-state-error');
+                        $("#NameofStockist").css("background-color", "#FFE8E8").css("border", "1px solid #FF6666");
+                        $('#NameofStockist').val('');
+                        $('#NameofStockist').focus();
+                        return [false, 'Enter Valid NameofStockist'];
+                    }
+                    if ($("#StockistAddress").val().charAt(0) == ' ' || $("#StockistAddress").val().charAt($("#StockistAddress").val().length - 1) == ' ') {
+                        $('#TblGrid_ajaxGrid td.ui-state-highlight').removeClass('ui-state-highlight').addClass('ui-state-error');
+                        $("#StockistAddress").css("background-color", "#FFE8E8").css("border", "1px solid #FF6666");
+                        $('#StockistAddress').val('');
+                        $('#StockistAddress').focus();
+                        return [false, 'Enter Valid StockistAddress'];
+                    }
+                    
+                    if ($("#Street").val().charAt(0) == ' ' || $("#Street").val().charAt($("#Street").val().length - 1) == ' ') {
+                        $('#TblGrid_ajaxGrid td.ui-state-highlight').removeClass('ui-state-highlight').addClass('ui-state-error');
+                        $("#Street").css("background-color", "#FFE8E8").css("border", "1px solid #FF6666");
+                        $('#Street').val('');
+                        $('#Street').focus();
+                        return [false, 'Enter Valid Street'];
+                    }
+                    if ($("#ZipCode").val().charAt(0) == ' ' || $("#ZipCode").val().charAt($("#ZipCode").val().length - 1) == ' ') {
+                        $('#TblGrid_ajaxGrid td.ui-state-highlight').removeClass('ui-state-highlight').addClass('ui-state-error');
+                        $("#ZipCode").css("background-color", "#FFE8E8").css("border", "1px solid #FF6666");
+                        $('#ZipCode').val('');
+                        $('#ZipCode').focus();
+                        return [false, 'Enter Valid ZipCode'];
+                    }
+                    if ($("#PhoneNumber").val().charAt(0) == ' ' || $("#PhoneNumber").val().charAt($("#PhoneNumber").val().length - 1) == ' ') {
+                        $('#TblGrid_ajaxGrid td.ui-state-highlight').removeClass('ui-state-highlight').addClass('ui-state-error');
+                        //$("#PhoneNumber").css("background-color", "#FFE8E8").css("border", "1px solid #FF6666");
+                        $('#PhoneNumber').val('');
+                        $('#PhoneNumber').focus();
+                        return [false, 'Enter Valid PhoneNumber'];
+                    }
+                    if ($("#Email").val().charAt(0) == ' ' || $("#Email").val().charAt($("#Email").val().length - 1) == ' ') {
+                        $('#TblGrid_ajaxGrid td.ui-state-highlight').removeClass('ui-state-highlight').addClass('ui-state-error');
+                        //$("#Email").css("background-color", "#FFE8E8").css("border", "1px solid #FF6666");
+                        $('#Email').val('');
+                        $('#Email').focus();
+                        return [false, 'Enter Valid ZipCode'];
+                    }
+                    $('select').css("border", "1px solid #C0C0C0");
+                    $("input[type=text]").css("border", "1px solid #C0C0C0");
+
+                    var error = " ";
+                    if ($.trim($("#NameofStockist").val()) == "") {
+                        error += "NameofStockist";
+                        $('#FormError').html("<td class='ui-state-error' colspan='2'>" + error + ":Field is required</td>");
+                        $("#NameofStockist").val("");
+                        $('#NameofStockist').focus();
+                        $("#NameofStockist").css("background-color", "#FFE8E8").css("border", "1px solid #FF6666");
+                        return [false, response.responseText];
+                    }
+                    else if ($.trim($("#StockistAddress").val()) == "") {
+                        error += "StockistAddress";
+                        $('#FormError').html("<td class='ui-state-error' colspan='2'>" + error + ":Field is required</td>");
+                        $("#StockistAddress").val("");
+                        $('#StockistAddress').focus();
+                        $("#StockistAddress").css("background-color", "#FFE8E8").css("border", "1px solid #FF6666");
+                        return [false, response.responseText];
+                    }
+                    else if ($.trim($("#Street").val()) == "") {
+                        error += "Street";
+                        $('#FormError').html("<td class='ui-state-error' colspan='2'>" + error + ":Field is required</td>");
+                        $("#Street").val("");
+                        $('#Street').focus();
+                        $("#Street").css("background-color", "#FFE8E8").css("border", "1px solid #FF6666");
+                        return [false, response.responseText];
+                    }
+
+
+                    else if (($("#City").val() == 0) || ($("#City").val() == null)) {
+                        error += "City";
+                        $('#FormError').html("<td class='ui-state-error' colspan='2'>" + error + ":Field is required</td>");
+                        // $('#City').focus();
+                        $("#City").css("background-color", "#FFE8E8").css("border", "1px solid #FF6666");
+                        return [false, response.responseText];
+                    }
+                    else if (($("#Area").val() == 0) || ($("#Area").val() == null)) {
+                        error += "Area:";
+                        $('#FormError').html("<td class='ui-state-error' colspan='2'>" + error + ":Field is required</td>");
+                        // $('#Area').focus();
+                        $("#Area").css("background-color", "#FFE8E8").css("border", "1px solid #FF6666");
+                        return [false, response.responseText];
+                    }
+                    else if ($.trim($("#ZipCode").val()) == "") {
+                        error += "ZipCode";
+                        $('#FormError').html("<td class='ui-state-error' colspan='2'>" + error + ":Field is required</td>");
+                        $("#ZipCode").val("");
+                        $('#ZipCode').focus();
+                        $("#ZipCode").css("background-color", "#FFE8E8").css("border", "1px solid #FF6666");
+                        return [false, response.responseText];
+                    }
+                    //else if ($.trim($("#PhoneNumber").val()) == "") {
+                    //    error += "PhoneNumber";
+                    //    $('#FormError').html("<td class='ui-state-error' colspan='2'>" + error + ":Field is required</td>");
+                    //    $("#PhoneNumber").val("");
+                    //    $('#PhoneNumber').focus();
+                    //    $("#PhoneNumber").css("background-color", "#FFE8E8").css("border", "1px solid #FF6666");
+                    //    return [false, response.responseText];
+                    //}
+                    //else if ($.trim($("#Email").val()) == "") {
+                    //    error += "Email";
+                    //    $('#FormError').html("<td class='ui-state-error' colspan='2'>" + error + ":Field is required</td>");
+                    //    $("#Email").val("");
+                    //    $('#Email').focus();
+                    //    $("#Email").css("background-color", "#FFE8E8").css("border", "1px solid #FF6666");
+                    //    return [false, response.responseText];
+                    //}
+                    else {
+                        return [true, response.responseText];
+                    }
+
+                },
+                afterSubmit: function (response, postdata) {
+
+                    $("#ajaxGrid").jqGrid('setGridParam', { datatype: 'json' }).trigger('reloadGrid');
+                    $('#TblGrid_ajaxGrid td.ui-state-error').removeClass('ui-state-error').addClass('ui-state-highlight');
+                    $("input[type=text]").val('');
+                    $("select").val(0);
+                    $("#Status").prop('checked', false);
+                    return [false, response.responseText];
+                },
+
+                @*onclickSubmit: function (params, posdata) {
+                    
+                    params.url = '@Url.Action("EditStockiestMaster")?NameofStockist=' + $('#NameofStockist').val() + '&StockistAddress=' + $('#StockistAddress').val() + '&Street=' + $('#Street').val() + '&City=' + $('#City').val() + '&Area=' + $('#Area').val() + '&ZipCode=' + $('#ZipCode').val() + '&PhoneNumber=' + $('#PhoneNumber').val() + '&Email=' + $('#Email').val() + '&Status=' + $('#Status').val();
+
+                },*@
+            },
+
+
+        {
+            //Add Portion
+            closeOnEscape: true,
+            closeAfterAdd: true,
+            recreateForm: true,
+            width: 450,
+            modal: true,
+            afterShowForm: function (form_id) {
+                var thisForm = form_id.selector.replace('FrmGrid_', 'editmod');
+                var dialogHeight = $(thisForm).height();
+                var dialogWidth = $(thisForm).width();
+                var windowHeight = $(window).height();
+                var windowWidth = $(window).width();
+                $(thisForm).css('position', 'fixed');
+                $(thisForm).css('top', ((windowHeight - dialogHeight) / 2));
+                $(thisForm).css('left', ((windowWidth - dialogWidth) / 2));
+            },
+            beforeShowForm: function (form) {
+
+                $('#tr_Status', form).hide();
+            },
+            beforeSubmit: function (response, postdata) {
+                if ($("#NameofStockist").val().charAt(0) == ' ' || $("#NameofStockist").val().charAt($("#NameofStockist").val().length - 1) == ' ') {
+                    $('#TblGrid_ajaxGrid td.ui-state-highlight').removeClass('ui-state-highlight').addClass('ui-state-error');
+                    $("#NameofStockist").css("background-color", "#FFE8E8").css("border", "1px solid #FF6666");
+                    $('#NameofStockist').val('');
+                    $('#NameofStockist').focus();
+                    return [false, 'Enter Valid NameofStockist'];
+                }
+                if ($("#StockistAddress").val().charAt(0) == ' ' || $("#StockistAddress").val().charAt($("#StockistAddress").val().length - 1) == ' ') {
+                    $('#TblGrid_ajaxGrid td.ui-state-highlight').removeClass('ui-state-highlight').addClass('ui-state-error');
+                    $("#StockistAddress").css("background-color", "#FFE8E8").css("border", "1px solid #FF6666");
+                    $('#StockistAddress').val('');
+                    $('#StockistAddress').focus();
+                    return [false, 'Enter Valid StockistAddress'];
+                }
+                if ($("#Email").val().charAt(0) == ' ' || $("#Email").val().charAt($("#Email").val().length - 1) == ' ') {
+                    $('#TblGrid_ajaxGrid td.ui-state-highlight').removeClass('ui-state-highlight').addClass('ui-state-error');
+                    $("#Email").css("background-color", "#FFE8E8").css("border", "1px solid #FF6666");
+                    $('#Email').val('');
+                    $('#Email').focus();
+                    return [false, 'Enter Valid Email'];
+                }
+                if ($("#Street").val().charAt(0) == ' ' || $("#Street").val().charAt($("#Street").val().length - 1) == ' ') {
+                    $('#TblGrid_ajaxGrid td.ui-state-highlight').removeClass('ui-state-highlight').addClass('ui-state-error');
+                    $("#Street").css("background-color", "#FFE8E8").css("border", "1px solid #FF6666");
+                    $('#Street').val('');
+                    $('#Street').focus();
+                    return [false, 'Enter Valid Street'];
+                }
+                if ($("#PhoneNumber").val().charAt(0) == ' ' || $("#PhoneNumber").val().charAt($("#PhoneNumber").val().length - 1) == ' ') {
+                    $('#TblGrid_ajaxGrid td.ui-state-highlight').removeClass('ui-state-highlight').addClass('ui-state-error');
+                    //$("#PhoneNumber").css("background-color", "#FFE8E8").css("border", "1px solid #FF6666");
+                    $('#PhoneNumber').val('');
+                    $('#PhoneNumber').focus();
+                    return [false, 'Enter Valid PhoneNumber'];
+                }
+                if ($("#Email").val().charAt(0) == ' ' || $("#Email").val().charAt($("#Email").val().length - 1) == ' ') {
+                    $('#TblGrid_ajaxGrid td.ui-state-highlight').removeClass('ui-state-highlight').addClass('ui-state-error');
+                    //$("#Email").css("background-color", "#FFE8E8").css("border", "1px solid #FF6666");
+                    $('#Email').val('');
+                    $('#Email').focus();
+                    return [false, 'Enter Valid ZipCode'];
+                }
+
+                $('select').css("border", "1px solid #C0C0C0");
+                $("input[type=text]").css("border", "1px solid #C0C0C0");
+
+                var error = " ";
+                if ($.trim($("#NameofStockist").val()) == "") {
+                    error += "NameofStockist";
+                    $('#FormError').html("<td class='ui-state-error' colspan='2'>" + error + ":Field is required</td>");
+                    $("#NameofStockist").val("");
+                    $('#NameofStockist').focus();
+                    $("#NameofStockist").css("background-color", "#FFE8E8").css("border", "1px solid #FF6666");
+                    return [false, response.responseText];
+                }
+                else if ($.trim($("#StockistAddress").val()) == "") {
+                    error += "StockistAddress";
+                    $('#FormError').html("<td class='ui-state-error' colspan='2'>" + error + ":Field is required</td>");
+                    $("#StockistAddress").val("");
+                    $('#StockistAddress').focus();
+                    $("#StockistAddress").css("background-color", "#FFE8E8").css("border", "1px solid #FF6666");
+                    return [false, response.responseText];
+                }
+                else if ($.trim($("#Street").val()) == "") {
+                    error += "Street";
+                    $('#FormError').html("<td class='ui-state-error' colspan='2'>" + error + ":Field is required</td>");
+                    $("#Street").val("");
+                    $('#Street').focus();
+                    $("#Street").css("background-color", "#FFE8E8").css("border", "1px solid #FF6666");
+                    return [false, response.responseText];
+                }
+                else if (($("#City").val() == 0) || ($("#City").val() == null)) {
+                    error += "City";
+                    $('#FormError').html("<td class='ui-state-error' colspan='2'>" + error + ":Field is required</td>");
+                    // $('#City').focus();
+                    $("#City").css("background-color", "#FFE8E8").css("border", "1px solid #FF6666");
+                    return [false, response.responseText];
+                }
+                else if (($("#Area").val() == 0) || ($("#Area").val() == null)) {
+                    error += "Area:";
+                    $('#FormError').html("<td class='ui-state-error' colspan='2'>" + error + ":Field is required</td>");
+                    // $('#Area').focus();
+                    $("#Area").css("background-color", "#FFE8E8").css("border", "1px solid #FF6666");
+                    return [false, response.responseText];
+                }
+                else if ($.trim($("#ZipCode").val()) == "") {
+                    error += "ZipCode";
+                    $('#FormError').html("<td class='ui-state-error' colspan='2'>" + error + ":Field is required</td>");
+                    $("#ZipCode").val("");
+                    $('#ZipCode').focus();
+                    $("#ZipCode").css("background-color", "#FFE8E8").css("border", "1px solid #FF6666");
+                    return [false, response.responseText];
+                }
+                //else if ($.trim($("#PhoneNumber").val()) == "") {
+                //    error += "PhoneNumber";
+                //    $('#FormError').html("<td class='ui-state-error' colspan='2'>" + error + ":Field is required</td>");
+                //    $("#PhoneNumber").val("");
+                //    $('#PhoneNumber').focus();
+                //    $("#PhoneNumber").css("background-color", "#FFE8E8").css("border", "1px solid #FF6666");
+                //    return [false, response.responseText];
+                //}
+                //else if ($.trim($("#Email").val()) == "") {
+                //    error += "Email";
+                //    $('#FormError').html("<td class='ui-state-error' colspan='2'>" + error + ":Field is required</td>");
+                //    $("#Email").val("");
+                //    $('#Email').focus();
+                //    $("#Email").css("background-color", "#FFE8E8").css("border", "1px solid #FF6666");
+                //    return [false, response.responseText];
+                //}
+                else {
+                    return [true, response.responseText];
+                }
+
+            },
+            afterSubmit: function (response, postdata) {
+
+                if (response.responseText == "\"Stokiest Master Added Successfully.\"") {
+                    alert(response.responseText);
+                    $("#ajaxGrid").jqGrid('setGridParam', { datatype: 'json' }).trigger('reloadGrid');
+                    $('#TblGrid_ajaxGrid td.ui-state-error').removeClass('ui-state-error').addClass('ui-state-highlight');
+                    $("input[type=text]").val('');
+                    $("select").val(0);
+                    $("#Status").prop('checked', false);
+                    return [false, response.responseText];
+                }
+                else {
+                    $("#ajaxGrid").jqGrid('setGridParam', { datatype: 'json' }).trigger('reloadGrid');
+                    $('#TblGrid_ajaxGrid td.ui-state-highlight').removeClass('ui-state-highlight').addClass('ui-state-error');
+                    $("input[type=text]").val('');
+                    $("select").val(0);
+                    $("#Status").prop('checked', false);
+                    return [false, response.responseText];
+                }
+
+            },
+            onclickSubmit: function (params, posdata) {
+
+                params.url = '@Url.Action("AddStokiestMaster")?StokiestName=' + $('#NameofStockist').val() + '&StockistAddress=' + $('#StockistAddress').val() + '&Street=' + $('#Street').val() + '&City=' + $('#City').val() + '&Area=' + $('#Area').val() + '&ZipCode=' + $('#ZipCode').val() + '&PhoneNumber=' + $('#PhoneNumber').val() + '&Email=' + $('#Email').val() + '&Status=' + $('#Status').val();
+
+            },
+        },
+                {
+
+                    closeOnEscape: true,
+                    recreateForm: true,
+                    width: 450,
+                    modal: true,
+                    beforeShowForm: function (form) {
+
+                        //POP UP Screen Fit Screen
+
+                        $('tr td.delmsg').html('Delete selected record(s)?');
+                        var col1 = $('#ajaxGrid').jqGrid('getGridParam', 'selrow');
+                        var IsActive = $('#ajaxGrid').jqGrid('getCell', col1, 'Status');
+                        if (IsActive == "Inactive") {
+                            $('tr td.delmsg').html('Record Already Deleted');
+
+                            $('#dData').hide();
+                        }
+                        else
+                            $('#dData').show();
+                        var thisForm = $("#delmod" + jQuery("#ajaxGrid")[0].id);
+                        var dialogHeight = $(thisForm).height();
+                        var dialogWidth = $(thisForm).width();
+                        var windowHeight = $(window).height();
+                        var windowWidth = $(window).width();
+                        $(thisForm).css('position', 'fixed');
+                        $(thisForm).css('top', ((windowHeight - dialogHeight) / 2));
+                        $(thisForm).css('left', ((windowWidth - dialogWidth) / 2));
+
+
+
+
+                    },
+                    afterSubmit: function (response, postdata) {
+
+                        $('tr td.delmsg').html('');
+                        $('#dData').hide();
+                        $("#ajaxGrid").jqGrid('setGridParam', { datatype: 'json' }).trigger('reloadGrid');
+                        $('#DelTbl_ajaxGrid td.ui-state-error').removeClass('ui-state-error').addClass('ui-state-highlight');
+                        return [false, response.responseText];
+                    }
+                },
+            {
+                //Search
+
+                closeOnEscape: true,
+                modal: true,
+                recreateForm: true,
+                width: 600,
+                caption: "Search",
+                searchOnEnter: true,
+                beforeShowSearch: function (form) {
+
+                    $('#jqg1').val('');
+                    $('#fbox_ajaxGrid_reset').click();
+
+                    var dialogHeight = $("#searchmodfbox_ajaxGrid").height();
+                    var dialogWidth = $("#searchmodfbox_ajaxGrid").width();
+                    var windowHeight = $(window).height();
+                    var windowWidth = $(window).width();
+                    $("#searchmodfbox_ajaxGrid").css('position', 'fixed');
+                    $("#searchmodfbox_ajaxGrid").css('top', ((windowHeight - dialogHeight) / 2));
+                    $("#searchmodfbox_ajaxGrid").css('left', ((windowWidth - dialogWidth) / 2));
+
+                    return [true, ""];
+                }
+            },
+            {
+                //View :
+                closeOnEscape: true,
+                recreateForm: true,
+                modal: true,
+                width: 600,
+
+                beforeShowForm: function (form) {
+
+                    var thisForm = $("#viewmod" + jQuery("#ajaxGrid")[0].id);
+                    var dialogHeight = $(thisForm).height();
+                    var dialogWidth = $(thisForm).width();
+                    var windowHeight = $(window).height();
+                    var windowWidth = $(window).width();
+                    $(thisForm).css('position', 'fixed');
+                    $(thisForm).css('top', ((windowHeight - dialogHeight) / 2));
+                    $(thisForm).css('left', ((windowWidth - dialogWidth) / 2));
+                }
+
+            }
+
+                );
+        setMethod('ajaxGrid', 'ajaxGridPager', 'StokiestMaster');
+    }
+    function setMethod(gid, id, pgTitle) {
+
+        var btnTitle = 'Export to Excel';
+        $('#' + gid).jqGrid('navSeparatorAdd', '#' + id, { sepclass: "ui-separator" });
+        $('#' + gid).jqGrid('navButtonAdd', '#' + id, { caption: '', title: btnTitle, position: 'last', buttonicon: 'ui-icon-calculator', onClickButton: function () { ExcelExport(); } });
+
+        var btnTitle = 'Export to PDF';
+        $('#' + gid).jqGrid('navSeparatorAdd', '#' + id, { sepclass: "ui-separator" });
+        $('#' + gid).jqGrid('navButtonAdd', '#' + id, { caption: '', title: btnTitle, position: 'last', buttonicon: 'ui-icon-bookmark', onClickButton: function () { PDFExport(); } });
+
+        var btnTitle = 'Export to CSV';
+        $('#' + gid).jqGrid('navSeparatorAdd', '#' + id, { sepclass: "ui-separator" });
+        $('#' + gid).jqGrid('navButtonAdd', '#' + id, { caption: '', title: btnTitle, position: 'last', buttonicon: 'ui-icon-note', onClickButton: function () { CSVExport(); } });
+
+
+        var btnTitle = 'Print Grid';
+        $('#' + gid).jqGrid('navSeparatorAdd', '#' + id, { sepclass: "ui-separator" });
+        $('#' + gid).jqGrid('navButtonAdd', '#' + id, { caption: '', title: btnTitle, position: 'last', buttonicon: 'ui-icon-print', onClickButton: function () { PrintGrid(gid); } });
+    }
+    function ExcelExport() {
+        window.location = '@Url.Action("ExportStokiestMasterToExcel")';
+    }
+    function PDFExport() {
+        window.location = '@Url.Action("ExportStokiestMasterToPDF")';
+    }
+    function CSVExport() {
+        window.location = '@Url.Action("ExportStokiestMasterPDFToCsv")';
+    }
+    function PrintGrid(gid) {
+
+        var rows = $('#ajaxGrid').jqGrid('getRowData');
+
+        for (var i = 0; i < rows.length; i++) {
+            var row = rows[i];
+            $('#Table1').append("<tr><td>" + row.NameofStockist + "</td><td>" + row.StockistAddress + "</td><td>" + row.Street + "</td><td>" + row.City + "</td><td>" + row.ZipCode + "</td><td>" + row.PhoneNumber + "</td><td>" + row.Email + "</td><td>" + row.Status + "</td></tr>");
+
+            //NameofStockist,StockistAddress,Street,City,ZipCode,PhoneNumber,Email,Status
+        }
+
+        $(function () { printChrome('prt-container') });
+    }
+
+    function printChrome(divContainer) {
+
+        var printContent = document.getElementById(divContainer);
+        window.document.body.innerHTML = printContent.innerHTML;
+        window.print();
+        window.location.reload();
+    }
+
+
+    </script>
+    <div id='prt-container' style="display:none">
+        <table id="Table1" border="1" width="100%">
+            <thead>
+                <tr>
+                    
+                    <td><b>StockistName</b></td>
+                    <td><b>StockistAddress</b></td>
+                    <td><b>Street</b></td>
+                    <td><b>City</b></td>
+                    <td><b>ZipCode</b></td>
+                    <td><b>PhoneNumber</b></td>
+                    <td><b>Email</b></td>
+                    <td><b>Status</b></td>
+                   
+                </tr>
+
+            </thead>
+            <tbody></tbody>
+
+        </table>
+    </div>
+
+    }
+</body>

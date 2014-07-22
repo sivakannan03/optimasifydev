@@ -1,0 +1,428 @@
+﻿@{
+    ViewBag.Title = "Molecule";
+    Layout = "~/Views/Shared/MasterLayout.cshtml";
+}
+<script src="~/Content/js/table2CSV.js"></script>
+<body>
+    @using (Html.BeginForm(FormMethod.Post))
+    {
+        <div>
+            <table border="0" style="width: 100%">
+                <tr>
+                    <td>
+                        <!--JqGrid Starts-->
+                        <table style="margin-top: 7px; width :100%" border="0">
+                            <tr>
+                                <td>
+                                    <table id="Molecule" style="width: 100%" border="0"></table>
+                                    <div id="MoleculePager">
+                                    </div>
+                                </td>
+                            </tr>
+                        </table>
+                        <!--Ends-->
+                    </td>
+                </tr>
+            </table>
+
+        </div>
+    }
+
+
+    <script type="text/javascript">
+
+        jQuery(document).ready(function () {
+
+            initGrid();
+        });
+
+
+        function SingleCharacter(s) {
+            //s.value = s.value.replace(/(s{2,})|[^0-9']/g," ");
+            //s.value = s.value.replace(/^s*/,"");
+            //return;
+           // s.value = s.value.replace(/(^\s*)|(\s*$)/, "");
+            //s.value = s.value.replace(/(S{2,})|[^a-zA-Z']/g,"");
+            ////s.value = s.value.replace(/(s{2,})|[^0-9']/gi, "");
+            //s.value = s.value.replace(/\s/g, "");
+           // var $th = $(this);
+            s.value = (s.value.replace(/(\s{2,})|[^a-zA-Z']/g, ' '));
+            s.value = (s.value.replace(/^\s*/, ''));
+            return;
+        }
+
+
+
+        function initGrid() {
+            jQuery("#Molecule").jqGrid({
+                url: '@Url.Action("GetMolecule")',
+
+                datatype: "json",
+                 jsonReader: { repeatitems: false, id: "PKID" },
+                 colNames: ['PKID', 'Molecule Name', 'Status'],
+                colModel: [
+                            //{ name: 'SLNo', index: 'SLNo', align: 'left' },
+                            { name: 'PKID', index: 'PKID', align: 'left',viewable:true,key:true, hidden: true,editrules:{edithidden:true} },
+                            { name: 'MoleculeName', index: 'MoleculeName', align: 'left', editable: true, editrules: { required: false }, searchoptions: { sopt: ['eq', 'bw', 'ew', 'cn'] }, searchrules: { required: true }, search: true, editoptions: { maxlength: 30, dataEvents: [{ type: 'keyup', fn: function (e) { SingleCharacter(this); } }] }, formoptions: { elmsuffix: "<span style='align:left;color:red'>*</span>&nbsp;" } },
+                            { name: 'Status', index: 'Status', align: 'left',  editable: true, edittype: 'checkbox', search:false, editoptions: { value: "Active:Passive", defaultValue: "Active" } },
+
+                ],
+                caption: "Molecule",
+                autowidth: true,
+                gridview: true,
+                sortable: true,
+                hidegrid: false,
+                //rownumbers: true,
+                altRows: true,
+                rowTotal: 10,
+                sortname: 'PKID',
+                sortorder: 'asc',
+                rowNum: 10,
+                viewrecords: true,
+                pager: $('#MoleculePager'),
+                height: 'auto',
+                editable: true,
+                //onSelectRow: function (id) {
+                //    $("#FormMaster").jqGrid('viewGridRow', id);
+                //},
+                gridComplete: function () {
+
+                    if (jQuery("#Molecule").getGridParam("records") == 0) {
+                        jQuery("#Molecule").addRowData(
+                        "blankRow", { "MoleculeName": "No records to view" });
+                    }
+                },
+                editurl: '@Url.Action("EditMolecule")'
+
+            });
+
+            jQuery("#Molecule").jqGrid('navGrid', '#MoleculePager', { edit: true, add: true, del: true, search: true, view: true },
+                {
+                    //EDIT
+                    //                       height: 300,
+                    //                       width: 400,
+                    //                       top: 50,
+                    //                       left: 100,
+                    //                       dataheight: 280,
+                    closeOnEscape: true, //Closes the popup on pressing escape key
+                    reloadAfterSubmit: true,
+                    drag: true,
+                    modal: true,
+                    width: 400,
+                    checkOnSubmit: true,
+                    afterShowForm: function (form) {
+                        form.closest('div.ui-jqdialog').center();
+                    },
+                    
+                    beforeSubmit: function (response, postdata) {
+                        $('select').css("border", "1px solid #C0C0C0");
+                        $("input[type=text]").css("border", "1px solid #C0C0C0");
+                        var error = " ";
+                        if ($("#MoleculeName").val().charAt(0) == ' ' || $("#MoleculeName").val().charAt($("#MoleculeName").val().length - 1) == ' ' || $("#MoleculeName").val() == "")
+                        {
+                            error += "MoleculeName";
+                            $('#FormError').html("<td class='ui-state-error' colspan='2'>" + error + ":Field is required</td>");
+                            $("#MoleculeName").val('');
+                            $('#MoleculeName').focus();
+                            $("#MoleculeName").css("background-color", "#FFE8E8").css("border", "1px solid #FF6666");
+                            return [false, response.responseText];
+                        }
+                       else {
+                            return [true, response.responseText];
+                        }
+
+                    },
+
+                    afterSubmit: function (response, postdata) {
+
+                        $("#Molecule").jqGrid('setGridParam', { datatype: 'json' }).trigger('reloadGrid');
+                        $('#TblGrid_Molecule td.ui-state-error').removeClass('ui-state-error').addClass('ui-state-highlight');
+                        $("#MoleculeName").val("");
+                        $("#Status").prop("checked", false);
+                        return [false, response.responseText];
+                    },
+                    
+                    editData: {
+                        PKID: function () {
+                            var sel_id = $('#Molecule').jqGrid('getGridParam', 'selrow');
+                            var value = $('#Molecule').jqGrid('getCell', sel_id, '_id');
+                            return value;
+                        }
+                    }
+                    // Edit Portion
+                    //closeOnEscape: true,
+
+                    
+                },
+
+            {
+                //Add Portion
+                closeOnEscape: true,
+                //closeAfterAdd: true,
+                modal: true,
+                width: 400,
+                afterShowForm: function (form) {
+                    form.closest('div.ui-jqdialog').center();
+                },
+
+
+                beforeSubmit: function (response, postdata) {
+
+                    $('select').css("border", "1px solid #C0C0C0");
+                    $("input[type=text]").css("border", "1px solid #C0C0C0");
+                    if ($("#MoleculeName").val().charAt(0) == ' ' || $("#MoleculeName").val().charAt($("#MoleculeName").val().length - 1) == ' ' || $("#MoleculeName").val() == "") {
+                        $('#TblGrid_Molecule td.ui-state-highlight').removeClass('ui-state-highlight').addClass('ui-state-error');
+                        $("#MoleculeName").css("background-color", "#FFE8E8").css("border", "1px solid #FF6666");
+                        $('#MoleculeName').val("");
+                        $('#MoleculeName').focus();
+                        return [false, 'Enter Valid MoleculeName'];
+                    }
+                    else {
+                        return [true, response.responseText];
+                    }
+
+                },
+
+
+                afterSubmit: function (response, postdata) {
+                    $("#Molecule").jqGrid('setGridParam', { datatype: 'json' }).trigger('reloadGrid');
+                    var errorId = " ";
+                    if (response.responseText == "\"Molecule Master added Successfully.\"") {
+                        errorId += "Molecule Master added Successfully";
+                        $('#FormError').html("<td class='ui-state-error' colspan='2'>" + errorId + "</td>");
+                        $('#TblGrid_Molecule td.ui-state-error').removeClass('ui-state-error').addClass('ui-state-highlight');
+                        $('#MoleculeName').val("");
+                        $("#Status").prop("checked", false);
+                        return [false, response.responseText];
+                    }
+                    else {
+                        errorId += "Molecule Master already Exists";
+                        $('#FormError').html("<td class='ui-state-error' colspan='2'>" + errorId + "</td>");
+                        $('#TblGrid_Molecule td.ui-state-error').removeClass('ui-state-highlight').addClass('ui-state-error');
+                        $('#MoleculeName').val("");
+                        $("#Status").prop("checked", false);
+                        return [false, response.responseText];
+
+                    }
+
+                },
+                onclickSubmit: function (params, posdata) {
+                    //string oper, string NodeType, string Team, string ActivityName, string Defaultflag, string Specialflag, string Fieldwork, string id, string IsActive
+                    params.url = '@Url.Action("AddMoleculeMaster")?MoleculeName1=' + $('#MoleculeName').val() + '&Status1=' + $('#Status').val();
+
+                },
+
+
+
+             
+                //afterSubmit: function (response, postdata) {
+                //    if (response.responseText == "") {
+
+                //        $(this).jqGrid('setGridParam', { datatype: 'json' }).trigger('reloadGrid')//Reloads the grid after Add
+                //        return [true, '']
+                //    }
+                //    else {
+                //        $(this).jqGrid('setGridParam', { datatype: 'json' }).trigger('reloadGrid')//Reloads the grid after Add
+                //        $("#MoleculeName").val('');
+                //        $("#Status").prop('checked', false);
+                //        return [false, response.responseText]
+                //    }
+                //}
+            },
+
+               {
+                   //DELETE
+                   closeOnEscape: true,
+                   modal: true,
+                   closeAfterDelete: true,
+                   reloadAfterSubmit: true,
+                   closeOnEscape: true,
+                   drag: true,
+                   width: 400,
+                   beforeShowForm: function (form) {
+
+                       //POP UP Screen Fit Screen
+                       var thisForm = $("#delmod" + jQuery("#Molecule")[0].id);
+                       var dialogHeight = $(thisForm).height();
+                       var dialogWidth = $(thisForm).width();
+                       var windowHeight = $(window).height();
+                       var windowWidth = $(window).width();
+                       $(thisForm).css('position', 'fixed');
+                       $(thisForm).css('top', ((windowHeight - dialogHeight) / 2));
+                       $(thisForm).css('left', ((windowWidth - dialogWidth) / 2));
+                       // $("td.delmsg", form[0]).html("<table width='100%'><tr><td><b>PKID</b></td><td>" + ret.PKID + "</td></tr><tr><td><b>Molecule Name</b></td><td>" + ret.MoleculeName + "</td></tr><tr><td><b>Status</b></td><td>" + ret.Status + "</td></tr><tr><td colspan=2></br>Are you sure want to delete selected record(s)?</td></tr></table> ");
+                       var col1 = $('#Molecule').jqGrid('getGridParam', 'selrow');
+                       var Statusfield = $('#Molecule').jqGrid('getCell', col1, 'Status');
+                       $('tr td.delmsg').html('Delete selected record(s)?');
+                       if (Statusfield == "InActive") {
+                           $('tr td.delmsg').html('Record Already Deleted');
+                           $('#dData').hide();
+                       }
+                       else
+                           $('#dData').show();
+
+                   },
+
+                   afterSubmit: function (response, postdata) {
+                       $('tr td.delmsg').html('');
+                       $("#Molecule").jqGrid('setGridParam', { datatype: 'json' }).trigger('reloadGrid');
+                       $('#DelTbl_Molecule td.ui-state-error').removeClass('ui-state-error').addClass('ui-state-highlight');
+                       $('#dData').hide();
+                       return [false, response.responseText];
+                   },
+               },
+
+            {
+                //Search
+
+                closeOnEscape: true,
+                modal: true,
+                recreateForm: true,
+                width: 600,
+                caption: "Search",
+                searchOnEnter: true,
+                beforeShowSearch: function (form) {
+
+                    $('#jqg1').val('');
+                    $('#fbox_Molecule_reset').click();
+
+                    var dialogHeight = $("#searchmodfbox_Molecule").height();
+                    var dialogWidth = $("#searchmodfbox_Molecule").width();
+                    var windowHeight = $(window).height();
+                    var windowWidth = $(window).width();
+                    $("#searchmodfbox_Molecule").css('position', 'fixed');
+                    $("#searchmodfbox_Molecule").css('top', ((windowHeight - dialogHeight) / 2));
+                    $("#searchmodfbox_Molecule").css('left', ((windowWidth - dialogWidth) / 2));
+
+                    return [true, ""];
+                }
+            },
+            {
+                //View
+                width: 400,
+                modal: true,
+                beforeShowForm: function (form) {
+                    form.closest('div.ui-jqdialog').center();
+                }
+
+
+            }
+
+                    );
+            // setMethod('LocationMaster', 'LocationMasterPager', 'Customer Grid', 'ManageUsers', 'LocationMaster.cshtml');
+
+            setMethod('Molecule', 'MoleculePager', 'Customer Grid');
+
+        }
+        //Center Popup
+        jQuery.fn.center = function () {
+            this.css("position", "absolute");
+            this.css("top", ($(window).height() - this.height()) / 2 + $(window).scrollTop() + "px");
+            this.css("left", ($(window).width() - this.width()) / 2 + $(window).scrollLeft() + "px");
+            return this;
+
+        }
+        function validSpecial(objElement) {
+
+            var re = /^[a-zA-Z0-9-/\s.:]*/gi;
+            if (objElement.value.match(re) != objElement.value) {
+                alert('Special Characters are Not Allowed');
+                objElement.value = '';
+
+                return false;
+            }
+
+        }
+
+        function setMethod(gid, id, pgTitle) {
+            // alert(1);
+            var btnTitle = 'Export to Excel';
+            $('#' + gid).jqGrid('navSeparatorAdd', '#' + id, { sepclass: "ui-separator" });
+            $('#' + gid).jqGrid('navButtonAdd', '#' + id, { caption: '', title: btnTitle, position: 'last', buttonicon: 'ui-icon-calculator', onClickButton: function () { ExcelExport(); } });
+
+            var btnTitle = 'Export to PDF';
+            $('#' + gid).jqGrid('navSeparatorAdd', '#' + id, { sepclass: "ui-separator" });
+            $('#' + gid).jqGrid('navButtonAdd', '#' + id, { caption: '', title: btnTitle, position: 'last', buttonicon: 'ui-icon-bookmark', onClickButton: function () { PDFExport(); } });
+
+            var btnTitle = 'Export to CSV';
+            $('#' + gid).jqGrid('navSeparatorAdd', '#' + id, { sepclass: "ui-separator" });
+            $('#' + gid).jqGrid('navButtonAdd', '#' + id, { caption: '', title: btnTitle, position: 'last', buttonicon: 'ui-icon-note', onClickButton: function () { CSVExport(); } });
+
+
+            var btnTitle = 'Print Grid';
+            $('#' + gid).jqGrid('navSeparatorAdd', '#' + id, { sepclass: "ui-separator" });
+            $('#' + gid).jqGrid('navButtonAdd', '#' + id, { caption: '', title: btnTitle, position: 'last', buttonicon: 'ui-icon-print', onClickButton: function () { PrintGrid(gid); } });
+        }
+        function ExcelExport() {
+            window.location = '@Url.Action("ExportMoleculeToExcel")';
+        }
+        function PDFExport() {
+            window.location = '@Url.Action("ExportMoleculeToPDF")';
+        }
+        function CSVExport() {
+
+             window.location = '@Url.Action("ExportMoleculeToCsv")';
+           // $('#FormMaster').table2CSV({ header: ['PKID', 'Form Name', 'Status'] });
+        }
+        //function PrintGrid(gid) {
+        //    //  alert(5);
+        //    // empty the print div container.
+        //    $('#prt-container').empty();
+        //    //alert(6);
+        //    // copy and append grid view to print div container.
+        //    $('#gview_' + gid).clone().appendTo('#prt-container').css({ 'page-break-after': 'auto' });
+        //    // alert(7);
+        //    // remove navigation div.
+        //    //  $('#prt-container div').remove('.ui-jqgrid-toppager,.ui-jqgrid-titlebar,.ui-jqgrid-pager');
+
+        //    // print the contents of the print container.
+        //    //$('#prt-container').printElement({ pageTitle: pgTitle, overrideElementCSS: [{ href: 'Content/css/print-grid.css', media: 'print' }], leaveOpen: true, printMode: 'popup' });
+        //    //    $("#prt-container").printElement(
+        //    //{
+        //    //    leaveOpen: true,
+        //    //    printMode: 'popup'
+        //    //    });
+        //    //   $("#prt-container").printElement({ leaveOpen: true, printMode: 'popup' });
+        //    //  $(function () { window.print(); });
+        //    $(function () { printChrome('prt-container') });
+        //    // alert(6);
+        //}
+        function PrintGrid(gid) {
+
+            // empty the print div container.
+            var rows = $('#Molecule').jqGrid('getRowData');
+            for (var i = 0; i < rows.length; i++) {
+                var row = rows[i];
+                $('#Table1').append("<tr><td>" + row.MoleculeName + "</td><td>" + row.Status + "</td></tr>");
+
+            }
+            $(function () { printChrome('prt-container') });
+
+        }
+        function printChrome(divContainer) {
+
+            //  alert(9);
+            var printContent = document.getElementById(divContainer);
+            // alert(printContent.innerHTML);
+            window.document.body.innerHTML = printContent.innerHTML;
+            window.print();
+            window.location.reload();
+        }
+
+
+    </script>
+    <div id='prt-container' style="display:none">
+        <table id="Table1" border="1" width="100%">
+            <thead>
+                <tr>
+                    <td><b>Molecule Name</b></td>
+                    <td><b>Status</b></td>
+                </tr>
+
+            </thead>
+            <tbody></tbody>
+
+        </table>
+    </div>
+</body>
+

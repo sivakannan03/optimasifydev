@@ -1,0 +1,34 @@
+﻿@model Dictionary<int, string>
+
+@if (ViewBag.Type == "LoadProduct")
+{
+    <select id="ProductName">
+        <option value='0'>Select</option>
+        @foreach (KeyValuePair<int, string> value in Model)
+        {
+            <option value='@value.Key.ToString()'>@value.Value</option>
+        }
+    </select>
+}
+
+@if (ViewBag.Type == "LoadMolecule")
+{
+    <select id="MoleculeName">
+        <option value='0'>Select</option>
+        @foreach (KeyValuePair<int, string> value in Model)
+        {
+            <option value='@value.Key.ToString()'>@value.Value</option>
+        }
+    </select>
+}
+
+@if (ViewBag.Type == "LoadMoleculeName")
+{
+    <select multiple class="FormElement ui-widget-content ui-corner-all" id="SelMoleculeName">
+        <option value='0'>Select</option>
+        @foreach (KeyValuePair<int, string> value in Model)
+        {
+           <option value='@value.Key.ToString()' selected="selected">@value.Value</option>
+        }
+    </select>
+}

@@ -1,0 +1,473 @@
+﻿@{
+    ViewBag.Title = "RatingMaster";
+    Layout = "~/Views/Shared/MasterLayout.cshtml";
+}
+
+<body>
+
+    @using (Html.BeginForm(FormMethod.Post))
+    {
+        <div>
+            <table border="0" style="width: 100%">
+                <tr>
+                    <td>
+                        <!--JqGrid Starts-->
+                        <table style="margin-top: 7px; width :100%" border="0">
+                            <tr>
+                                <td>
+                                    <table id="RatingMaster" style="width: 100%" border="0"></table>
+                                    <div id="Pager">
+                                    </div>
+                                </td>
+                            </tr>
+                        </table>
+                        <!--Ends-->
+                    </td>
+                </tr>
+            </table>
+
+        </div>
+    }
+
+    <script type="text/javascript">
+
+
+    function validSpecial(objElement) {
+
+        var re = /^[a-zA-Z0-9-/\s.:]*/gi;
+        if (objElement.value.match(re) != objElement.value) {
+            alert('No Special Characters Allowed');
+            objElement.value = '';
+
+            return false;
+        }
+
+    }
+
+
+
+    jQuery(document).ready(function () {
+
+        initGrid();
+    });
+    function initGrid() {
+        jQuery("#RatingMaster").jqGrid({
+            url: '@Url.Action("RatingMasterGrid")',
+            datatype: "json",
+            jsonReader: { repeatitems: false, id: "PKID" },
+            colNames: ['PKID', 'Rating Code', 'Rating Name', 'Status'],
+            colModel: [
+                { name: 'PKID', index: 'PKID', align: 'left', hidden: true, editable: true },
+                 {
+                     name: 'RatingCode', index: 'RatingCode', align: 'left', hidden: false, editable: true, search: false, editoptions: {
+                         size: 35,
+                         dataEvents: [
+                                    {
+                                        type: 'keyup',  
+                                        fn: function (e) {
+                                            CharacterAndNumber(this);
+                                        }
+                                    }
+                         ]
+                     },formoptions: {
+                 elmprefix: "<span style='align:left;color:red'>*</span>&nbsp;"
+                     }
+                 },
+                {
+                    name: 'RatingName', index: 'RatingName', align: 'left', editable: true, editrules: { required: true }, editoptions: {
+                        size: 35,
+            dataEvents: [
+                       {
+                           type: 'keyup', // blur
+                           fn: function (e) {
+                               SingleCharacter(this);
+                           }
+                       }
+            ]
+                    },formoptions: {
+                        elmprefix: "<span style='align:left;color:red'>*</span>&nbsp;"
+                    }, searchoptions: { sopt: ['eq', 'bw', 'ew', 'cn'] }, searchrules: { required: true },
+                },
+                {
+                    name: 'IsActive', index: 'IsActive', align: 'left', hidden: false, editable: true, edittype: 'checkbox',search:false, editrules: { required: true },search:false, formoptions: {
+                        elmprefix: "&nbsp;&nbsp;&nbsp;"
+
+                    }
+
+
+                },
+            ],
+
+            autowidth: true,
+            gridview: true,
+            caption: 'Rating Master',
+            jqModal: true,
+            rowTotal: 10,
+            rowNum: 10,
+            align: 'center',
+            sortable: true,
+            hidegrid: true,
+            altRows: true,
+            sortname: 'PKID',
+            sortorder: 'desc',
+            viewrecords: true,
+            pager: $('#Pager'),
+            height: 'auto',
+            editable: true,
+            gridComplete: function () {
+
+                if (jQuery("#RatingMaster").getGridParam("records") == 0) {
+                    jQuery("#RatingMaster").addRowData(
+                          "blankRow", { "RatingName": "No records to view" });
+                }
+
+
+            },
+            editurl: '@Url.Action("EditRatingMaster")'
+            });
+
+        jQuery("#RatingMaster").jqGrid('navGrid', '#Pager', { edit: true, add: true, del: true, search: true, view: true },
+
+                {
+                    // Edit
+                    closeAfterEdit: true,
+                    closeOnEscape: true,
+                    recreateForm: true,
+                    modal: true,
+                    width: 600,
+                    checkOnSubmit: true,
+                    afterShowForm: function (form_id) {
+                        var thisForm = form_id.selector.replace('FrmGrid_', 'editmod')
+                        var dialogHeight = $(thisForm).height();
+                        var dialogWidth = $(thisForm).width();
+                        var windowHeight = $(window).height();
+                        var windowWidth = $(window).width();
+                        $(thisForm).css('position', 'fixed');
+                        $(thisForm).css('top', ((windowHeight - dialogHeight) / 2));
+                        $(thisForm).css('left', ((windowWidth - dialogWidth) / 2));
+                    },
+                    beforeSubmit: function (response, postdata) {
+
+                        if ($("#RatingCode").val().charAt(0) == ' ' || $("#RatingCode").val().charAt($("#RatingCode").val().length - 1) == ' ') {
+                            $('#TblGrid_RatingMaster td.ui-state-highlight').removeClass('ui-state-highlight').addClass('ui-state-error');
+                            $("#RatingCode").css("background-color", "#FFE8E8").css("border", "1px solid #FF6666");
+                            $('#RatingCode').focus();
+                            return [false, 'Enter Valid RatingCode'];
+                        }
+
+                        if ($("#RatingName").val().charAt(0) == ' ' || $("#RatingName").val().charAt($("#RatingName").val().length - 1) == ' ') {
+                            $('#TblGrid_RatingMaster td.ui-state-highlight').removeClass('ui-state-highlight').addClass('ui-state-error');
+                            $("#RatingName").css("background-color", "#FFE8E8").css("border", "1px solid #FF6666");
+                            $('#RatingName').focus();
+                            return [false, 'Enter Valid RatingName'];
+                        }
+
+                        $('select').css("border", "1px solid #C0C0C0");
+                        $("input[type=text]").css("border", "1px solid #C0C0C0");
+
+                        var error = " ";
+                        if ($.trim($("#RatingCode").val()) == "") {
+
+                            error += "RatingCode";
+                            $('#FormError').html("<td class='ui-state-error' colspan='2'>" + error + ":Field is required</td>");
+                            $('#RatingCode').val('');
+                            $('#RatingCode').focus();
+                            $("#RatingCode").css("background-color", "#FFE8E8").css("border", "1px solid #FF6666");
+                            return [false, response.responseText];
+                        }
+                        else if ($.trim($("#RatingName").val()) == "") {
+                            error += "RatingName:";
+                            $('#FormError').html("<td class='ui-state-error' colspan='2'>" + error + ":Field is required</td>");
+                            $('#RatingName').val('');
+                            $('#RatingName').focus();
+                            $("#RatingName").css("background-color", "#FFE8E8").css("border", "1px solid #FF6666");
+                            return [false, response.responseText];
+                        }
+                        else {
+                            return [true, response.responseText];
+                        }
+
+                    },
+
+                    afterSubmit: function (response, postdata) {
+                        $("#RatingMaster").jqGrid('setGridParam', { datatype: 'json' }).trigger('reloadGrid');
+                        $('#TblGrid_RatingMaster td.ui-state-error').removeClass('ui-state-error').addClass('ui-state-highlight');
+                        $('#RatingCode').val('');
+                        $('#RatingName').val('');
+                        $("#IsActive").prop('checked', false);
+                        return [false, response.responseText];
+                    },
+
+                },
+
+            {
+
+                //Add
+                closeOnEscape: true,
+                recreateForm: true,
+                width: 600,
+                modal: true,
+                beforeShowForm: function (form) {
+                    $('#tr_IsActive', form).hide();
+
+                },
+                afterShowForm: function (form_id) {
+                    var thisForm = form_id.selector.replace('FrmGrid_', 'editmod');
+                    var dialogHeight = $(thisForm).height();
+                    var dialogWidth = $(thisForm).width();
+                    var windowHeight = $(window).height();
+                    var windowWidth = $(window).width();
+                    $(thisForm).css('position', 'fixed');
+                    $(thisForm).css('top', ((windowHeight - dialogHeight) / 2));
+                    $(thisForm).css('left', ((windowWidth - dialogWidth) / 2));
+                },
+              
+                beforeSubmit: function (response, postdata) {
+
+                    if ($("#RatingCode").val().charAt(0) == ' ' || $("#RatingCode").val().charAt($("#RatingCode").val().length - 1) == ' ') {
+                        $('#TblGrid_RatingMaster td.ui-state-highlight').removeClass('ui-state-highlight').addClass('ui-state-error');
+                        $("#RatingCode").css("background-color", "#FFE8E8").css("border", "1px solid #FF6666");
+                        $('#RatingCode').focus();
+                        return [false, 'Enter Valid RatingCode'];
+                    }
+
+                    if ($("#RatingName").val().charAt(0) == ' ' || $("#RatingName").val().charAt($("#RatingName").val().length - 1) == ' ') {
+                        $('#TblGrid_RatingMaster td.ui-state-highlight').removeClass('ui-state-highlight').addClass('ui-state-error');
+                        $("#RatingName").css("background-color", "#FFE8E8").css("border", "1px solid #FF6666");
+                        $('#RatingName').focus();
+                        return [false, 'Enter Valid RatingName'];
+                    }
+
+                    $('select').css("border", "1px solid #C0C0C0");
+                    $("input[type=text]").css("border", "1px solid #C0C0C0");
+
+                    var error = " ";
+                    if ($.trim($("#RatingCode").val()) == "") {
+
+                        error += "RatingCode";
+                        $('#FormError').html("<td class='ui-state-error' colspan='2'>" + error + ":Field is required</td>");
+                        $('#RatingCode').val('');
+                        $('#RatingCode').focus();
+                        $("#RatingCode").css("background-color", "#FFE8E8").css("border", "1px solid #FF6666");
+                        return [false, response.responseText];
+                    }
+                    else if ($.trim($("#RatingName").val()) == "") {
+                        error += "RatingName:";
+                        $('#FormError').html("<td class='ui-state-error' colspan='2'>" + error + ":Field is required</td>");
+                        $('#RatingName').val('');
+                        $('#RatingName').focus();
+                        $("#RatingName").css("background-color", "#FFE8E8").css("border", "1px solid #FF6666");
+                        return [false, response.responseText];
+                    }
+                    else {
+                        return [true, response.responseText];
+                    }
+
+                },
+
+                afterSubmit: function (response, postdata) {
+                                       
+                        $("#RatingMaster").jqGrid('setGridParam', { datatype: 'json' }).trigger('reloadGrid');
+                        var errorId = " ";
+                        $("#RatingMaster").jqGrid('setGridParam', { datatype: 'json' }).trigger('reloadGrid');
+                        $('#TblGrid_RatingMaster td.ui-state-error').removeClass('ui-state-error').addClass('ui-state-highlight');
+                        $('#RatingCode').val('');
+                        $('#RatingName').val('');
+                        return [false, response.responseText];
+
+                        if (response.responseText == "\"Rating Master added successfully\"") {
+                            errorId += "Rating Master added successfully";
+                            $('#FormError').html("<td class='ui-state-error' colspan='2'>" + errorId + "</td>");
+                            $('#TblGrid_RatingMaster td.ui-state-error').removeClass('ui-state-error').addClass('ui-state-highlight');
+                            $('#RatingCode').val('');
+                            $('#RatingName').val('');
+                            return [false, response.responseText];
+                        }
+                        else {
+                            errorId += "Rating Master already Exists";
+                            $('#FormError').html("<td class='ui-state-error' colspan='2'>" + errorId + "</td>");
+                            $('#TblGrid_RatingMaster td.ui-state-error').removeClass('ui-state-highlight').addClass('ui-state-error');
+                            $('#RatingCode').val('');
+                            $('#RatingName').val('');
+                            return [false, response.responseText];
+
+                        }
+                }
+            },
+
+            //Delete
+            {
+                closeOnEscape: true,
+                recreateForm: true,
+                modal: true,
+                width: 600,
+
+                beforeShowForm: function (form) { 
+
+                    var thisForm = $("#delmod" + jQuery("#RatingMaster")[0].id);
+                    var dialogHeight = $(thisForm).height();
+                    var dialogWidth = $(thisForm).width();
+                    var windowHeight = $(window).height();
+                    var windowWidth = $(window).width();
+                    $(thisForm).css('position', 'fixed');
+                    $(thisForm).css('top', ((windowHeight - dialogHeight) / 2));
+                    $(thisForm).css('left', ((windowWidth - dialogWidth) / 2));
+
+
+                    var col1 = $('#RatingMaster').jqGrid('getGridParam', 'selrow');
+                    $('tr td.delmsg').html('Delete selected record(s)?');
+
+                    $('#RatingMaster').jqGrid('getGridParam', 'selrow');
+                    var IsActive = $('#RatingMaster').jqGrid('getCell', col1, 'IsActive');
+                    if (IsActive == "In Active") {
+                        $('tr td.delmsg').html('Record Already Deleted');
+                        $('#dData').hide();
+                    }
+                    else
+                        $('#dData').show();
+
+                    //var RatingName = $('#RatingMaster').jqGrid('getCell', col1, 'RatingName');
+                    //var IsActive = $('#RatingMaster').jqGrid('getCell', col1, 'IsActive');
+
+
+                    //var html = "<form><table><tr><td class='CaptionTD'>Rating Name </td><td class=='DataTD'>&nbsp;&nbsp;<input type='text' class='FormElement ui-widget-content ui-corner-all' readonly='true'  value='" + RatingName + "'/></td> </tr>";
+
+                    //if (IsActive == "Active")
+                    //    html += "<tr><td class='CaptionTD'>Status</td><td class=='DataTD'>&nbsp;&nbsp;<input class='FormElement ui-widget-content ui-corner-all'   type='checkbox' checked  disabled/></td>";
+                    //if(IsActive == "In Active")
+                    //    html += "<tr><td class='CaptionTD'>Status</td><td class=='DataTD'>&nbsp;&nbsp; <input class='FormElement ui-widget-content ui-corner-all'   type='checkbox' disabled /></td></tr>";
+                    //html += "</table></form>";
+                    //$("td.delmsg", form[0]).html(html);
+
+                },
+
+
+ 
+                afterSubmit: function (response, postdata) {
+
+                    $("#RatingMaster").jqGrid('setGridParam', { datatype: 'json' }).trigger('reloadGrid');
+                    $('tr td.delmsg').html('');
+                    $('#dData').hide();
+                    $('#DelTbl_RatingMaster td.ui-state-error').removeClass('ui-state-error').addClass('ui-state-highlight');
+                    $('#RatingCode').val('');
+                    $('#RatingName').val('');
+                    return [false, response.responseText];
+                }
+            },
+            {
+                //Search
+
+                closeOnEscape: true,
+                modal: true,
+                recreateForm: true,
+                width: 600,
+                caption: "Search",
+                searchOnEnter: true,
+                beforeShowSearch: function (form) {
+
+                    $('#jqg1').val('');
+                    $('#fbox_RatingMaster_reset').click();
+
+                    var dialogHeight = $("#searchmodfbox_RatingMaster").height();
+                    var dialogWidth = $("#searchmodfbox_RatingMaster").width();
+                    var windowHeight = $(window).height();
+                    var windowWidth = $(window).width();
+                    $("#searchmodfbox_RatingMaster").css('position', 'fixed');
+                    $("#searchmodfbox_RatingMaster").css('top', ((windowHeight - dialogHeight) / 2));
+                    $("#searchmodfbox_RatingMaster").css('left', ((windowWidth - dialogWidth) / 2));
+
+                    return [true, ""];
+                }
+            },
+            {
+                //View :
+                closeOnEscape: true,
+                recreateForm: true,
+                width: 600,
+
+                beforeShowForm: function (form) {
+
+                    
+                    var thisForm = $("#viewmod" + jQuery("#RatingMaster")[0].id);
+                    var dialogHeight = $(thisForm).height();
+                    var dialogWidth = $(thisForm).width();
+                    var windowHeight = $(window).height();
+                    var windowWidth = $(window).width();
+                    $(thisForm).css('position', 'fixed');
+                    $(thisForm).css('top', ((windowHeight - dialogHeight) / 2));
+                    $(thisForm).css('left', ((windowWidth - dialogWidth) / 2));
+
+                }
+
+            }
+
+                    );
+
+        setMethod('RatingMaster', 'Pager', 'Rating Master');
+    }
+    function setMethod(gid, id, pgTitle) {
+           
+        var btnTitle = 'Export to Excel';
+        $('#' + gid).jqGrid('navSeparatorAdd', '#' + id, { sepclass: "ui-separator" });
+        $('#' + gid).jqGrid('navButtonAdd', '#' + id, { caption: '', title: btnTitle, position: 'last', buttonicon: 'ui-icon-calculator', onClickButton: function () { ExcelExport(); } });
+
+        var btnTitle = 'Export to PDF';
+        $('#' + gid).jqGrid('navSeparatorAdd', '#' + id, { sepclass: "ui-separator" });
+        $('#' + gid).jqGrid('navButtonAdd', '#' + id, { caption: '', title: btnTitle, position: 'last', buttonicon: 'ui-icon-bookmark', onClickButton: function () { PDFExport(); } });
+
+        var btnTitle = 'Export to CSV';
+        $('#' + gid).jqGrid('navSeparatorAdd', '#' + id, { sepclass: "ui-separator" });
+        $('#' + gid).jqGrid('navButtonAdd', '#' + id, { caption: '', title: btnTitle, position: 'last', buttonicon: 'ui-icon-note', onClickButton: function () { CSVExport(); } });
+
+
+        var btnTitle = 'Print Grid';
+        $('#' + gid).jqGrid('navSeparatorAdd', '#' + id, { sepclass: "ui-separator" });
+        $('#' + gid).jqGrid('navButtonAdd', '#' + id, { caption: '', title: btnTitle, position: 'last', buttonicon: 'ui-icon-print', onClickButton: function () { PrintGrid(gid); } });
+    }
+    function ExcelExport() {
+        window.location = '@Url.Action("ExportRatingMasterToExcel")';
+    }
+    function PDFExport() {
+        window.location = '@Url.Action("ExportRatingMasterToPDF")';
+    }
+    function CSVExport() {
+        window.location = '@Url.Action("ExportRatingMasterToCsv")';
+    }
+        function PrintGrid(gid) {
+
+            // empty the print div container.
+            var rows = $('#RatingMaster').jqGrid('getRowData');
+            for (var i = 0; i < rows.length; i++) {
+                var row = rows[i];
+                $('#Table1').append("<tr><td>" + row.RatingCode + "</td><td>" + row.RatingName + "</td><td>" + row.IsActive + "</td></tr>");
+
+            }
+            $(function () { printChrome('prt-container') });
+
+        }
+
+    function printChrome(divContainer) {
+
+        var printContent = document.getElementById(divContainer);
+        window.document.body.innerHTML = printContent.innerHTML;
+        window.print();
+        window.location.reload();
+    }
+
+
+    </script>
+    <div id='prt-container' style="display:none">
+        <table id="Table1" border="1" width="100%">
+            <thead>
+                <tr>
+                    <td><b>Rating Code</b></td>
+                    <td><b>Rating Name</b></td>
+                    <td><b>Status</b></td>
+                </tr>
+
+            </thead>
+            <tbody></tbody>
+
+        </table>
+    </div>
+</body>

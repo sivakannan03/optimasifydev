@@ -1,0 +1,73 @@
+﻿@{
+    ViewBag.Title = "CFSAMaster";
+    Layout = "~/Views/Shared/MasterLayout.cshtml";
+}
+
+<h2>CFSAMaster</h2>
+
+<body>
+    @using (Html.BeginForm(FormMethod.Post))
+    {
+        <div>
+            <table border="0" style="width: 100%">
+                <tr>
+                    <td>
+                        <table >
+                            <tr>
+                                <td style="padding-right:80px;">Team</td>
+                                <td style="padding-right:80px;">
+                                    <select style="width:300px" id="foo" multiple="multiple" name="foo">
+                                        <option selected="selected" value="1">Foo 1</option>
+                                        <option value="2">Foo 2</option>
+                                        <option selected="selected" value="3">Foo 3</option>
+                                    </select>
+                                </td>
+                                <td style="padding-right:80px;">Region</td>
+                                <td>
+                                    <select style="width:300px" id="foo" multiple="multiple" name="foo">
+                                        <option selected="selected" value="1">Foo 1</option>
+                                        <option value="2">Foo 2</option>
+                                        <option selected="selected" value="3">Foo 3</option>
+                                    </select>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>District</td>
+                                <td>
+                                    <select style="width:300px" id="foo" multiple="multiple" name="foo">
+                                        <option selected="selected" value="1">Foo 1</option>
+                                        <option value="2">Foo 2</option>
+                                        <option selected="selected" value="3">Foo 3</option>
+                                    </select>
+                                </td>
+                                <td>Territory</td>
+                                <td>
+                                    <select style="width:300px" id="foo" multiple="multiple" name="foo">
+                                        <option selected="selected" value="1">Foo 1</option>
+                                        <option value="2">Foo 2</option>
+                                        <option selected="selected" value="3">Foo 3</option>
+                                    </select>
+                                </td>
+                            </tr>
+                        </table>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <!--JqGrid Starts-->
+                        <table style="margin-top: 7px; width :100%" border="0">
+                            <tr>
+                                <td>
+                                    <table id="ajaxGrid" style="width: 100%" border="0"></table>
+                                    <div id="ajaxGridPager">
+                                    </div>
+                                </td>
+                            </tr>
+                        </table>
+                        <!--Ends-->
+                    </td>
+                </tr>
+            </table>
+        </div>
+    }
+</body>

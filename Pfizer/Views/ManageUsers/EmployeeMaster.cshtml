@@ -1,0 +1,814 @@
+﻿@{
+    ViewBag.Title = "EmployeeMaster";
+    Layout = "~/Views/Shared/MasterLayout.cshtml";
+}
+<style>
+    div.ui-datepicker {
+        font-size: 12px !important;
+    }
+
+ 
+</style>
+<body>
+    @using (Html.BeginForm(FormMethod.Post))
+    {
+        <div>
+            <table border="0" style="width: 100%">
+                <tr>
+                    <td>
+                        <!--JqGrid Starts-->
+                        <table style="margin-top: 7px; width :100%">
+                            <tr>
+                                <td>
+                                    <table id="EmployeeMaster" style="width: 100%" ></table>
+                                    <div id="EmployeeMasterPager">
+                                    </div>
+                                </td>
+                            </tr>
+                        </table>
+                        <!--Ends-->
+                    </td>
+                </tr>
+            </table>
+
+        </div>
+    }
+
+
+    <script type="text/javascript">
+
+    jQuery(document).ready(function () {
+
+        initGrid();
+    });
+
+
+    function initGrid() {
+        jQuery("#EmployeeMaster").jqGrid({
+            url: '@Url.Action("GetEmployeeMaster")',
+                datatype: "json",
+                jsonReader: { repeatitems: false, id: "PKID" },
+                colNames: ['PKID', 'Employee Code', 'EmployeeName', 'Designation', 'City', 'SurName', 'FirstName', 'MiddleName', 'LastName', 'Short Name', 'Gender', 'DOB', 'DOJ', 'Marital Status', 'Old Emp Code', 'Address1', 'Address2', 'Zip Code', 'Home Phone', 'Mobile', 'Email', 'DesignationFKID', 'Area', 'Status'],
+                colModel: [
+                            //{ name: 'SLNo', index: 'SLNo', align: 'left' },
+                            { name: 'PKID', index: 'PKID', align: 'left', viewable: true, key: true, hidden: true, editrules: { edithidden: true } },
+                            {
+                                name: 'EmpCode', index: 'EmpCode', align: 'left', editable: true, editrules: { edithidden: true,required: false}, formoptions: { elmsuffix: "<span style='align:left;color:red'>*</span>&nbsp;" }, searchoptions: { sopt: ['eq', 'bw', 'ew', 'cn'] }, searchrules: { required: true },
+                                search: true, editoptions: {
+                                    //size: 35,
+                                    maxlength: 30,
+                                    dataEvents: [
+                                        {
+                                            type: 'keyup', // blur
+                                            fn: function (e) {
+                                                CharacterAndNumber(this);
+                                            }
+                                        }
+                                    ]
+                                }
+                            },
+                            {
+                                name: 'EmpName', index: 'EmpName', align: 'left', editable: false, editrules: { edithidden: true, required: false }, searchrules: { required: true },
+                                editoptions: {
+                                    //size: 35,
+                                    maxlength: 30,
+                                    dataEvents: [
+                                        {
+                                            type: 'keyup', // blur
+                                            fn: function (e) {
+                                                SingleCharacter(this);
+                                            }
+                                        }
+                                    ]
+                                }
+                            },
+                            { name: 'DesignationName', index: 'DesignationName', align: 'left', editable: true, edittype: 'select', editoptions: { dataUrl: '@Url.Action("GetDesignationByXML")' }, editrules: { required: false }, formoptions: { elmsuffix: "<span style='align:left;color:red'>*</span>&nbsp;", rowpos: 5, colpos: 1 }, searchoptions: { sopt: ['eq', 'bw', 'ew', 'cn'] }, searchrules: { required: true } },
+                            { name: 'CityName', index: 'CityName', align: 'left', editable: true, edittype: 'select', editoptions: { dataUrl: '@Url.Action("GetCityByXML")' }, editrules: { required: false }, formoptions: { elmsuffix: "<span style='align:left;color:red'>*</span>&nbsp;", rowpos: 8, colpos: 1 }, searchoptions: { sopt: ['eq', 'bw', 'ew', 'cn'] }, searchrules: { required: true } },
+                            { name: 'SurName', index: 'SurName', align: 'left', viewable: true, hidden: true, editable: true, editrules: { edithidden: true, required: false }, edittype: 'select', editoptions: { value: "0:Select;1:Mr.;2:Miss.;3:Mrs." }, formoptions: { rowpos: 1, colpos: 2 }, editrules: { edithidden: true } },
+                            {                                                    
+                                name: 'FirstName', index: 'FirstName', align: 'left', viewable: true, hidden: true, editable: true, formoptions: { elmsuffix: "<span style='align:left;color:red'>*</span>&nbsp;", rowpos: 1, colpos: 2 }, editrules: { edithidden: true, required: false },
+                                editoptions: {
+                                    // size: 35,
+                                     maxlength: 50,
+                                    dataEvents: [
+                                        {
+                                            type: 'keyup', // blur
+                                            fn: function (e) {
+                                                SingleCharacter(this);
+                                            }
+                                        }
+                                    ]
+                                }
+                            },
+                            {
+                                name: 'MiddleName', index: 'MiddleName', align: 'left', hidden: true, editable: true, formoptions: { rowpos: 2, colpos: 1 }, editrules: { edithidden: true },
+                                editoptions: {
+                                    // size: 35,
+                                    maxlength: 50,
+                                    dataEvents: [
+                                        {
+                                            type: 'keyup', // blur
+                                            fn: function (e) {
+                                                SingleCharacter(this);
+                                            }
+                                        }
+                                    ]
+                                }
+                            },
+                           {
+                               name: 'LastName', index: 'LastName', align: 'left', hidden: true, editable: true, editrules: { edithidden: true, required: false }, editoptions: {
+                                   //size: 35,
+                                   maxlength: 50,
+                                   dataEvents: [
+                                       {
+                                           type: 'keyup', // blur
+                                           fn: function (e) {
+                                               SingleCharacter(this);
+                                           }
+                                       }
+                                   ]
+                               }, formoptions: { elmsuffix: "<span style='align:left;color:red'>*</span>&nbsp;", rowpos: 2, colpos: 2 }
+                           },
+                            {
+                                name: 'ShortName', index: 'ShortName', align: 'left', viewable: true, hidden: true, editable: true, editoptions: {
+                                    //size: 35,
+                                    maxlength: 30,
+                                    dataEvents: [
+                                        {
+                                            type: 'keyup', // blur
+                                            fn: function (e) {
+                                                SingleCharacter(this);
+                                            }
+                                        }
+                                    ]
+                                }, formoptions: { elmsuffix: "<span style='align:left;color:red'>*</span>&nbsp;", rowpos: 3, colpos: 1 }, editrules: { edithidden: true, required: false }
+                            },
+                            { name: 'Gender', index: 'Gender', align: 'left', viewable: true, hidden: true, editable: true, edittype: 'select', editoptions: { value: "0:Select;1:Male;2:Female" }, formoptions: { elmsuffix: "<span style='align:left;color:red'>*</span>&nbsp;", rowpos: 3, colpos: 2 }, editrules: { edithidden: true, required: false } },
+                            {
+                                name: 'DOB', index: 'DOB', align: 'left', viewable: true, hidden: true, editable: true, formoptions: { elmsuffix: "<span style='align:left;color:red'>*</span>&nbsp;", rowpos: 4, colpos: 1 }, editrules: { edithidden: true, required: false },
+                                editoptions: {
+                                    dataInit: function (elem) {
+                                        $(elem).datepicker({ changeMonth: true, changeYear: true, yearRange: '1900:myDate', dateFormat: 'dd/mm/yy',maxDate:0 });
+                                    }
+                                }
+                            },
+                            {
+                                name: 'DOJ', index: 'DOJ', align: 'left', viewable: true, hidden: true, editable: true, formoptions: { elmsuffix: "<span style='align:left;color:red'>*</span>&nbsp;", rowpos: 4, colpos: 2 }, editrules: { edithidden: true, required: false },
+                                editoptions: {
+                                    dataInit: function (elem) {
+                                        $(elem).datepicker({
+                                            changeMonth: true, changeYear: true, yearRange: '1900:myDate', dateFormat: 'dd/mm/yy',maxDate:0
+                                        });
+                                    }
+                                }
+                            },
+                            { name: 'MaritalStatus', index: 'MaritalStatus', align: 'left', editable: true, hidden: true, edittype: 'select', editoptions: { value: "0:Select;1:Married;2:Un Married"}, editrules: {edithidden: true, required: false }, formoptions: { elmsuffix: "<span style='align:left;color:red'>*</span>&nbsp;", rowpos: 5, colpos: 2 } },
+                             {
+                                 name: 'OldEmpCode', index: 'OldEmpCode', align: 'left', viewable: true, hidden: true, editable: true, editoptions: {
+                                     //size: 35,
+                                     maxlength: 30,
+                                     dataEvents: [
+                                         {
+                                             type: 'keyup', // blur
+                                             fn: function (e) {
+                                                 CharacterAndNumber(this);
+                                             }
+                                         }
+                                     ]
+                                 }, formoptions: { elmsuffix: "<span style='align:left;color:red'>*</span>&nbsp;", rowpos: 6, colpos: 1 }, editrules: { edithidden: true, required: false }
+                             },
+                            {
+                                name: 'Address1', index: 'Address1', align: 'left', viewable: true, hidden: true, editable: true, editoptions: {
+                                    //size: 35,
+                                     maxlength: 30,
+                                    dataEvents: [
+                                        {
+                                            type: 'keyup', // blur
+                                            fn: function (e) {
+                                                CharacterAndNumber(this);
+                                            }
+                                        }
+                                    ]
+                                }, formoptions: { elmsuffix: "<span style='align:left;color:red'>*</span>&nbsp;", rowpos: 7, colpos: 1 }, editrules: { edithidden: true, required: false }
+                            },
+                            {
+                                name: 'Address2', index: 'Address2', align: 'left', viewable: true, hidden: true, editable: true, formoptions: { rowpos: 7, colpos: 2 }, editrules: { edithidden: true },
+                                editoptions: {
+                                    //size: 35,
+                                    maxlength: 30,
+                                    dataEvents: [
+                                        {
+                                            type: 'keyup', // blur
+                                            fn: function (e) {
+                                                CharacterAndNumber(this);
+                                            }
+                                        }
+                                    ]
+                                }
+                            },
+                            {
+                                name: 'ZipCode', index: 'ZipCode', align: 'left', viewable: true, hidden: true, editable: true, editoptions: {
+                                    //size: 35,
+                                    maxlength: 6,
+                                    dataEvents: [
+                                        {
+                                            type: 'keyup', // blur
+                                            fn: function (e) {
+                                                OnlyNumber(this);
+                                            }
+                                        }
+                                    ]
+                                }, formoptions: { elmsuffix: "<span style='align:left;color:red'>*</span>&nbsp;", rowpos: 8, colpos: 2 }, editrules: { edithidden: true, required: false }
+                            },
+                            {
+                                name: 'HomePhone', index: 'HomePhone', align: 'left', viewable: true, hidden: true, editable: true, formoptions: { rowpos: 9, colpos: 1 }, editrules: { edithidden: true },
+                                editoptions: {
+                                    //size: 35,
+                                    maxlength: 12,
+                                    dataEvents: [
+                                        {
+                                            type: 'keyup', // blur
+                                            fn: function (e) {
+                                                OnlyNumber(this);
+                                            }
+                                        }
+                                    ]
+                                }
+                            },
+                            {
+                                name: 'Mobile', index: 'Mobile', align: 'left', viewable: true, hidden: true, editable: true, formoptions: { rowpos: 9, colpos: 2 }, editrules: { edithidden: true },
+                                editoptions: {
+                                    //size: 35,
+                                    maxlength: 10,
+                                    dataEvents: [
+                                        {
+                                            type: 'keyup', // blur
+                                            fn: function (e) {
+                                                OnlyNumber(this);
+                                            }
+                                        }
+                                    ]
+                                }
+                            },
+                            {
+                                name: 'e-Mail', index: 'e-Mail', align: 'left', viewable: true, hidden: true, editable: true, formoptions: { rowpos: 10, colpos: 1 }, editrules: { edithidden: true },
+                                editoptions: {
+                                    //size: 35,
+                                    maxlength: 30,
+                                    dataEvents: [
+                                        {
+                                            type: 'keyup', // blur
+                                            fn: function (e) {
+                                                email(this);
+                                            }
+                                        }
+                                    ]
+                                }
+                            },
+                            { name: 'DesignationFKID', index: 'DesignationFKID', align: 'left', viewable: true,  hidden: true, editrules: { edithidden: true } },
+                            { name: 'Area', index: 'Area', align: 'left', hidden: true, editrules: { edithidden: true } },
+                            { name: 'Status', index: 'Status', align: 'left', search:false, editable: true, edittype: 'checkbox', editoptions: { value: "Active:Passive", defaultValue: "Active" } }
+
+
+            ],
+            caption: "Employee Master",
+            autowidth: true,
+            gridview: true,
+            sortable: true,
+            hidegrid: false,
+           
+            altRows: true,
+            rowTotal: 10,
+            sortname: 'Parentid',
+            sortorder: 'asc',
+            rowNum: 10,
+            viewrecords: true,
+            pager: $('#EmployeeMasterPager'),
+            height: 'auto',
+            editable: true,
+            //onSelectRow: function (id) {
+            //    $("#FormMaster").jqGrid('viewGridRow', id);
+            //},
+            editurl: '@Url.Action("EditEmployeeMaster")'
+
+        });
+
+        jQuery("#EmployeeMaster").jqGrid('navGrid', '#EmployeeMasterPager', { add: true, edit: true, del: true, search: true, view: true },
+            {
+                //EDIT
+                //                       height: 300,
+                //                       width: 400,
+                //                       top: 50,
+                //                       left: 100,
+                //                       dataheight: 280,
+                closeOnEscape: true, //Closes the popup on pressing escape key
+                reloadAfterSubmit: true,
+                drag: true,
+                modal:true,
+                width: 800,
+                height:'auto',
+                afterShowForm: function (form) {
+                    form.closest('div.ui-jqdialog').center();
+                },
+                beforeShowForm: function (form) {
+                    var sel_id = $('#EmployeeMaster').jqGrid('getGridParam', 'selrow');
+                    var value = $('#EmployeeMaster').jqGrid('getCell', sel_id, 'Status');
+
+                    if (value.toUpperCase() == 'INACTIVE') {
+                        $('#tr_Status', form).show();
+                    }
+                    else {
+                        $('#tr_Status', form).hide();
+                    }
+
+                },
+
+                beforeSubmit: function (response, postdata) {
+                    $('select').css("border", "1px solid #C0C0C0");
+                    $("input[type=text]").css("border", "1px solid #C0C0C0");
+                    var error = " ";
+                    if ($("#EmpCode").val().charAt(0) == ' ' || $("#EmpCode").val().charAt($("#EmpCode").val().length - 1) == ' ' || $("#EmpCode").val() == "") {
+                        $('#TblGrid_EmployeeMaster td.ui-state-highlight').removeClass('ui-state-highlight').addClass('ui-state-error');
+                        $("#EmpCode").css("background-color", "#FFE8E8").css("border", "1px solid #FF6666");
+                        $('#EmpCode').val('');
+                        $('#EmpCode').focus();
+                        return [false, 'Enter Valid Employee Code'];
+                    }
+                    else if ($("#SurName").val() == 0) {
+                        error += "Intial";
+                        $('#FormError').html("<td class='ui-state-error' colspan='4'>" + error + ":Field is required</td>");
+                        $('#SurName').focus();
+                        $("#SurName").css("background-color", "#FFE8E8").css("border", "1px solid #FF6666");
+                        return [false, response.responseText];
+                    }
+                    else if ($("#FirstName").val().charAt(0) == ' ' || $("#FirstName").val().charAt($("#FirstName").val().length - 1) == ' ' || $("#FirstName").val() == "") {
+                        $('#TblGrid_EmployeeMaster td.ui-state-highlight').removeClass('ui-state-highlight').addClass('ui-state-error');
+                        $("#FirstName").css("background-color", "#FFE8E8").css("border", "1px solid #FF6666");
+                        $('#FirstName').val('');
+                        $('#FirstName').focus();
+                        return [false, 'Enter Valid First Name'];
+                    }
+                    else if ($("#LastName").val().charAt(0) == ' ' || $("#LastName").val().charAt($("#LastName").val().length - 1) == ' ' || $("#LastName").val() == "") {
+                        $('#TblGrid_EmployeeMaster td.ui-state-highlight').removeClass('ui-state-highlight').addClass('ui-state-error');
+                        $("#LastName").css("background-color", "#FFE8E8").css("border", "1px solid #FF6666");
+                        $('#LastName').val('');
+                        $('#LastName').focus();
+                        return [false, 'Enter Valid Last Name'];
+                    }
+                    else if ($("#ShortName").val().charAt(0) == ' ' || $("#ShortName").val().charAt($("#ShortName").val().length - 1) == ' ' || $("#ShortName").val() == "") {
+                        $('#TblGrid_EmployeeMaster td.ui-state-highlight').removeClass('ui-state-highlight').addClass('ui-state-error');
+                        $("#ShortName").css("background-color", "#FFE8E8").css("border", "1px solid #FF6666");
+                        $('#ShortName').val('');
+                        $('#ShortName').focus();
+                        return [false, 'Enter Valid Last Name'];
+                    }
+                    else if ($("#Gender").val() == 0) {
+                        error += "Gender";
+                        $('#FormError').html("<td class='ui-state-error' colspan='4'>" + error + ":Field is required</td>");
+                        $('#Gender').focus();
+                        $("#Gender").css("background-color", "#FFE8E8").css("border", "1px solid #FF6666");
+                        return [false, response.responseText];
+                    }
+                    else if ($("#DOB").val() == "") {
+                        error += "Date of Birth";
+                        $('#FormError').html("<td class='ui-state-error' colspan='4'>" + error + ":Field is required</td>");
+                        $('#DOB').focus();
+                        $("#DOB").css("background-color", "#FFE8E8").css("border", "1px solid #FF6666");
+                        return [false, response.responseText];
+                    }
+                    else if ($("#DOJ").val() == "") {
+                        error += "Date of Join";
+                        $('#FormError').html("<td class='ui-state-error' colspan='4'>" + error + ":Field is required</td>");
+                        $('#DOJ').focus();
+                        $("#DOJ").css("background-color", "#FFE8E8").css("border", "1px solid #FF6666");
+                        return [false, response.responseText];
+                    }
+                    else if ($("#DesignationName").val() == 0) {
+                        error += "Designation Name";
+                        $('#FormError').html("<td class='ui-state-error' colspan='4'>" + error + ":Field is required</td>");
+                        $('#DesignationName').focus();
+                        $("#DesignationName").css("background-color", "#FFE8E8").css("border", "1px solid #FF6666");
+                        return [false, response.responseText];
+
+                    }
+                    else if ($("#MaritalStatus").val() == 0) {
+                        error += "Marital Status";
+                        $('#FormError').html("<td class='ui-state-error' colspan='4'>" + error + ":Field is required</td>");
+                        $('#MaritalStatus').focus();
+                        $("#MaritalStatus").css("background-color", "#FFE8E8").css("border", "1px solid #FF6666");
+                        return [false, response.responseText];
+
+                    }
+                    else if ($("#OldEmpCode").val().charAt(0) == ' ' || $("#OldEmpCode").val().charAt($("#OldEmpCode").val().length - 1) == ' ' || $("#OldEmpCode").val() == "") {
+                        $('#TblGrid_EmployeeMaster td.ui-state-highlight').removeClass('ui-state-highlight').addClass('ui-state-error');
+                        $("#OldEmpCode").css("background-color", "#FFE8E8").css("border", "1px solid #FF6666");
+                        $('#OldEmpCode').val('');
+                        $('#OldEmpCode').focus();
+                        return [false, 'Enter Valid Old Employee Code'];
+                    }
+                    else if ($("#Address1").val().charAt(0) == ' ' || $("#Address1").val().charAt($("#Address1").val().length - 1) == ' ' || $("#Address1").val() == "") {
+                        $('#TblGrid_EmployeeMaster td.ui-state-highlight').removeClass('ui-state-highlight').addClass('ui-state-error');
+                        $("#Address1").css("background-color", "#FFE8E8").css("border", "1px solid #FF6666");
+                        $('#Address1').val('');
+                        $('#Address1').focus();
+                        return [false, 'Enter Valid Address'];
+                    }
+                    else if ($("#CityName").val() == 0) {
+                        error += "City Name";
+                        $('#FormError').html("<td class='ui-state-error' colspan='4'>" + error + ":Field is required</td>");
+                        $('#CityName').focus();
+                        $("#CityName").css("background-color", "#FFE8E8").css("border", "1px solid #FF6666");
+                        return [false, response.responseText];
+
+                    }
+                    else if ($("#ZipCode").val().charAt(0) == ' ' || $("#ZipCode").val().charAt($("#ZipCode").val().length - 1) == ' ' || $("#ZipCode").val() == "") {
+                        $('#TblGrid_EmployeeMaster td.ui-state-highlight').removeClass('ui-state-highlight').addClass('ui-state-error');
+                        $("#ZipCode").css("background-color", "#FFE8E8").css("border", "1px solid #FF6666");
+                        $('#ZipCode').val('');
+                        $('#ZipCode').focus();
+                        return [false, 'Enter Valid ZipCode'];
+                    }
+                    else {
+                        return [true, response.responseText];
+                    }
+
+                },
+
+                afterSubmit: function (response, postdata) {
+                    $("#EmployeeMaster").jqGrid('setGridParam', { datatype: 'json' }).trigger('reloadGrid');
+                    $('#TblGrid_EmployeeMaster td.ui-state-error').removeClass('ui-state-error').addClass('ui-state-highlight');
+                    $('select').val(0);
+                    $("input[type=text]").val('');
+                    $("#Status").prop("checked",false);
+                    return [false, response.responseText];
+                },
+                editData: {
+                    Parentid: function () {
+                        var sel_id = $('#EmployeeMaster').jqGrid('getGridParam', 'selrow');
+                        var value = $('#EmployeeMaster').jqGrid('getCell', sel_id, '_id');
+                        return value;
+                    }
+                }
+              },
+
+        {
+            //Add Portion
+            closeOnEscape: true,
+            width: 800,
+            modal: true,
+            height: 'auto',
+            //closeAfterAdd: true,
+            afterShowForm: function (form) {
+                form.closest('div.ui-jqdialog').center();
+            },
+            beforeShowForm: function (form) {
+                var sel_id = $('#EmployeeMaster').jqGrid('getGridParam', 'selrow');
+                $('#tr_Status', form).hide();
+
+            },
+
+            beforeSubmit: function (response, postdata) {
+                $('select').css("border", "1px solid #C0C0C0");
+                $("input[type=text]").css("border", "1px solid #C0C0C0");
+                var error = " ";
+                if ($("#EmpCode").val().charAt(0) == ' ' || $("#EmpCode").val().charAt($("#EmpCode").val().length - 1) == ' '||$("#EmpCode").val()=="") {
+                    $('#TblGrid_EmployeeMaster td.ui-state-highlight').removeClass('ui-state-highlight').addClass('ui-state-error');
+                    $("#EmpCode").css("background-color", "#FFE8E8").css("border", "1px solid #FF6666");
+                    $('#EmpCode').val('');
+                    $('#EmpCode').focus();
+                    return [false, 'Enter Valid Employee Code'];
+                }
+                else if ($("#SurName").val() == 0) {
+                    error += "Intial";
+                    $('#FormError').html("<td class='ui-state-error' colspan='4'>" + error + ":Field is required</td>");
+                    $('#SurName').focus();
+                    $("#SurName").css("background-color", "#FFE8E8").css("border", "1px solid #FF6666");
+                    return [false, response.responseText];
+                }
+                else if ($("#FirstName").val().charAt(0) == ' ' || $("#FirstName").val().charAt($("#FirstName").val().length - 1) == ' ' || $("#FirstName").val()=="") {
+                    $('#TblGrid_EmployeeMaster td.ui-state-highlight').removeClass('ui-state-highlight').addClass('ui-state-error');
+                    $("#FirstName").css("background-color", "#FFE8E8").css("border", "1px solid #FF6666");
+                    $('#FirstName').val('');
+                    $('#FirstName').focus();
+                    return [false, 'Enter Valid First Name'];
+                }
+                else if ($("#LastName").val().charAt(0) == ' ' || $("#LastName").val().charAt($("#LastName").val().length - 1) == ' ' || $("#LastName").val()=="") {
+                    $('#TblGrid_EmployeeMaster td.ui-state-highlight').removeClass('ui-state-highlight').addClass('ui-state-error');
+                    $("#LastName").css("background-color", "#FFE8E8").css("border", "1px solid #FF6666");
+                    $('#LastName').val('');
+                    $('#LastName').focus();
+                    return [false, 'Enter Valid Last Name'];
+                }
+                else if ($("#ShortName").val().charAt(0) == ' ' || $("#ShortName").val().charAt($("#ShortName").val().length - 1) == ' ' || $("#ShortName").val()=="") {
+                    $('#TblGrid_EmployeeMaster td.ui-state-highlight').removeClass('ui-state-highlight').addClass('ui-state-error');
+                    $("#ShortName").css("background-color", "#FFE8E8").css("border", "1px solid #FF6666");
+                    $('#ShortName').val('');
+                    $('#ShortName').focus();
+                    return [false, 'Enter Valid Last Name'];
+                }
+                else if ($("#Gender").val() == 0) {
+                    error += "Gender";
+                    $('#FormError').html("<td class='ui-state-error' colspan='4'>" + error + ":Field is required</td>");
+                    $('#Gender').focus();
+                    $("#Gender").css("background-color", "#FFE8E8").css("border", "1px solid #FF6666");
+                    return [false, response.responseText];
+                }
+                else if ($("#DOB").val() == "") {
+                    error += "Date of Birth";
+                    $('#FormError').html("<td class='ui-state-error' colspan='4'>" + error + ":Field is required</td>");
+                    $('#DOB').focus();
+                    $("#DOB").css("background-color", "#FFE8E8").css("border", "1px solid #FF6666");
+                    return [false, response.responseText];
+                }
+                else if ($("#DOJ").val() == "") {
+                    error += "Date of Join";
+                    $('#FormError').html("<td class='ui-state-error' colspan='4'>" + error + ":Field is required</td>");
+                    $('#DOJ').focus();
+                    $("#DOJ").css("background-color", "#FFE8E8").css("border", "1px solid #FF6666");
+                    return [false, response.responseText];
+                }
+                else if ($("#DesignationName").val() == 0) {
+                    error += "Designation Name";
+                    $('#FormError').html("<td class='ui-state-error' colspan='4'>" + error + ":Field is required</td>");
+                    $('#DesignationName').focus();
+                    $("#DesignationName").css("background-color", "#FFE8E8").css("border", "1px solid #FF6666");
+                    return [false, response.responseText];
+
+                }
+                else if ($("#MaritalStatus").val() == 0) {
+                    error += "Marital Status";
+                    $('#FormError').html("<td class='ui-state-error' colspan='4'>" + error + ":Field is required</td>");
+                    $('#MaritalStatus').focus();
+                    $("#MaritalStatus").css("background-color", "#FFE8E8").css("border", "1px solid #FF6666");
+                    return [false, response.responseText];
+
+                }
+                else if ($("#OldEmpCode").val().charAt(0) == ' ' || $("#OldEmpCode").val().charAt($("#OldEmpCode").val().length - 1) == ' ' || $("#OldEmpCode").val()=="") {
+                    $('#TblGrid_EmployeeMaster td.ui-state-highlight').removeClass('ui-state-highlight').addClass('ui-state-error');
+                    $("#OldEmpCode").css("background-color", "#FFE8E8").css("border", "1px solid #FF6666");
+                    $('#OldEmpCode').val('');
+                    $('#OldEmpCode').focus();
+                    return [false, 'Enter Valid Old Employee Code'];
+                }
+                else if ($("#Address1").val().charAt(0) == ' ' || $("#Address1").val().charAt($("#Address1").val().length - 1) == ' ' || $("#Address1").val()=="") {
+                    $('#TblGrid_EmployeeMaster td.ui-state-highlight').removeClass('ui-state-highlight').addClass('ui-state-error');
+                    $("#Address1").css("background-color", "#FFE8E8").css("border", "1px solid #FF6666");
+                    $('#Address1').val('');
+                    $('#Address1').focus();
+                    return [false, 'Enter Valid Address'];
+                }
+                else if ($("#CityName").val() == 0) {
+                    error += "City Name";
+                    $('#FormError').html("<td class='ui-state-error' colspan='4'>" + error + ":Field is required</td>");
+                    $('#CityName').focus();
+                    $("#CityName").css("background-color", "#FFE8E8").css("border", "1px solid #FF6666");
+                    return [false, response.responseText];
+
+                }
+                else if ($("#ZipCode").val().charAt(0) == ' ' || $("#ZipCode").val().charAt($("#ZipCode").val().length - 1) == ' ' || $("#ZipCode").val()=="") {
+                    $('#TblGrid_EmployeeMaster td.ui-state-highlight').removeClass('ui-state-highlight').addClass('ui-state-error');
+                    $("#ZipCode").css("background-color", "#FFE8E8").css("border", "1px solid #FF6666");
+                    $('#ZipCode').val('');
+                    $('#ZipCode').focus();
+                    return [false, 'Enter Valid ZipCode'];
+                }
+                else {
+                    return [true, response.responseText];
+                }
+            },
+
+            afterSubmit: function (response, postdata) {
+                $("#EmployeeMaster").jqGrid('setGridParam', { datatype: 'json' }).trigger('reloadGrid');
+                var errorId = " ";
+                if (response.responseText == "\"Employee Master added Successfully.\"") {
+                    errorId += "Location Details added Successfully";
+                    $('#FormError').html("<td class='ui-state-error' colspan='4'>" + errorId + "</td>");
+                    $('#TblGrid_EmployeeMaster td.ui-state-error').removeClass('ui-state-error').addClass('ui-state-highlight');
+                    $('select').val(0);
+                    $("input[type=text]").val('');
+                    $("#Status").prop("checked", false);
+                    return [false, response.responseText]
+                }
+                else {
+                    errorId += "Employee Master already Exists";
+                    $('#FormError').html("<td class='ui-state-error' colspan='4'>" + errorId + "</td>");
+                    $('#TblGrid_EmployeeMaster td.ui-state-error').removeClass('ui-state-highlight').addClass('ui-state-error');
+                    $('select').val(0);
+                    $("input[type=text]").val('');
+                    $("#Status").prop("checked", false);
+                    return [false, response.responseText]
+                }
+            },
+
+
+            @*onclickSubmit: function (params, posdata) {
+                params.url = '@Url.Action("AddEmployeeMaster")?FirstName=' + $('#FirstName').val() + '&MiddleName=' + $('#MiddleName').val() + '&LastName=' + $('#LastName').val()
+                    + '&ShortName=' + $('#ShortName').val() + '&Gender=' + $('#Gender').val()
+                + '&DOB=' + $('#DOB').val() + '&DOJ=' + $('#DOJ').val() + '&Address=' + $('#Address').val() + '&Address1=' + $('#Address1').val()
+                + '&Address2=' + $('#Address2').val() + '&Street=' + $('#Street').val() + '&Area=' + $('#Area').val() + '&ZipCode=' + $('#ZipCode').val()
+                 + '&ISDCode=' + $('#ISDCode').val() + '&STDCode=' + $('#STDCode').val() + '&PhoneNo=' + $('#PhoneNo').val() + '&Mobile=' + $('#Mobile').val()
+                + '&Email=' + $('#Email').val() + '&HQ=' + $('#HQ').val() + '&MaritalStatusFKID=' + $('#MaritalStatusFKID').val() + '&OldEmpCode=' + $('#OldEmpCode').val()
+                + '&EmpCode=' + $('#EmpCode').val() + '&EmpName=' + $('#EmpName').val() + '&DesignationFKID=' + $('#DesignationFKID').val() + '&DesignationName=' + $('#DesignationName').val()
+                + '&CityName=' + $('#CityName').val() + '&Status=' + $('#Status').val();
+            },*@
+
+
+            onclickSubmit: function (params, posdata) {
+                params.url = '@Url.Action("AddEmployeeMaster")?EmpCode=' + $('#EmpCode').val() + '&EmpName=' + $('#EmpName').val() + '&DesignationName=' + $('#DesignationName').val()
+                    + '&CityName=' + $('#CityName').val() + '&FirstName=' + $('#FirstName').val()
+                + '&MiddleName=' + $('#MiddleName').val() + '&LastName=' + $('#LastName').val() + '&ShortName=' + $('#ShortName').val() + '&Gender=' + $('#Gender').val()
+                + '&DOB=' + $('#DOB').val() + '&DOJ=' + $('#DOJ').val() + '&MaritalStatus=' + $('#MaritalStatus').val() + '&OldEmpCode=' + $('#OldEmpCode').val()
+                 + '&Address1=' + $('#Address1').val() + '&Address2=' + $('#Address2').val() + '&ZipCode=' + $('#ZipCode').val() + '&HomePhone=' + $('#HomePhone').val()
+                + '&Mobile=' + $('#Mobile').val() + '&e-Mail=' + $('#e-Mail').val() + '&DesignationFKID=' + $('#DesignationFKID').val() + '&Area=' + $('#Area').val()
+                + '&Status=' + $('#Status').val();
+            },
+          },
+        {
+            //DELETE
+            closeOnEscape: true,
+            closeAfterDelete: true,
+            reloadAfterSubmit: true,
+            modal: true,
+            closeOnEscape: true,
+            drag: true,
+            width:600,
+            afterShowForm: function (form) {
+                form.closest('div.ui-jqdialog').center();
+            },
+           
+            beforeShowForm: function (form) {
+
+                $('tr td.delmsg').html('Delete selected record(s)?');
+
+                var col1 = $('#EmployeeMaster').jqGrid('getGridParam', 'selrow');
+                var IsActive = $('#EmployeeMaster').jqGrid('getCell', col1, 'Status');
+                if (IsActive == "InActive") {
+                    $('tr td.delmsg').html('Record Already Deleted');
+
+                    $('#dData').hide();
+                }
+                else
+                    $('#dData').show();
+
+            },
+
+            afterSubmit: function (response, postdata) {
+
+                $('tr td.delmsg').html('');
+                $('#dData').hide();
+
+                if (response.responseText == "") { 
+                    $("#EmployeeMaster").trigger("reloadGrid", [{ current: true }]);
+                    return [false, response.responseText]
+                }
+                else {
+                    $(this).jqGrid('setGridParam', { datatype: 'json' }).trigger('reloadGrid');
+                    return [false, response.responseText]
+                   
+
+                }
+            },
+
+            Deldata: {
+                PKID: function () {
+                    var sel_id = $('#EmployeeMaster').jqGrid('getGridParam', 'selrow');
+                    var value = $('#EmployeeMaster').jqGrid('getCell', sel_id, '_id');
+                    return value;
+                }
+            }
+
+        },
+        {
+            //search
+            closeOnEscape: true,
+            modal: true,
+            recreateForm: true,
+            width: 552,
+            caption: "Search",
+            searchOnEnter: true,
+            beforeShowSearch: function (form) {
+
+                $('#jqg1').val('');
+                $('#fbox_EmployeeMaster_reset').click();
+
+                var dialogHeight = $("#searchmodfbox_EmployeeMaster").height();
+                var dialogWidth = $("#searchmodfbox_EmployeeMaster").width();
+                var windowHeight = $(window).height();
+                var windowWidth = $(window).width();
+                $("#searchmodfbox_EmployeeMaster").css('position', 'fixed');
+                $("#searchmodfbox_EmployeeMaster").css('top', ((windowHeight - dialogHeight) / 2));
+                $("#searchmodfbox_EmployeeMaster").css('left', ((windowWidth - dialogWidth) / 2));
+
+                return [true, ""];
+            },
+        },
+        {
+            //View
+            width: 700,
+            modal: true,
+            beforeShowForm: function (form) {
+                form.closest('div.ui-jqdialog').center();
+
+
+            }
+        }
+                );
+        // setMethod('LocationMaster', 'LocationMasterPager', 'Customer Grid', 'ManageUsers', 'LocationMaster.cshtml');
+
+        setMethod('EmployeeMaster', 'EmployeeMasterPager', 'Customer Grid');
+
+    }
+        //Center Popup
+        jQuery.fn.center = function () {
+            this.css("position", "absolute");
+            this.css("top", ($(window).height() - this.height()) / 2 + $(window).scrollTop() + "px");
+            this.css("left", ($(window).width() - this.width()) / 2 + $(window).scrollLeft() + "px");
+            return this;
+
+        }
+        function validSpecial(objElement) {
+
+            var re = /^[a-zA-Z0-9-/\s.:]*/gi;
+            if (objElement.value.match(re) != objElement.value) {
+                alert('Special Characters are Not Allowed');
+                objElement.value = '';
+
+                return false;
+            }
+
+        }
+
+    function setMethod(gid, id, pgTitle) {
+        // alert(1);
+        var btnTitle = 'Export to Excel';
+        $('#' + gid).jqGrid('navSeparatorAdd', '#' + id, { sepclass: "ui-separator" });
+        $('#' + gid).jqGrid('navButtonAdd', '#' + id, { caption: '', title: btnTitle, position: 'last', buttonicon: 'ui-icon-calculator', onClickButton: function () { ExcelExport(); } });
+
+        var btnTitle = 'Export to PDF';
+        $('#' + gid).jqGrid('navSeparatorAdd', '#' + id, { sepclass: "ui-separator" });
+        $('#' + gid).jqGrid('navButtonAdd', '#' + id, { caption: '', title: btnTitle, position: 'last', buttonicon: 'ui-icon-bookmark', onClickButton: function () { PDFExport(); } });
+
+        var btnTitle = 'Export to CSV';
+        $('#' + gid).jqGrid('navSeparatorAdd', '#' + id, { sepclass: "ui-separator" });
+        $('#' + gid).jqGrid('navButtonAdd', '#' + id, { caption: '', title: btnTitle, position: 'last', buttonicon: 'ui-icon-note', onClickButton: function () { CSVExport(); } });
+
+
+        var btnTitle = 'Print Grid';
+        $('#' + gid).jqGrid('navSeparatorAdd', '#' + id, { sepclass: "ui-separator" });
+        $('#' + gid).jqGrid('navButtonAdd', '#' + id, { caption: '', title: btnTitle, position: 'last', buttonicon: 'ui-icon-print', onClickButton: function () { PrintGrid(gid); } });
+    }
+    function ExcelExport() {
+        window.location = '@Url.Action("ExportEmployeeMasterToExcel")';
+    }
+    function PDFExport() {
+        window.location = '@Url.Action("ExportEmployeeMasterToPDF")';
+    }
+    function CSVExport() {
+
+        window.location = '@Url.Action("ExportEmployeeMasterToCsv")';
+       
+    }
+    function PrintGrid(gid) {
+      
+
+
+        // empty the print div container.
+        var rows = $('#EmployeeMaster').jqGrid('getRowData');
+        for (var i = 0; i < rows.length; i++) {
+            var row = rows[i];
+            $('#Table1').append("<tr><td>" + row.EmpCode + "</td><td>" + row.EmpName + "</td><td>" + row.DesignationName + "</td><td>" + row.CityName + "</td><td>" + row.Status + "</td></tr>");
+
+        }
+        $(function () { printChrome('prt-container') });
+    }
+
+    function printChrome(divContainer) {
+
+        //  alert(9);
+        var printContent = document.getElementById(divContainer);        
+        // alert(printContent.innerHTML);
+        window.document.body.innerHTML = printContent.innerHTML;
+        window.print();
+        window.location.reload();
+    }
+
+
+    </script>
+    <div id='prt-container' style="display:none">
+        <table id="Table1" border="1" width="100%">
+            <thead>
+                <tr>
+                    <td><b>Employee Code</b></td>
+                    <td><b>Employee Name</b></td>
+                    <td><b>Designation</b></td>
+                    <td><b>City</b></td>
+                    <td><b>Status</b></td>
+                </tr>
+
+            </thead>
+            <tbody></tbody>
+
+        </table>
+    </div>
+</body>
+

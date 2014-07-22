@@ -1,0 +1,356 @@
+﻿@{
+    ViewBag.Title = "SalesHierarchy";
+    Layout = "~/Views/Shared/MasterLayout.cshtml";
+}
+
+
+<body>
+    @using (Html.BeginForm(FormMethod.Post))
+    {
+        <div>
+            <table border="0" style="width: 100%">
+                <tr>
+                    <td>
+                        <!--JqGrid Starts-->
+                        <table style="margin-top: 7px; width :100%" border="0">
+                            <tr>
+                                <td>
+                                    <table id="GridSalesHierarchy" style="width: 100%" border="0"></table>
+                                    <div id="Pager">
+                                    </div>
+                                </td>
+                            </tr>
+                        </table>
+                        <!--Ends-->
+                    </td>
+                </tr>
+            </table>
+
+        </div>
+    }
+    <script type="text/javascript">
+
+        jQuery(document).ready(function () {
+
+            initGrid();
+        });
+
+        function MoveSelected() {
+
+            $('#Teams :selected').each(function (i, selected) {
+                $('#SelTeams')
+                     .append($('<option selected="selected" value=' + $(selected).val() + '>')
+                     .text($(selected).text()));
+                $('#Teams :selected').remove();
+            });
+
+
+        }
+
+        function ReverseSelected() {
+
+            $('#SelTeams :selected').each(function (i, selected) {
+                $('#Teams')
+                     .append($('<option>', { value: $(selected).val() })
+                     .text($(selected).text()));
+                $('#SelTeams :selected').remove();
+
+            });
+
+            $("#SelTeams option").prop("selected", true);
+            $("#SelTeams option:first").removeAttr('selected');
+
+        }
+        function initGrid() {
+            jQuery("#GridSalesHierarchy").jqGrid({
+                url: '@Url.Action("GridSalesHierarchy")',
+                datatype: "json",
+                jsonReader: { repeatitems: false, id: "PKID" },
+                colNames: ['IsLower', 'Division', 'PKID', 'User Name', 'Node', 'Reporting To', 'Status', 'NodeDescription', 'LocationDescription', 'HQ','','','', 'Teams', 'RegionCode', 'Territory', 'Node Type', 'User', 'Node Function', 'Location', 'Forum Creator',  'District Code'],
+                colModel: [
+                    {
+                        name: 'IsLower', index: 'IsLower', align: 'center', hidden: true, editable: true, editrules: { edithidden: true }, edittype: 'select', editoptions: {
+                            value: { 2: 'Select', 1: 'Yes', 0: 'No'}
+                        }, formoptions: { rowpos: 2, colpos: 1 }
+                    },
+
+                    {
+                        name: 'Division', index: 'Division', align: 'left', hidden: true, editable: true,edittype: 'select', editrules: { edithidden: true },editoptions: {
+                            
+                            dataUrl: function () {
+                                var row_id = $('#GridSalesHierarchy').getGridParam('selrow');
+                                return 'LoadSalesDivision?type=' + 'Division' + '&rowId=' + row_id;
+                            },
+                            dataInit: function (elem) {
+                                $(elem).width(135);
+                            }
+
+
+                        }, formoptions: { rowpos: 3, colpos: 1 } },
+                    { name: 'PKID', index: 'PKID', align: 'left', hidden: false, editable: false },
+                    { name: 'userName', index: 'userName', align: 'left', editable: false,  editrules: { edithidden: false } },
+                     { name: 'NodeName', index: 'NodeName', align: 'left', hidden: false, editable: false, editrules: { edithidden: false} },
+                    { name: 'reportingTo', index: 'reportingTo', align: 'left',hidden:false, resizable: false, editable: true, edittype: 'select' ,editoptions: {                        
+                        dataUrl: function () {
+                            var row_id = $('#GridSalesHierarchy').getGridParam('selrow');
+                            return 'LoadUserType?type=' + 'User' + '&rowId=' + row_id;
+                        },
+                        dataInit: function (elem) {
+                            $(elem).width(135);
+                        }
+
+
+                    },formoptions: { rowpos: 4, colpos: 1 } },
+
+                    { name: 'IsActive', index: 'IsActive', align: 'left', resizable: false, editable: false, edittype: 'checkbox', editoptions: { value: "True:False" }, searchoptions: { sopt: ['eq', 'bw', 'ew', 'cn'] }, view: false },
+
+                     { name: 'NodeDescription', index: 'NodeDescription', align: 'left', hidden: true, editable: true, editrules: { edithidden: true }, formoptions: { rowpos: 5, colpos: 1 } },
+                    { name: 'LocationDescription', index: 'LocationDescription', align: 'left', hidden: true, editable: true, editrules: { edithidden: true }, formoptions: { rowpos: 6, colpos: 1 } },
+                    { name: 'HQ', index: 'HQ', align: 'left', hidden: true, editable: true, editrules: { edithidden: true },edittype: 'select' ,editoptions: {
+                        
+                        dataUrl: function () {
+                            var row_id = $('#GridSalesHierarchy').getGridParam('selrow');
+                            return 'LoadHQType?type=' + 'HQ' + '&rowId=' + row_id;
+                        },
+                        dataInit: function (elem) {
+                            $(elem).width(135);
+                        }
+
+
+                    }, formoptions: { rowpos: 7, colpos: 1 }
+                    },
+
+
+                      {
+                          name: 'forward', index: 'forward', align: 'left', hidden: true, editrules: { edithidden: true }, edittype: 'button', editable: true, editoptions: {
+                              value: '>>',
+                              dataEvents:
+                                  [
+                                  {
+                                      type: 'click', fn: function (e) {
+
+                                          MoveSelected();
+                                      }
+                                  }]
+
+                          }, formoptions: { rowpos: 8, colpos: 2 }
+                      },
+
+            {
+
+                name: 'backward', index: 'backward', align: 'right', hidden: true, edittype: 'button', editrules: { edithidden: true }, editable: true, editoptions: {
+                    value: '<<',
+                    dataEvents:
+                        [
+                        {
+                            type: 'click', fn: function (e) {
+
+                                ReverseSelected();
+                            }
+                        }]
+
+                }, formoptions: { rowpos: 8, colpos: 3 }
+
+
+            },
+
+            {
+                name: 'SelTeams', index: 'SelHQ', align: 'left', editable: true, hidden: true, editrules: { edithidden: true }, edittype: 'select', editoptions: {
+                    multiple: true, dataUrl: function () {
+                        var row_id = $('#GridSalesHierarchy').getGridParam('selrow');
+                        return 'LoadSubTerritory?type=' + 'SHDay' + '&rowId=' + row_id;
+                    }
+
+                }, formoptions: { rowpos: 8, colpos: 4 },
+            },
+                { name: 'Teams', index: 'Teams', align: 'left', hidden: true, editable: true, editrules: { edithidden: true }, formoptions: { rowpos: 8, colpos: 1 },edittype: 'select' ,editoptions: {
+                multiple: true,
+                dataUrl: function () {
+                    var row_id = $('#GridSalesHierarchy').getGridParam('selrow');
+                    return 'LoadTeamType?type=' + 'Team' + '&rowId=' + row_id;
+                },
+                dataInit: function (elem) {
+                    $(elem).width(135);
+                }
+
+
+                } },
+
+        { name: 'RegionCode', index: 'RegionCode', align: 'left', hidden: true, editable: true, editrules: { edithidden: true }, formoptions: { rowpos: 9, colpos: 1 },edittype: 'select' ,editoptions: {
+            
+            dataUrl: function () {
+                var row_id = $('#GridSalesHierarchy').getGridParam('selrow');
+                return 'LoadRegionType?type=' + 'Region' + '&rowId=' + row_id;
+            },
+            dataInit: function (elem) {
+                $(elem).width(135);
+            }
+
+
+        }  },
+        { name: 'Territory*', index: 'Territory*', align: 'left', hidden: true, editable: true, editrules: { edithidden: true }, formoptions: { rowpos: 10, colpos: 1 } ,edittype: 'select' ,editoptions: {
+            
+                dataUrl: function () {
+                    var row_id = $('#GridSalesHierarchy').getGridParam('selrow');
+                    return 'LoadTerritoryType?type=' + 'Territory' + '&rowId=' + row_id;
+                },
+                dataInit: function (elem) {
+                    $(elem).width(135);
+                }
+
+
+        } },
+
+
+
+        { name: 'NodeType', index: 'NodeType', align: 'left', hidden: true, editable: true, editrules: { edithidden: true }, edittype: 'select',editoptions: {
+            
+            dataUrl: function () {
+                var row_id = $('#GridSalesHierarchy').getGridParam('selrow');
+                return 'LoadNodeType?type=' + 'NodeType' + '&rowId=' + row_id;
+            },
+            dataInit: function (elem) {
+                $(elem).width(135);
+            }
+
+
+        }, formoptions: { rowpos: 2, colpos: 2 } },
+
+        { name: 'User', index: 'User', align: 'left', hidden: true, editable: true, editrules: { edithidden: true }, edittype: 'select',editoptions: {
+                
+                dataUrl: function () {
+                    var row_id = $('#GridSalesHierarchy').getGridParam('selrow');
+                    return 'LoadUserType?type=' + 'User' + '&rowId=' + row_id;
+                },
+                dataInit: function (elem) {
+                    $(elem).width(135);
+                }
+
+
+        },formoptions: { rowpos: 3, colpos: 2 } },
+        { name: 'NodeFunction', index: 'NodeFunction', align: 'left', hidden: true, editable: true, editrules: { edithidden: true }, edittype: 'select', editoptions: {
+            value: { 0: 'Select', 1: 'Line', 2: 'Staff'}
+        },formoptions: { rowpos: 4, colpos: 2 } },
+        { name: 'Location', index: 'Location', align: 'left', hidden: true, editable: true, editrules: { edithidden: true }, edittype: 'select',editoptions: {
+                
+                dataUrl: function () {
+                    var row_id = $('#GridSalesHierarchy').getGridParam('selrow');
+                    return 'LoadLocation?type=' + 'location' + '&rowId=' + row_id;
+                },
+                dataInit: function (elem) {
+                    $(elem).width(135);
+                }
+
+
+        },formoptions: { rowpos: 5, colpos: 2 } },
+        { name: 'ForumCreator', index: 'ForumCreator', align: 'left', hidden: true, editable: true, editrules: { edithidden: true },edittype: 'select', editoptions: {
+            value: { 0: 'Select', 1: 'Yes', 2: 'No'}
+        }, formoptions: { rowpos: 6, colpos: 2 } },
+        {
+            name: 'DistrictCode', index: 'DistrictCode', align: 'left', hidden: true, editable: true, editrules: { edithidden: true }, formoptions: { rowpos: 9, colpos: 2 }, edittype: 'select', editoptions: {
+                
+                dataUrl: function () {
+                    var row_id = $('#GridSalesHierarchy').getGridParam('selrow');
+                    return 'LoadRegionType?type=' + 'Region' + '&rowId=' + row_id;
+                },
+                dataInit: function (elem) {
+                    $(elem).width(135);
+                }
+
+
+        } },
+
+
+        ],
+
+        autowidth: true,
+            gridview: true,
+        caption: 'Sales Hierarchy',
+        jqModal: true,
+        align: 'center',
+        sortable: true,
+        hidegrid: true,
+        altRows: true,
+        rowTotal: 10,
+        rowNum: 10,
+        viewrecords: true,
+        pager: $('#Pager'),
+        height: 'auto',
+        editable: true,
+        gridComplete: function () {
+
+            if (jQuery("#GridSalesHierarchy").getGridParam("records") == 0) {
+                jQuery("#GridSalesHierarchy").addRowData(
+                      "blankRow", { "NodeName": "No records to view" });
+            }
+
+
+        },
+        editurl: '@Url.Action("EditSalesHierarchy")'
+        });
+        jQuery("#GridSalesHierarchy").jqGrid('navGrid', '#Pager', { edit: true, add: true, del: true, search: true,view:true },
+            {
+                // Edit
+                closeAfterEdit: true,
+                closeOnEscape: true,
+                recreateForm: true,
+                width: 700,              
+                checkOnSubmit: true,
+                afterShowForm: function (form_id) {
+                    var thisForm = form_id.selector.replace('FrmGrid_', 'editmod')
+                    var dialogHeight = $(thisForm).height();
+                    var dialogWidth = $(thisForm).width();
+                    var windowHeight = $(window).height();
+                    var windowWidth = $(window).width();
+                    $(thisForm).css('position', 'fixed');
+                    $(thisForm).css('top', ((windowHeight - dialogHeight) / 2));
+                    $(thisForm).css('left', ((windowWidth - dialogWidth) / 2));
+                },
+
+                afterSubmit: function (response, postdata) {
+
+                    $("#RatingMaster").jqGrid('setGridParam', { datatype: 'json' }).trigger('reloadGrid');
+                    return [false, response.responseText];
+                }
+
+            },
+            {
+                //Add
+                closeOnEscape: true,
+                closeAfterAdd: true,
+                recreateForm: true,
+                width: 700,
+
+                beforeShowForm: function (form) {
+
+
+
+
+
+
+                },
+                afterShowForm: function (form_id) {
+                    var thisForm = form_id.selector.replace('FrmGrid_', 'editmod')
+                    var dialogHeight = $(thisForm).height();
+                    var dialogWidth = $(thisForm).width();
+                    var windowHeight = $(window).height();
+                    var windowWidth = $(window).width();
+                    $(thisForm).css('position', 'fixed');
+                    $(thisForm).css('top', ((windowHeight - dialogHeight) / 2));
+                    $(thisForm).css('left', ((windowWidth - dialogWidth) / 2));
+                },
+
+
+
+                afterSubmit: function (response, postdata) {
+                    alert('Information Added Successfully');
+                    $("#ajaxGrid").jqGrid('setGridParam', { datatype: 'json' }).trigger('reloadGrid');
+                    return [true, "", ''];
+                }
+            }
+
+            );
+        }
+    </script>
+
+</body>

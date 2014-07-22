@@ -1,0 +1,58 @@
+﻿@model Dictionary<int, string>
+
+
+@if (ViewBag.Type == "")
+{
+    <select multiple id="Specialization" class="FormElement ui-widget-content ui-corner-all">
+        <option value='0'>Select</option>
+        @foreach (KeyValuePair<int, string> value in Model)
+        {
+            <option value='@value.Key.ToString()'>@value.Value</option>
+        }
+    </select>
+}
+
+@if (ViewBag.Type == "SelSpecialization")
+{
+    <select multiple class="FormElement ui-widget-content ui-corner-all" id="SelSpecialization" name="SelSpecialization">
+        <option value='0'>Select</option>
+        @foreach (KeyValuePair<int, string> value in Model)
+        {
+            <option value='@value.Key.ToString()'>@value.Value</option>
+        }
+    </select>
+}
+
+    @if (ViewBag.Type == "NotSelectedSpecialization")
+    {
+        <select>
+            <option value='0'>Select</option>
+            @foreach (KeyValuePair<int, string> value in Model)
+            {
+                <option value='@value.Key.ToString()'>@value.Value</option>
+            }
+        </select>
+    }
+
+    @if (ViewBag.Type == "SelectedSpecialization")
+    {
+        <select>
+            <option value='0'>Select</option>
+            @foreach (KeyValuePair<int, string> value in Model)
+            {
+                <option value='@value.Key.ToString()' selected="selected">@value.Value</option>
+            }
+        </select>
+    }
+
+
+    @if (ViewBag.Type == "ProductName")
+    {
+        <select>
+            <option value='0'>Select</option>
+            @foreach (KeyValuePair<int, string> value in Model)
+            {
+                <option value='@value.Key.ToString()'>@value.Value</option>
+            }
+        </select>
+    }

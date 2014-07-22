@@ -1,0 +1,587 @@
+﻿@{
+    ViewBag.Title = "SettingMasterTeamWise";
+    Layout = "~/Views/Shared/MasterLayout.cshtml";
+}
+
+
+
+<body>
+    @using (Html.BeginForm(FormMethod.Post))
+    {
+        <div>
+            <table border="0" style="width: 100%">
+                <tr>
+                    <td>
+                        <!--JqGrid Starts-->
+                        <table style="margin-top: 7px; width :100%" border="0">
+                            <tr>
+                                <td>
+                                    <table id="ajaxGrid" style="width: 100%" border="0"></table>
+                                    <div id="ajaxGridPager">
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td align="center" style="padding-top:20px;">
+                                    <table>
+                                        <tr>
+                                            <td style="padding-right:10px;">
+                                                <input type="button" class="blue_button" id="bntSubmit" title="Submit" value="Submit" />
+                                            </td>
+                                            <td>
+                                                <input type="button" class="orange_button" id="bntCancel" title="ResetToDefault" value="ResetToDefault" />
+                                            </td>
+                                        </tr>
+                                    </table>
+
+                                </td>
+
+                            </tr>
+                        </table>
+                        <!--Ends-->
+                    </td>
+                </tr>
+            </table>
+        </div>
+    }
+</body>
+
+<script type="text/javascript">
+
+
+    $("#bntSubmit").click(function () {
+        
+        jQuery('#ajaxGrid').jqGrid('saveRow', lastsel);
+        var gridData = jQuery("#ajaxGrid").getRowData();
+        var postData = JSON.stringify(gridData);      
+        $.ajax({
+            url: '@Url.Action("UpdateGridDataSettingTeamwise")',
+            type: 'POST',
+            dataType: 'json',
+            data: { gridData: postData },
+            success: function (result) {
+            }
+        });
+        $("#ajaxGrid").setGridParam({ datatype: 'json', page: 1 }).trigger('reloadGrid');
+        return true;
+    });
+
+
+
+
+    jQuery(document).ready(function () {
+
+        initGrid();
+    });
+
+
+    var lastsel;
+    function initGrid() {
+        jQuery("#ajaxGrid").jqGrid({
+            url: '@Url.Action("GridDataSettingMasterTeamWise")',
+
+            datatype: "json",
+            jsonReader: { repeatitems: false},
+            colNames: ['TeamFKID', 'Teams', 'Entry Allowed Before Days', 'Min. Monthly Calls', 'Max. Monthly Calls', 'Lock Entry', 'Entry Cut-off Days', 'Entry Allowed Months', 'Lock Entry',
+                'Entry Allowed After', 'Entry Allowed Days', 'Lock Entry', 'Lock PLStage', 'Lock Entry', 'No. of Days Limit', 'Min. Monthly Calls', 'Max. Monthly Calls',
+            'Min. Monthly Calls', 'Max. Monthly Calls', 'Product Preloaded', 'Entry Allowed After', 'Entry Allowed Days', 'Lock Entry',
+            'Entry Allowed After', 'Entry Allowed Days', 'Lock Entry', 'Days in Month End', 'Days in Month Begining'
+            ],
+            colModel: [
+
+                 { name: 'TeamFKID', index: 'TeamFKID', align: 'left', hidden: true, editrules: { edithidden: true }, editrules: { edithidden: true, required: true } },
+                 { name: 'TeamName', index: 'TeamName', align: 'left' },
+
+                 //Cycle Plan
+                 {
+                     name: 'CPDaysBeforeAllowed', index: 'CPDaysBeforeAllowed', align: 'left',
+                     editoptions: {
+                         maxlength: 20,
+                         dataEvents: [{
+                             type: 'keyup', // blur
+                             fn: function (e) {
+                                 //OnlyNumberPoints(this);
+                                 this.value = this.value.replace(/[^0-9\.]/g, '');
+                                 
+                             },
+                          }]
+                          },
+                     editable: true
+                 },
+                 {
+                     name: 'MinMonthlyFrequency', index: 'MinMonthlyFrequency', align: 'left',
+                     editoptions: {
+                         maxlength: 20,
+                         dataEvents: [{
+                             type: 'keyup', // blur
+                             fn: function (e) {
+                                 this.value = this.value.replace(/[^0-9\.]/g, '');
+
+                             },
+                         }]
+                     },
+                     editable: true
+                 },
+                 {
+                     name: 'MaxMothlyFrequency', index: 'MaxMothlyFrequency', align: 'left',
+                     editoptions: {
+                         maxlength: 20,
+                         dataEvents: [{
+                             type: 'keyup', // blur
+                             fn: function (e) {
+                                 this.value = this.value.replace(/[^0-9\.]/g, '');
+
+                             },
+                         }]
+                     },
+
+
+                     editable: true
+                 },
+                 {
+                     name: 'CPUnlockEntry', index: 'CPUnlockEntry', align: 'center',
+                     formatter: 'checkbox', editoptions: { value: '1:0' }, multiselect: true,
+                     formatoptions: { disabled: false },
+                 },
+
+                 //Tour Plan
+                 {
+                     name: 'TPcutOffDays', index: 'TPcutOffDays', align: 'left',
+                     editoptions: {
+                         maxlength: 20,
+                         dataEvents: [{
+                             type: 'keyup', // blur
+                             fn: function (e) {
+                                 this.value = this.value.replace(/[^0-9\.]/g, '');
+
+                             },
+                         }]
+                     },
+
+                     editable: true
+                 },
+                 {
+                     name: 'TPNoOfMonths', index: 'TPNoOfMonths', align: 'left',
+                     editoptions: {
+                         maxlength: 20,
+                         dataEvents: [{
+                             type: 'keyup', // blur
+                             fn: function (e) {
+                                 this.value = this.value.replace(/[^0-9\.]/g, '');
+
+                             },
+                         }]
+                     },
+                     editable: true
+                 },
+                 {
+                     name: 'TPlock', index: 'TPlock', align: 'center',
+                     formatter: 'checkbox', editoptions: { value: '1:0' }, multiselect: true,
+                     formatoptions: { disabled: false },
+                 },
+
+                 //PSO Daily Report
+                 {
+                     name: 'DREntryAllowedTime', index: 'DREntryAllowedTime', align: 'left',
+                     editoptions: {
+                         maxlength: 20,
+                         dataEvents: [{
+                             type: 'keyup', // blur
+                             fn: function (e) {
+                                 this.value = this.value.replace(/[^0-9\.]/g, '');
+
+                             },
+                         }]
+                     },
+
+                     editable: true
+                 },
+                 {
+                     name: 'DREntryAllowedDays', index: 'DREntryAllowedDays', align: 'left',
+                     editoptions: {
+                         maxlength: 20,
+                         dataEvents: [{
+                             type: 'keyup', // blur
+                             fn: function (e) {
+                                 this.value = this.value.replace(/[^0-9\.]/g, '');
+
+                             },
+                         }]
+                     },
+
+
+                     editable: true
+                 },
+                 {
+                     name: 'DRUnLockEntry', index: 'DRUnLockEntry', align: 'center',
+                     formatter: 'checkbox', editoptions: { value: '1:0' }, multiselect: true,
+                     formatoptions: { disabled: false },
+                 },
+
+                 //Doctor Profile...
+                 {
+                     name: 'DPOLockPLStage', index: 'DPOLockPLStage', align: 'center',
+                     formatter: 'checkbox', editoptions: { value: '1:0' }, multiselect: true,
+                     formatoptions: { disabled: false },
+                 },
+                 {
+                     name: 'DPPLOCKall', index: 'DPPLOCKall', align: 'center',
+                     formatter: 'checkbox', editoptions: { value: '1:0' }, multiselect: true,
+                     formatoptions: { disabled: false },
+                 },
+
+                 //PT
+                 {
+                     name: 'PTcutOffDay', index: 'PTcutOffDay', align: 'left',
+                     editoptions: {
+                         maxlength: 20,
+                         dataEvents: [{
+                             type: 'keyup', // blur
+                             fn: function (e) {
+                                 this.value = this.value.replace(/[^0-9\.]/g, '');
+
+                             },
+                         }]
+                     },
+
+                     editable: true
+                 },
+
+                 //Cycle Plan Retailers RV
+                 {
+                     name: 'CPRRVMinMonthlyFrequency', index: 'CPRRVMinMonthlyFrequency', align: 'left',
+                     editoptions: {
+                         maxlength: 20,
+                         dataEvents: [{
+                             type: 'keyup', // blur
+                             fn: function (e) {
+                                 this.value = this.value.replace(/[^0-9\.]/g, '');
+
+                             },
+                         }]
+                     },
+                     editable: true
+                 },
+                 {
+                     name: 'CPRRVMaxMothlyFrequency', index: 'CPRRVMaxMothlyFrequency', align: 'left',
+                     editoptions: {
+                         maxlength: 20,
+                         dataEvents: [{
+                             type: 'keyup', // blur
+                             fn: function (e) {
+                                 this.value = this.value.replace(/[^0-9\.]/g, '');
+
+                             },
+                         }]
+                     },
+
+                     editable: true
+                 },
+
+                 //Cycle Plan Retailers RB
+
+                 {
+                     name: 'CPRRBMinMonthlyFrequency', index: 'CPRRBMinMonthlyFrequency', align: 'left',
+                     editoptions: {
+                         maxlength: 20,
+                         dataEvents: [{
+                             type: 'keyup', // blur
+                             fn: function (e) {
+                                 this.value = this.value.replace(/[^0-9\.]/g, '');
+
+                             },
+                         }]
+                     },
+
+                     editable: true
+                 },
+                 {
+                     name: 'CPRRBMaxMothlyFrequency', index: 'CPRRBMaxMothlyFrequency', align: 'left',
+                     editoptions: {
+                         maxlength: 20,
+                         dataEvents: [{
+                             type: 'keyup', // blur
+                             fn: function (e) {
+                                 this.value = this.value.replace(/[^0-9\.]/g, '');
+
+                             },
+                         }]
+                     },
+
+                     editable: true
+                 },
+
+                 //Product Pre Load...
+
+                 {
+                     name: 'Product_Preloaded', index: 'Product_Preloaded', align: 'center',
+                     formatter: 'checkbox', editoptions: { value: '1:0' }, multiselect: true,
+                     formatoptions: { disabled: false },
+                 },
+
+
+                 //DM Daily Report
+
+                 {
+                     name: 'DM_DREntryAllowedTime', index: 'DM_DREntryAllowedTime', align: 'left',
+                     editoptions: {
+                         maxlength: 20,
+                         dataEvents: [{
+                             type: 'keyup', // blur
+                             fn: function (e) {
+                                 this.value = this.value.replace(/[^0-9\.]/g, '');
+
+                             },
+                         }]
+                     },
+
+                     editable: true
+                 },
+                 {
+                     name: 'DM_DREntryAllowedDays', index: 'DM_DREntryAllowedDays', align: 'left',
+                     editoptions: {
+                         maxlength: 20,
+                         dataEvents: [{
+                             type: 'keyup', // blur
+                             fn: function (e) {
+                                 this.value = this.value.replace(/[^0-9\.]/g, '');
+
+                             },
+                         }]
+                     },
+
+                     editable: true
+                 },
+                 {
+                     name: 'DM_DRUnLockEntry', index: 'DM_DRUnLockEntry', align: 'center',
+                     formatter: 'checkbox', editoptions: { value: '1:0' }, multiselect: true,
+                     formatoptions: { disabled: false },
+                 },
+
+                //RBM Daily Report
+
+                 {
+                     name: 'RBM_DREntryAllowedTime', index: 'RBM_DREntryAllowedTime', align: 'left',
+                     editoptions: {
+                         maxlength: 20,
+                         dataEvents: [{
+                             type: 'keyup', // blur
+                             fn: function (e) {
+                                 this.value = this.value.replace(/[^0-9\.]/g, '');
+
+                             },
+                         }]
+                     },
+
+
+                     editable: true
+                 },
+                 {
+                     name: 'RBM_DREntryAllowedDays', index: 'RBM_DREntryAllowedDays', align: 'left',
+                     editoptions: {
+                         maxlength: 20,
+                         dataEvents: [{
+                             type: 'keyup', // blur
+                             fn: function (e) {
+                                 this.value = this.value.replace(/[^0-9\.]/g, '');
+
+                             },
+                         }]
+                     },
+
+
+                     editable: true
+                 },
+                 {
+                     name: 'RBM_DRUnLockEntry', index: 'RBM_DRUnLockEntry', align: 'center',
+                     formatter: 'checkbox', editoptions: { value: '1:0' }, multiselect: true,
+                     formatoptions: { disabled: false },
+                 },
+
+                 //Secondary Sales
+
+                 {
+                     name: 'SS_MonthEnd', index: 'SS_MonthEnd', align: 'left',
+                     editoptions: {
+                         maxlength: 20,
+                         dataEvents: [{
+                             type: 'keyup', // blur
+                             fn: function (e) {
+                                 this.value = this.value.replace(/[^0-9\.]/g, '');
+
+                             },
+                         }]
+                     },
+
+                     editable: true
+                 },
+                 {
+                     name: 'SS_MonthBegin', index: 'SS_MonthBegin', align: 'left',
+                     editoptions: {
+                         maxlength: 20,
+                         dataEvents: [{
+                             type: 'keyup', // blur
+                             fn: function (e) {
+                                 this.value = this.value.replace(/[^0-9\.]/g, '');
+
+                             },
+                         }]
+                     },
+
+
+                     editable: true
+                 },
+
+            ],
+            caption: "Setting Master Team Wise",
+            autowidth: false,
+            gridview: true,
+            hidegrid: false,
+            altRows: true,            
+            rowTotal: 10,
+            shrinkToFit: false,
+            width: 1024,            
+            rowNum: 10,
+            viewrecords: true,
+           
+            pager: $('#ajaxGridPager'),
+            height: 'auto',         
+            onSelectRow: function (id, selected) {
+                if (id != lastsel) {
+                    jQuery('#ajaxGrid').saveRow(lastsel);
+                    lastsel = id;                    
+                }
+                jQuery('#ajaxGrid').editRow(id, true);
+                DisabledAckQty();
+            },
+            'cellsubmit': 'clientArray',
+            'editurl': 'clientArray',
+            editable: true          
+        });
+        
+        jQuery("#ajaxGrid").jqGrid('setGroupHeaders', {
+            useColSpanStyle: true,
+            groupHeaders: [
+              { startColumnName: 'CPDaysBeforeAllowed', numberOfColumns: 4, titleText: '<center>Cycle Plan Doctors</center>' },
+              { startColumnName: 'TPcutOffDays', numberOfColumns: 3, titleText: '<center>Tour Plan</center>' },
+              { startColumnName: 'DREntryAllowedTime', numberOfColumns: 3, titleText: '<center>PSO Daily Report</center>' },
+              { startColumnName: 'DPOLockPLStage', numberOfColumns: 2, titleText: '<center>Doctor Profiling</center>' },
+              { startColumnName: 'PTcutOffDay', numberOfColumns: 1, titleText: '<center>PT</center>' },
+
+              { startColumnName: 'CPRRVMinMonthlyFrequency', numberOfColumns: 2, titleText: '<center>Cycle Plan Retailers RV</center>' },
+              { startColumnName: 'CPRRBMinMonthlyFrequency', numberOfColumns: 2, titleText: '<center>Cycle Plan Retailers RB</center>' },
+              { startColumnName: 'DM_DREntryAllowedTime', numberOfColumns: 3, titleText: '<center>DM Daily Report</center>' },
+
+              { startColumnName: 'RBM_DREntryAllowedTime', numberOfColumns: 3, titleText: '<center>RBM Daily Report</center>' },
+              { startColumnName: 'SS_MonthEnd', numberOfColumns: 2, titleText: '<center>Secondary Sales</center>' },
+            ]
+        });
+
+
+
+        jQuery("#ajaxGrid").jqGrid('navGrid', '#ajaxGridPager', { edit: false, add: false, del: false, search: false,save:false },
+            {
+                // Edit Portion
+                closeOnEscape: true,
+                width: 450,
+                beforeShowForm: function (form) {
+
+                    //POP UP Screen Fit Screen
+
+                    var dlgDiv = $("#editmod" + jQuery("#ajaxGrid")[0].id);
+                    var parentDiv = dlgDiv.parent();
+                    var dlgWidth = dlgDiv.width();
+                    var parentWidth = parentDiv.width();
+                    var dlgHeight = dlgDiv.height();
+                    var parentHeight = parentDiv.height();
+                    // TODO: change parentWidth and parentHeight in case of the grid
+                    //       is   larger as the browser window
+                    //dlgDiv[0].style.top = Math.round((parentHeight-dlgHeight)/2) + "px";
+                    dlgDiv[0].style.left = Math.round((parentWidth - dlgWidth) / 2) + "px";
+
+                    //End POP UP Screen Fit Screen
+
+                    var sel_id = $('#ajaxGrid').jqGrid('getGridParam', 'selrow');
+                    var value = $('#ajaxGrid').jqGrid('getCell', sel_id, 'Status');
+                    //alert(value)
+                    //var id = $('#ajaxGrid').jqGrid('getCell', sel_id, 'PKID');
+                    //alert(id)
+
+                    if (value == 'InActive') {
+                        $('#tr_Status', form).show();
+                    }
+                    else {
+
+                        $('#tr_Status', form).hide();
+                    }
+                },
+                afterSubmit: function (response, postdata) {
+                    alert('Information Saved Successfully');
+                    $("#ajaxGrid").jqGrid('setGridParam', { datatype: 'json' }).trigger('reloadGrid');
+                    return [true, "", ''];
+                },
+                closeAfterEdit: true,
+            },
+
+        {
+            //Add Portion
+            closeOnEscape: true,
+            closeAfterAdd: true,
+            width: 450,
+            beforeShowForm: function (form) {
+
+                //POP UP Screen Fit Screen
+
+                var dlgDiv = $("#editmod" + jQuery("#ajaxGrid")[0].id);
+                var parentDiv = dlgDiv.parent();
+                var dlgWidth = dlgDiv.width();
+                var parentWidth = parentDiv.width();
+                var dlgHeight = dlgDiv.height();
+                var parentHeight = parentDiv.height();
+                // TODO: change parentWidth and parentHeight in case of the grid
+                //       is   larger as the browser window
+                //dlgDiv[0].style.top = Math.round((parentHeight-dlgHeight)/2) + "px";
+                dlgDiv[0].style.left = Math.round((parentWidth - dlgWidth) / 2) + "px";
+
+                //End POP UP Screen Fit Screen
+
+                $('#tr_Status', form).hide();
+            },
+            afterSubmit: function (response, postdata) {
+                alert('Information Saved Successfully');
+                $("#ajaxGrid").jqGrid('setGridParam', { datatype: 'json' }).trigger('reloadGrid');
+                return [true, "", ''];
+            }
+        },
+                {
+                    //Delete
+                    width: 450,
+                    beforeShowForm: function (form) {
+
+                        //POP UP Screen Fit Screen
+
+                        var dlgDiv = $("#delmod" + jQuery("#ajaxGrid")[0].id);
+                        var parentDiv = dlgDiv.parent();
+                        var dlgWidth = dlgDiv.width();
+                        var parentWidth = parentDiv.width();
+                        var dlgHeight = dlgDiv.height();
+                        var parentHeight = parentDiv.height();
+                        // TODO: change parentWidth and parentHeight in case of the grid
+                        //       is   larger as the browser window
+                        //dlgDiv[0].style.top = Math.round((parentHeight-dlgHeight)/2) + "px";
+                        dlgDiv[0].style.left = Math.round((parentWidth - dlgWidth) / 2) + "px";
+
+                        //End POP UP Screen Fit Screen
+
+                        $('#tr_IsActive', form).show();
+                        $('#tr_Defaultflag', form).show();
+                        $('#tr_Specialflag', form).show();
+                        $('#tr_Fieldwork', form).show();
+                    },
+                }
+
+                );
+
+    }
+
+</script>

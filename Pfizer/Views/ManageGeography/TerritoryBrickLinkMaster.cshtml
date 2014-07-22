@@ -1,0 +1,687 @@
+﻿@{
+    ViewBag.Title = "TerritoryBrickLinkMaster";
+    Layout = "~/Views/Shared/MasterLayout.cshtml";
+}
+
+<body>
+    @using (Html.BeginForm(FormMethod.Post))
+    {
+        <div>
+            <table border="0" style="width: 100%">
+                <tr>
+                    <td>
+                        <!--JqGrid Starts-->
+                        <table style="margin-top: 7px; width :100%" border="0">
+                            <tr>
+                                <td>
+                                    <table id="TerritoryBrickLinkMaster" style="width: 100%" border="0"></table>
+                                    <div id="TerritoryBrickLinkMasterPager">
+                                    </div>
+                                </td>
+                            </tr>
+                        </table>
+                        <!--Ends-->
+                    </td>
+                </tr>
+            </table>
+
+        </div>
+    }
+
+    <script type="text/javascript">
+
+        jQuery(document).ready(function () {
+
+            initGrid();
+        });
+
+        function MoveSelected() {
+           // alert('Hi');
+            $('#AreaName :selected').each(function (i, selected) {
+              
+                if ($(selected).val() != 0) {
+
+                    //alert($(selected).val());
+                    $('#SelAreaName')
+                         .append($('<option selected="selected" value=' + $(selected).val() + '>')
+                         .text($(selected).text()));
+                    //alert($(selected).text());
+                    $('#AreaName :selected').remove();
+                }
+            });
+
+
+        }
+
+        function ReverseSelected() {
+
+
+            $('#SelAreaName :selected').each(function (i, selected) {
+
+                if ($(selected).val() != 0) {
+                    $('#AreaName')
+                         .append($('<option>', { value: $(selected).val() })
+                         .text($(selected).text()));
+
+                    $('#SelAreaName :selected').remove();
+                }
+
+            });
+
+            $("#SelAreaName option").prop("selected", true);
+            $("#SelAreaName option:first").removeAttr('selected');
+        }
+
+        function initGrid() {
+            jQuery("#TerritoryBrickLinkMaster").jqGrid({
+                url: '@Url.Action("GridTerritoryBrickLinkMaster")',
+                datatype: "json",
+                jsonReader: { repeatitems: false, id: "PKID" },
+                colNames: ['PKID', 'TerritoryFKID', 'AreaFKID', 'Select First Charactor of the CityName', 'Select First Charactor of the Territory Code', 'City', 'Territory Name', 'Territory Code ', 'Brick', '', '', '', 'Status'],
+                colModel: [
+                            //{ name: 'SLNo', index: 'SLNo', align: 'left' },
+                            { name: 'PKID', index: 'PKID', align: 'left', viewable: true, key: true, hidden: true, editrules: { edithidden: true } },
+                            { name: 'TerritoryFKID', index: 'TerritoryFKID', align: 'left', viewable: true, hidden: true, editrules: { edithidden: true } },
+                            { name: 'AreaFKID', index: 'AreaFKID', align: 'left', viewable: true, hidden: true, editrules: { edithidden: true } },
+
+                             {
+                                 name: 'SelFCCityName', index: 'SelFCCityName', align: 'left', hidden: true, editable: true, edittype: 'select', editoptions: {
+
+                                     dataUrl: function () {
+                                         var row_id = $('#TerritoryBrickLinkMaster').getGridParam('selrow');
+                                         var AreaFKID = $('#TerritoryBrickLinkMaster').jqGrid('getCell', row_id, 'AreaFKID');
+                                        // alert(AreaFKID)
+                                         return 'Getselcharactorcityname?AreaFKID=' + AreaFKID + '&type=' + "LoadFCCityName";
+                                     },
+                                     //DropDown Load For CityName
+                                     dataEvents: [{
+                                         type: 'change',
+                                         fn: function (e) {
+                                             var postData = e.currentTarget.value;
+
+                                             jQuery.ajax({
+                                                 type: 'POST',
+                                                 url: '@Url.Action("GetselFCcityname")?Type=' + 'LoadCityName',
+                                                 data: { FCcityname: postData },
+                                                 success: function (data) {
+                                                     //alert(data);
+                                                     jQuery('#tr_SelcityName  td:nth-child(2)').html(data);
+
+                                                 }
+                                             });
+
+                                         }
+                                     }]
+
+                                 }, editrules: { edithidden: true, required: true }, formoptions: { elmprefix: "<span style='align:left;color:red'>*</span>&nbsp;" }
+                             },
+
+                             {
+                                 name: 'SelFCTericode', index: 'SelFCTericode', align: 'left', hidden: true, editable: true, edittype: 'select', editoptions: {
+                                    
+                                     dataUrl: function () {
+                                         var row_id = $('#TerritoryBrickLinkMaster').getGridParam('selrow');
+                                         //var AreaFKID = $('#TerritoryBrickLinkMaster').jqGrid('getCell', row_id, 'AreaFKID');
+                                         var TerritoryFKID = $('#TerritoryBrickLinkMaster').jqGrid('getCell', row_id, 'TerritoryFKID');
+                                         return 'GetselcharactorTerricode?type=' + "SelFCTericode" + '&TerritoryFKID=' + TerritoryFKID;
+                                     },
+
+                                     dataEvents: [{
+                                         type: 'change',
+                                         fn: function (e) {                                         
+                                             var postData = e.currentTarget.value;
+                                         
+                                             jQuery.ajax({
+                                                 type: 'POST',
+                                            
+                                                 url: '@Url.Action("GetselFCTcode")?Type=' + 'LoadteriCode',
+                                                 data: { FCTcode: postData },
+                                                 success: function (data) {
+                                                    
+                                                     //jQuery('#tr_TerCode ').html("<td class='CaptionTD'>Territory Code</td><td class='DataTD'>" + data + "<span style='align:left;color:red'>*</span></td>");
+                                                     jQuery('#tr_SelcityName  td:nth-child(6)').html(data);
+                                                                                              
+                                                 }
+                                             });
+                                    
+                                         }
+                                     }]
+                             
+
+
+                                 }, editrules: { edithidden: true, required: true }, formoptions: { elmprefix: "<span style='align:left;color:red'>*</span>&nbsp;", rowpos: 1, colpos: 3 }
+                             },
+
+                             {
+                                 name: 'SelcityName', index: 'SelcityName', align: 'left', hidden: true, editable: true, editrules: { edithidden: true }, edittype: 'select', editoptions: {
+                                     
+                                     dataUrl: function () {
+                                         var row_id = $('#TerritoryBrickLinkMaster').getGridParam('selrow');
+                                         var AreaFKID = $('#TerritoryBrickLinkMaster').jqGrid('getCell', row_id, 'AreaFKID');
+                                         var TerritoryFKID = $('#TerritoryBrickLinkMaster').jqGrid('getCell', row_id, 'TerritoryFKID');
+                                         return 'Getselectedcityname?AreaFKID=' + AreaFKID + '&type=' + "LoadSelectedCityName" + '&TerritoryFKID=' + TerritoryFKID;
+                                     },
+                                    
+                                 }, formoptions: { elmprefix: "<span style='align:left;color:red'>*</span>&nbsp;" }
+                             },
+
+                            { name: 'TerName', index: 'TerName', align: 'left', viewable: true, searchoptions: { sopt: ['eq', 'bw', 'ew', 'cn'] }, searchrules: { required: true }, editrules: { edithidden: true } },
+                            {
+                                name: 'TerCode', index: 'TerCode', align: 'left', editable: true, search:false, hidden: false, editrules: { edithidden: true, required: true }, edittype: 'select', editoptions: {
+                                
+                                    dataUrl: function () {
+                                        var row_id = $('#TerritoryBrickLinkMaster').getGridParam('selrow');
+                                      //var AreaFKID = $('#TerritoryBrickLinkMaster').jqGrid('getCell', row_id, 'AreaFKID');
+                                        var TerritoryFKID = $('#TerritoryBrickLinkMaster').jqGrid('getCell', row_id, 'TerritoryFKID');
+                                        return 'SelectedTerCodeBricks?type=' + "SelectedTerCode" + '&TerritoryFKID=' + TerritoryFKID;
+                                    },
+
+                                }, formoptions: { elmprefix: "<span style='align:left;color:red'>*</span>&nbsp;", rowpos: 3, colpos: 3 }
+                            },
+                            {
+                                name: 'AreaName', index: 'AreaName', align: 'left', editable: true, search: false, edittype: 'select', editoptions: {
+                                    multiple: true,
+                                    dataUrl: function () {
+                                        var row_id = $('#TerritoryBrickLinkMaster').getGridParam('selrow');
+                                        var CityFKID = $('#TerritoryBrickLinkMaster').jqGrid('getCell', row_id, 'SelcityName');
+                                        //alert(CityFKID)
+                                        var TerritoryFKID = $('#TerritoryBrickLinkMaster').jqGrid('getCell', row_id, 'TerritoryFKID');
+                                        return 'SelectedBricksNameForcity?CityFKID=' + CityFKID + '&type=' + "SelectedBrick" + '&TerritoryFKID=' + TerritoryFKID;
+                                    },
+
+
+                                } 
+                            },
+
+                             //Backward & Forward
+
+                                 {
+                                     name: 'forward', index: 'forward', align: 'left', hidden: true, editrules: { edithidden: true }, edittype: 'button', editable: true, editoptions: {
+                                         value: '>>',
+                                         dataEvents:
+                                             [
+                                             {
+                                                 type: 'click', fn: function (e) {
+
+                                                     MoveSelected();
+                                                 }
+                                             }]
+
+                                     }, formoptions: { rowpos: 5, colpos: 2 }
+                                 },
+
+                {
+
+                    name: 'backward', index: 'backward', align: 'right', hidden: true, edittype: 'button', editrules: { edithidden: true }, editable: true, editoptions: {
+                        value: '<<',
+                        dataEvents:
+                            [
+                            {
+                                type: 'click', fn: function (e) {
+
+                                    ReverseSelected();
+                                }
+                            }]
+
+                    }, formoptions: { rowpos: 5, colpos: 3 }
+
+
+                },
+
+                {
+                    name: 'SelAreaName', index: 'SelAreaName', align: 'left', editable: true, hidden: true, edittype: 'select', editrules: { edithidden: true },
+                    
+                    editoptions: {
+                        multiple: true, dataUrl: function () {
+                            var row_id = $('#TerritoryBrickLinkMaster').getGridParam('selrow');
+                            var AreaFKID = $('#TerritoryBrickLinkMaster').jqGrid('getCell', row_id, 'AreaFKID');
+                            var TerritoryFKID = $('#TerritoryBrickLinkMaster').jqGrid('getCell', row_id, 'TerritoryFKID');
+                            return 'SelectedBricksName?AreaFKID=' + AreaFKID + '&type=' + "SelectedLoadBrick" + '&TerritoryFKID=' + TerritoryFKID;
+                        },
+                    }, formoptions: { rowpos: 5, colpos: 4 }
+
+                },
+
+                            { name: 'IsActive', index: 'IsActive', align: 'left', viewable: true, search: false, editrules: { edithidden: true }, editable: true, edittype: 'checkbox', editoptions: { value: "Active:Passive", defaultValue: "Active" } }
+
+
+                ],
+                caption: "Territory BrickLink Master",
+                autowidth: true,
+                gridview: true,
+                sortable: true,
+                hidegrid: false,
+                rownumbers: false,
+                altRows: true,
+                rowTotal: 10,
+                sortname: 'PKID',
+                sortorder: 'asc',
+                rowNum: 10,
+                viewrecords: true,
+                pager: $('#TerritoryBrickLinkMasterPager'),
+                height: 'auto',
+                editable: true,
+                editurl: '@Url.Action("EditTerritoryBrickLinkMaster")?val='+ $("#TerCode option:selected").val() 
+
+            });
+
+            jQuery("#TerritoryBrickLinkMaster").jqGrid('navGrid', '#TerritoryBrickLinkMasterPager', { edit: true, add: true, del: true, search: true, view: true },
+               {
+                   //EDIT
+
+                   closeOnEscape: true, //Closes the popup on pressing escape key
+                   reloadAfterSubmit: true,
+                   drag: true,
+                   width: 850,
+                   height: 'auto',
+
+                   beforeShowForm: function (form) {
+                      
+                       $('#tr_IsActive', form).hide();
+
+                   },
+                   afterShowForm: function (form) {
+                       form.closest('div.ui-jqdialog').center();
+                   },
+                   onclickSubmit: function (params, posdata) {
+                       var sel_id = $('#TerritoryBrickLinkMaster').jqGrid('getGridParam', 'selrow');
+                       params.url = '@Url.Action("EditTerritoryBrickLinkMaster")?TerritoryFKID=' + $('#TerCode').val();
+                   },
+                   beforeSubmit: function (response, postdata) {
+
+                       var count = 0;
+                       var error = "";
+                       $('select').css("border", "1px solid #C0C0C0");
+                       if ($("#SelFCCityName option:selected").text() == "Select") {
+                           error = "Please Select First Charactor of the CityName";
+                           $("#SelFCCityName").css("background-color", "#FFE8E8").css("border", "1px solid #FF6666");
+                           count++;
+
+                       }
+                       else if ($("#SelFCTericode option:selected").text() == "Select") {
+                           error = "Select First Charactor of the Territory Code";
+                           $("#SelFCTericode").css("background-color", "#FFE8E8").css("border", "1px solid #FF6666");
+                           count++;
+                       }
+                       else if ($("#SelcityName option:selected").text() == "Select") {
+                           error = "Please Select City";
+                           $("#SelcityName").css("background-color", "#FFE8E8").css("border", "1px solid #FF6666");
+                           count++;
+                       }
+                       else if ($("#TerCode option:selected").text() == "Select") {
+                           error = "Please Select Territory Code";
+                           $("#TerCode").css("background-color", "#FFE8E8").css("border", "1px solid #FF6666");
+                           count++;
+                       }
+
+                       else if ($('#SelAreaName').val() == 0 || $('#SelAreaName').val() == null) {
+                           error = "Please Select Brick";
+                           $("#AreaName").css("background-color", "#FFE8E8").css("border", "1px solid #FF6666");
+                           count++;
+                       }
+
+                       if (parseInt(count) > 0) {
+
+
+                           $('#FormError').html("<td class='ui-state-error' colspan='8'>" + error + ":Field is required</td>");
+
+                           return [false, response.responseText];
+                       }
+                       else {
+
+                           return [true, response.responseText];
+                       }
+                   },
+                   afterSubmit: function (response, postdata) {
+
+                       
+                           $("#ajaxGrid").jqGrid('setGridParam', { datatype: 'json' }).trigger('reloadGrid');
+                           $('#TblGrid_TerritoryBrickLinkMaster td.ui-state-error').removeClass('ui-state-error').addClass('ui-state-highlight');
+                           $("input[type=text]").val('');
+                           $('select').val(0);
+                           $('#SelAreaName').empty();
+                       $('#SelAreaName')
+                     .append($('<option selected="selected" value="">')
+                     .text('Select'));
+
+                           $("#IsActive").prop('checked', false);
+                           return [false, response.responseText];
+                       
+                   },
+                  
+
+
+               },
+
+           {
+               //Add Portion
+               closeOnEscape: true,
+               width: 'auto',
+               //closeAfterAdd: true,
+               afterShowForm: function (form) {
+                   form.closest('div.ui-jqdialog').center();
+               },
+                
+
+               onclickSubmit: function (params, posdata) {
+
+                   params.url = '@Url.Action("AddTerritoryBrickLinkMaster")?SelAreaName=' + $('#SelAreaName').val() + '&TerCode=' + $('#TerCode').val()+ '&IsActive=' + $('#IsActive').val();
+               },
+
+               //AddTerritoryBrickLinkMaster
+
+               beforeShowForm: function (form) {
+                   $("#TerritoryBrickLinkMaster").jqGrid('resetSelection');
+                   $("#SelFCCityName").prop("disabled", false);
+                   $("#SelFCCityName").removeAttr("disabled");
+                   var sel_id = $('#TerritoryBrickLinkMaster').jqGrid('getGridParam', 'selrow');
+                   $('#tr_IsActive', form).hide();
+                   
+
+               },
+               beforeSubmit: function (response, postdata) {
+                  
+                   var count = 0;
+                   var error = "";
+                   $('select').css("border", "1px solid #C0C0C0");
+                   if ($("#SelFCCityName option:selected").text() == "Select")
+                   {
+                       error = "Please Select First Charactor of the CityName";
+                       $("#SelFCCityName").css("background-color", "#FFE8E8").css("border", "1px solid #FF6666");
+                       count++;
+                        
+                   }
+                   else if ($("#SelFCTericode option:selected").text() == "Select")
+                   {
+                       error = "Select First Charactor of the Territory Code";
+                       $("#SelFCTericode").css("background-color", "#FFE8E8").css("border", "1px solid #FF6666");
+                       count++;
+                   }
+                   else if ($("#SelcityName option:selected").text() == "Select") {
+                       error = "Please Select City";
+                       $("#SelcityName").css("background-color", "#FFE8E8").css("border", "1px solid #FF6666");
+                       count++;
+                   }
+                   else if ($("#TerCode option:selected").text() == "Select") {
+                       error = "Please Select Territory Code";
+                       $("#TerCode").css("background-color", "#FFE8E8").css("border", "1px solid #FF6666");
+                       count++;
+                   }
+
+                   else if ($('#SelAreaName').val() == 0 || $('#SelAreaName').val() == null) {
+                       error = "Please Select Brick";
+                       $("#AreaName").css("background-color", "#FFE8E8").css("border", "1px solid #FF6666");
+                       count++;
+                   }
+                   
+                     if (parseInt(count) > 0) {
+                       
+                       
+                       $('#FormError').html("<td class='ui-state-error' colspan='8'>" + error + ":Field is required</td>");
+
+                       return [false, response.responseText];
+                   }
+                   else {
+                       
+                       return [true, response.responseText];
+                   }
+               },
+               afterSubmit: function (response, postdata) {
+
+                   
+                  
+
+                   if (response.responseText == "\"Territory Brick Links already Exists\"") {
+                       $('#TblGrid_TerritoryBrickLinkMaster td.ui-state-highlight').removeClass('ui-state-highlight').addClass('ui-state-error');
+                       return [false, response.responseText];
+                   }
+                   else {
+                       $("#TerritoryBrickLinkMaster").jqGrid('setGridParam', { datatype: 'json' }).trigger('reloadGrid');
+                       $('#TblGrid_TerritoryBrickLinkMaster td.ui-state-error').removeClass('ui-state-error').addClass('ui-state-highlight');
+                       $("input[type=text]").val('');
+                       $('select').val(0);
+                       $("#IsActive").prop('checked', false);
+                       return [false, response.responseText];
+                   }
+                  
+               }
+           },
+           {
+               //DELETE
+               closeOnEscape: true,
+               closeAfterDelete: true,
+               reloadAfterSubmit: true,
+               closeOnEscape: true,
+               drag: true,
+               width: 400,
+               afterShowForm: function (form) {
+                   form.closest('div.ui-jqdialog').center();
+               },
+               beforeShowForm: function (form) {
+
+
+                   var col1 = $('#TerritoryBrickLinkMaster').jqGrid('getGridParam', 'selrow');
+
+                   var IsActive = $('#TerritoryBrickLinkMaster').jqGrid('getCell', col1, 'IsActive');
+
+                   $('tr td.delmsg').html('Delete selected record(s)?');
+
+                   if (IsActive == "Inactive") {
+                       $('tr td.delmsg').html('Record Already Deleted');
+                       $('#dData').hide();
+                   }
+                   else
+                       $('#dData').show();
+
+                   //var id = jQuery("#TerritoryBrickLinkMaster").jqGrid('getGridParam', 'selrow');
+                   //if (id) {
+                   //    var ret = jQuery("#TerritoryBrickLinkMaster").jqGrid('getRowData', id);
+
+                   //    $("td.delmsg", form[0]).html("<table width='100%'><tr><td><b>PKID</b></td><td>" + ret.PKID + "</td></tr><tr><td><b>RegionCode</b></td><td>" + ret.RegionCode + "</td></tr><tr><td><b>RegionName</b></td><td>" + ret.RegionName + "</td></tr><tr><td><b>DistrictCode</b></td><td>" + ret.DistrictCode + "</td></tr><tr><td><b>DistrictName</b></td><td>" + ret.DistrictName + "</td></tr><tr><td colspan=2></br>Are you sure want to delete selected record(s)?</td></tr></table> ");
+                   //} else { alert("Please select row"); }
+
+               },
+               onclickSubmit: function (params, posdata) {
+                   var sel_id = $('#TerritoryBrickLinkMaster').jqGrid('getGridParam', 'selrow');
+                   var TerritoryFKID = $('#TerritoryBrickLinkMaster').jqGrid('getCell', sel_id, 'TerritoryFKID');
+                   var AreaFKID = $('#TerritoryBrickLinkMaster').jqGrid('getCell', sel_id, 'AreaFKID');
+
+                   params.url = '@Url.Action("DeleteTerritoryBrickLinkMaster")?TerritoryFKID=' + TerritoryFKID + '&AreaFKID=' + AreaFKID;
+               },
+               afterSubmit: function (response, postdata) {
+                   $('tr td.delmsg').html('');
+                   $('#dData').hide();
+                   $("#TerritoryBrickLinkMaster").jqGrid('setGridParam', { datatype: 'json' }).trigger('reloadGrid');
+                   $('#DelTbl_TerritoryBrickLinkMaster td.ui-state-error').removeClass('ui-state-error').addClass('ui-state-highlight'); 
+                   
+                   return [false, response.responseText];
+               },
+
+               Deldata: {
+                   PKID: function () {
+                       var sel_id = $('#TerritoryBrickLinkMaster').jqGrid('getGridParam', 'selrow');
+                       var value = $('#TerritoryBrickLinkMaster').jqGrid('getCell', sel_id, '_id');
+                       return value;
+                   }
+               }
+
+           },
+           {
+               //search
+               closeOnEscape: true,
+               modal: true,
+               recreateForm: true,
+               width: 600,
+               caption: "Search",
+               searchOnEnter: true,
+               beforeShowSearch: function (form) {
+
+                   $('#jqg1').val('');
+                   $('#fbox_TerritoryBrickLinkMaster_reset').click();
+
+                   var dialogHeight = $("#searchmodfbox_TerritoryBrickLinkMaster").height();
+                   var dialogWidth = $("#searchmodfbox_TerritoryBrickLinkMaster").width();
+                   var windowHeight = $(window).height();
+                   var windowWidth = $(window).width();
+                   $("#searchmodfbox_TerritoryBrickLinkMaster").css('position', 'fixed');
+                   $("#searchmodfbox_TerritoryBrickLinkMaster").css('top', ((windowHeight - dialogHeight) / 2));
+                   $("#searchmodfbox_TerritoryBrickLinkMaster").css('left', ((windowWidth - dialogWidth) / 2));
+
+                   return [true, ""];
+               },
+           },
+           {
+               //View
+               width: 807,
+               modal:true,
+               beforeShowForm: function (form) {
+                   form.closest('div.ui-jqdialog').center();
+ 
+
+                   var row_id = $('#TerritoryBrickLinkMaster').getGridParam('selrow');
+                   var AreaFKID = $('#TerritoryBrickLinkMaster').jqGrid('getCell', row_id, 'AreaFKID');
+                   var TerritoryFKID = $('#TerritoryBrickLinkMaster').jqGrid('getCell', row_id, 'TerritoryFKID'); 
+                  
+                   $.ajax({
+                       type: 'POST',
+                       url: '@Url.Action("Getselectedcityname")?AreaFKID=' + AreaFKID + '&type=' + "LoadSelectedCityName" + '&TerritoryFKID=' + TerritoryFKID,
+
+                       success: function (data) {
+
+                           $('#trv_SelcityName  td:nth-child(2)').html(data);
+
+                       }
+                   });
+                 
+                   $('#trv_SelcityName  td:nth-child(2)').removeClass('DataTD form-view-data ui-helper-reset ui-widget-content');
+                   $('#trv_SelcityName  td:nth-child(2)').css('height', '10px');
+
+
+                   $('#nData').click(function () {
+                       $('#trv_SelcityName').hide();
+                   });
+
+
+                   $('#pData').click(function () {
+                       $('#trv_SelcityName').hide();
+                   });
+               }
+           }
+                   );
+            // setMethod('LocationMaster', 'LocationMasterPager', 'Customer Grid', 'ManageUsers', 'LocationMaster.cshtml');
+
+            setMethod('TerritoryBrickLinkMaster', 'TerritoryBrickLinkMasterPager', 'Customer Grid');
+
+        }
+        //Center Popup
+        jQuery.fn.center = function () {
+            this.css("position", "absolute");
+            this.css("top", ($(window).height() - this.height()) / 2 + $(window).scrollTop() + "px");
+            this.css("left", ($(window).width() - this.width()) / 2 + $(window).scrollLeft() + "px");
+            return this;
+
+        }
+        function validSpecial(objElement) {
+
+            var re = /^[a-zA-Z0-9-/\s.:]*/gi;
+            if (objElement.value.match(re) != objElement.value) {
+                alert('Special Characters are Not Allowed');
+                objElement.value = '';
+
+                return false;
+            }
+
+        }
+
+        function setMethod(gid, id, pgTitle) {
+            // alert(1);
+            var btnTitle = 'Export to Excel';
+            $('#' + gid).jqGrid('navSeparatorAdd', '#' + id, { sepclass: "ui-separator" });
+            $('#' + gid).jqGrid('navButtonAdd', '#' + id, { caption: '', title: btnTitle, position: 'last', buttonicon: 'ui-icon-calculator', onClickButton: function () { ExcelExport(); } });
+
+            var btnTitle = 'Export to PDF';
+            $('#' + gid).jqGrid('navSeparatorAdd', '#' + id, { sepclass: "ui-separator" });
+            $('#' + gid).jqGrid('navButtonAdd', '#' + id, { caption: '', title: btnTitle, position: 'last', buttonicon: 'ui-icon-bookmark', onClickButton: function () { PDFExport(); } });
+
+            var btnTitle = 'Export to CSV';
+            $('#' + gid).jqGrid('navSeparatorAdd', '#' + id, { sepclass: "ui-separator" });
+            $('#' + gid).jqGrid('navButtonAdd', '#' + id, { caption: '', title: btnTitle, position: 'last', buttonicon: 'ui-icon-note', onClickButton: function () { CSVExport(); } });
+
+
+            var btnTitle = 'Print Grid';
+            $('#' + gid).jqGrid('navSeparatorAdd', '#' + id, { sepclass: "ui-separator" });
+            $('#' + gid).jqGrid('navButtonAdd', '#' + id, { caption: '', title: btnTitle, position: 'last', buttonicon: 'ui-icon-print', onClickButton: function () { PrintGrid(gid); } });
+        }
+        function ExcelExport() {
+            window.location = '@Url.Action("ExportTerritoryBricksLinkToExcel")';
+        }
+        function PDFExport() {
+            window.location = '@Url.Action("ExportTerritoryBricksLinkToPDF")';
+        }
+        function CSVExport() {
+
+            window.location = '@Url.Action("ExportTerritoryBricksLinkToCsv")';
+            // $('#NotificationMaster').table2CSV({ header: ['PKID', 'Notification', 'ExpiryDate', 'Status'] });
+        }
+        function PrintGrid(gid) {
+            var rows = $('#TerritoryBrickLinkMaster').jqGrid('getRowData');
+            for (var i = 0; i < rows.length; i++) {
+                var row = rows[i];
+                $('#Table1').append("<tr><td>" + row.TerName + "</td><td>" + row.TerCode + "</td><td>" + row.AreaName + "</td><td>" + row.IsActive + "</td></tr>");
+
+            }
+            $(function () { printChrome('prt-container') });
+            // alert(6);
+        }
+
+        function printChrome(divContainer) {
+
+            //  alert(9);
+            var printContent = document.getElementById(divContainer);
+            // alert(printContent.innerHTML);
+            window.document.body.innerHTML = printContent.innerHTML;
+            window.print();
+            window.location.reload();
+        }
+
+        function LoadBricks(id) {
+            //alert(id.value);
+
+            var row_id = $('#TerritoryBrickLinkMaster').getGridParam('selrow');
+            var TerritoryFKID = $('#TerritoryBrickLinkMaster').jqGrid('getCell', row_id, 'TerritoryFKID');
+           
+           
+            jQuery.ajax({
+                //type: 'POST',
+
+                url: '@Url.Action("GetselcityBricks")?Type='+'LoadBrick' +'&CityFKID=' + id.value + '&TerritoryFKID=' + TerritoryFKID,
+                data: { CityFKID: id.value},
+                success: function (data) {
+                   //alert(data);
+                    jQuery('#tr_AreaName  td:nth-child(2)').html(data);
+
+                }
+            });
+
+         
+
+        }
+
+    </script>
+
+    <div id='prt-container' style="display:none">
+        <table id="Table1" border="1" width="100%">
+            <thead>
+                <tr>
+                    <td><b>Territory Name</b></td>
+                    <td><b>Territory Code</b></td>
+                    <td><b>Brick</b></td>                   
+                    <td><b>Status</b></td>
+                </tr>
+
+            </thead>
+            <tbody></tbody>
+
+        </table>
+    </div>
+</body>

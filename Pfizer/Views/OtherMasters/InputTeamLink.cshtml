@@ -1,0 +1,588 @@
+﻿@{
+    ViewBag.Title = "InputTeamLink";
+    Layout = "~/Views/Shared/MasterLayout.cshtml";
+}
+<body>
+    @using (Html.BeginForm(FormMethod.Post))
+    {
+        <div>
+            <table border="0" style="width: 100%">
+                <tr>
+                    <td>
+                        <!--JqGrid Starts-->
+                        <table style="margin-top: 7px; width :100%" border="0">
+                            <tr>
+                                <td>
+                                    <table id="InputTeamLink" style="width: 100%" border="0"></table>
+                                    <div id="InputTeamLinkPager">
+                                    </div>
+                                </td>
+                            </tr>
+                        </table>
+                        <!--Ends-->
+                    </td>
+                </tr>
+            </table>
+
+        </div>
+    }
+
+
+    <script type="text/javascript">
+
+    jQuery(document).ready(function () {
+
+        initGrid();
+    });
+
+
+    function MoveSelected() {
+       
+        $('#TeamName :selected').each(function (i, selected) {
+            if ($(selected).val() != 0) {
+                $('#SelTeamName')
+                     .append($('<option selected="selected" value=' + $(selected).val() + '>')
+                     .text($(selected).text())); 
+                $('#TeamName :selected').remove(); 
+             
+            }
+        });
+        
+    }
+
+    function ReverseSelected() {
+
+        $('#SelTeamName :selected').each(function (i, selected) {
+            $('#TeamName')
+                 .append($('<option>', { value: $(selected).val() })
+                 .text($(selected).text()));
+            $('#SelTeamName :selected').remove();
+
+        });
+
+        $("#SelTeamName option").prop("selected", true);
+        $("#SelTeamName option:first").removeAttr('selected');
+
+    }
+
+
+
+    function initGrid() {
+        jQuery("#InputTeamLink").jqGrid({
+            url: '@Url.Action("GetInputTeamLink")', 
+            datatype: "json",
+            jsonReader: { repeatitems: false, id: "PKID" },
+            colNames: ['PKID', 'InputFKID', 'Input Name', 'Input Type', 'Team Name', '', '', ''],
+            colModel: [
+
+                        { name: 'PKID', index: 'PKID', align: 'left', hidden: true, editrules: { edithidden: false } },
+                        { name: 'InputFKID', index: 'InputFKID', align: 'left', hidden: true, editrules: { edithidden: false } },
+                        {
+                            name: 'InputName', index: 'InputName', align: 'left', editable: true, edittype: 'select', searchoptions: { sopt: ['eq', 'bw', 'ew', 'cn'] }, searchrules: { required: true }, editoptions: {
+
+                                dataUrl: function () { 
+                                    return 'GetInputName';
+                                },
+                                dataEvents:
+                [
+                {
+                    type: 'change', fn: function (e) {
+                        var row_id = $('#InputTeamLink').getGridParam('selrow');
+                        var PKID = $('#InputTeamLink').jqGrid('getCell', row_id, 'PKID'); 
+                        if (typeof (PKID) != "undefined") { 
+                            $.ajax({
+                                type: 'POST',
+                                async: false,
+                                url: '@Url.Action("GetTeamName")?type=' + 'E' + '&pkid=' + $(this).val(),
+                                success: function (data) {
+                                    $('#tr_TeamName  td:nth-child(2)').html(data);
+                                },
+
+                            });
+
+                            $.ajax({
+                                type: 'POST',
+                                async: false,
+                                url: '@Url.Action("GetSelectedTeamName")?type=' + 'E' + '&pkid=' + $(this).val(),
+                                success: function (data) {
+                                    $('#tr_TeamName td:nth-child(8)').html(data);
+
+                                }
+                            });
+
+
+
+                            $.getJSON('@Url.Action("JsonGetGenName")?type=' + 'A' + '&pkid=' + $(this).val(), function (data) {
+
+                                if (data.genId == "331") {
+
+                                    $("#GenName").val("331");
+
+                                }
+                                else {
+                                    $("#GenName").val("332");
+                                }
+                            });
+
+                        }
+                        else {
+                            $.ajax({
+                                type: 'POST',
+                                async: false,
+                                url: '@Url.Action("GetTeamName")?type=' + 'A' + '&pkid=' + $(this).val(),
+                                success: function (data) {
+                                    $('#tr_TeamName  td:nth-child(2)').html(data);
+                                },
+
+                            });
+
+                            $.ajax({
+                                type: 'POST',
+                                async: false,
+                                url: '@Url.Action("GetSelectedTeamName")?type=' + 'A' + '&pkid=' + $(this).val(),
+                                success: function (data) {
+                                    $('#tr_TeamName td:nth-child(8)').html(data);
+
+                                }
+                            }); 
+ 
+                          
+
+                            $.getJSON('@Url.Action("JsonGetGenName")?type=' + 'A' + '&pkid=' + $(this).val(), function (data) {
+
+                                if (data.genId == "331") {
+
+                                    $("#GenName").val("331");
+
+                                }
+                                else {
+                                    $("#GenName").val("332");
+                                }
+                            });
+
+
+                        }
+                    }
+                }]
+                            }, editrules: {edithidden: true,  required: true }, formoptions: { rowpos: 2, colpos: 1 },search:false },
+                { name: 'GenName', index: 'GenName', align: 'left', editable: true,search:false, edittype: 'select', editoptions: { value: { 0: 'Select', 331: 'Doctor', 332: 'Chemist' }, disabled: 'disabled' }, editrules: { edithidden: true }, formoptions: { rowpos: 2, colpos: 2 } },
+                {
+                    name: 'TeamName', index: 'TeamName', align: 'left', editable: true, edittype: 'select', editoptions: {
+                        multiple: true
+                        , dataUrl: function () {
+                            return 'DefaultTeamLoad?name=' + 'TeamName';
+                        }
+                    }, editrules: {
+                        edithidden: true, required: false
+
+
+                    }, formoptions: { elmsuffix: "<span style='align:left;color:red'>*</span>&nbsp;" }, formoptions: { rowpos: 4, colpos: 1 }, searchoptions: { sopt: ['eq', 'bw', 'ew', 'cn'] }, searchrules: { required: true }
+                },
+
+                            {
+                                name: 'forward', index: 'forward', align: 'left', hidden: true, editrules: { edithidden: true }, edittype: 'button', editable: true, editoptions: {
+                                    value: '>>',
+                                    dataEvents:
+                                        [
+                                        {
+                                            type: 'click', fn: function (e) {
+
+                                                MoveSelected();
+                                            }
+                                        }]
+
+                                }, formoptions: { rowpos: 4, colpos: 2 }
+                            },
+
+            {
+
+                name: 'backward', index: 'backward', align: 'right', hidden: true, edittype: 'button', editrules: { edithidden: true }, editable: true, editoptions: {
+                    value: '<<',
+                    dataEvents:
+                        [
+                        {
+                            type: 'click', fn: function (e) {
+
+                                ReverseSelected();
+                            }
+                        }]
+
+                }, formoptions: { rowpos: 4, colpos: 3 }
+
+
+            },
+
+            {
+                name: 'SelTeamName', index: 'SelTeamName', align: 'left', editable: true, hidden: true, edittype: 'select', editoptions: {
+                    multiple: true
+                        , dataUrl: function () {
+                            return 'DefaultTeamLoad?name=' + 'SelTeamName';
+                        }
+
+                }, editrules: { edithidden: true }, formoptions: { rowpos: 4, colpos: 4 }
+
+            },
+               
+                ],
+                caption: "Input Team Link",
+                autowidth: true,
+                gridview: true, 
+                jqModal: true,
+                rowTotal: 10,
+                rowNum: 10,
+                align: 'center',
+                sortable: true,
+                hidegrid: true,
+                altRows: true,
+                sortname: 'PKID',
+                sortorder: 'desc',
+                viewrecords: true,
+                pager: $('#InputTeamLinkPager'),
+                height: 'auto',
+                editable: true,
+                //editurl: '@Url.Action("EditInputTeamLink")'
+
+        });
+
+        jQuery("#InputTeamLink").jqGrid('navGrid', '#InputTeamLinkPager', { edit: true, add: true, del: true, search: true, view: true },
+            {
+                //EDIT
+
+                reloadAfterSubmit: true,
+                drag: true,
+                width: 600,
+                modal: true,
+                beforeShowForm: function (form)  
+                {
+
+                    var sel_id = $('#InputTeamLink').jqGrid('getGridParam', 'selrow');
+                    var PKID = $('#InputTeamLink').jqGrid('getCell', sel_id, 'PKID');
+              $.ajax({
+                type: 'POST',
+                async: false,
+                url: '@Url.Action("GetTeamName")?type=' + 'E' + '&pkid=' + PKID,
+                success: function (data) {
+                    $('#tr_TeamName  td:nth-child(2)').html(data);
+                },
+
+            });
+
+            $.ajax({
+                type: 'POST',
+                async: false,
+                url: '@Url.Action("GetSelectedTeamName")?type=' + 'E' + '&pkid=' + PKID,
+                success: function (data) {
+                    $('#tr_TeamName td:nth-child(8)').html(data);
+
+                }
+            });
+                     
+
+                    $.getJSON('@Url.Action("JsonGetGenName")?type=' + 'E' + '&pkid=' + PKID, function (data) {
+
+                if (data.genId == "331") {
+
+                    $("#GenName").val("331");
+
+                }
+                else {
+                    $("#GenName").val("332");
+                }
+            });    
+            },
+                    afterShowForm: function (form) {
+                    form.closest('div.ui-jqdialog').center();
+                },
+                onclickSubmit: function (params, posdata) { 
+                    params.url = '@Url.Action("EditInfolink")?SelTeamName=' + $('#SelTeamName').val() + '&InputName=' + $('#InputName').val();
+                },
+                beforeSubmit: function (response, postdata) {
+
+                    $('select').css("border", "1px solid #C0C0C0");
+                    var error = " ";
+                    if ($("#InputName option:selected").text() == "Select") {
+                        error = "Select Input Name";
+                        $('#FormError').html("<td class='ui-state-error' colspan='12'>" + error + ":Field is required</td>");
+                        $('#InputName').focus();
+                        $("#InputName").css("background-color", "#FFE8E8").css("border", "1px solid #FF6666");
+                        return [false, response.responseText];
+                    }
+
+                    else if ($("#SelTeamName").val() == "0" || $("#SelTeamName").val() == null) {
+                        error += "Selected Team Name";
+                        $('#FormError').html("<td class='ui-state-error' colspan='12'>" + error + ":Field is required</td>");
+                        $('#TeamName').focus();
+                        $("#TeamName").css("background-color", "#FFE8E8").css("border", "1px solid #FF6666");
+                        return [false, response.responseText];
+                    }
+                    else {
+                        return [true, response.responseText];
+                    }
+
+                },
+               
+                afterSubmit: function (response, postdata) {
+                    if (response.responseText == "") {
+
+                        $(this).jqGrid('setGridParam', { datatype: 'json' }).trigger('reloadGrid'); //Reloads the grid after edit
+                        $('#TblGrid_InputTeamLink td.ui-state-error').removeClass('ui-state-highlight').addClass('ui-state-error');
+                        return [true, '']
+                    }
+                    else {
+                        $(this).jqGrid('setGridParam', { datatype: 'json' }).trigger('reloadGrid'); //Reloads the grid after edit
+                        $('#TblGrid_InputTeamLink td.ui-state-error').removeClass('ui-state-error').addClass('ui-state-highlight');
+                        return [false, response.responseText]//Captures and displays the response text on th Edit window
+                    }
+                },
+               
+
+
+            },
+
+        {
+            //Add Portion
+            closeOnEscape: true,
+            width: 600, 
+            modal: true,
+            afterShowForm: function (form) { 
+
+                form.closest('div.ui-jqdialog').center();
+            },
+            onclickSubmit: function (params, posdata) {
+             
+                params.url = '@Url.Action("AddInfolink")?SelTeamName=' + $('#SelTeamName').val() + '&InputName=' + $('#InputName').val();
+            },
+
+            beforeSubmit: function (response, postdata) {
+
+                $('select').css("border", "1px solid #C0C0C0");
+                var error = " ";
+                if ($("#InputName option:selected").text() == "Select") {
+                    error = "Select Input Name";
+                    $('#FormError').html("<td class='ui-state-error' colspan='12'>" + error + ":Field is required</td>");
+                    $('#InputName').focus();
+                    $("#InputName").css("background-color", "#FFE8E8").css("border", "1px solid #FF6666");
+                    return [false, response.responseText];
+                }
+
+                else if ($("#SelTeamName").val() == "0" || $("#SelTeamName").val() == null) {
+                     error += "Selected Team Name";
+                    $('#FormError').html("<td class='ui-state-error' colspan='12'>" + error + ":Field is required</td>");
+                    $('#TeamName').focus();
+                    $("#TeamName").css("background-color", "#FFE8E8").css("border", "1px solid #FF6666");
+                    return [false, response.responseText];
+                }
+                else {
+                    return [true, response.responseText];
+                }
+
+            },
+
+            //afterSubmit: function (response, postdata) {
+            //    if (response.responseText == "") {
+
+            //        $(this).jqGrid('setGridParam', { datatype: 'json' }).trigger('reloadGrid')//Reloads the grid after Add
+            //        $('#TblGrid_InputTeamLink td.ui-state-error').removeClass('ui-state-highlight').addClass('ui-state-error');
+            //        return [true, '']
+            //    }
+            //    else {
+            //        $(this).jqGrid('setGridParam', { datatype: 'json' }).trigger('reloadGrid')//Reloads the grid after Add
+            //        $('#TblGrid_InputTeamLink td.ui-state-error').removeClass('ui-state-error').addClass('ui-state-highlight');
+            //        return [false, response.responseText]
+            //    }
+            //},
+
+
+            afterSubmit: function (response, postdata) {
+                if (response.responseText != "\"Input Team Link Added Successfully.\"") {
+                    $('#TblGrid_InputTeamLink td.ui-state-highlight').removeClass('ui-state-highlight').addClass('ui-state-error');
+                    return [false, response.responseText];
+                }
+                else {
+                    $("#InputTeamLink").jqGrid('setGridParam', { datatype: 'json' }).trigger('reloadGrid');
+                    $('#TblGrid_InputTeamLink td.ui-state-error').removeClass('ui-state-error').addClass('ui-state-highlight');
+
+                    $("#SelTeamName option:selected").remove();
+                    $('select').val(0);
+                    return [false, response.responseText];
+                }
+            },
+
+           
+        },
+        {
+            //DELETE
+            closeOnEscape: true,
+            closeAfterDelete: true,
+            reloadAfterSubmit: true,
+            closeOnEscape: true,
+            drag: true,
+            width: 400,
+            modal: true,
+            beforeShowForm: function (form) {
+                //var col1 = $('#InputTeamLink').jqGrid('getGridParam', 'selrow');
+                //$('tr td.delmsg').html('Delete selected record(s)?');
+
+                //$('#InputTeamLink').jqGrid('getGridParam', 'selrow');
+
+                //var id = jQuery("#InputTeamLink").jqGrid('getGridParam', 'selrow');
+                //if (id) {
+                //    var ret = jQuery("#InputTeamLink").jqGrid('getRowData', id);
+
+                //    $("td.delmsg", form[0]).html("<table width='100%'><tr><td><b>InputName</b></td><td>" + ret.InputName + "</td></tr><tr><td><b>InputType</b></td><td>" + ret.GenName + "</td></tr><tr><td><b>TeamName</b></td><td>" + ret.TeamName + "</td></tr><tr><td colspan=2></br>Are you sure want to delete selected record(s)?</td></tr></table> ");
+                //} else { alert("Please select row"); }
+
+            },
+            onclickSubmit: function (params, posdata) {
+                var sel_id = $('#InputTeamLink').jqGrid('getGridParam', 'selrow');
+                var PKID = $('#InputTeamLink').jqGrid('getCell', sel_id, 'PKID'); 
+                params.url = '@Url.Action("DeleteInfolink")?PKID=' + PKID;
+            },
+            afterShowForm: function (form) {
+                form.closest('div.ui-jqdialog').center();
+            },
+            afterSubmit: function (response, postdata) {
+                
+
+                        $("#InputTeamLink").trigger("reloadGrid", [{ current: true }]);
+                        $(this).jqGrid('setGridParam', { datatype: 'json' }).trigger('reloadGrid');
+                        $('tr td.delmsg').html('');
+                        $('#dData').hide();
+                        $('#DelTbl_InputTeamLink td.ui-state-error').removeClass('ui-state-error').addClass('ui-state-highlight');
+                       return [false, response.responseText]
+                    
+               
+            },
+
+           
+
+        },
+        {
+            //search
+            closeOnEscape: true,
+            modal: true,
+            recreateForm: true,
+            width: 600,
+            caption: "Search",
+            searchOnEnter: true,
+            beforeShowSearch: function (form) {
+
+                $('#jqg1').val('');
+                $('#fbox_InputTeamLink_reset').click();
+
+                var dialogHeight = $("#searchmodfbox_InputTeamLink").height();
+                var dialogWidth = $("#searchmodfbox_InputTeamLink").width();
+                var windowHeight = $(window).height();
+                var windowWidth = $(window).width();
+                $("#searchmodfbox_InputTeamLink").css('position', 'fixed');
+                $("#searchmodfbox_InputTeamLink").css('top', ((windowHeight - dialogHeight) / 2));
+                $("#searchmodfbox_InputTeamLink").css('left', ((windowWidth - dialogWidth) / 2));
+
+                return [true, ""];
+            }
+        },
+        {
+            //View
+            width: 500,
+            beforeShowForm: function (form) {
+                form.closest('div.ui-jqdialog').center();
+            }
+
+
+        }
+
+                );
+        
+
+        setMethod('InputTeamLink', 'InputTeamLinkPager', 'Customer Grid');
+
+    }
+    //Center Popup
+    jQuery.fn.center = function () {
+        this.css("position", "absolute");
+        this.css("top", ($(window).height() - this.height()) / 2 + $(window).scrollTop() + "px");
+        this.css("left", ($(window).width() - this.width()) / 2 + $(window).scrollLeft() + "px");
+        return this;
+
+    }
+    function validSpecial(objElement) {
+
+        var re = /^[a-zA-Z0-9-/\s.:]*/gi;
+        if (objElement.value.match(re) != objElement.value) {
+            alert('Special Characters are Not Allowed');
+            objElement.value = '';
+
+            return false;
+        }
+
+    }
+
+    function setMethod(gid, id, pgTitle) {
+        // alert(1);
+        var btnTitle = 'Export to Excel';
+        $('#' + gid).jqGrid('navSeparatorAdd', '#' + id, { sepclass: "ui-separator" });
+        $('#' + gid).jqGrid('navButtonAdd', '#' + id, { caption: '', title: btnTitle, position: 'last', buttonicon: 'ui-icon-calculator', onClickButton: function () { ExcelExport(); } });
+
+        var btnTitle = 'Export to PDF';
+        $('#' + gid).jqGrid('navSeparatorAdd', '#' + id, { sepclass: "ui-separator" });
+        $('#' + gid).jqGrid('navButtonAdd', '#' + id, { caption: '', title: btnTitle, position: 'last', buttonicon: 'ui-icon-bookmark', onClickButton: function () { PDFExport(); } });
+
+        var btnTitle = 'Export to CSV';
+        $('#' + gid).jqGrid('navSeparatorAdd', '#' + id, { sepclass: "ui-separator" });
+        $('#' + gid).jqGrid('navButtonAdd', '#' + id, { caption: '', title: btnTitle, position: 'last', buttonicon: 'ui-icon-note', onClickButton: function () { CSVExport(); } });
+
+
+        var btnTitle = 'Print Grid';
+        $('#' + gid).jqGrid('navSeparatorAdd', '#' + id, { sepclass: "ui-separator" });
+        $('#' + gid).jqGrid('navButtonAdd', '#' + id, { caption: '', title: btnTitle, position: 'last', buttonicon: 'ui-icon-print', onClickButton: function () { PrintGrid(gid); } });
+    }
+    function ExcelExport() {
+        window.location = '@Url.Action("ExportInputTeamLinkToExcel")';
+    }
+    function PDFExport() {
+        window.location = '@Url.Action("ExportInputTeamLinkToPDF")';
+    }
+    function CSVExport() {
+
+        window.location = '@Url.Action("ExportUserInputTeamLinkCsv")';
+        // $('#NotificationMaster').table2CSV({ header: ['PKID', 'Notification', 'ExpiryDate', 'Status'] });
+    }
+        function PrintGrid(gid) {
+
+            // empty the print div container.
+            var rows = $('#InputTeamLink').jqGrid('getRowData');
+            for (var i = 0; i < rows.length; i++) {
+                var row = rows[i];
+                $('#Table1').append("<tr><td>" + row.InputName + "</td><td>" + row.GenName + "</td><td>" + row.TeamName + "</td></tr>");
+
+            }
+            $(function () { printChrome('prt-container') });
+
+        }
+
+    function printChrome(divContainer) { 
+      
+        var printContent = document.getElementById(divContainer); 
+        window.document.body.innerHTML = printContent.innerHTML;
+        window.print();
+        window.location.reload();
+    }
+
+
+    </script>
+    <div id='prt-container' style="display:none">
+        <table id="Table1" border="1" width="100%">
+            <thead>
+                <tr>
+                    <td><b>Input Name</b></td>
+                    <td><b>Input Type</b></td>
+                    <td><b>Team Name</b></td>
+                </tr>
+
+            </thead>
+            <tbody></tbody>
+
+        </table>
+    </div>
+</body>
+

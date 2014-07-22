@@ -1,0 +1,38 @@
+﻿@model Dictionary<int, string>
+
+@if (ViewBag.Type == "ProductName")
+{
+    <select id="ProductName" multiple>
+
+        <option value="">Select</option>
+        @foreach (KeyValuePair<int, string> value in Model)
+        {
+            <option value='@value.Key.ToString()'>@value.Value</option>
+        }
+    </select>
+}
+
+@if (ViewBag.Type == "SelProductName")
+{
+    <select id="SelProductName" name="SelProductName" multiple>
+        <option value="">Select</option>
+
+        @foreach (KeyValuePair<int, string> value in Model)
+        {
+            <option value='@value.Key.ToString()' selected="selected">@value.Value</option>
+        }
+    </select>
+}
+
+@if (ViewBag.Type == "InputName")
+{
+    <select id="InputName">
+        <option value="0">Select</option>
+
+        @foreach (KeyValuePair<int, string> value in Model)
+        {
+            <option value='@value.Key.ToString()'>@value.Value</option>
+        }
+    </select>
+}
+

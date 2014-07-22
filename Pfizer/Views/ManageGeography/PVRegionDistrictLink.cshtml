@@ -1,0 +1,36 @@
+﻿@model Dictionary<int, string>
+
+
+@if (ViewBag.Type == "DDLRegionCode")
+{
+    <select name="RegionCode" id="RegionCode">
+        <option value='' selected="selected">Select</option>
+        @foreach (KeyValuePair<int, string> value in Model)
+        {
+            <option value='@value.Key.ToString()'>@value.Value</option>
+        }
+    </select>
+}
+
+@if (ViewBag.Type == "NSHDay")
+{
+    <select multiple >
+        <option value='' selected="selected">select</option>
+        @foreach (KeyValuePair<int, string> value in Model)
+        {
+            <option value='@value.Key.ToString()'>@value.Value</option>
+        }
+    </select>
+}
+
+@if (ViewBag.Type == "SHDay")
+{
+    <select multiple class="FormElement ui-widget-content ui-corner-all" id="SelDistrictCode" name="SelDistrictCode">
+        <option value=''>Select</option>
+        @foreach (KeyValuePair<int, string> value in Model)
+        {
+            <option value='@value.Key.ToString()' selected="selected">@value.Value</option>
+        }
+    </select>
+}
+

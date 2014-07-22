@@ -1,0 +1,471 @@
+﻿ @model PfizerEntity.UserMaster
+
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>Pfizer :: Login</title>
+    <link href="@Url.Content("~/Content/css/style.css")" rel="stylesheet" type="text/css" />
+    <link href="@Url.Content("~/Content/css/reset.css")" rel="stylesheet" type="text/css" />
+    <link rel="stylesheet" type="text/css" href="@Url.Content("~/Content/css/flipcountdown.css")" />
+
+
+</head>
+<body>
+
+    @using (Html.BeginForm(FormMethod.Post))
+    {
+        <div class="wrapper">
+            <div class="memlogin_container">
+                <div class="memlogin_header">
+                    <div class="pfizer"><img src="@Url.Content("~/Content/images/pfizer.png")" width="91" height="54" /></div>
+                    <div class="optima"><img src="@Url.Content("~/Content/images/optima.jpg")" width="151" height="64" /></div>
+                    <div class="invalid" id="divInvalid"></div>
+                </div>
+                <div class="memlogin_mainbg">
+                    <div class="memlogin_sec">
+                        <h1>Member Login</h1>
+                        <label>User ID</label>
+                      
+                        @Html.TextBoxFor(Model => Model.Loginname, new { id = "Loginname",Value="admin" })
+                        <label>Password</label>
+                        <input type="password" id="Password" name="Password" value="12345678" />
+
+                    </div>
+                    <div class="question_maindiv">
+                        <div class="question_leftsec">Question </div>
+                        <div class="question_rightsec" id="divQuestion"></div>
+                        <div class="clear"></div>
+                        <div class="answer">
+                           
+                            <input type="password" id="txtAnswer" name="txtAnswer"  value="xyz" />
+                            <input class="orange_button" id="btnLogin" type="submit" value="Login" />
+                        </div>
+                        <div class="timer">
+                            <h4>Question Timer</h4>
+                            <div id="retroclockbox_sm"></div>
+                        </div>
+                    </div>
+                    <input type="hidden" value="@ViewData["Error"].ToString()" id="hdnError" name="hdnError" />
+                    <input type="hidden" name="hdnQuesId" id="hdnQuesId" />
+                    <input type="hidden" name="hdnForgetQuestId" id="hdnForgetQuestId" />
+                    <input type="hidden" name="hdnChangeQuesId" id="hdnChangeQuesId" value="@ViewData["QuestId"].ToString()" />
+                    <input type="hidden" name="hdnTimerVal" id="hdnTimerVal" value="@ViewData["Timer"].ToString()" />
+                    <input type="hidden" id="hdnQues" name="hdnQues" value="@ViewData["Questions"].ToString()" />
+
+                </div>
+                <div class="clear"></div>
+            </div>
+            <div class="memlogin_footer">
+                <div class="memlogin_container">
+                    <div class="entrust"><img src="@Url.Content("~/Content/images/entrust.png")" width="57" height="57" /></div>
+                    <div class="memlogin_footer_links"> <a id="anchForgetPwd" href="#">Forgot Password</a><span>|</span> <a href="#" id="anchTerms">Terms of Use</a><span>|</span><a href="mailto:@ViewBag.HelpDesk">Contact us</a></div>
+                    <div class="copyright">Copyright 2014, <a href="#">Pfizer</a>. All rights reserved.</div>
+                    <div></div>
+                </div>
+            </div>
+            <!--Forget Password--> 
+            <div class=" popup2" style="display:none;position:relative;z-index:99999;" id="divForgetPwd" >
+                <div class="close"><a><img src="~/Content/images/close.png" onclick=" $('#divForgetPwd').hide(); $('.ui-widget-overlay').hide();" width="26" height="26" /></a></div>
+                <h1>Forget Password</h1>
+                <div class="popup_inner">
+                    <table>
+                        <tr>
+                            <td >
+
+                                <table  border="0" cellspacing="0" cellpadding="0" align="left" class="inner_tb">
+
+                                    <tr>
+                                        <td width="2%" class="tb-r1">UserId</td>
+                                        <td width="10%" class="tb-r1"><input type='text' name="txtForgetName" id="txtForgetName" /></td>
+
+                                    </tr>
+                                    <tr>
+                                        <td width="2%" class="tb-r2">Question</td>
+                                        <td class="tb-r2"><div class="question_rightsec" id="divForgetQuest"></div></td>
+
+
+                                    </tr>
+                                    <tr>
+                                        <td width="2%" class="tb-r1">Answer</td>
+                                        <td class="tb-r1" width="10%"><input type='password' id="txtForgetAns" /></td>
+
+                                    </tr>
+                                    <tr>
+                                        <td class="tb-r2" colspan="2" align="center"><input class="blue_button" id="btnForget" type='button' value="Submit" /></td>
+                                    </tr>
+
+                                </table>
+                            </td>
+
+                            <td>
+                                 
+                                            <div class="timer2">
+                                                <h4>Question Timer</h4>
+                                                <div id="retroclockbox_smForget"></div>
+                                            </div>
+                                         
+                            </td>
+                        </tr>
+                    </table>
+
+
+                </div>
+            </div> 
+            <!--end--> 
+
+            <!--Terms of Use-->
+
+            <div class="popup2" style="display:none" id="divTerms">
+                <div class="close"><a ><img src="~/Content/images/close.png" onclick="   $('#divTerms').hide(); $('.ui-widget-overlay').hide();" width="26" height="26" /></a></div>
+                <h1>Terms of Use</h1>
+                <div class="popup_inner"> 
+                               
+                    <table border="0" cellspacing="0" cellpadding="0" align="left" class="inner_tb">
+                        
+                        <tr>
+                            <td class="tb-r2">
+                                <div align="justify">
+                                    <p >
+                                        The computer system (including all software, electronic mail, and
+                                        the network) you have accessed is for the sole use of Company-authorized users
+                                        (including contractors, consultants, and Company employees) in their conduct of
+                                        Company-related business. Anything created, obtained or retained on the system
+                                        is the property of the Company.
+                                    </p>
+                                </div>
+                                <br />
+                                <p align="justify" >
+                                    All persons accessing the system without, or in
+                                    excess of, their authority or otherwise inappropriately using the system are
+                                    subject to disciplinary action, including termination, and/or criminal
+                                    prosecution.
+                                </p>
+                                <br />
+                                <p align="justify" >
+                                    The Company regularly monitors the system for
+                                    maintenance and to investigate the activities of individuals suspected of
+                                    improper usage. Anyone using the system hereby consents to such monitoring. Any
+                                    suspected misuse should be immediately reported to the Business Technology
+                                    representative or the OPTIMA Helpdesk.
+                                </p>
+                                <br />
+                                <p align="justify" >
+                                    System users are accountable for the use and
+                                    security of their passwords.
+                                </p>
+                                <br />
+                            </td>
+                        </tr>
+                        
+                    </table>
+                                        
+                </div>
+            </div> 
+
+            <!--Terms of Use end-->
+           
+           
+        </div>
+
+
+
+    }
+
+
+ 
+    <script type="text/javascript" src="~/Content/js/jquery.min.js"></script>
+    <script type="text/javascript" src="~/Content/js/jquery-1.8.2.min.js"></script>
+    <script type="text/javascript" src="~/Content/js/jquery-ui-1.8.24.min.js"></script>    
+    <script src="~/Content/js/jquery.flipcountdown.js"></script>
+
+
+    <script type="text/javascript">
+        var startPwd = $('#hdnTimerVal').val();
+        var x1 = $('#hdnTimerVal').val();
+        var y1 = 1
+        var k1 = 'startPwd';
+        if (k1 == 'startPwd') {
+            GetForgetQuest();
+            k1 = 'endPwd';
+        }
+
+        function CallForgetTimer() {
+          
+             
+            if (x1 > 0) {
+
+                return x1 = x1 - y1;
+            }
+            else {
+                GetForgetQuest();
+                return x1 = startPwd;
+            }
+
+        }
+        function GetForgetQuest() {
+            
+            var arrQuest = $('#hdnQues').val().split('|');
+            var arrQuestId = $('#hdnChangeQuesId').val().split('|');
+            var value = "";
+            var questNo = "";
+
+
+            var item = arrQuestId[Math.floor(Math.random() * arrQuestId.length)];
+
+            if (item != null) {
+
+                value = arrQuest[item];
+                questNo = parseInt(item);// + 1;
+
+                $('#divForgetQuest').html(value);
+                
+                if (arrQuest.length == questNo) {                    
+                     $('#hdnForgetQuestId').val(questNo);
+
+                }
+                else {
+                    $('#hdnForgetQuestId').val(questNo + 1);
+                }
+            }
+
+            
+        }
+
+        
+        
+        $(document).ready(function () {
+
+            $('#anchTerms').click(function () { 
+                
+                $('.ui-widget-overlay').show();
+                $('#divTerms').dialog({
+                    resizable: false,
+                    height: 420,
+                    width: 600,
+                    show: { effect: 'drop', direction: "up" },
+                    modal: true,
+                    draggable: true,
+
+                    open: function (event) {
+                        $(".ui-dialog-titlebar-close").show(); 
+                         
+
+                    },
+
+                });
+                return false;
+            });
+
+            $('#anchForgetPwd').click(function () {
+                
+                startPwd = $('#hdnTimerVal').val();
+              
+                $('.ui-widget-overlay').show();
+                $('#divForgetPwd').dialog({
+                    resizable: false,
+                    height: 320,
+                    width: 600,
+                    show: { effect: 'drop', direction: "up" },
+                    modal: true,
+                    draggable: true,
+
+                    open: function (event) {
+                        $(".ui-dialog-titlebar-close").show();
+                        $('#retroclockbox_smForget').flipcountdown({
+                            size: 'sm',
+                            tick: function () {
+                                var nol = function (h) {
+                                    return h > 9 ? h : '0' + h;
+                                }
+                                setTimeout("CallForgetTimer()", 1000)
+                                return nol(x1)
+                            }
+                        });
+
+                    },
+
+                });
+
+                return false;
+
+            });
+
+
+
+            $('#btnForget').click(function () {
+
+            
+                if ($('#txtForgetName').val() == '') {
+                    alert("* Please enter the User Id.");
+                    $('#txtForgetName').focus();
+
+                return false;
+            }
+                
+                if ($('#txtForgetAns').val() == '') {
+                    alert("* Please enter the Answer");
+                    $('#txtForgetAns').focus();
+                 
+                return false;
+                }
+
+                $.getJSON('@Url.Action("JsonGetPassword")?userId=' + $('#txtForgetName').val() + '&questId=' + $('#hdnForgetQuestId').val() + '&ans=' + $('#txtForgetAns').val(), function (data) {
+                   
+                    if (data.status != '1')
+                        alert(data.error);
+                    else {
+                        alert('Password sent to your mail. Please check your mailbox');
+                        $('.ui-widget-overlay').hide();
+                        $('#divForgetPwd').hide();
+                    }
+                    
+                });
+
+            
+
+            
+        });
+        });
+         
+
+    </script>
+
+
+
+    <script>
+
+        if ($('#hdnError').val() != "") {
+
+            $('#divInvalid').html($('#hdnError').val());
+        }
+
+        var start = $('#hdnTimerVal').val();
+        var x = $('#hdnTimerVal').val();
+        var y = 1
+        var k = 'start';
+        if (k == 'start') {
+            GetQuestion();
+            k = 'end';
+        }
+
+        $(function () {
+            var NY = Math.round((new Date('1/04/2014 00:00:01')).getTime() / 1000);
+
+            $('#retroclockbox_sm').flipcountdown({
+                size: 'sm',
+                tick: function () {
+                    var nol = function (h) {
+                        return h > 9 ? h : '0' + h;
+                    }
+                    setTimeout("CallTimer()", 1000)
+                    return nol(x)
+                }
+            });
+        });
+
+
+
+
+
+         
+
+        function CallTimer() {
+            
+            if (x > 0) {
+
+                return x = x - y;
+            }
+            else {
+                GetQuestion();
+                return x = start
+            }
+        }
+
+        function GetQuestion() {
+
+            var arrQuest = $('#hdnQues').val().split('|');
+            var arrQuestId = $('#hdnChangeQuesId').val().split('|');
+            var value = "";
+            var questNo = "";
+
+
+            var item = arrQuestId[Math.floor(Math.random() * arrQuestId.length)];
+
+            if (item != null) {
+
+                value = arrQuest[item];
+                questNo = parseInt(item);// + 1;
+
+                $('#divQuestion').html(value); 
+                if (arrQuest.length == questNo) {
+                    $('#hdnQuesId').val(questNo); 
+                }
+                else {
+                    $('#hdnQuesId').val(questNo + 1); 
+                }
+            }
+
+        }
+
+
+
+    </script>
+
+
+ 
+
+
+    <script type="text/javascript">
+        $(document).ready(function () {
+
+
+            $('#btnLogin').click(function () {
+
+                if ($('#Loginname').val() == '') {
+                    $('#divInvalid').html('Please enter the User Name');
+                    $('#Loginname').css('border-color', 'red');
+                    $('#Password').css('border-color', '#D5D5D5');
+                    $('#txtAnswer').css('border-color', '#D5D5D5');
+                    $('#Loginname').focus();
+                    return false;
+
+                }
+                else if ($('#Password').val() == '') {
+                    $('#divInvalid').html('Please enter the Password');
+                    $('#Password').css('border-color', 'red');
+                    $('#Loginname').css('border-color', '#D5D5D5');
+                    $('#txtAnswer').css('border-color', '#D5D5D5');
+                    $('#Password').focus();
+                    return false;
+
+                }
+                else if ($('#txtAnswer').val() == '') {
+                    $('#divInvalid').html('Please enter the Answer');
+                    $('#txtAnswer').css('border-color', 'red');
+                    $('#Loginname').css('border-color', '#D5D5D5');
+                    $('#Password').css('border-color', '#D5D5D5');
+                    $('#txtAnswer').focus();
+                    return false;
+                }
+
+
+            });
+
+
+
+        });
+
+
+    </script>
+
+
+
+
+</body>
+
+
+</html>
+
+
+

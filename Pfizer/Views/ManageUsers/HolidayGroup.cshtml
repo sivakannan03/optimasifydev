@@ -1,0 +1,428 @@
+﻿@{
+    ViewBag.Title = "HolidayGroup";
+    Layout = "~/Views/Shared/MasterLayout.cshtml";
+}
+<body>
+
+    @using (Html.BeginForm(FormMethod.Post))
+    {
+        <div>
+            <table border="0" style="width: 100%">
+                <tr>
+                    <td>
+                        <!--JqGrid Starts-->
+                        <table style="margin-top: 7px; width :100%" border="0">
+                            <tr>
+                                <td>
+                                    <table id="HolidayGroup" style="width: 100%" border="0"></table>
+                                    <div id="Pager">
+                                    </div>
+                                </td>
+                            </tr>
+                        </table>
+                        <!--Ends-->
+                    </td>
+                </tr>
+            </table>
+
+        </div>
+    }
+
+    <script type="text/javascript">
+
+
+        function validSpecial(objElement) {
+
+            var re = /^[a-zA-Z0-9-/\s.:?]*/gi;
+            if (objElement.value.match(re) != objElement.value) {
+                alert('No Special Characters Allowed');
+                objElement.value = '';
+
+                return false;
+            }
+
+        }
+
+
+
+        jQuery(document).ready(function () { 
+            initGrid();
+        });
+        function initGrid() {
+            jQuery("#HolidayGroup").jqGrid({
+                url: '@Url.Action("HolidayGridData")',
+
+                datatype: "json",
+                jsonReader: { repeatitems: false, id: "PKID" },
+                colNames: ['PKID', 'Holiday Group Name', 'Status'],
+                colModel: [
+                    { name: 'PKID', index: 'PKID', align: 'left', hidden: true, editable: true },
+                    {
+                        name: 'HolidayGroupName', index: 'HolidayGroupName', align: 'left', editable: true,search:true,searchrules:{required:true}, editrules: { required: false }, editoptions: {
+                            size: 35,
+                            dataEvents: [
+                                       {
+                                           type: 'keyup', // blur
+                                           fn: function (e) {
+                                               SingleCharacter(this);
+                                           }
+                                       }
+                            ]
+                        }, formoptions: {
+                            elmprefix: "<span style='align:left;color:red'>*</span>&nbsp;"
+                        }, searchoptions: { sopt: ['eq', 'bw', 'ew', 'cn'] }
+                    },
+                    {
+                        name: 'IsActive', index: 'IsActive', align: 'left', hidden: false, editable: true, edittype: 'checkbox', editrules: {
+                            required: false
+
+                        }, search: false, formoptions: {
+                            elmprefix: "&nbsp;&nbsp;&nbsp;"
+
+                        }
+
+
+                    },
+                ],
+
+                autowidth: true,
+                gridview: true,
+                caption: 'Holiday Group Master',
+                jqModal: true,
+                rowTotal: 20,
+                rowNum: 10,
+                align: 'center',
+                sortable: true,
+                hidegrid: true,
+                altRows: true,
+                sortname: 'PKID',
+                sortorder: 'desc',
+                viewrecords: true,
+                pager: $('#Pager'),
+                height: 'auto',
+                editable: true,
+                gridComplete: function () {
+
+                    if (jQuery("#HolidayGroup").getGridParam("records") == 0) {
+                        jQuery("#HolidayGroup").addRowData(
+                              "blankRow", { "HolidayGroupName": "No records to view" });
+                    }
+
+
+                },
+                editurl: '@Url.Action("EditHolidayGroupMaster")'
+            });
+
+            jQuery("#HolidayGroup").jqGrid('navGrid', '#Pager', { edit: true, add: true, del: true, search: true, view: true },
+
+                    {
+                        // Edit
+                        closeAfterEdit: true,
+                        closeOnEscape: true,
+                        recreateForm: true,
+                        width: 600,
+                        modal:true,
+                        checkOnSubmit: true,
+                        afterShowForm: function (form_id) {
+                            var thisForm = form_id.selector.replace('FrmGrid_', 'editmod')
+                            var dialogHeight = $(thisForm).height();
+                            var dialogWidth = $(thisForm).width();
+                            var windowHeight = $(window).height();
+                            var windowWidth = $(window).width();
+                            $(thisForm).css('position', 'fixed');
+                            $(thisForm).css('top', ((windowHeight - dialogHeight) / 2));
+                            $(thisForm).css('left', ((windowWidth - dialogWidth) / 2));
+                        },
+                        beforeSubmit: function (response, postdata) {
+
+                           
+                                if ($("#HolidayGroupName").val().charAt(0) == ' ' || $("#HolidayGroupName").val().charAt($("#HolidayGroupName").val().length - 1) == ' ') {
+                                    $('#TblGrid_ajaxGrid td.ui-state-highlight').removeClass('ui-state-highlight').addClass('ui-state-error');
+                                    $("#HolidayGroupName").css("background-color", "#FFE8E8").css("border", "1px solid #FF6666");
+                                    $('#HolidayGroupName').val('');
+                                    $('#HolidayGroupName').focus();
+                                    return [false, 'Enter Valid HolidayGroupName'];
+                                }
+
+                            $('select').css("border", "1px solid #C0C0C0");
+                            $("input[type=text]").css("border", "1px solid #C0C0C0");
+                            var error = " ";
+                            if ($("#HolidayGroupName").val() == 0) {
+                                error += "HolidayGroupName";
+                                $('#FormError').html("<td class='ui-state-error' colspan='2'>" + error + ":Field is required</td>");
+                                $("#HolidayGroupName").val("");
+                                $('#HolidayGroupName').focus();
+                                $("#HolidayGroupName").css("background-color", "#FFE8E8").css("border", "1px solid #FF6666");
+                                return [false, response.responseText];
+                            }
+                            else if (!($('#IsActive').is(":checked"))) {
+                                $("#IsActive").css("background-color", "#FFE8E8").css("border", "1px solid #FF6666");
+                                $('#IsActive').focus();
+                                return [false, 'Please Check Status'];
+                            }
+                            else {
+                                return [true, response.responseText];
+                            }
+
+                        },
+                        afterSubmit: function (response, postdata) {
+
+                            $("#HolidayGroup").jqGrid('setGridParam', { datatype: 'json' }).trigger('reloadGrid');
+                            $('#TblGrid_HolidayGroup td.ui-state-error').removeClass('ui-state-error').addClass('ui-state-highlight');
+                            $("input[type=text]").val('');
+                            $("#IsActive").prop('checked', false);
+                            return [false, response.responseText];
+                        },
+
+                    },
+
+                {
+
+                    //Add
+                    closeOnEscape: true,
+                    recreateForm: true,
+                    width: 600,
+                    modal: true,
+                    afterShowForm: function (form_id) {
+                        var thisForm = form_id.selector.replace('FrmGrid_', 'editmod')
+                        var dialogHeight = $(thisForm).height();
+                        var dialogWidth = $(thisForm).width();
+                        var windowHeight = $(window).height();
+                        var windowWidth = $(window).width();
+                        $(thisForm).css('position', 'fixed');
+                        $(thisForm).css('top', ((windowHeight - dialogHeight) / 2));
+                        $(thisForm).css('left', ((windowWidth - dialogWidth) / 2));
+                    },
+                    beforeSubmit: function (response, postdata) {
+                        if ($("#HolidayGroupName").val().charAt(0) == ' ' || $("#HolidayGroupName").val().charAt($("#HolidayGroupName").val().length - 1) == ' ') {
+                            $('#TblGrid_HolidayGroup td.ui-state-highlight').removeClass('ui-state-highlight').addClass('ui-state-error');
+                            $("#HolidayGroupName").css("background-color", "#FFE8E8").css("border", "1px solid #FF6666");
+                            $('#HolidayGroupName').val('');
+                            $('#HolidayGroupName').focus();
+                            return [false, 'Enter Valid HolidayGroupName'];
+                        }
+
+
+                        $('select').css("border", "1px solid #C0C0C0");
+                        $("input[type=text]").css("border", "1px solid #C0C0C0");
+                        var error = " ";
+                        if ($("#HolidayGroupName").val() == 0) {
+                            error += "HolidayGroupName";
+                            $('#FormError').html("<td class='ui-state-error' colspan='2'>" + error + ":Field is required</td>");
+                            $("#HolidayGroupName").val("");
+                            $('#HolidayGroupName').focus();
+                            $("#HolidayGroupName").css("background-color", "#FFE8E8").css("border", "1px solid #FF6666");
+                            return [false, response.responseText];
+                        }
+                        else if (!($('#IsActive').is(":checked"))) {
+                            $("#IsActive").css("background-color", "#FFE8E8").css("border", "1px solid #FF6666");
+                            $('#IsActive').focus();
+                            return [false, 'Please Check Status'];
+                        }
+                        else {
+                            return [true, response.responseText];
+                        }
+
+                    },
+                    afterSubmit: function (response, postdata) {
+                        $("#HolidayGroup").jqGrid('setGridParam', { datatype: 'json' }).trigger('reloadGrid');
+                        var errorid = "";
+                        if (response.responseText == "\"Holiday Group Master added successfully\"") {
+                            errorid = "Holiday Group Master added successfully";
+                            $('#FormError').html("<td class='ui-state-error' colspan='2'>" + errorid + "</td>");
+                            $('#TblGrid_HolidayGroup td.ui-state-error').removeClass('ui-state-error').addClass('ui-state-highlight');
+                            $("input[type=text]").val('');
+                            $("#IsActive").prop('checked', false);
+                            return [false, response.responseText];
+                        }
+                        else {
+                            errorid = "Holiday Group Master already Exists";
+                            $('#FormError').html("<td class='ui-state-error' colspan='2'>" + errorid + "</td>");
+                            $('#TblGrid_HolidayGroup td.ui-state-error').removeClass('ui-state-highlight').addClass('ui-state-error');
+                            $("input[type=text]").val('');
+                            $("#IsActive").prop('checked', false);
+                            return [false, response.responseText];
+                           
+                        }
+                    },
+                    onclickSubmit: function (params, posdata) {
+                        //string id, string oper, string PKID, string HolidayGroupName, string IsActive
+                        params.url = '@Url.Action("AddHolidayGroupMaster")?HolidayGroupName=' + $('#HolidayGroupName').val() + '&IsActive=' + $('#IsActive').val();
+
+                    },
+                },
+
+                //Delete
+                {
+                    closeOnEscape: true,
+                    recreateForm: true,
+                    width: 600,
+                    modal: true,
+                    beforeShowForm: function (form) {
+
+
+                        $('tr td.delmsg').html('Delete selected record(s)?');
+                        var col1 = $('#HolidayGroup').jqGrid('getGridParam', 'selrow');
+                        var IsActive = $('#HolidayGroup').jqGrid('getCell', col1, 'IsActive');
+                       
+                         if (IsActive == "In Active") {
+                            $('tr td.delmsg').html('Record Already Deleted');
+
+                            $('#dData').hide();
+                        }
+                        else
+                            $('#dData').show();
+                        var thisForm = $("#delmod" + jQuery("#HolidayGroup")[0].id);
+                        var dialogHeight = $(thisForm).height();
+                        var dialogWidth = $(thisForm).width();
+                        var windowHeight = $(window).height();
+                        var windowWidth = $(window).width();
+                        $(thisForm).css('position', 'fixed');
+                        $(thisForm).css('top', ((windowHeight - dialogHeight) / 2));
+                        $(thisForm).css('left', ((windowWidth - dialogWidth) / 2));
+
+
+                        //var col1 = $('#HolidayGroup').jqGrid('getGridParam', 'selrow');
+
+                        //var HolidayGroupName = $('#HolidayGroup').jqGrid('getCell', col1, 'HolidayGroupName');
+                        //var IsActive = $('#HolidayGroup').jqGrid('getCell', col1, 'IsActive');
+
+
+                        //var html = "<form><table><tr><td class='CaptionTD'>Holiday Group Name </td><td class=='DataTD'>&nbsp;&nbsp;<input type='text' class='FormElement ui-widget-content ui-corner-all' readonly='true'  value='" + HolidayGroupName + "'/></td> </tr>";
+
+                        //if (IsActive == "Active")
+                        //    html += "<tr><td class='CaptionTD'>Status</td><td class=='DataTD'>&nbsp;&nbsp;<input class='FormElement ui-widget-content ui-corner-all'   type='checkbox' checked readonly/></td>";
+                        //if (IsActive == "In Active")
+                        //    html += "<tr><td class='CaptionTD'>Status</td><td class=='DataTD'>&nbsp;&nbsp; <input class='FormElement ui-widget-content ui-corner-all'   type='checkbox' readonly readonly /></td></tr>";
+                        //html += "</table></form>";
+                        //$("td.delmsg", form[0]).html(html);
+
+                    },
+                    afterSubmit: function (response, postdata) {
+                        $('tr td.delmsg').html('');
+                        $('#dData').hide();
+                        $("#HolidayGroup").jqGrid('setGridParam', { datatype: 'json' }).trigger('reloadGrid');
+                        $('#DelTbl_HolidayGroup td.ui-state-error').removeClass('ui-state-error').addClass('ui-state-highlight');
+                        $("input[type=text]").val('');
+                        $("#IsActive").prop('checked', false);
+                        return [false, response.responseText];
+                    }
+                    
+                },
+                {
+                    //Search
+
+                    closeOnEscape: true,
+                    modal: true,
+                    recreateForm: true,
+                    width: 600,
+                    caption: "Search",
+                    searchOnEnter: true,
+                    beforeShowSearch: function (form) {
+
+                        $('#jqg1').val('');
+                        $('#fbox_HolidayGroup_reset').click();
+
+                        var dialogHeight = $("#searchmodfbox_HolidayGroup").height();
+                        var dialogWidth = $("#searchmodfbox_HolidayGroup").width();
+                        var windowHeight = $(window).height();
+                        var windowWidth = $(window).width();
+                        $("#searchmodfbox_HolidayGroup").css('position', 'fixed');
+                        $("#searchmodfbox_HolidayGroup").css('top', ((windowHeight - dialogHeight) / 2));
+                        $("#searchmodfbox_HolidayGroup").css('left', ((windowWidth - dialogWidth) / 2));
+
+                        return [true, ""];
+                    }
+                },
+                {
+                    //View :
+                    closeOnEscape: true,
+                    recreateForm: true,
+                    width: 600,
+                    modal: true,
+                    beforeShowForm: function (form) {
+
+
+                        var thisForm = $("#viewmod" + jQuery("#HolidayGroup")[0].id);
+                        var dialogHeight = $(thisForm).height();
+                        var dialogWidth = $(thisForm).width();
+                        var windowHeight = $(window).height();
+                        var windowWidth = $(window).width();
+                        $(thisForm).css('position', 'fixed');
+                        $(thisForm).css('top', ((windowHeight - dialogHeight) / 2));
+                        $(thisForm).css('left', ((windowWidth - dialogWidth) / 2));
+
+                    }
+
+                }
+
+                        );
+
+            setMethod('HolidayGroup', 'Pager', 'Holiday Group');
+        }
+        function setMethod(gid, id, pgTitle) {
+           
+            var btnTitle = 'Export to Excel';
+            $('#' + gid).jqGrid('navSeparatorAdd', '#' + id, { sepclass: "ui-separator" });
+            $('#' + gid).jqGrid('navButtonAdd', '#' + id, { caption: '', title: btnTitle, position: 'last', buttonicon: 'ui-icon-calculator', onClickButton: function () { ExcelExport(); } });
+
+            var btnTitle = 'Export to PDF';
+            $('#' + gid).jqGrid('navSeparatorAdd', '#' + id, { sepclass: "ui-separator" });
+            $('#' + gid).jqGrid('navButtonAdd', '#' + id, { caption: '', title: btnTitle, position: 'last', buttonicon: 'ui-icon-bookmark', onClickButton: function () { PDFExport(); } });
+
+            var btnTitle = 'Export to CSV';
+            $('#' + gid).jqGrid('navSeparatorAdd', '#' + id, { sepclass: "ui-separator" });
+            $('#' + gid).jqGrid('navButtonAdd', '#' + id, { caption: '', title: btnTitle, position: 'last', buttonicon: 'ui-icon-note', onClickButton: function () { CSVExport(); } });
+
+
+            var btnTitle = 'Print Grid';
+            $('#' + gid).jqGrid('navSeparatorAdd', '#' + id, { sepclass: "ui-separator" });
+            $('#' + gid).jqGrid('navButtonAdd', '#' + id, { caption: '', title: btnTitle, position: 'last', buttonicon: 'ui-icon-print', onClickButton: function () { PrintGrid(gid); } });
+        }
+        function ExcelExport() {
+            window.location = '@Url.Action("ExportHolidayGroupMasterToExcel")';
+        }
+        function PDFExport() {
+            window.location = '@Url.Action("ExportHolidayGroupMasterToPDF")';
+        }
+        function CSVExport() {
+            window.location = '@Url.Action("ExportHolidayGroupMasterToCsv")';
+        }
+        function PrintGrid(gid) {
+
+            // empty the print div container.
+            var rows = $('#HolidayGroup').jqGrid('getRowData');
+            for (var i = 0; i < rows.length; i++) {
+                var row = rows[i];
+                $('#Table1').append("<tr><td>" + row.HolidayGroupName + "</td><td>" + row.IsActive + "</td></tr>");
+
+            }
+            $(function () { printChrome('prt-container') });
+
+        }
+
+        function printChrome(divContainer) {
+
+            var printContent = document.getElementById(divContainer);
+            window.document.body.innerHTML = printContent.innerHTML;
+            window.print();
+            window.location.reload();
+        }
+
+
+    </script>
+    <div id='prt-container' style="display:none">
+        <table id="Table1" border="1" width="100%">
+            <thead>
+                <tr>
+                    <td><b>HolidayGroupName</b></td>
+                    <td><b>IsActive</b></td>
+                </tr>
+
+            </thead>
+            <tbody></tbody>
+
+        </table>
+    </div>
+
+</body>

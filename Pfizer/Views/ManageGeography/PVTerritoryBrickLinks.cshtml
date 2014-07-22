@@ -1,0 +1,114 @@
+﻿
+@model Dictionary<int, string>
+
+@if (ViewBag.Type == "LoadCityName")
+{
+    <select id="SelcityName" onchange="LoadBricks(this);">
+        <option value='0'>Select</option>
+        @foreach (KeyValuePair<int, string> value in Model)
+        {
+            <option value='@value.Key.ToString()'>@value.Value</option>
+        }
+    </select>
+}
+
+@if (ViewBag.Type == "LoadBrick")
+{
+    <select multiple class="FormElement ui-widget-content ui-corner-all" id="AreaName">
+        <option value='0'>Select</option>
+        @foreach (KeyValuePair<int, string> value in Model)
+        {
+            <option value='@value.Key.ToString()'>@value.Value</option>
+        }
+    </select>
+}
+
+@if (ViewBag.Type == "SelLoadBrick")
+{
+    <select multiple class="FormElement ui-widget-content ui-corner-all" id="SelAreaName">
+        <option value='0'>Select</option>
+        @foreach (KeyValuePair<int, string> value in Model)
+        {
+            <option value='@value.Key.ToString()'>@value.Value</option>
+        }
+    </select>
+}
+
+@if (ViewBag.Type == "LoadteriCode")
+{
+    <select id="TerCode" name="TerCode">
+        <option value='0'>Select</option>
+        @foreach (KeyValuePair<int, string> value in Model)
+        {
+            <option value='@value.Key.ToString()'>@value.Value</option>
+        }
+    </select>
+}
+
+@if (ViewBag.Type == "LoadFCCityName")
+{
+    <select id="SelFCCityName" name="SelFCCityName">
+        <option value='0'>Select</option>
+        @foreach (KeyValuePair<int, string> value in Model)
+        {
+            <option value='@value.Key.ToString()'  selected>@value.Value</option>
+        }
+    </select>
+}
+@if (ViewBag.Type == "LoadSelectedCityName")
+{
+    <select id="SelcityName" name="SelcityName">
+        <option value='0'>Select</option>
+        @foreach (KeyValuePair<int, string> value in Model)
+        {
+            <option value='@value.Key.ToString()' selected>@value.Value</option>
+        }
+    </select>
+}
+
+
+@if (ViewBag.Type == "SelectedLoadBrick")
+{
+    <select id="SelAreaName" name="SelAreaName">
+        <option value='0'>Select</option>
+        @foreach (KeyValuePair<int, string> value in Model)
+        {
+            <option value='@value.Key.ToString()' selected>@value.Value</option>
+        }
+    </select>
+}
+
+
+@if (ViewBag.Type == "SelectedTerCode")
+{
+    <select id="TerCode" name="TerCode">
+        <option value='0'>Select</option>
+        @foreach (KeyValuePair<int, string> value in Model)
+{
+    <option value='@value.Key.ToString()' selected>@value.Value</option>
+}
+    </select>
+}
+
+@if (ViewBag.Type == "SelFCTericode")
+{
+    <select id="SelFCTericode" name="SelFCTericode">
+        <option value='0'>Select</option>
+        @foreach (KeyValuePair<int, string> value in Model)
+{
+    <option value='@value.Key.ToString()' selected>@value.Value</option>
+}
+    </select>
+}
+
+@if (ViewBag.Type == "SelectedBrick")
+{
+    <select id="AreaName" name="AreaName">
+        <option value='0'>Select</option>
+        @foreach (KeyValuePair<int, string> value in Model)
+        {
+            <option value='@value.Key.ToString()' selected>@value.Value</option>
+        }
+    </select>
+}
+

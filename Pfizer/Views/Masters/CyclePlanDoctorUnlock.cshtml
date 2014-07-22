@@ -1,0 +1,213 @@
+﻿@{
+    ViewBag.Title = "CyclePlanDoctorUnlock";
+    Layout = "~/Views/Shared/MasterLayout.cshtml";
+}
+
+ 
+<body>
+
+    @using (Html.BeginForm(FormMethod.Post))
+    {
+        <div>
+            <table border="0" style="width: 100%">
+                
+                <tr>
+                    <td>
+
+                        <table>
+
+                            <tr>
+                                <td>Year</td>
+                                <td>@Html.DropDownList("ddlEmployeeList", PfizerEntity.UsefulLink.GetEmployee())</td>
+                                <td>Cycle</td>
+                                <td></td>
+
+                            </tr>
+
+                            <tr>
+                                <td>Division</td>
+                                <td></td>
+                                <td>Team</td>
+                                <td></td>
+                                <td><input type="button" value="Fetch" /></td>
+                            </tr>
+
+                        </table>
+
+                    </td>
+
+                </tr>
+                <tr>
+                    <td>
+                        <!--JqGrid Starts-->
+                        <table style="margin-top: 7px; width :100%" border="0">
+                            <tr>
+                                <td>
+                                    <table id="CyclePlanDoctorGrid" style="width: 100%" border="0"></table>
+                                    <div id="CyclePlanDoctorPager">
+                                    </div>
+                                </td>
+                            </tr>
+                        </table>
+                        <!--Ends-->
+                    </td>
+                </tr>
+                
+            </table>
+
+        </div>
+
+        @*<script type="text/javascript"> 
+    jQuery(document).ready(function () {
+
+        initGrid();
+    });
+
+
+
+    function MoveSelected() {
+
+        $('#TeamName :selected').each(function (i, selected) {
+            $('#SelTeamName')
+                 .append($('<option selected="selected" value=' + $(selected).val() + '>')
+                 .text($(selected).text()));
+            $('#TeamName :selected').remove();
+        });
+
+
+    }
+
+    function ReverseSelected() {
+
+        $('#SelTeamName :selected').each(function (i, selected) {
+            $('#TeamName')
+                 .append($('<option>', { value: $(selected).val() })
+                 .text($(selected).text()));
+            $('#SelTeamName :selected').remove();
+
+        });
+
+        $("#SelTeamName option").prop("selected", true);
+        $("#SelTeamName option:first").removeAttr('selected');
+
+    }
+
+    function initGrid() {
+        jQuery("#CyclePlanDoctorGrid").jqGrid({
+            url: '@Url.Action("CyclePlanDoctorGridData")',
+
+            datatype: "json",
+            jsonReader: { repeatitems: false, id: "PKID" },
+            colNames: ['PKID','Select','PSO Name','Territory Code','Reporting User Name','CyclePlan Submitted Date'],
+            colModel: [
+                { name: 'PKID', index: 'PKID', align: 'left', hidden: true, editable: true },
+
+                   {
+                       name: 'DateofBegining', index: 'DateofBegining', align: 'left', editable: true,hidden:false, editrules: { edithidden: true }, search: false, formatter: "date", formatoptions: { newformat: "d/m/Y" }, edittype: 'text',
+                       editoptions: {
+                           size: 10, maxlengh: 10,
+                           dataInit: function (element) {
+                               $(element).datepicker({
+                                   dateFormat: 'dd/mm/yy',
+                                   changeMonth: true,
+                               changeYear: true
+                               })
+                           }
+                       },formoptions: { rowpos: 3, colpos: 1 },
+                   },
+
+                {
+                    name: 'TeamName', index: 'TeamName', align: 'left', hidden: false, editable: true,  edittype: 'select', editoptions: {
+                        multiple: true,
+                        dataUrl: function () {
+                            var row_id = $('#CyclePlanDoctorGrid').getGridParam('selrow');
+                            return 'LoadTeam?type=' + 'NotSelected' + '&rowId=' + row_id;
+                        }
+
+                    } , formoptions: {
+                        elmprefix: "&nbsp;&nbsp;&nbsp;"
+
+                    }, searchoptions: { sopt: ['eq', 'bw', 'ew', 'cn'] }, formoptions: { rowpos: 2, colpos: 1 },
+
+
+                },
+
+            {
+                name: 'forward', index: 'forward', align: 'left', hidden: true, editrules: { edithidden: true }, edittype: 'button', editable: true, editoptions: {
+                    value: '>>',
+                    dataEvents:
+                        [
+                        {
+                            type: 'click', fn: function (e) {
+
+                                MoveSelected();
+                            }
+                        }]
+
+                }, formoptions: { rowpos: 2, colpos: 2 }
+            },
+
+            {
+
+                name: 'backward', index: 'backward', align: 'right', hidden: true, edittype: 'button', editrules: { edithidden: true }, editable: true, editoptions: {
+                    value: '<<',
+                    dataEvents:
+                        [
+                        {
+                            type: 'click', fn: function (e) {
+
+                                ReverseSelected();
+                            }
+                        }]
+
+                }, formoptions: { rowpos: 2, colpos: 3 }
+
+
+            },
+
+            {
+                name: 'SelTeamName', index: 'SelTeamName', align: 'left', editable: true, hidden: true, editrules: { edithidden: true,required:true }, edittype: 'select', editoptions: {
+                    multiple: true, dataUrl: function () {
+                        var row_id = $('#CyclePlanDoctorGrid').getGridParam('selrow');
+                        return 'LoadSelectedTeam?type=' + 'Selected' + '&rowId=' + row_id;
+                    }
+
+                }, formoptions: { rowpos: 2, colpos: 4 },
+            }
+            ],
+
+            autowidth: true,
+            gridview: true,
+            caption: 'UnLock Cycle Plan',
+            jqModal: true,
+
+            rowTotal: 10,
+            rowNum: 10,
+            align: 'center',
+            sortable: true,
+            hidegrid: true,
+            altRows: true,
+
+            sortname: 'PKID',
+            sortorder: 'desc',
+            viewrecords: true,
+            pager: $('#Pager'),
+            height: 'auto',
+            editable: true,
+            gridComplete: function () {
+
+                if (jQuery("#CyclePlanDoctorGrid").getGridParam("records") == 0) {
+                    jQuery("#CyclePlanDoctorGrid").addRowData(
+                          "blankRow", { "Question": "No records to view" });
+                }
+
+
+            },
+            editurl: '@Url.Action("EditCyclePlanDoctorGrid")'
+            });
+
+            
+    }
+            </script>*@
+    }
+</body>

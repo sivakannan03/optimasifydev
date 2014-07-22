@@ -1,0 +1,508 @@
+﻿@{
+    ViewBag.Title = "ProductMoleculeLinkMaster";
+    Layout = "~/Views/Shared/MasterLayout.cshtml";
+}
+
+<body>
+    @using (Html.BeginForm(FormMethod.Post))
+    {
+        <div>
+            <table border="0" style="width: 100%">
+                <tr>
+                    <td>
+                        <!--JqGrid Starts-->
+                        <table style="margin-top: 7px; width :100%" border="0">
+                            <tr>
+                                <td>
+                                    <table id="ProductMoleculeLink" style="width: 100%" border="0"></table>
+                                    <div id="ProductMoleculeLinkPager">
+                                    </div>
+                                </td>
+                            </tr>
+                        </table>
+                        <!--Ends-->
+                    </td>
+                </tr>
+            </table>
+        </div>
+    }
+</body>
+
+
+<script type="text/javascript">
+
+    jQuery(document).ready(function () {
+
+        initGrid();
+    });
+
+    function MoveSelected() {
+         $('#MoleculeName :selected').each(function (i, selected) {
+
+            if ($(selected).val() != 0) {
+
+                 $('#SelMoleculeName')
+                     .append($('<option selected="selected" value=' + $(selected).val() + '>')
+                     .text($(selected).text()));
+                 $('#MoleculeName :selected').remove();
+            }
+        });
+
+
+    }
+
+    function ReverseSelected() {
+
+
+        $('#SelMoleculeName :selected').each(function (i, selected) {
+
+            if ($(selected).val() != 0) {
+                $('#MoleculeName')
+                     .append($('<option>', { value: $(selected).val() })
+                     .text($(selected).text()));
+
+                $('#SelMoleculeName :selected').remove();
+            }
+
+        });
+
+        $("#SelMoleculeName option").prop("selected", true);
+        $("#SelMoleculeName option:first").removeAttr('selected');
+    }
+
+    function initGrid() {
+        jQuery("#ProductMoleculeLink").jqGrid({
+            url: '@Url.Action("GetProductMoleculeLinkMaster")',
+            datatype: "json",
+            jsonReader: { repeatitems: false, id:'PKID' },
+            colNames: ['PKID', 'ProductFKID', 'MoleculeFKID', 'Product Name', 'Molecule Name','','','', 'Status'],
+            colModel: [
+                     { name: 'PKID', index: 'PKID', align: 'left', hidden: true, editable: true },
+                     { name: 'ProductFKID', index: 'ProductFKID', align: 'left', hidden: true, editable: true },
+                     { name: 'MoleculeFKID', index: 'MoleculeFKID', align: 'left', hidden: true, editable: true },
+                     {
+                         name: 'ProductName', index: 'ProductName', align: 'left', editable: true, viewable: true, editrules: { edithidden: true, required: false }, searchoptions: { sopt: ['eq', 'bw', 'ew', 'cn'] },
+                         searchrules: { required: true }, search: true,edittype: 'select', editoptions: {
+
+                             dataUrl: function () {
+                                 return 'GetProductNameForMoleculeLink?Type=' + 'LoadProduct'
+                             },
+
+                         }, formoptions: { elmsuffix: ' *'}
+                     },
+
+
+             
+
+                     {
+                         name: 'MoleculeName', index: 'MoleculeName', align: 'left', viewable: true, hidden: false, editable: true, editrules: { edithidden: true, required: false }, edittype: 'select', editoptions: {
+                             multiple: true,
+
+                             dataUrl: function () {
+                                 return 'GetMoleculeNameLink?Type=' + 'LoadMolecule'
+                             },
+
+                         }, formoptions: { elmsuffix: ' *' }, search: false
+                     },
+
+
+
+                       //Backward & Forward
+
+                                 {
+                                     name: 'forward', index: 'forward', align: 'left', viewable: true, hidden: true, editrules: { edithidden: true, required: false }, edittype: 'button', editable: true, editoptions: {
+                                         value: '>>',
+                                         dataEvents:
+                                             [
+                                             {
+                                                 type: 'click', fn: function (e) {
+
+                                                     MoveSelected();
+                                                 }
+                                             }]
+
+                                     }, formoptions: { rowpos: 5, colpos: 2 }
+                                 },
+
+                {
+
+                    name: 'backward', index: 'backward', align: 'right', viewable: true, hidden: true, edittype: 'button', editrules: { edithidden: true, required: false }, editable: true, editoptions: {
+                        value: '<<',
+                        dataEvents:
+                            [
+                            {
+                                type: 'click', fn: function (e) {
+
+                                    ReverseSelected();
+                                }
+                            }]
+
+                    }, formoptions: { rowpos: 5, colpos: 3 }
+
+
+                },
+
+                {
+                    name: 'SelMoleculeName', index: 'SelMoleculeName', align: 'left', viewable: true, editable: true, hidden: true, edittype: 'select', editrules: { edithidden: true, required: false }, editoptions: {
+                        multiple: true, dataUrl: function () {
+                            var row_id = $('#ProductMoleculeLink').getGridParam('selrow');
+                            var ProductFKID = $('#ProductMoleculeLink').jqGrid('getCell', row_id, 'ProductFKID');
+                            return 'SelectedDummyName?Type=' + 'LoadMoleculeName' + '&data=' + ProductFKID;
+                        },
+                    }, formoptions: { rowpos: 5, colpos: 4 }
+
+                },
+
+
+                     { name: 'IsActive', index: 'IsActive', align: 'left', viewable: true, editable: true, editrules: { edithidden: true, required: false }, edittype: 'checkbox', editoptions: { value: "Active:Passive", defaultValue: "Active" },search: false }
+
+            ],
+            caption: "Product Molecule Link",
+            autowidth: true,
+            gridview: true,
+            sortable: true,
+            hidegrid: false,
+            rownumbers: false,
+            altRows: true,
+            rowTotal: 10,
+            sortname: 'ProductFKID',
+            sortorder: 'asc',
+            rowNum: 10,
+            viewrecords: true,
+            pager: $('#ProductMoleculeLinkPager'),
+            height: 'auto',
+            editable: true,
+            gridComplete: function () {
+
+                if (jQuery("#ProductMoleculeLink").getGridParam("records") == 0) {
+                    jQuery("#ProductMoleculeLink").addRowData(
+                          "blankRow", { "ProductName": "No records to view" });
+                }
+            },
+            editurl: '@Url.Action("EditProductMoleculeLinkMaster")'
+
+        });
+
+        jQuery("#ProductMoleculeLink").jqGrid('navGrid', '#ProductMoleculeLinkPager', { edit: true, add: true, del: true, search: true, view: true },
+            {
+                // Edit Portion
+                closeOnEscape: true,
+                width: 600,
+                recreateForm: true,
+                modal:true,
+                checkOnSubmit: true,
+                afterShowForm: function (form_id) {
+                    var thisForm = form_id.selector.replace('FrmGrid_', 'editmod')
+                    var dialogHeight = $(thisForm).height();
+                    var dialogWidth = $(thisForm).width();
+                    var windowHeight = $(window).height();
+                    var windowWidth = $(window).width();
+                    $(thisForm).css('position', 'fixed');
+                    $(thisForm).css('top', ((windowHeight - dialogHeight) / 2));
+                    $(thisForm).css('left', ((windowWidth - dialogWidth) / 2));
+                },
+                beforeShowForm: function (form) {
+                    var sel_id = $('#ProductMoleculeLink').jqGrid('getGridParam', 'selrow');
+                    var value = $('#ProductMoleculeLink').jqGrid('getCell', sel_id, 'IsActive');
+                    $('#tr_IsActive', form).show();
+                },
+
+                beforeSubmit: function (response, postdata) {
+
+                    $('select').css("border", "1px solid #C0C0C0");
+                    $("input[type=text]").css("border", "1px solid #C0C0C0");
+                    var error = " ";
+                    if ($.trim($("#ProductName").val()) == 0) {
+                        error += "ProductName";
+                        $('#FormError').html("<td class='ui-state-error' colspan='10'>" + error + ":Field is required</td>");
+                        $("#ProductName").css("background-color", "#FFE8E8").css("border", "1px solid #FF6666");
+                        return [false, response.responseText];
+                    }
+                    else if (($("#SelMoleculeName").val() == 0) || ($("#SelMoleculeName").val() == null)) {
+                        error += "SelMoleculeName";
+                        $('#FormError').html("<td class='ui-state-error' colspan='10'>" + error + ":Field is required</td>");
+                        $("#SelMoleculeName").css("background-color", "#FFE8E8").css("border", "1px solid #FF6666");
+                        return [false, response.responseText];
+                    }
+
+                    else {
+                        return [true, response.responseText];
+                    }
+
+                },
+
+                afterSubmit: function (response, postdata) {
+
+                    $("#ProductMoleculeLink").jqGrid('setGridParam', { datatype: 'json' }).trigger('reloadGrid');
+                    $('#TblGrid_ProductMoleculeLink td.ui-state-error').removeClass('ui-state-error').addClass('ui-state-highlight');
+                    $("#ProductName").val(0);
+                    $("#SelMoleculeName option:selected").remove();
+                    $("select").val(0);
+                    $("#IsActive").prop("checked", false);
+                    return [false, response.responseText];
+                },
+            },
+
+        {
+            //Add Portion
+            closeOnEscape: true,
+            closeAfterAdd: true,
+            modal: true,
+            recreateForm: true,
+            width: 600,
+            afterShowForm: function (form_id) {
+                var thisForm = form_id.selector.replace('FrmGrid_', 'editmod');
+                var dialogHeight = $(thisForm).height();
+                var dialogWidth = $(thisForm).width();
+                var windowHeight = $(window).height();
+                var windowWidth = $(window).width();
+                $(thisForm).css('position', 'fixed');
+                $(thisForm).css('top', ((windowHeight - dialogHeight) / 2));
+                $(thisForm).css('left', ((windowWidth - dialogWidth) / 2));
+            },
+            beforeShowForm: function (form) {
+                $('#tr_IsActive', form).show();
+            },
+
+
+            beforeSubmit: function (response, postdata) {
+
+                $('select').css("border", "1px solid #C0C0C0");
+                $("input[type=text]").css("border", "1px solid #C0C0C0");
+                var error = " ";
+                if ($.trim($("#ProductName").val()) == 0) {
+                    error += "ProductName";
+                    $('#FormError').html("<td class='ui-state-error' colspan='10'>" + error + ":Field is required</td>");
+                    $("#ProductName").css("background-color", "#FFE8E8").css("border", "1px solid #FF6666");
+                    return [false, response.responseText];
+                }
+                else if (($("#SelMoleculeName").val() == 0) || ($("#SelMoleculeName").val() == null)) {
+                    error += "SelMoleculeName";
+                    $('#FormError').html("<td class='ui-state-error' colspan='10'>" + error + ":Field is required</td>");
+                    $("#SelMoleculeName").css("background-color", "#FFE8E8").css("border", "1px solid #FF6666");
+                    return [false, response.responseText];
+                }
+
+                else {
+                    return [true, response.responseText];
+                }
+
+            },
+
+            afterSubmit: function (response, postdata) {
+                $("#ProductMoleculeLink").jqGrid('setGridParam', { datatype: 'json' }).trigger('reloadGrid');
+                var errorId = " ";
+                if (response.responseText == "\"Product Molecule Link Master Added Successfully.\"") {
+                    errorId += "Product Molecule Link Master Added Successfully";
+                    $('#FormError').html("<td class='ui-state-error' colspan='10'>" + errorId + "</td>");
+                    $('#TblGrid_ProductMoleculeLink td.ui-state-error').removeClass('ui-state-error').addClass('ui-state-highlight');
+                    $("#ProductName").val(0);
+                    $("#SelMoleculeName option:selected").remove();
+                    $("select").val(0);
+                    $("#IsActive").prop("checked", false);
+                    return [false, response.responseText];
+                }
+                else {
+                    //errorId += "ProductType Master already Exists";
+                    //$('#FormError').html("<td class='ui-state-error' colspan='2'>" + errorId + "</td>");
+                    //$('#TblGrid_ProductMoleculeLink td.ui-state-error').removeClass('ui-state-highlight').addClass('ui-state-error');
+                    //$("#ProductName").val(0);
+                    //$("#SelSpecialization").val(0);
+                    //$("#IsActive").prop("checked", false);
+                    return [false, response.responseText];
+
+                }
+
+            },
+
+            onclickSubmit: function (params, posdata) {
+                //string oper, string NodeType, string Team, string ActivityName, string Defaultflag, string Specialflag, string Fieldwork, string id, string IsActive
+                params.url = '@Url.Action("AddProductMoleculelink")?ProductName=' + $('#ProductName').val() + '&SelMoleculeName=' + $('#SelMoleculeName').val();
+            },
+          
+        },
+          {
+              //DELETE
+              closeOnEscape: true,
+              modal: true,
+              closeAfterDelete: true,
+              reloadAfterSubmit: true,
+              closeOnEscape: true,
+              drag: true,
+              width: 400,
+              beforeShowForm: function (form) {
+
+                  //POP UP Screen Fit Screen
+                  var thisForm = $("#delmod" + jQuery("#ProductMoleculeLink")[0].id);
+                  var dialogHeight = $(thisForm).height();
+                  var dialogWidth = $(thisForm).width();
+                  var windowHeight = $(window).height();
+                  var windowWidth = $(window).width();
+                  $(thisForm).css('position', 'fixed');
+                  $(thisForm).css('top', ((windowHeight - dialogHeight) / 2));
+                  $(thisForm).css('left', ((windowWidth - dialogWidth) / 2));
+                  //var html = "<form><table><tr><td class='CaptionTD'>Product</td><td class=='DataTD'>&nbsp;&nbsp;<input type='text' class='FormElement ui-widget-content ui-corner-all' readonly='true'  value='" + ProductName + "'/></td> </tr>";
+                  //html += "<tr><td class='CaptionTD'>Molecule Name</td><td class=='DataTD'>&nbsp;&nbsp;<input type='text' class='FormElement ui-widget-content ui-corner-all' readonly='true'  value='" + MoleculeName + "'/></td></tr>";
+
+                  //if (IsActive == "Active")
+                  //    html += "<tr><td class='CaptionTD'>Status</td><td class=='DataTD'>&nbsp;&nbsp;<input class='FormElement ui-widget-content ui-corner-all'   type='checkbox' checked  disabled/></td>";
+                  //if (IsActive == "Inactive")
+                  //    html += "<tr><td class='CaptionTD'>Status</td><td class=='DataTD'>&nbsp;&nbsp; <input class='FormElement ui-widget-content ui-corner-all'   type='checkbox' disabled /></td></tr>";
+                  //html += "</table></form>";
+                  //$("td.delmsg", form[0]).html(html);
+                  var col1 = $('#ProductMoleculeLink').jqGrid('getGridParam', 'selrow');
+                  var Statusfield = $('#ProductMoleculeLink').jqGrid('getCell', col1, 'IsActive');
+                  $('tr td.delmsg').html('Delete selected record(s)?');
+                  if (Statusfield == "InActive") {
+                      $('tr td.delmsg').html('Record Already Deleted');
+                      $('#dData').hide();
+                  }
+                  else
+                      $('#dData').show();
+
+              },
+
+              onclickSubmit: function (params, posdata) {
+                  var sel_id = $('#ProductMoleculeLink').jqGrid('getGridParam', 'selrow');
+                  var ProductFKID = $('#ProductMoleculeLink').jqGrid('getCell', sel_id, 'ProductFKID');
+                  var MoleculeFKID = $('#ProductMoleculeLink').jqGrid('getCell', sel_id, 'MoleculeFKID');
+
+                  params.url = '@Url.Action("DeleteProductMoleculeLink")?MoleculeFKID=' + MoleculeFKID + '&ProductFKID=' + ProductFKID;
+              },
+
+              afterSubmit: function (response, postdata) {
+                  $('tr td.delmsg').html('');
+                  $("#ProductMoleculeLink").jqGrid('setGridParam', { datatype: 'json' }).trigger('reloadGrid');
+                  $('#DelTbl_ProductMoleculeLink td.ui-state-error').removeClass('ui-state-error').addClass('ui-state-highlight');
+                  $('#dData').hide();
+                  return [false, response.responseText];
+              },
+          },
+      
+            {
+                //search
+                closeOnEscape: true,
+                modal: true,
+                recreateForm: true,
+                width: 600,
+                caption: "Search",
+                searchOnEnter: true,
+                beforeShowSearch: function (form) {
+
+                    $('#jqg1').val('');
+                    $('#fbox_ProductMoleculeLink_reset').click();
+
+                    var dialogHeight = $("#searchmodfbox_ProductMoleculeLink").height();
+                    var dialogWidth = $("#searchmodfbox_ProductMoleculeLink").width();
+                    var windowHeight = $(window).height();
+                    var windowWidth = $(window).width();
+                    $("#searchmodfbox_ProductMoleculeLink").css('position', 'fixed');
+                    $("#searchmodfbox_ProductMoleculeLink").css('top', ((windowHeight - dialogHeight) / 2));
+                    $("#searchmodfbox_ProductMoleculeLink").css('left', ((windowWidth - dialogWidth) / 2));
+
+                    return [true, ""];
+                }
+            },
+            {
+                //View :
+                modal: true,
+                closeOnEscape: true,
+                recreateForm: true,
+                width: 600,
+
+                beforeShowForm: function (form) {
+
+                    var thisForm = $("#viewmod" + jQuery("#ProductMoleculeLink")[0].id);
+                    var dialogHeight = $(thisForm).height();
+                    var dialogWidth = $(thisForm).width();
+                    var windowHeight = $(window).height();
+                    var windowWidth = $(window).width();
+                    $(thisForm).css('position', 'fixed');
+                    $(thisForm).css('top', ((windowHeight - dialogHeight) / 2));
+                    $(thisForm).css('left', ((windowWidth - dialogWidth) / 2));
+                }
+
+            }
+           );
+
+         setMethod('ProductMoleculeLink', 'ProductMoleculeLinkPager', 'Customer Grid');
+
+    }
+
+    function setMethod(gid, id, pgTitle) {
+        // alert(1);
+        var btnTitle = 'Export to Excel';
+        $('#' + gid).jqGrid('navSeparatorAdd', '#' + id, { sepclass: "ui-separator" });
+        $('#' + gid).jqGrid('navButtonAdd', '#' + id, { caption: '', title: btnTitle, position: 'last', buttonicon: 'ui-icon-calculator', onClickButton: function () { ExcelExport(); } });
+
+        var btnTitle = 'Export to PDF';
+        $('#' + gid).jqGrid('navSeparatorAdd', '#' + id, { sepclass: "ui-separator" });
+        $('#' + gid).jqGrid('navButtonAdd', '#' + id, { caption: '', title: btnTitle, position: 'last', buttonicon: 'ui-icon-bookmark', onClickButton: function () { PDFExport(); } });
+
+        var btnTitle = 'Export to CSV';
+        $('#' + gid).jqGrid('navSeparatorAdd', '#' + id, { sepclass: "ui-separator" });
+        $('#' + gid).jqGrid('navButtonAdd', '#' + id, { caption: '', title: btnTitle, position: 'last', buttonicon: 'ui-icon-note', onClickButton: function () { CSVExport(); } });
+
+
+        var btnTitle = 'Print Grid';
+        $('#' + gid).jqGrid('navSeparatorAdd', '#' + id, { sepclass: "ui-separator" });
+        $('#' + gid).jqGrid('navButtonAdd', '#' + id, { caption: '', title: btnTitle, position: 'last', buttonicon: 'ui-icon-print', onClickButton: function () { PrintGrid(gid); } });
+    }
+    function ExcelExport() {
+        window.location = '@Url.Action("ExportProductMoleculeLinkMasterToExcel")';
+    }
+    function PDFExport() {
+        window.location = '@Url.Action("ExportProductMoleculeLinkMasterToPDF")';
+    }
+    function CSVExport() {
+        window.location = '@Url.Action("ExportProductMoleculeLinkMasterToCsv")';
+    }
+    //function PrintGrid(gid) {
+    //    $('#prt-container').empty();
+    //    $('#gview_' + gid).clone().appendTo('#prt-container').css({ 'page-break-after': 'auto' });
+    //    $(function () { printChrome('prt-container') });
+       
+    //}
+
+    function PrintGrid(gid) {
+
+        // empty the print div container.
+        var rows = $('#ProductMoleculeLink').jqGrid('getRowData');
+        for (var i = 0; i < rows.length; i++) {
+            var row = rows[i];
+            $('#Table1').append("<tr><td>" + row.ProductName + "</td><td>" + row.MoleculeName + "</td><td>" + row.IsActive + "</td></tr>");
+
+        }
+        $(function () { printChrome('prt-container') });
+
+    }
+
+    function printChrome(divContainer) {
+
+        var printContent = document.getElementById(divContainer);
+        window.document.body.innerHTML = printContent.innerHTML;
+        window.print();
+        window.location.reload();
+    }
+    
+</script>
+
+@*<div id='prt-container' style="display:none">
+</div>*@
+<div id='prt-container' style="display:none">
+    <table id="Table1" border="1" width="100%">
+        <thead>
+            <tr>
+                <td><b>Product Name</b></td>
+                <td><b>Molecule Name</b></td>
+                <td><b>Status</b></td>
+            </tr>
+
+        </thead>
+        <tbody></tbody>
+
+    </table>
+   
+</div>
+
+

@@ -1,0 +1,385 @@
+﻿@{
+    ViewBag.Title = "FormMaster";
+    Layout = "~/Views/Shared/MasterLayout.cshtml";
+}
+<script src="~/Content/js/table2CSV.js"></script>
+<body>
+    @using (Html.BeginForm(FormMethod.Post))
+    {
+        <div>
+            <table border="0" style="width: 100%">
+                <tr>
+                    <td>
+                        <!--JqGrid Starts-->
+                        <table style="margin-top: 7px; width :100%" border="0">
+                            <tr>
+                                <td>
+                                    <table id="FormMaster" style="width: 100%" border="0"></table>
+                                    <div id="FormMasterPager">
+                                    </div>
+                                </td>
+                            </tr>
+                        </table>
+                        <!--Ends-->
+                    </td>
+                </tr>
+            </table>
+
+        </div>
+    }
+
+    
+    <script type="text/javascript">
+
+        jQuery(document).ready(function () {
+
+            initGrid();
+        });
+
+        function initGrid() {
+            jQuery("#FormMaster").jqGrid({
+                url: '@Url.Action("GetFormMaster")',
+
+                datatype: "json",
+                jsonReader: { repeatitems: false, id: "PKID" },
+                colNames: ['PKID', 'Form Name', 'Status'],
+                colModel: [
+                            //{ name: 'SLNo', index: 'SLNo', align: 'left' },
+                            { name: 'PKID', index: 'PKID', align: 'left',viewable:true,key:true, hidden: true,editrules:{edithidden:true} },
+                            {
+                                name: 'FormName', index: 'FormName', align: 'left', editable: true, editrules: { required: true }, search: true, searchrules: { required: true }, searchoptions: { sopt: ['eq', 'bw', 'ew', 'cn'] },
+                                editoptions: { maxlength: 30, dataEvents: [{ type: 'keyup', fn: function (e) { SingleCharacter(this); } }] },
+                                formoptions: { elmsuffix: "<span style='align:left;color:red'>*</span>&nbsp;" }
+                            },
+                            { name: 'Status', index: 'Status', align: 'left', editable: true, edittype: 'checkbox', editoptions: { value: "Active:Passive", defaultValue: "Active" }, search: false },
+
+                ],
+                caption: "Form Master",
+                autowidth: true,
+                gridview: true,
+                sortable: true,
+                hidegrid: false,
+                rownumbers: false,
+                altRows: true,
+                rowTotal: 10,
+                sortname: 'PKID',
+                sortorder: 'asc',
+                rowNum: 10,
+                viewrecords: true,
+                pager: $('#FormMasterPager'),
+                height: 'auto',
+                editable: true,
+                //onSelectRow: function (id) {
+                //    $("#FormMaster").jqGrid('viewGridRow', id);
+                //},
+                gridComplete: function () {
+
+                    if (jQuery("#FormMaster").getGridParam("records") == 0) {
+                        jQuery("#FormMaster").addRowData(
+                              "blankRow", { "FormName": "No records to view" });
+                    }
+
+
+                },
+                editurl: '@Url.Action("EditFormMaster")'
+               
+            });
+
+            jQuery("#FormMaster").jqGrid('navGrid', '#FormMasterPager', { edit: true, add: true, del: true, search: true,view:true },
+                {
+                    //EDIT
+                     //                       top: 50,
+                    //                       left: 100,
+                    //                       dataheight: 280,
+                    closeOnEscape: true, //Closes the popup on pressing escape key
+                    reloadAfterSubmit: true,
+                    height: 150,
+                    width: 600,
+                    drag: true,
+                    modal:true,
+                    recreateForm: true,
+                    checkOnSubmit: true,
+                    afterShowForm: function (form) {
+                        form.closest('div.ui-jqdialog').center();
+                    },
+
+                    beforeSubmit: function (response, postdata) {
+
+                        $('select').css("border", "1px solid #C0C0C0");
+                        $("input[type=text]").css("border", "1px solid #C0C0C0");
+                        if ($("#FormName").val().charAt(0) == ' ' || $("#FormName").val().charAt($("#FormName").val().length - 1) == ' ' || $("#FormName").val() == "") {
+                            $('#TblGrid_FormMaster td.ui-state-highlight').removeClass('ui-state-highlight').addClass('ui-state-error');
+                            $("#FormName").css("background-color", "#FFE8E8").css("border", "1px solid #FF6666");
+                            $('#FormName').val("");
+                            $('#FormName').focus();
+                            return [false, 'Enter Valid FormName'];
+                        }
+                        else {
+                            return [true, response.responseText];
+                        }
+
+                    },
+
+
+                    afterSubmit: function (response, postdata) {
+
+                        $("#FormMaster").jqGrid('setGridParam', { datatype: 'json' }).trigger('reloadGrid');
+                        $('#TblGrid_FormMaster td.ui-state-error').removeClass('ui-state-error').addClass('ui-state-highlight');
+                        $("#FormName").val("");
+                        $("#Status").prop("checked", false);
+                        return [false, response.responseText];
+                    },
+
+                 editData: {
+                        PKID: function () {
+                            var sel_id = $('#FormMaster').jqGrid('getGridParam', 'selrow');
+                            var value = $('#FormMaster').jqGrid('getCell', sel_id, '_id');
+                            return value;
+                        }
+                    }
+               },
+
+            {
+                //Add Portion
+                closeOnEscape: true,
+                modal: true,
+                //closeAfterAdd: true,
+                afterShowForm: function (form) {
+                form.closest('div.ui-jqdialog').center();
+                },
+                beforeSubmit: function (response, postdata) {
+
+                    $('select').css("border", "1px solid #C0C0C0");
+                    $("input[type=text]").css("border", "1px solid #C0C0C0");
+                   if ($("#FormName").val().charAt(0) == ' ' || $("#FormName").val().charAt($("#FormName").val().length - 1) == ' ' || $("#FormName").val() == "") {
+                       $('#TblGrid_FormMaster td.ui-state-highlight').removeClass('ui-state-highlight').addClass('ui-state-error');
+                        $("#FormName").css("background-color", "#FFE8E8").css("border", "1px solid #FF6666");
+                        $('#FormName').val("");
+                        $('#FormName').focus();
+                        return [false, 'Enter Valid FormName'];
+                    }
+                      else {
+                        return [true, response.responseText];
+                    }
+
+                },
+
+
+                afterSubmit: function (response, postdata) {
+                    $("#FormMaster").jqGrid('setGridParam', { datatype: 'json' }).trigger('reloadGrid');
+                    var errorId = " ";
+                    if (response.responseText == "\"Form Master added Successfully.\"") {
+                        errorId += "Form Master added Successfully";
+                        $('#FormError').html("<td class='ui-state-error' colspan='2'>" + errorId + "</td>");
+                        $('#TblGrid_FormMaster td.ui-state-error').removeClass('ui-state-error').addClass('ui-state-highlight');
+                        $("#FormName").val("");
+                        $("#Status").prop("checked",false);
+                        return [false, response.responseText];
+                    }
+                    else {
+                        errorId += "Form Master already Exists";
+                        $('#FormError').html("<td class='ui-state-error' colspan='2'>" + errorId + "</td>");
+                        $('#TblGrid_FormMaster td.ui-state-error').removeClass('ui-state-highlight').addClass('ui-state-error');
+                        $("#FormName").val("");
+                        $("#Status").prop("checked", false);
+                        return [false, response.responseText];
+
+                    }
+
+                },
+                onclickSubmit: function (params, posdata) {
+                    //string oper, string NodeType, string Team, string ActivityName, string Defaultflag, string Specialflag, string Fieldwork, string id, string IsActive
+                    params.url = '@Url.Action("AddFormMaster")?FormName=' + $('#FormName').val() + '&Status=' + $('#Status').val();
+
+                },
+
+             
+               
+            },
+            {
+                //DELETE
+                closeOnEscape: true,
+                modal: true,
+                closeAfterDelete: true,
+                reloadAfterSubmit: true,
+                closeOnEscape: true,
+                drag: true,
+                width: 400,
+                beforeShowForm: function (form) {
+
+                    //POP UP Screen Fit Screen
+                    var thisForm = $("#delmod" + jQuery("#FormMaster")[0].id);
+                    var dialogHeight = $(thisForm).height();
+                    var dialogWidth = $(thisForm).width();
+                    var windowHeight = $(window).height();
+                    var windowWidth = $(window).width();
+                    $(thisForm).css('position', 'fixed');
+                    $(thisForm).css('top', ((windowHeight - dialogHeight) / 2));
+                    $(thisForm).css('left', ((windowWidth - dialogWidth) / 2));
+                    //$("td.delmsg", form[0]).html("<table width='100%'><tr><td><b>PKID</b></td><td>" + ret.PKID + "</td></tr><tr><td><b>FormName</b></td><td>" + ret.FormName + "</td></tr><tr><td><b>Status</b></td><td>" + ret.Status + "</td></tr><tr><td colspan=2></br>Are you sure want to delete selected record(s)?</td></tr></table> ");
+                    var col1 = $('#FormMaster').jqGrid('getGridParam', 'selrow');
+                    var Statusfield = $('#FormMaster').jqGrid('getCell', col1, 'Status');
+                    $('tr td.delmsg').html('Delete selected record(s)?');
+                    if (Statusfield == "InActive") {
+                        $('tr td.delmsg').html('Record Already Deleted');
+                        $('#dData').hide();
+                    }
+                    else
+                        $('#dData').show();
+
+                },
+
+                afterSubmit: function (response, postdata) {
+                    $('tr td.delmsg').html('');
+                    $("#FormMaster").jqGrid('setGridParam', { datatype: 'json' }).trigger('reloadGrid');
+                    $('#DelTbl_FormMaster td.ui-state-error').removeClass('ui-state-error').addClass('ui-state-highlight');
+                    $('#dData').hide();
+                    return [false, response.responseText];
+                },
+           },
+            {
+                //Search
+                closeOnEscape: true,
+                modal: true,
+                recreateForm: true,
+                width: 600,
+                caption: "Search",
+                searchOnEnter: true,
+                beforeShowSearch: function (form) {
+
+                    $('#jqg1').val('');
+                    $('#fbox_FormMaster_reset').click();
+
+                    var dialogHeight = $("#searchmodfbox_FormMaster").height();
+                    var dialogWidth = $("#searchmodfbox_FormMaster").width();
+                    var windowHeight = $(window).height();
+                    var windowWidth = $(window).width();
+                    $("#searchmodfbox_FormMaster").css('position', 'fixed');
+                    $("#searchmodfbox_FormMaster").css('top', ((windowHeight - dialogHeight) / 2));
+                    $("#searchmodfbox_FormMaster").css('left', ((windowWidth - dialogWidth) / 2));
+
+                    return [true, ""];
+                }
+            },
+            {
+                //View
+                width: 400,
+                modal: true,
+                beforeShowForm: function (form) {
+                    form.closest('div.ui-jqdialog').center();
+                }
+
+
+            }
+
+                    );
+            // setMethod('LocationMaster', 'LocationMasterPager', 'Customer Grid', 'ManageUsers', 'LocationMaster.cshtml');
+          
+            setMethod('FormMaster', 'FormMasterPager', 'Customer Grid');
+
+        }
+        //Center Popup
+        jQuery.fn.center = function () {
+            this.css("position", "absolute");
+            this.css("top", ($(window).height() - this.height()) / 2 + $(window).scrollTop() + "px");
+            this.css("left", ($(window).width() - this.width()) / 2 + $(window).scrollLeft() + "px");
+            return this;
+
+        }
+        function validSpecial(objElement) {
+
+            var re = /^[a-zA-Z0-9-/\s.:]*/gi;
+            if (objElement.value.match(re) != objElement.value) {
+                alert('Special Characters are Not Allowed');
+                objElement.value = '';
+
+                return false;
+            }
+
+        }
+
+        function setMethod(gid, id, pgTitle) {
+            // alert(1);
+            var btnTitle = 'Export to Excel';
+            $('#' + gid).jqGrid('navSeparatorAdd', '#' + id, { sepclass: "ui-separator" });
+            $('#' + gid).jqGrid('navButtonAdd', '#' + id, { caption: '', title: btnTitle, position: 'last', buttonicon: 'ui-icon-calculator', onClickButton: function () { ExcelExport(); } });
+
+            var btnTitle = 'Export to PDF';
+            $('#' + gid).jqGrid('navSeparatorAdd', '#' + id, { sepclass: "ui-separator" });
+            $('#' + gid).jqGrid('navButtonAdd', '#' + id, { caption: '', title: btnTitle, position: 'last', buttonicon: 'ui-icon-bookmark', onClickButton: function () { PDFExport(); } });
+
+            var btnTitle = 'Export to CSV';
+            $('#' + gid).jqGrid('navSeparatorAdd', '#' + id, { sepclass: "ui-separator" });
+            $('#' + gid).jqGrid('navButtonAdd', '#' + id, { caption: '', title: btnTitle, position: 'last', buttonicon: 'ui-icon-note', onClickButton: function () { CSVExport(); } });
+
+
+            var btnTitle = 'Print Grid';
+            $('#' + gid).jqGrid('navSeparatorAdd', '#' + id, { sepclass: "ui-separator" });
+            $('#' + gid).jqGrid('navButtonAdd', '#' + id, { caption: '', title: btnTitle, position: 'last', buttonicon: 'ui-icon-print', onClickButton: function () { PrintGrid(gid); } });
+        }
+        function ExcelExport() {
+            window.location = '@Url.Action("ExportFormMasterToExcel")';
+        }
+        function PDFExport() {
+            window.location = '@Url.Action("ExportFormMasterToPDF")';
+        }
+        function CSVExport() {
+
+             window.location = '@Url.Action("ExportFormMasterToCsv")';
+           // $('#FormMaster').table2CSV({ header: ['PKID', 'Form Name', 'Status'] });
+        }
+        //function PrintGrid(gid) {
+        //    //  alert(5);
+        //    // empty the print div container.
+        //    $('#prt-container').empty();
+        //    //alert(6);
+        //    // copy and append grid view to print div container.
+        //    $('#gview_' + gid).clone().appendTo('#prt-container').css({ 'page-break-after': 'auto' });
+           
+        //    $(function () { printChrome('prt-container') });
+        //    // alert(6);
+        //}
+        function PrintGrid(gid) {
+
+            // empty the print div container.
+            var rows = $('#FormMaster').jqGrid('getRowData');
+            for (var i = 0; i < rows.length; i++) {
+                var row = rows[i];
+                $('#Table1').append("<tr><td>" + row.FormName + "</td><td>" + row.Status + "</td></tr>");
+
+            }
+            $(function () { printChrome('prt-container') });
+
+        }
+
+        function printChrome(divContainer) {
+
+            //  alert(9);
+            var printContent = document.getElementById(divContainer);
+            // alert(printContent.innerHTML);
+            window.document.body.innerHTML = printContent.innerHTML;
+            window.print();
+            window.location.reload();
+        }
+
+
+    </script>
+    @*<div id='prt-container' style="display:none">
+    </div>*@
+
+
+    <div id='prt-container' style="display:none">
+        <table id="Table1" border="1" width="100%">
+            <thead>
+                <tr>
+                    <td><b>Form Name</b></td>
+                    <td><b>Status</b></td>
+                </tr>
+
+            </thead>
+            <tbody></tbody>
+
+        </table>
+    </div>
+
+</body>

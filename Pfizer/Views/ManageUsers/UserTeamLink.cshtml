@@ -1,0 +1,555 @@
+﻿
+@{
+    ViewBag.Title = "UserTeamLink";
+    Layout = "~/Views/Shared/MasterLayout.cshtml";
+}
+<body>
+    @using (Html.BeginForm(FormMethod.Post))
+    {
+        <div>
+            <table border="0" style="width: 100%">
+                <tr>
+                    <td>
+                        <!--JqGrid Starts-->
+                        <table style="margin-top: 7px; width :100%" border="0">
+                            <tr>
+                                <td>
+                                    <table id="UserTeamLink" style="width: 100%" border="0"></table>
+                                    <div id="UserTeamLinkPager">
+                                    </div>
+                                </td>
+                            </tr>
+                        </table>
+                        <!--Ends-->
+                    </td>
+                </tr>
+            </table>
+
+        </div>
+    }
+
+
+    <script type="text/javascript">
+
+    jQuery(document).ready(function () {
+
+        initGrid();
+    });
+
+    function MoveSelected() {
+
+        $('#UserName :selected').each(function (i, selected) {
+
+            if ($(selected).val() != 0) {
+
+                //alert($(selected).val());
+                $('#SelUserName')
+                     .append($('<option selected="selected" value=' + $(selected).val() + '>')
+                     .text($(selected).text()));
+                //alert($(selected).text());
+                $('#UserName :selected').remove();
+            }
+        });
+
+
+    }
+
+    function ReverseSelected() {
+
+
+        $('#SelUserName :selected').each(function (i, selected) {
+
+            if ($(selected).val() != 0) {
+                $('#UserName')
+                     .append($('<option>', { value: $(selected).val() })
+                     .text($(selected).text()));
+
+                $('#SelUserName :selected').remove();
+            }
+
+        });
+
+        $("#SelUserName option").prop("selected", true);
+        $("#SelUserName option:first").removeAttr('selected');
+    }
+
+
+
+
+
+    function initGrid() {
+        jQuery("#UserTeamLink").jqGrid({
+
+            url: '@Url.Action("GetUserTeamLink")',
+            datatype: "json",
+            jsonReader: { repeatitems: false, id: "PKID" },
+            colNames: ['PKID', 'UserFKID', 'NodeTypeFKID', 'TeamFKID','Team', 'NodeName', 'User','','','', 'Status'],
+            colModel:[
+                        { name: 'PKID', index: 'PKID', align: 'left',  hidden: true,  },
+                        { name: 'UserFKID', index: 'UserFKID', align: 'left',hidden: true,  },
+                        { name: 'NodeTypeFKID', index: 'NodeTypeFKID', align: 'left', hidden: true, },
+                        { name: 'TeamFKID', index: 'TeamFKID', align: 'left', hidden: true, },                        
+                        { name: 'TeamName', index: 'TeamName', align: 'left', editable: true, edittype: 'select', searchoptions: { sopt: ['eq', 'bw', 'ew', 'cn'] }, searchrules: { required: true }, editoptions: { dataUrl: '@Url.Action("GetTeam")?type=' + 'NSHDay' }, editrules: { required: false }, formoptions: { elmsuffix: "<span style='align:left;color:red'>*</span>&nbsp;" } },
+                        {
+                            name: 'NodeName', index: 'NodeName', align: 'left', editable: true,editrules: { required: false }, edittype: 'select', search: false,
+                            editoptions: {
+
+                                dataUrl: function () {
+                                    var row_id = $('#UserTeamLink').getGridParam('selrow');
+                                    return 'GetNodeType?type=' + 'NSHDay';
+                                },
+
+                                dataEvents: [{
+                                    type: 'change',
+                                    fn: function (e) {
+                                        var postData = e.currentTarget.value;
+
+                                        //alert(postData);
+
+                                        // Nodetype Dropdown change right Listbox Clear ...
+                                        $('#SelUserName').empty();
+                                        $('#SelUserName')
+                                        .append($('<option>', { value: '0' })
+                                        .text('Select'));
+                                        // end
+
+
+                                        var row_id = $('#UserTeamLink').getGridParam('selrow');
+                                        var TeamFKID = $('#UserTeamLink').jqGrid('getCell', row_id, 'TeamFKID');
+                                        $.ajax({
+                                            type: 'POST',
+                                            url: '@Url.Action("GetUser")?type=' + 'NSHDay' + '&TeamFKID=' + TeamFKID,
+                                            data: { NodeTypeFKID: postData },
+                                            success: function (data) {
+                                                //$('#tr_UserName  td:nth-child(2)').html("<td class='DataTD'>" + data + "<span style='align:left;color:red'>*</span></td>");
+                                                $('#tr_UserName  td:nth-child(2)').html(data);
+                                            }
+                                        });
+                                    }
+                                }]
+                            },
+                            editrules: { required: false }, formoptions: { elmsuffix: "<span style='align:left;color:red'>*</span>&nbsp;" }
+                            },
+                            {
+                                name: 'UserName', index: 'UserName',hidden:true, align: 'left', editable: true, edittype: 'select', search:false, editrules: { required: false,edithidden:true }, editoptions: {
+                                multiple: true,
+
+                                dataUrl: function () {
+                                   
+                                    var row_id = $('#UserTeamLink').getGridParam('selrow');
+                                    var PKID = $('#UserTeamLink').jqGrid('getCell', row_id, 'PKID');
+                                    var TeamFKID = $('#UserTeamLink').jqGrid('getCell', row_id, 'TeamFKID');
+                                    var NodeTypeFKID = $('#UserTeamLink').jqGrid('getCell', row_id, 'NodeTypeFKID');
+                                    return 'GetUserName?type=' + 'SHDay' + '&NodeTypeFKID=' + NodeTypeFKID + '&TeamFKID=' + TeamFKID + '&PKID=' + PKID;
+                                },
+                            }, formoptions: { elmsuffix: "<span style='align:left;color:red'>*</span>&nbsp;" }
+                            },
+
+                            //Backward & Forward
+
+                             {
+                                 name: 'forward', index: 'forward', align: 'left', hidden: true, editrules: { edithidden: true }, edittype: 'button', editable: true, editoptions: {
+                                     value: '>>',
+                                     dataEvents:
+                                         [
+                                         {
+                                             type: 'click', fn: function (e) {
+
+                                                 MoveSelected();
+                                             }
+                                         }]
+
+                                 }, formoptions: { rowpos: 3, colpos: 3 }
+                             },
+
+            {
+
+                name: 'backward', index: 'backward', align: 'right', hidden: true, edittype: 'button', editrules: { edithidden: true }, editable: true, editoptions: {
+                    value: '<<',
+                    dataEvents:
+                        [
+                        {
+                            type: 'click', fn: function (e) {
+
+                                ReverseSelected();
+                            }
+                        }]
+
+                }, formoptions: { rowpos: 3, colpos: 4 }
+
+
+            },
+
+            {
+                name: 'SelUserName', index: 'SelUserName', align: 'left', editable: true, hidden: true, edittype: 'select', editrules: { edithidden: true, required: false }, editoptions: {
+                    multiple: true, dataUrl: function () {
+                        
+                        var row_id = $('#UserTeamLink').getGridParam('selrow');
+                        var PKID = $('#UserTeamLink').jqGrid('getCell', row_id, 'PKID');
+                        var TeamFKID = $('#UserTeamLink').jqGrid('getCell', row_id, 'TeamFKID');
+                        var NodeTypeFKID = $('#UserTeamLink').jqGrid('getCell', row_id, 'NodeTypeFKID');
+                        return 'GetUserName?type=' + 'NSHDay' + '&NodeTypeFKID=' + NodeTypeFKID + '&TeamFKID=' + TeamFKID + '&PKID=' + PKID;
+                    }
+                }, formoptions: { rowpos: 3, colpos: 5 }
+
+            },
+            { name: 'Status', index: 'Status', align: 'left', editable: true, search: false, edittype: 'checkbox', editoptions: { value: "Active:Passive", defaultValue: "Active" } },
+
+                ],
+                caption: "UserTeamLink",
+                autowidth: true,
+                gridview: true,
+                sortable: true,
+                hidegrid: false,                
+                altRows: true,
+                rowTotal: 10,
+                gridComplete: function () {
+
+                    if (jQuery("#UserTeamLink").getGridParam("records") == 0) {
+                        jQuery("#UserTeamLink").addRowData(
+                        "blankRow", { "TeamName": "No records to view" });
+                    }
+                },
+                sortname: 'PKID',
+                sortorder: 'asc',
+                rowNum: 10,
+                viewrecords: true,
+                pager: $('#UserTeamLinkPager'),
+                height: 'auto',
+                editable: true,
+              
+        });
+
+        jQuery("#UserTeamLink").jqGrid('navGrid', '#UserTeamLinkPager', { edit: true, add: true, del: true, search: true, view: true },
+            {
+                //EDIT
+
+                closeOnEscape: true, //Closes the popup on pressing escape key
+                reloadAfterSubmit: true,
+                width: 600,
+                drag: true,             
+                modal: true,
+
+                beforeSubmit: function (response, postdata) {
+
+                    $('select').css("border", "1px solid #C0C0C0");
+                    var error = " ";
+                    if ($("#TeamName option:selected").text() == "select") {
+                        error = "Team Name";
+                        $('#FormError').html("<td class='ui-state-error' colspan='12'>" + error + ":Field is required</td>");
+                        $('#TeamName').focus();
+                        $("#TeamName").css("background-color", "#FFE8E8").css("border", "1px solid #FF6666");
+                        return [false, response.responseText];
+                    }
+                    else if ($("#NodeName option:selected").text() == "select") {
+                        error = "Node Name";
+                        $('#FormError').html("<td class='ui-state-error' colspan='12'>" + error + ":Field is required</td>");
+                        $('#NodeName').focus();
+                        $("#NodeName").css("background-color", "#FFE8E8").css("border", "1px solid #FF6666");
+                        return [false, response.responseText];
+                    }
+
+                    else if ($("#SelUserName").val() == "0" || $("#SelUserName").val() == null) {
+                        error += "Selected UserName";
+                        $('#FormError').html("<td class='ui-state-error' colspan='12'>" + error + ":Field is required</td>");
+                        $('#UserName').focus();
+                        $("#UserName").css("background-color", "#FFE8E8").css("border", "1px solid #FF6666");
+                        return [false, response.responseText];
+                    }
+                    else if (!($('#Status').is(":checked"))) {
+                        $("#Status").css("background-color", "#FFE8E8").css("border", "1px solid #FF6666");
+                        $('#Status').focus();
+                        return [false, 'Please Check Status'];
+                    }
+                    else {
+                        return [true, response.responseText];
+                    }
+
+                },
+
+                beforeShowForm: function (form) {
+                    form.closest('div.ui-jqdialog').center();
+                    var row_id = $('#UserTeamLink').getGridParam('selrow');
+
+                    var TeamFKID = $('#UserTeamLink').jqGrid('getCell', row_id, 'TeamFKID');
+
+                    var NodeTypeFKID = $('#UserTeamLink').jqGrid('getCell', row_id, 'NodeTypeFKID');
+                     
+    
+
+
+                },
+                onclickSubmit: function (params, posdata) {
+                  //  var str = $('#SelUserName').val();
+                   // alert(str);
+                    params.url = '@Url.Action("EditUserTeamLink")?Status=' + $('#Status').val() + '&TeamName=' + $('#TeamName').val() + '&SelUserName=' + $('#SelUserName').val() + '&NodeName=' + $('#NodeName').val() + '&id=' + "" + '&oper=' + "edit";
+                },
+
+                afterSubmit: function (response, postdata) {
+                    if (response.responseText != "\"User Team Link Edited Successfully.\"") {
+                        $('#TblGrid_UserTeamLink td.ui-state-highlight').removeClass('ui-state-highlight').addClass('ui-state-error');
+                        return [false, response.responseText];
+                    }
+                    else {
+                        $("#UserTeamLink").jqGrid('setGridParam', { datatype: 'json' }).trigger('reloadGrid');
+                        $('#TblGrid_UserTeamLink td.ui-state-error').removeClass('ui-state-error').addClass('ui-state-highlight');
+
+                        $("#SelUserName option:selected").remove();
+                        $('select').val(0);
+                        $("#IsActive").prop('checked', false);
+                        return [false, response.responseText];
+                    }
+                },            
+
+
+            },
+
+        {
+            //Add Portion
+            closeOnEscape: true,
+            width: 600,
+            //closeAfterAdd: true,
+            modal: true,
+            beforeShowForm: function (form) {
+                var sel_id = $('#UserTeamLink').jqGrid('getGridParam', 'selrow');
+                $('#tr_Status', form).hide();
+
+            },
+            afterShowForm: function (form) {
+                form.closest('div.ui-jqdialog').center();
+            },
+          
+            onclickSubmit: function (params, posdata) {
+
+                params.url = '@Url.Action("AddUserTeamLink")?Status=' + $('#Status').val() + '&TeamName=' + $('#TeamName').val() + '&SelUserName=' + $('#SelUserName').val() + '&NodeName=' + $('#NodeName').val();
+            },
+            beforeSubmit: function (response, postdata) {
+
+                $('select').css("border", "1px solid #C0C0C0");
+                var error = " ";
+                if ($("#TeamName option:selected").text() == "select") {
+                    error = "Team Name";
+                    $('#FormError').html("<td class='ui-state-error' colspan='12'>" + error + ":Field is required</td>");
+                    $('#TeamName').focus();
+                    $("#TeamName").css("background-color", "#FFE8E8").css("border", "1px solid #FF6666");
+                    return [false, response.responseText];
+                }
+                else if ($("#NodeName option:selected").text() == "select") {
+                    error = "Node Name";
+                    $('#FormError').html("<td class='ui-state-error' colspan='12'>" + error + ":Field is required</td>");
+                    $('#NodeName').focus();
+                    $("#NodeName").css("background-color", "#FFE8E8").css("border", "1px solid #FF6666");
+                    return [false, response.responseText];
+                }
+
+                else if ($("#SelUserName").val() == "0" || $("#SelUserName").val() == null) {
+                    error += "Selected UserName";
+                    $('#FormError').html("<td class='ui-state-error' colspan='12'>" + error + ":Field is required</td>");
+                    $('#UserName').focus();
+                    $("#UserName").css("background-color", "#FFE8E8").css("border", "1px solid #FF6666");
+                    return [false, response.responseText];
+                }
+                else if (!($('#Status').is(":checked"))) {
+                    $("#Status").css("background-color", "#FFE8E8").css("border", "1px solid #FF6666");
+                    $('#Status').focus();
+                    return [false, 'Please Check Status'];
+                }
+                else {
+                    return [true, response.responseText];
+                }
+
+            },
+
+            afterSubmit: function (response, postdata) {
+                if (response.responseText != "\"User Team Link Added Successfully.\"") {
+                    $('#TblGrid_UserTeamLink td.ui-state-highlight').removeClass('ui-state-highlight').addClass('ui-state-error');
+                    return [false, response.responseText];
+                }
+                else {
+                    $("#UserTeamLink").jqGrid('setGridParam', { datatype: 'json' }).trigger('reloadGrid');
+                    $('#TblGrid_UserTeamLink td.ui-state-error').removeClass('ui-state-error').addClass('ui-state-highlight');
+
+                    $("#SelUserName option:selected").remove();
+                    $('select').val(0);
+                    $("#IsActive").prop('checked', false);
+                    return [false, response.responseText];
+                }
+            },
+
+         
+        },
+        {
+            //DELETE
+            closeOnEscape: true,
+            closeAfterDelete: true,
+            reloadAfterSubmit: true,
+            closeOnEscape: true,
+            drag: true,
+            width: 400,
+            modal: true,
+            afterShowForm: function (form) {
+                form.closest('div.ui-jqdialog').center();
+            },
+
+
+
+
+            beforeShowForm: function (form) {
+
+                $('tr td.delmsg').html('Delete selected record(s)?');
+
+                var col1 = $('#UserTeamLink').jqGrid('getGridParam', 'selrow');
+                var IsActive = $('#UserTeamLink').jqGrid('getCell', col1, 'Status');
+               // alert(IsActive);
+                if (IsActive == "InAcitve") {
+                    $('tr td.delmsg').html('Record Already Deleted');
+                    $('#dData').hide();
+                }
+                else {
+                    $('#dData').show();
+                }
+            },           
+
+            afterSubmit: function (response, postdata) {
+
+                $("#UserTeamLink").jqGrid('setGridParam', { datatype: 'json' }).trigger('reloadGrid');
+                return [false, response.responseText];
+            },
+            delData: {
+                PKID: function () {
+                    var sel_id = $('#UserTeamLink').jqGrid('getGridParam', 'selrow');
+                    var value = $('#UserTeamLink').jqGrid('getCell', sel_id, '_id');
+                    return value;
+                }
+            }
+
+        },
+        {
+            //search
+            closeOnEscape: true,
+            modal: true,
+            recreateForm: true,
+            width: 552,
+            caption: "Search",
+            searchOnEnter: true,
+            beforeShowSearch: function (form) {
+
+                $('#jqg1').val('');
+                $('#fbox_UserTeamLink_reset').click();
+
+                var dialogHeight = $("#searchmodfbox_UserTeamLink").height();
+                var dialogWidth = $("#searchmodfbox_UserTeamLink").width();
+                var windowHeight = $(window).height();
+                var windowWidth = $(window).width();
+                $("#searchmodfbox_UserTeamLink").css('position', 'fixed');
+                $("#searchmodfbox_UserTeamLink").css('top', ((windowHeight - dialogHeight) / 2));
+                $("#searchmodfbox_UserTeamLink").css('left', ((windowWidth - dialogWidth) / 2));
+
+                return [true, ""];
+            },
+        },
+        {
+            //View
+            width: 400,
+            modal:true,
+            beforeShowForm: function (form) {
+                form.closest('div.ui-jqdialog').center();
+            }
+        }
+
+                );
+
+
+        setMethod('UserTeamLink', 'UserTeamLinkPager', 'Customer Grid');
+
+    }
+    //Center Popup
+    jQuery.fn.center = function () {
+        this.css("position", "absolute");
+        this.css("top", ($(window).height() - this.height()) / 2 + $(window).scrollTop() + "px");
+        this.css("left", ($(window).width() - this.width()) / 2 + $(window).scrollLeft() + "px");
+        return this;
+
+    }
+    function validSpecial(objElement) {
+
+        var re = /^[a-zA-Z0-9-/\s.:]*/gi;
+        if (objElement.value.match(re) != objElement.value) {
+            alert('Special Characters are Not Allowed');
+            objElement.value = '';
+
+            return false;
+        }
+
+    }
+
+    function setMethod(gid, id, pgTitle) {
+        // alert(1);
+        var btnTitle = 'Export to Excel';
+        $('#' + gid).jqGrid('navSeparatorAdd', '#' + id, { sepclass: "ui-separator" });
+        $('#' + gid).jqGrid('navButtonAdd', '#' + id, { caption: '', title: btnTitle, position: 'last', buttonicon: 'ui-icon-calculator', onClickButton: function () { ExcelExport(); } });
+
+        var btnTitle = 'Export to PDF';
+        $('#' + gid).jqGrid('navSeparatorAdd', '#' + id, { sepclass: "ui-separator" });
+        $('#' + gid).jqGrid('navButtonAdd', '#' + id, { caption: '', title: btnTitle, position: 'last', buttonicon: 'ui-icon-bookmark', onClickButton: function () { PDFExport(); } });
+
+        var btnTitle = 'Export to CSV';
+        $('#' + gid).jqGrid('navSeparatorAdd', '#' + id, { sepclass: "ui-separator" });
+        $('#' + gid).jqGrid('navButtonAdd', '#' + id, { caption: '', title: btnTitle, position: 'last', buttonicon: 'ui-icon-note', onClickButton: function () { CSVExport(); } });
+
+
+        var btnTitle = 'Print Grid';
+        $('#' + gid).jqGrid('navSeparatorAdd', '#' + id, { sepclass: "ui-separator" });
+        $('#' + gid).jqGrid('navButtonAdd', '#' + id, { caption: '', title: btnTitle, position: 'last', buttonicon: 'ui-icon-print', onClickButton: function () { PrintGrid(gid); } });
+    }
+    function ExcelExport() {
+        window.location = '@Url.Action("ExportUserTeamLinkToExcel")';
+    }
+    function PDFExport() {
+        window.location = '@Url.Action("ExportUserTeamLinkToPDF")';
+    }
+    function CSVExport() {
+
+        window.location = '@Url.Action("ExportUserTeamLinkCsv")';
+        // $('#FormMaster').table2CSV({ header: ['PKID', 'Form Name', 'Status'] });
+    }
+    function PrintGrid(gid) {
+
+        // empty the print div container.
+        var rows = $('#UserTeamLink').jqGrid('getRowData');
+        for (var i = 0; i < rows.length; i++) {
+            var row = rows[i];
+            $('#Table1').append("<tr><td>" + row.TeamName + "</td><td>" + row.NodeName + "</td><td>" + row.UserName + "</td><td>" + row.Status + "</td></tr>");
+            
+        }
+        $(function () { printChrome('prt-container') });
+    }
+
+    function printChrome(divContainer) {
+
+        //  alert(9);
+        var printContent = document.getElementById(divContainer);
+        // alert(printContent.innerHTML);
+        window.document.body.innerHTML = printContent.innerHTML;
+        window.print();
+        window.location.reload();
+    }
+
+
+    </script>
+    <div id='prt-container' style="display:none">
+        <table id="Table1" border="1" width="100%">
+            <thead>
+                <tr>
+                    <td><b>Team</b></td>
+                    <td><b>Node Name</b></td>
+                    <td><b>User</b></td>
+                    <td><b>Status</b></td>
+                </tr>
+            </thead>
+            <tbody></tbody>
+
+        </table>
+    </div>
+</body>
+

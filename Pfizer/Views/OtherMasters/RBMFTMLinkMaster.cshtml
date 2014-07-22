@@ -1,0 +1,418 @@
+﻿@{
+    ViewBag.Title = "RBM_FTM_LinkMaster";
+    Layout = "~/Views/Shared/MasterLayout.cshtml";
+}
+
+
+<body>
+
+    @using (Html.BeginForm(FormMethod.Post))
+    {
+        <div>
+            <table border="0" style="width: 100%">
+                <tr>
+                    <td>
+                        <!--JqGrid Starts-->
+                        <table style="margin-top: 7px; width :100%" border="0">
+                            <tr>
+                                <td>
+                                    <table id="RBMGrid" style="width: 100%" border="0"></table>
+                                    <div id="Pager">
+                                    </div>
+                                </td>
+                            </tr>
+                        </table>
+                        <!--Ends-->
+                    </td>
+                </tr>
+            </table>
+
+        </div>
+    }
+
+    <script type="text/javascript">
+
+
+        function validSpecial(objElement) {
+
+            var re = /^[a-zA-Z0-9-/\s.:]*/gi;
+            if (objElement.value.match(re) != objElement.value) {
+                alert('No Special Characters Allowed');
+                objElement.value = '';
+
+                return false;
+            }
+
+        }
+
+
+
+        jQuery(document).ready(function () {
+
+            initGrid();
+        });
+        function initGrid() {
+            jQuery("#RBMGrid").jqGrid({
+                url: '@Url.Action("RBMGridData")',
+
+                datatype: "json",
+                jsonReader: { repeatitems: false, id: "PKID" },
+                colNames: ['PKID', 'FTM Name', 'RBM Name', 'Status'],
+                colModel: [
+                    { name: 'PKID', index: 'PKID', align: 'left', hidden: true, editable: true },
+                     {
+                         name: 'FTM_Name', index: 'FTM_Name', align: 'left', hidden: false, editable: true, searchrules: { required: true }, search: true, edittype: 'select', editrules: { required: false }, editoptions: {
+
+                             dataUrl: '@Url.Action("LoadFTM")',
+
+                         }, formoptions: {
+                             rowpos: 2, colpos: 1,
+                             elmprefix: "<span style='align:left;color:red'>*</span>&nbsp;"
+                         }, searchoptions: { sopt: ['eq', 'bw', 'ew', 'cn'] }
+                     },
+                    {
+                        name: 'RBM_Name', index: 'RBM_Name', align: 'left', editable: true, search: true, edittype: 'select', editrules: { required: false }, editoptions: {
+
+                            dataUrl: '@Url.Action("LoadRBM")',
+
+                        }, formoptions: {
+                            rowpos: 2, colpos: 2,
+                            elmprefix: "<span style='align:left;color:red'>*</span>&nbsp;"
+                        }, searchoptions: { sopt: ['eq', 'bw', 'ew', 'cn'] }
+                    },
+        {
+            name: 'IsActive', index: 'IsActive', align: 'left', hidden: false, editable: true, edittype: 'checkbox', search: false, search: false, formoptions: {
+                elmprefix: "&nbsp;&nbsp;&nbsp;"
+
+            }
+
+
+        },
+                ],
+
+                autowidth: true,
+                gridview: true,
+                caption: 'RBM FTM Link Master',
+                jqModal: true,
+                rowTotal: 10,
+                rowNum: 10,
+                align: 'center',
+                sortable: true,
+                hidegrid: true,
+                altRows: true,
+                sortname: 'PKID',
+                sortorder: 'desc',
+                viewrecords: true,
+                pager: $('#Pager'),
+                height: 'auto',
+                editable: true,
+                gridComplete: function () {
+
+                    if (jQuery("#RBMGrid").getGridParam("records") == 0) {
+                        jQuery("#RBMGrid").addRowData(
+                              "blankRow", { "RBM_Name": "No records to view" });
+                    }
+
+
+                },
+                editurl: '@Url.Action("EditRBMGrid")'
+            });
+
+            jQuery("#RBMGrid").jqGrid('navGrid', '#Pager', { edit: true, add: true, del: true, search: true, view: true },
+
+                    {
+                        // Edit
+                        closeAfterEdit: true,
+                        closeOnEscape: true,
+                        recreateForm: true,
+                        width: 600,
+                        modal: true,
+                        checkOnSubmit: true,
+                        afterShowForm: function (form_id) {
+                            var thisForm = form_id.selector.replace('FrmGrid_', 'editmod')
+                            var dialogHeight = $(thisForm).height();
+                            var dialogWidth = $(thisForm).width();
+                            var windowHeight = $(window).height();
+                            var windowWidth = $(window).width();
+                            $(thisForm).css('position', 'fixed');
+                            $(thisForm).css('top', ((windowHeight - dialogHeight) / 2));
+                            $(thisForm).css('left', ((windowWidth - dialogWidth) / 2));
+                        },
+                        //FTM_Name
+                        //RBM_Name
+                        onclickSubmit: function (params, posdata) {
+                            params.url = '@Url.Action("EditRBMFTMlink")?id=' + $('#PKID').val() +'&PKID=' + $('#PKID').val() + '&FTM_Name=' + $('#FTM_Name').val() + '&RBM_Name=' + $('#RBM_Name').val() + '&IsActive=' + $('#IsActive').val();
+                        },
+                        beforeSubmit: function (response, postdata) {
+                            $('select').css("border", "1px solid #C0C0C0");
+                            $("input[type=text]").css("border", "1px solid #C0C0C0");
+                            var error = " ";
+                            if ($("#FTM_Name").val() == 0) {
+                                error += "FTM_Name";
+                                $('#FormError').html("<td class='ui-state-error' colspan='2'>" + error + ":Field is required</td>");
+                                $("#FTM_Name").val('');
+                                $('#FTM_Name').focus();
+                                $("#FTM_Name").css("background-color", "#FFE8E8").css("border", "1px solid #FF6666");
+                                return [false, response.responseText];
+                            }
+                            else if ($("#RBM_Name").val() == 0) {
+                                error += "RBM_Name";
+                                $('#FormError').html("<td class='ui-state-error' colspan='2'>" + error + ":Field is required</td>");
+                                $("#RBM_Name").val(0);
+                                $("#RBM_Name").css("background-color", "#FFE8E8").css("border", "1px solid #FF6666");
+                                return [false, response.responseText];
+                            }
+
+                            else {
+                                return [true, response.responseText];
+                            }
+
+                        },
+                        afterSubmit: function (response, postdata) {
+
+                            $("#RBMGrid").jqGrid('setGridParam', { datatype: 'json' }).trigger('reloadGrid');
+                            $('#TblGrid_RBMGrid td.ui-state-error').removeClass('ui-state-error').addClass('ui-state-highlight');
+                            $('select').val(0);
+                            $("#IsActive").prop('checked', false);
+                            return [false, response.responseText];
+                        },
+
+                    },
+
+                {
+
+                    //Add
+                    closeOnEscape: true,
+                    recreateForm: true,
+                    width: 650,
+                    modal: true,
+                    beforeShowForm: function (form) {
+
+                    },
+                    afterShowForm: function (form_id) {
+                        var thisForm = form_id.selector.replace('FrmGrid_', 'editmod');
+                        var dialogHeight = $(thisForm).height();
+                        var dialogWidth = $(thisForm).width();
+                        var windowHeight = $(window).height();
+                        var windowWidth = $(window).width();
+                        $(thisForm).css('position', 'fixed');
+                        $(thisForm).css('top', ((windowHeight - dialogHeight) / 2));
+                        $(thisForm).css('left', ((windowWidth - dialogWidth) / 2));
+                    },
+                    onclickSubmit: function (params, posdata) {
+                        params.url = '@Url.Action("AddRBMFTMlink")?id=' + $('#PKID').val() + '&FTM_Name=' + $('#FTM_Name').val() + '&RBM_Name=' + $('#RBM_Name').val();
+                    },
+                    beforeSubmit: function (response, postdata) {
+                        $('select').css("border", "1px solid #C0C0C0");
+                        $("input[type=text]").css("border", "1px solid #C0C0C0");
+                        var error = " ";
+                        if ($("#FTM_Name").val() == 0) {
+                            error += "FTM_Name";
+                            $('#FormError').html("<td class='ui-state-error' colspan='2'>" + error + ":Field is required</td>");
+                            $("#FTM_Name").val(0);
+                            $('#FTM_Name').focus();
+                            $("#FTM_Name").css("background-color", "#FFE8E8").css("border", "1px solid #FF6666");
+                            return [false, response.responseText];
+                        }
+                        else if ($("#RBM_Name").val() == 0) {
+                            error += "RBM_Name";
+                            $('#FormError').html("<td class='ui-state-error' colspan='2'>" + error + ":Field is required</td>");
+                            $("#RBM_Name").val(0);
+                            $('#RBM_Name').focus();
+                            $("#RBM_Name").css("background-color", "#FFE8E8").css("border", "1px solid #FF6666");
+                            return [false, response.responseText];
+                        }
+
+                        else {
+                            return [true, response.responseText];
+                        }
+
+                    },
+
+                    afterSubmit: function (response, postdata) {
+
+                        if (response.responseText == "\"RBMFTM LinkMaster already Exists.\"")
+                        {
+                            $('#TblGrid_RBMGrid td.ui-state-highlight').removeClass('ui-state-highlight').addClass('ui-state-error');
+                            return [false, response.responseText];
+                        }
+                        else {
+                            $("#RBMGrid").jqGrid('setGridParam', { datatype: 'json' }).trigger('reloadGrid');
+                            $('#TblGrid_RBMGrid td.ui-state-error').removeClass('ui-state-error').addClass('ui-state-highlight');
+                            $('select').val(0);
+                            return [false, response.responseText];
+                        }
+                    }
+                },
+
+                //Delete
+                {
+                    closeOnEscape: true,
+                    recreateForm: true,
+                    width: 600,
+                    modal: true,
+                    beforeShowForm: function (form) {
+
+                        var thisForm = $("#delmod" + jQuery("#RBMGrid")[0].id);
+                        var dialogHeight = $(thisForm).height();
+                        var dialogWidth = $(thisForm).width();
+                        var windowHeight = $(window).height();
+                        var windowWidth = $(window).width();
+                        $(thisForm).css('position', 'fixed');
+                        $(thisForm).css('top', ((windowHeight - dialogHeight) / 2));
+                        $(thisForm).css('left', ((windowWidth - dialogWidth) / 2));
+
+
+                        var col1 = $('#RBMGrid').jqGrid('getGridParam', 'selrow');
+
+                        $('tr td.delmsg').html('Delete selected record(s)?');
+
+                        $('#RBMGrid').jqGrid('getGridParam', 'selrow');
+                        var IsActive = $('#RBMGrid').jqGrid('getCell', col1, 'IsActive');
+                        if (IsActive == "In Active") {
+                            $('tr td.delmsg').html('Record Already Deleted');
+                            $('#dData').hide();
+                        }
+                        else
+                            $('#dData').show();
+
+                        //var FTM_Name = $('#RBMGrid').jqGrid('getCell', col1, 'FTM_Name');
+                        //var RBM_Name = $('#RBMGrid').jqGrid('getCell', col1, 'RBM_Name');
+
+
+                        //var html = "<form><table><tr><td class='CaptionTD'>FTM Name</td><td class=='DataTD'>&nbsp;&nbsp;<input type='text' class='FormElement ui-widget-content ui-corner-all' id='FTM_Name' readonly='true'  value='" + FTM_Name + "'/></td> <td class='CaptionTD'>RBM Name</td><td class=='DataTD'>&nbsp;&nbsp;<input type='text' class='FormElement ui-widget-content ui-corner-all' id='RBM_Name' readonly='true'  value='" + RBM_Name + "'/></td> </tr>";
+                        //html += "</table></form>";
+                        //$("td.delmsg", form[0]).html(html);
+
+                    },
+                    onclickSubmit: function (params, posdata) {
+                        params.url = '@Url.Action("DeleteRBMFTMlink")?id=' + $('#PKID').val();
+                    },
+                    afterSubmit: function (response, postdata) {
+                        $('tr td.delmsg').html('');
+                        $('#dData').hide();
+                        $("#RBMGrid").jqGrid('setGridParam', { datatype: 'json' }).trigger('reloadGrid');
+                        $('#DelTbl_RBMGrid td.ui-state-error').removeClass('ui-state-error').addClass('ui-state-highlight');
+                        $("#FTM_Name").val('');
+                        $("#RBM_Name").val('');
+                        return [false, response.responseText];
+                    }
+                },
+                {
+                    //Search
+
+                    closeOnEscape: true,
+                    modal: true,
+                    recreateForm: true,
+                    width: 600,
+                    caption: "Search",
+                    searchOnEnter: true,
+                    beforeShowSearch: function (form) {
+
+                        $('#jqg1').val('');
+                        $('#fbox_RBMGrid_reset').click();
+
+                        var dialogHeight = $("#searchmodfbox_RBMGrid").height();
+                        var dialogWidth = $("#searchmodfbox_RBMGrid").width();
+                        var windowHeight = $(window).height();
+                        var windowWidth = $(window).width();
+                        $("#searchmodfbox_RBMGrid").css('position', 'fixed');
+                        $("#searchmodfbox_RBMGrid").css('top', ((windowHeight - dialogHeight) / 2));
+                        $("#searchmodfbox_RBMGrid").css('left', ((windowWidth - dialogWidth) / 2));
+
+                        return [true, ""];
+                    }
+                },
+                {
+                    //View :
+                    closeOnEscape: true,
+                    recreateForm: true,
+                    modal:true,
+                    width: 600,
+
+                    beforeShowForm: function (form) {
+
+
+                        var thisForm = $("#viewmod" + jQuery("#RBMGrid")[0].id);
+                        var dialogHeight = $(thisForm).height();
+                        var dialogWidth = $(thisForm).width();
+                        var windowHeight = $(window).height();
+                        var windowWidth = $(window).width();
+                        $(thisForm).css('position', 'fixed');
+                        $(thisForm).css('top', ((windowHeight - dialogHeight) / 2));
+                        $(thisForm).css('left', ((windowWidth - dialogWidth) / 2));
+
+                    }
+
+                }
+
+                        );
+
+            setMethod('RBMGrid', 'Pager', 'RBM FTM Link Master');
+        }
+        function setMethod(gid, id, pgTitle) {
+
+            var btnTitle = 'Export to Excel';
+            $('#' + gid).jqGrid('navSeparatorAdd', '#' + id, { sepclass: "ui-separator" });
+            $('#' + gid).jqGrid('navButtonAdd', '#' + id, { caption: '', title: btnTitle, position: 'last', buttonicon: 'ui-icon-calculator', onClickButton: function () { ExcelExport(); } });
+
+            var btnTitle = 'Export to PDF';
+            $('#' + gid).jqGrid('navSeparatorAdd', '#' + id, { sepclass: "ui-separator" });
+            $('#' + gid).jqGrid('navButtonAdd', '#' + id, { caption: '', title: btnTitle, position: 'last', buttonicon: 'ui-icon-bookmark', onClickButton: function () { PDFExport(); } });
+
+            var btnTitle = 'Export to CSV';
+            $('#' + gid).jqGrid('navSeparatorAdd', '#' + id, { sepclass: "ui-separator" });
+            $('#' + gid).jqGrid('navButtonAdd', '#' + id, { caption: '', title: btnTitle, position: 'last', buttonicon: 'ui-icon-note', onClickButton: function () { CSVExport(); } });
+
+
+            var btnTitle = 'Print Grid';
+            $('#' + gid).jqGrid('navSeparatorAdd', '#' + id, { sepclass: "ui-separator" });
+            $('#' + gid).jqGrid('navButtonAdd', '#' + id, { caption: '', title: btnTitle, position: 'last', buttonicon: 'ui-icon-print', onClickButton: function () { PrintGrid(gid); } });
+        }
+        function ExcelExport() {
+            window.location = '@Url.Action("ExportRBMFTMLinkMasterToExcel")';
+        }
+        function PDFExport() {
+            window.location = '@Url.Action("ExportRBMFTMLinkMasterToPDF")';
+        }
+        function CSVExport() {
+            window.location = '@Url.Action("ExportRBMFTMLinkMasterToCsv")';
+        }
+        function PrintGrid(gid) {
+
+            // empty the print div container.
+            var rows = $('#RBMGrid').jqGrid('getRowData');
+            for (var i = 0; i < rows.length; i++) {
+                var row = rows[i];
+                $('#Table1').append("<tr><td>" + row.FTM_Name + "</td><td>" + row.RBM_Name + "</td><td>" + row.IsActive + "</td></tr>");
+
+            }
+            $(function () { printChrome('prt-container') });
+
+        }
+
+        function printChrome(divContainer) {
+
+            var printContent = document.getElementById(divContainer);
+            window.document.body.innerHTML = printContent.innerHTML;
+            window.print();
+            window.location.reload();
+        }
+
+
+    </script>
+    <div id='prt-container' style="display:none">
+        <table id="Table1" border="1" width="100%">
+            <thead>
+                <tr>
+                    <td><b>FTM Name</b></td>
+                    <td><b>RBM Name</b></td>
+                    <td><b>Status</b></td>
+                </tr>
+
+            </thead>
+            <tbody></tbody>
+
+        </table>
+    </div>
+</body>

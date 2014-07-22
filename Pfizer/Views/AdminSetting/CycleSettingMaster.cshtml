@@ -1,0 +1,586 @@
+﻿@{
+    ViewBag.Title = "CycleSettingMaster";
+    Layout = "~/Views/Shared/MasterLayout.cshtml";
+}
+
+<body>
+    @using (Html.BeginForm(FormMethod.Post))
+    {
+        <div>
+            <table border="0" style="width: 100%">
+                <tr>
+                    <td>
+                        <!--JqGrid Starts-->
+                        <table style="margin-top: 7px; width :100%" border="0">
+                            <tr>
+                                <td>
+                                    <table id="ajaxGrid" style="width: 100%" border="0"></table>
+                                    <div id="ajaxGridPager">
+                                    </div>
+                                </td>
+                            </tr>
+                        </table>
+                        <!--Ends-->
+                    </td>
+                </tr>
+            </table>
+        </div>
+    }
+</body>
+
+<script type="text/javascript">
+    function validSpecial(objElement) {
+
+        var re = /^[a-zA-Z0-9-/\s.:]*/gi;
+        if (objElement.value.match(re) != objElement.value) {
+            alert('No Special Characters Allowed');
+            objElement.value = '';
+         return false;
+        }
+
+
+
+    }
+    jQuery(document).ready(function () {
+
+        initGrid();
+    });
+
+    function initGrid() {
+        jQuery("#ajaxGrid").jqGrid({
+            url: '@Url.Action("GridDataCycleSettingMaster")',
+
+            datatype: "json",
+            jsonReader: { repeatitems: false, id: "PKID" },
+            colNames: ['PKID', 'Year', 'No of Cycles', 'Cycle Start Month', 'Cycle Start Year', 'Status'],
+            colModel: [
+                
+                 { name: 'PKID', index: 'PKID', align: 'left', hidden: true,editrules: { edithidden: true, required: true } },
+                 {
+                     name: 'Year', index: 'Year', align: 'left', editable: true, sortable: true, edittype: 'select', editrules: { edithidden: true, required: true }, editoptions: {
+                         dataUrl: '@Url.Action("LoadYear")',
+                         dataEvents:
+                         [
+                         {
+                             type: 'change', fn: function (e) {
+                                 $('#Year').css("border", "1px solid #C0C0C0");
+                                 $("#FormError").hide();
+                                 if ($('#NoOfCycles').val() == "")
+                                 {
+
+                                     $('#NoOfCycles').focus();
+                                    
+                                 }
+                                 
+
+
+                         }
+                         }]
+                     }, search: true, formoptions: {
+                         size: 35,
+                         elmprefix: "<span style='align:left;color:red'>*</span>&nbsp;"
+                     }, searchoptions: { sopt: ['eq', 'bw', 'ew', 'cn'] }, searchrules: { required: true }
+                 },
+                 { name: 'NoOfCycles', index: 'NoOfCycles', align: 'left', editable: true, editrules: { edithidden: true }, editrules: { edithidden: true, required: false }, 
+                     editoptions:{
+                         maxlength: 10,
+                 dataEvents: [{
+                             
+                                 type: 'keyup', // blur
+                                 fn: function (e) {
+                                    
+                                     //validSpecial(this);
+                                     this.value = this.value.replace(/[^0-9\.]/g, '');
+                                      $('#NoOfCycles').css("border", "1px solid #C0C0C0");
+                                 },
+
+                              }]
+                     
+                                       
+                 },
+                 
+                 formoptions: {
+                     size: 35,
+                     
+                    elmprefix: "<span style='align:left;color:red'>*</span>&nbsp;"
+                 },
+                
+                 searchoptions: { sopt: ['eq', 'bw', 'ew', 'cn'] }, search: false
+                 },
+                 {
+                     name: 'Month', index: 'Month', align: 'left', editable: true, editrules: { edithidden: true, required: true }, edittype: 'select',
+                     editoptions: {
+                         dataUrl: '@Url.Action("LoadCycleStartMonth")',
+                                            
+            dataEvents: [{
+                             
+                
+                type: 'change',
+                fn: function (e) {
+                    $('#Month').css("border", "1px solid #C0C0C0");
+                    $('#CycleStartYear').css("border", "1px solid #FF6666");
+
+                }
+            }]
+    }, 
+    formoptions: {
+                         size: 35,
+                         elmprefix: "<span style='align:left;color:red'>*</span>&nbsp;"
+                     }, searchoptions: { sopt: ['eq', 'bw', 'ew', 'cn'] }, search: false
+                 },
+                 {
+                     name: 'CycleStartYear', index: 'CycleStartYear', align: 'left', hidden: true, editable: true,  editrules: { edithidden: true, required: true }, edittype: 'select', editoptions: { dataUrl: '@Url.Action("LoadCycleStartYear")' }, formoptions: {
+                         size: 35,
+                         elmprefix: "<span style='align:left;color:red'>*</span>&nbsp;"
+                     }, searchoptions: { sopt: ['eq', 'bw', 'ew', 'cn'] }, search: false
+                 },
+                 {
+                     name: 'Status', index: 'Status', align: 'left', resizable: false, editable: true, edittype: 'checkbox', editoptions: { value: "Active:Passive", defaultValue: "Active" }, formoptions: {
+                         elmprefix: "&nbsp;&nbsp;&nbsp;"
+
+                     }, search: false
+                 },
+            ],
+            caption: "Cycle Setting Master",
+            autowidth: true,
+            gridview: true,            
+            hidegrid: true,
+            altRows: true,
+            sortname: 'Year',
+            sortorder: 'asc',
+            rowTotal: 10,
+            rowNum: 10,
+            gridComplete: function () {
+
+                if (jQuery("#ajaxGrid").getGridParam("records") == 0) {
+                    jQuery("#ajaxGrid").addRowData(
+                    "blankRow", { "Month": "No records to view" });
+                }
+            },
+            viewrecords: true,
+            pager: $('#ajaxGridPager'),
+            height: 'auto',
+            editable: true,
+            editurl: '@Url.Action("EditCycleSettingMaster")'
+        });
+
+
+
+
+        jQuery("#ajaxGrid").jqGrid('navGrid', '#ajaxGridPager', { edit: true, add: true, del: true, search: true,view:true },
+            {
+                // Edit Portion
+                closeOnEscape: true,
+                width: 450,
+                closeOnEscape: true,
+                width: 600,
+                modal:true,
+                recreateForm: true,
+                checkOnSubmit: true,
+                afterShowForm: function (form_id) {
+                    var thisForm = form_id.selector.replace('FrmGrid_', 'editmod')
+                    var dialogHeight = $(thisForm).height();
+                    var dialogWidth = $(thisForm).width();
+                    var windowHeight = $(window).height();
+                    var windowWidth = $(window).width();
+                    $(thisForm).css('position', 'fixed');
+                    $(thisForm).css('top', ((windowHeight - dialogHeight) / 2));
+                    $(thisForm).css('left', ((windowWidth - dialogWidth) / 2));
+                },
+                beforeShowForm: function (form) {
+
+ 
+                    var sel_id = $('#ajaxGrid').jqGrid('getGridParam', 'selrow');
+                    var value = $('#ajaxGrid').jqGrid('getCell', sel_id, 'Status');                  
+
+                    if (value == 'InActive') {
+                        $('#tr_Status', form).show();
+                    }
+                    else {
+
+                        $('#tr_Status', form).hide();
+                    }
+                },
+                beforeSubmit: function (response, postdata) {
+                    if ($("#NoOfCycles").val().charAt(0) == ' ' || $("#NoOfCycles").val().charAt($("#NoOfCycles").val().length - 1) == ' ') {
+                        $('#TblGrid_ajaxGrid td.ui-state-highlight').removeClass('ui-state-highlight').addClass('ui-state-error');
+                        $("#NoOfCycles").css("background-color", "#FFE8E8").css("border", "1px solid #FF6666");
+                        $('#NoOfCycles').val('');
+                        $('#NoOfCycles').focus();
+                        return [false, 'Enter Valid NoCycles'];
+                    }
+
+                    $('select').css("border", "1px solid #C0C0C0");
+                    $("input[type=text]").css("border", "1px solid #C0C0C0");
+
+                    var error = " ";
+                    if ($("#Year").val() == 0) {
+                        error += "Year:";
+                        $('#FormError').html("<td class='ui-state-error' colspan='2'>" + error + ":Field is required</td>");
+                        //$('#Year').val(0).focus();
+                        $("#Year").css("background-color", "#FFE8E8").css("border", "1px solid #FF6666");
+                        return [false, response.responseText];
+                    }
+                    else if ($.trim($("#NoOfCycles").val()) == "")
+                    {
+                        error += "NoOfCycles";
+                        $('#FormError').html("<td class='ui-state-error' colspan='2'>" + error + ":Field is required</td>");
+                        $("#NoOfCycles").val('');
+                        $('#NoOfCycles').focus();
+                        $("#NoOfCycles").css("background-color", "#FFE8E8").css("border", "1px solid #FF6666");
+                        return [false, response.responseText];
+                    }
+                    else if ($("#Month").val() == 0) {
+                        error += "Month";
+                        $('#FormError').html("<td class='ui-state-error' colspan='2'>" + error + ":Field is required</td>");
+                       // $('#Month').val(0).focus();
+                        $("#Month").css("background-color", "#FFE8E8").css("border", "1px solid #FF6666");
+                        return [false, response.responseText];
+                    }
+                    else if ($("#CycleStartYear").val() == 0) {
+                        error += "CycleStartYear";
+                        $('#FormError').html("<td class='ui-state-error' colspan='2'>" + error + ":Field is required</td>");
+                       // $('#CycleStartYear').val(0).focus();
+                        $("#CycleStartYear").css("background-color", "#FFE8E8").css("border", "1px solid #FF6666");
+                        return [false, response.responseText];
+                    }
+                    else {
+                        return [true, response.responseText];
+                    }
+
+                },
+
+                afterSubmit: function (response, postdata) {
+                   
+                    alert(response.responseText);
+                    if (response.responseText == "\"CycleSettingMaster modified Successfully.\"")
+                        {
+                    $("#ajaxGrid").jqGrid('setGridParam', { datatype: 'json' }).trigger('reloadGrid');
+                    $('#TblGrid_ajaxGrid td.ui-state-error').removeClass('ui-state-error').addClass('ui-state-highlight');
+                    $("#Year").val(0);
+                    $("#NoOfCycles").val('');
+                    $("#Month").val(0);
+                    $("#CycleStartYear").val(0);
+                    $("#Status").prop("checked", false);
+                    return [false, response.responseText];
+                    }
+                    else {
+                        $("#ajaxGrid").jqGrid('setGridParam', { datatype: 'json' }).trigger('reloadGrid');
+                        $('#TblGrid_ajaxGrid td.ui-state-highlight').removeClass('ui-state-highlight').addClass('ui-state-error');
+                        $("#Year").val(0);
+                        $("#NoOfCycles").val('');
+                        $("#Month").val(0);
+                        $("#CycleStartYear").val(0);
+                        $("#Status").prop("checked", false);
+                        return [false, response.responseText];
+                    }
+                },
+            },
+
+        {
+            //Add Portion
+            closeOnEscape: true,
+            closeAfterAdd: true,
+            recreateForm: true,
+            modal: true,
+            width: 450,
+            afterShowForm: function (form_id) {
+                var thisForm = form_id.selector.replace('FrmGrid_', 'editmod');
+                var dialogHeight = $(thisForm).height();
+                var dialogWidth = $(thisForm).width();
+                var windowHeight = $(window).height();
+                var windowWidth = $(window).width();
+                $(thisForm).css('position', 'fixed');
+                $(thisForm).css('top', ((windowHeight - dialogHeight) / 2));
+                $(thisForm).css('left', ((windowWidth - dialogWidth) / 2));
+            },
+            beforeShowForm: function (form) {            
+
+                $('#tr_Status', form).hide();
+            },
+            beforeSubmit: function (response, postdata) {
+                if ($("#NoOfCycles").val().charAt(0) == ' ' || $("#NoOfCycles").val().charAt($("#NoOfCycles").val().length - 1) == ' ') {
+                    $('#TblGrid_ajaxGrid td.ui-state-highlight').removeClass('ui-state-highlight').addClass('ui-state-error');
+                    $("#NoOfCycles").css("background-color", "#FFE8E8").css("border", "1px solid #FF6666");
+                    $('#NoOfCycles').val('');
+                    $('#NoOfCycles').focus();
+                    return [false, 'Enter Valid NoCycles'];
+                }
+                $('select').css("border", "1px solid #C0C0C0");
+                $("input[type=text]").css("border", "1px solid #C0C0C0");
+                     
+                var error = " ";
+               if ($("#Year").val() == 0)
+                {
+                    error += "Year:";
+                    $('#FormError').html("<td class='ui-state-error' colspan='2'>" + error + ":Field is required</td>");
+                    $('#Year').val(0).focus();
+                    $("#Year").css("background-color", "#FFE8E8").css("border", "1px solid #FF6666");
+                    return [false, response.responseText];
+               }
+               
+               else if ($.trim($("#NoOfCycles").val()) == "") {
+                   error += "No. of Cycles";
+                   $('#FormError').html("<td class='ui-state-error' colspan='2'>" + error + ":Field is required</td>");
+                   $('#NoOfCycles').val('');
+                   $('#NoOfCycles').focus();
+                   $("#NoOfCycles").css("background-color", "#FFE8E8").css("border", "1px solid #FF6666");
+                   return [false, response.responseText];
+               }
+               else if ($("#Month").val() == 0) {
+                   error += "Month";
+                   $('#FormError').html("<td class='ui-state-error' colspan='2'>" + error + ":Field is required</td>");
+                  // $('#Month').focus();
+                   $("#Month").css("background-color", "#FFE8E8").css("border", "1px solid #FF6666");
+                   return [false, response.responseText];
+               }
+               else if ($("#CycleStartYear").val() == 0) {
+                   error += "CycleStartYear";
+                   $('#FormError').html("<td class='ui-state-error' colspan='2'>" + error + ":Field is required</td>");
+                  // $('#CycleStartYear').focus();
+                   $("#CycleStartYear").css("background-color", "#FFE8E8").css("border", "1px solid #FF6666");
+
+                   return [false, response.responseText];
+               }
+               else {
+                   return [true, response.responseText];
+               }
+                
+              },
+            
+            afterSubmit: function (response, postdata) {
+                $("#ajaxGrid").jqGrid('setGridParam', { datatype: 'json' }).trigger('reloadGrid');
+                var errorId = " ";
+                if (response.responseText == "\"CycleSettingMaster added successfully\"") {
+                    errorId += "Cycle Setting Master added successfully";
+                    $('#FormError').html("<td class='ui-state-error' colspan='2'>" + errorId + "</td>");
+                    $('#TblGrid_ajaxGrid td.ui-state-error').removeClass('ui-state-error').addClass('ui-state-highlight');
+                    $("#Year").val(0);
+                    $("#NoOfCycles").val('');
+                    $("#Month").val(0);
+                    $("#CycleStartYear").val(0);
+                    $("#Status").prop("checked", false);
+                    return [false, response.responseText];
+                }
+                else {
+                    errorId += "Cycle Setting Master already Exists";
+                    $('#FormError').html("<td class='ui-state-error' colspan='2'>" + errorId + "</td>");
+                    $('#TblGrid_ajaxGrid td.ui-state-error').removeClass('ui-state-highlight').addClass('ui-state-error');
+                    $("#Year").val(0);
+                    $("#NoOfCycles").val('');
+                    $("#Month").val(0);
+                    $("#CycleStartYear").val(0);
+                    $("#Status").prop("checked", false);
+                    return [false, response.responseText];
+
+                }
+
+            },
+            onclickSubmit: function (params, posdata) {
+                //string id, string oper, string NoOfCycles, string Month, string Year, string CycleStartYear, string Status
+                params.url = '@Url.Action("AddCycleSettingMaster")?NoOfCycles=' + $('#NoOfCycles').val() + '&Month=' + $('#Month').val() + '&Year=' + $('#Year').val() + '&CycleStartYear' + $('#CycleStartYear').val() + '&Status' + $('#Status').val();
+                
+                 },
+           
+        },
+                {
+                    //Delete
+                    closeOnEscape: true,
+                    recreateForm: true,
+                    width: 450,
+                    modal: true,
+                    beforeShowForm: function (form) {
+ 
+                        
+                        //if ($("#IsActive").is(':checked')) {
+                        //    $('#dData').hide();
+                        //}
+                        //else
+                        //    $('#dData').show();
+                        $('tr td.delmsg').html('Delete selected record(s)?');
+                        var col1 = $('#ajaxGrid').jqGrid('getGridParam', 'selrow');
+                        var IsActive = $('#ajaxGrid').jqGrid('getCell', col1, 'Status');
+                        if (IsActive == "InActive") {
+                            $('tr td.delmsg').html('Record Already Deleted');
+
+                            $('#dData').hide();
+                        }
+                        else
+                            $('#dData').show();
+
+
+ 
+
+                        //POP UP Screen Fit Screen
+
+                        var thisForm = $("#delmod" + jQuery("#ajaxGrid")[0].id);
+                        var dialogHeight = $(thisForm).height();
+                        var dialogWidth = $(thisForm).width();
+                        var windowHeight = $(window).height();
+                        var windowWidth = $(window).width();
+                        $(thisForm).css('position', 'fixed');
+                        $(thisForm).css('top', ((windowHeight - dialogHeight) / 2));
+                        $(thisForm).css('left', ((windowWidth - dialogWidth) / 2));
+
+
+                        var col1 = $('#ajaxGrid').jqGrid('getGridParam', 'selrow');
+                        var Year = $('#ajaxGrid').jqGrid('getCell', col1, 'Year');
+                        var NoOfCycles = $('#ajaxGrid').jqGrid('getCell', col1, 'NoOfCycles');
+                        var Month = $('#ajaxGrid').jqGrid('getCell', col1, 'Month');
+                        var CycleStartYear = $('#ajaxGrid').jqGrid('getCell', col1, 'CycleStartYear');                        
+                        var IsActive = $('#ajaxGrid').jqGrid('getCell', col1, 'Status');
+
+                        //var html = "<form><table><tr><td class='CaptionTD'>Year </td><td class=='DataTD'>&nbsp;&nbsp;<input type='text' class='FormElement ui-widget-content ui-corner-all' id='Year' readonly='true'  value='" + Year + "'/></td> </tr>";
+                        //html += "<tr><td class='CaptionTD'>No. of Cycles</td><td class=='DataTD'>&nbsp;&nbsp;<input type='text' class='FormElement ui-widget-content ui-corner-all' id='NoofCycles' readonly='true'  value='" + NoOfCycles + "'/></td></tr>";
+                        //html += "<tr><td class='CaptionTD'>Cycle Start Month</td><td class=='DataTD'>&nbsp;&nbsp;<input type='text' class='FormElement ui-widget-content ui-corner-all' id='Month' readonly='true'  value='" + Month + "'/></td></tr>";
+                        //html += "<tr><td class='CaptionTD'>Cycle Start Year</td><td class=='DataTD'>&nbsp;&nbsp;<input type='text' class='FormElement ui-widget-content ui-corner-all' id='CycleStartYear' readonly='true'  value='" + CycleStartYear + "'/></td></tr>";
+                        //if (IsActive == "Active")
+                        //    html += "<tr><td class='CaptionTD'>Status</td><td class=='DataTD'>&nbsp;&nbsp;<input class='FormElement ui-widget-content ui-corner-all' id='IsActive'   type='checkbox' checked  disabled/></td>";
+                        //if (IsActive == "Inactive")
+                        //    html += "<tr><td class='CaptionTD'>Status</td><td class=='DataTD'>&nbsp;&nbsp; <input class='FormElement ui-widget-content ui-corner-all'   type='checkbox' disabled /></td></tr>";
+                        //html += "</table></form>";
+                        //$("td.delmsg", form[0]).html(html);
+
+
+                        //End POP UP Screen Fit Screen
+
+
+                    },
+                  
+                    afterSubmit: function (response, postdata) {
+                        $('tr td.delmsg').html('');
+                        $('#dData').hide();
+                        $("#ajaxGrid").jqGrid('setGridParam', { datatype: 'json' }).trigger('reloadGrid');
+                        $('#DelTbl_ajaxGrid td.ui-state-error').removeClass('ui-state-error').addClass('ui-state-highlight');
+                        $("#Year").val('');
+                        $("#NoofCycles").val('');
+                        $("#Month").val('');
+                        $("#CycleStartYear").val('');
+                        $("#IsActive").prop("checked", false);
+                        return [false, response.responseText];
+                    }
+                },
+            {
+                //Search
+
+                closeOnEscape: true,
+                modal: true,
+                recreateForm: true,
+                width: 600,
+                caption: "Search",
+                searchOnEnter: true,
+                beforeShowSearch: function (form) {
+
+                    $('#jqg1').val('');
+                    $('#fbox_ajaxGrid_reset').click();
+
+                    var dialogHeight = $("#searchmodfbox_ajaxGrid").height();
+                    var dialogWidth = $("#searchmodfbox_ajaxGrid").width();
+                    var windowHeight = $(window).height();
+                    var windowWidth = $(window).width();
+                    $("#searchmodfbox_ajaxGrid").css('position', 'fixed');
+                    $("#searchmodfbox_ajaxGrid").css('top', ((windowHeight - dialogHeight) / 2));
+                    $("#searchmodfbox_ajaxGrid").css('left', ((windowWidth - dialogWidth) / 2));
+
+                    return [true, ""];
+                }
+            },
+            {
+                //View :
+                closeOnEscape: true,
+                recreateForm: true,
+                modal: true,
+                width: 600,
+
+                beforeShowForm: function (form) {
+
+                    var thisForm = $("#viewmod" + jQuery("#ajaxGrid")[0].id);
+                    var dialogHeight = $(thisForm).height();
+                    var dialogWidth = $(thisForm).width();
+                    var windowHeight = $(window).height();
+                    var windowWidth = $(window).width();
+                    $(thisForm).css('position', 'fixed');
+                    $(thisForm).css('top', ((windowHeight - dialogHeight) / 2));
+                    $(thisForm).css('left', ((windowWidth - dialogWidth) / 2));
+                }
+
+            }
+
+                );
+
+        // setMethod('gridId', 'gridPager', 'pageTitle');
+        setMethod('ajaxGrid', 'ajaxGridPager', 'Customer Grid');
+
+    }
+
+    function setMethod(gid, id, pgTitle) {
+        // alert(1);
+        var btnTitle = 'Export to Excel';
+        $('#' + gid).jqGrid('navSeparatorAdd', '#' + id, { sepclass: "ui-separator" });
+        $('#' + gid).jqGrid('navButtonAdd', '#' + id, { caption: '', title: btnTitle, position: 'last', buttonicon: 'ui-icon-calculator', onClickButton: function () { ExcelExport(); } });
+
+        var btnTitle = 'Export to PDF';
+        $('#' + gid).jqGrid('navSeparatorAdd', '#' + id, { sepclass: "ui-separator" });
+        $('#' + gid).jqGrid('navButtonAdd', '#' + id, { caption: '', title: btnTitle, position: 'last', buttonicon: 'ui-icon-bookmark', onClickButton: function () { PDFExport(); } });
+
+        var btnTitle = 'Export to CSV';
+        $('#' + gid).jqGrid('navSeparatorAdd', '#' + id, { sepclass: "ui-separator" });
+        $('#' + gid).jqGrid('navButtonAdd', '#' + id, { caption: '', title: btnTitle, position: 'last', buttonicon: 'ui-icon-note', onClickButton: function () { CSVExport(); } });
+
+
+        var btnTitle = 'Print Grid';
+        $('#' + gid).jqGrid('navSeparatorAdd', '#' + id, { sepclass: "ui-separator" });
+        $('#' + gid).jqGrid('navButtonAdd', '#' + id, { caption: '', title: btnTitle, position: 'last', buttonicon: 'ui-icon-print', onClickButton: function () { PrintGrid(gid); } });
+    }
+    function ExcelExport() {
+        window.location = '@Url.Action("ExportCycleSettingMasterToExcel")';
+    }
+    function PDFExport() {
+        window.location = '@Url.Action("ExportCycleSettingMasterToPDF")';
+    }
+    function CSVExport() {
+        window.location = '@Url.Action("ExportCycleSettingMasterToCsv")';
+    }
+    function PrintGrid(gid) {
+
+      
+        var rows = $('#ajaxGrid').jqGrid('getRowData');
+        for (var i = 0; i < rows.length; i++) {
+            var row = rows[i];
+            $('#Table1').append("<tr><td>" + row.Year + "</td><td>" + row.NoOfCycles + "</td><td>" + row.Month + "</td><td>" + row.Status + "</td></tr>");
+
+        }
+        $(function () { printChrome('prt-container') });
+
+
+    }
+
+    function printChrome(divContainer) {
+
+        var printContent = document.getElementById(divContainer);
+        window.document.body.innerHTML = printContent.innerHTML;
+        window.print();
+        window.location.reload();
+    }
+
+
+    </script>
+    <div id='prt-container' style="display:none">
+    <table id="Table1" border="1" width="100%">
+        <thead>
+            <tr>
+                <td><b>Year</b></td>
+                <td><b>NoOfCycles</b></td>
+                <td><b>Month</b></td>
+                <td><b>Status</b></td>
+                
+            </tr>
+
+        </thead>
+        <tbody></tbody>
+
+    </table>
+</div>
+
+
+

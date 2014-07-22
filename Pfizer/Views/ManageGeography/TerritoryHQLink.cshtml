@@ -1,0 +1,642 @@
+﻿@{
+    ViewBag.Title = "TerritoryHQLink";
+    Layout = "~/Views/Shared/MasterLayout.cshtml";
+}
+
+<body>
+    @using (Html.BeginForm(FormMethod.Post))
+    {
+        <div>
+            <table border="0" style="width: 100%">
+                <tr>
+                    <td>
+                        <!--JqGrid Starts-->
+                        <table style="margin-top: 7px; width :100%" border="0">
+                            <tr>
+                                <td>
+                                    <table id="ajaxGrid" style="width: 100%" border="0"></table>
+                                    <div id="ajaxGridPager">
+                                    </div>
+                                </td>
+                            </tr>
+                        </table>
+                        <!--Ends-->
+                    </td>
+                </tr>
+            </table>
+        </div>
+    }
+</body>
+
+<script type="text/javascript">
+
+    function validSpecial(objElement) {
+
+        var re = /^[a-zA-Z0-9-/\s.:]*/gi;
+        if (objElement.value.match(re) != objElement.value) {
+            alert('No Special Characters Allowed');
+            objElement.value = '';
+
+            return false;
+        }
+
+    }
+
+
+    function GetHQFKID() {
+
+        var col1 = $('#ajaxGrid').jqGrid('getGridParam', 'selrow');
+        var HQFKID = $('#ajaxGrid').jqGrid('getCell', col1, 'HQFKID');
+        var TerritoryFKID = $('#ajaxGrid').jqGrid('getCell', col1, 'TerritoryFKID');
+
+        $.getJSON('@Url.Action("GetHQFKID")?HQFKID=' + HQFKID + '&TerritoryFKID=' + TerritoryFKID, function (data) {
+
+        });
+    };
+
+    jQuery(document).ready(function () {
+
+        initGrid();
+    });
+
+    function MoveSelected() {
+
+
+
+        $('#TerCode :selected').each(function (i, selected) {
+
+            if ($(selected).val() != 0) {
+
+                $('#SelTerritory')
+                     .append($('<option selected="selected" value=' + $(selected).val() + '>')
+                     .text($(selected).text()));
+                $('#TerCode :selected').remove();
+            }
+        });
+
+
+    }
+
+    function ReverseSelected() {
+
+        $('#SelTerritory :selected').each(function (i, selected) {
+            $('#TerCode')
+                 .append($('<option>', { value: $(selected).val() })
+                 .text($(selected).text()));
+            $('#SelTerritory :selected').remove();
+
+        });
+
+        $("#SelTerritory option").prop("selected", true);
+        $("#SelTerritory option:first").removeAttr('selected');
+
+    }
+
+
+    function initGrid() {
+        jQuery("#ajaxGrid").jqGrid({
+            url: '@Url.Action("GridDataTerritoryHQLink")',
+
+            datatype: "json",
+            jsonReader: { repeatitems: false, id: "PKID" },
+            colNames: ['PKID', 'HQFKID', 'TerritoryFKID','HQ Name', 'Territory Code', '', '', '', 'Territory Name', 'Status'],
+            colModel: [
+
+                     { name: 'PKID', index: 'PKID', align: 'left', hidden: true, editable: true },
+                     { name: 'HQFKID', index: 'HQFKID', align: 'left', hidden: true, editable: true },
+                     { name: 'TerritoryFKID', index: 'TerritoryFKID', align: 'left', hidden: true, editable: true },
+
+                     {
+                         name: 'CityName', index: 'CityName', align: 'left', editable: true,edittype: 'select', formoptions: {
+                             size: 35,
+                             elmprefix: "<span style='align:left;color:red'>*</span>&nbsp;"
+                         }, searchoptions: { sopt: ['eq', 'bw', 'ew', 'cn'] }, search: true,searchrules:{required:true}, editoptions: {
+                             dataUrl: function () {
+                                 var row_id = $('#ajaxGrid').getGridParam('selrow');
+                                 var HQFKID = $('#ajaxGrid').jqGrid('getCell', row_id, 'HQFKID');
+
+                                 return 'LoadHQName?type=' + 'HQName' + '&data=' + HQFKID;
+                             },
+
+                             dataEvents: [{
+                                 type: 'change',
+                                 fn: function (e) {
+                                     var postData = e.currentTarget.value;
+
+                                     $.ajax({
+                                         type: 'POST',
+                                         url: '@Url.Action("NotSelectedNewTerritoryCode")?type=' + 'NotSelectedNewTerCode',
+                                         data: { HQNameFKID: postData },
+                                         success: function (data) {
+
+                                             $('#tr_TerCode  td:nth-child(2)').html(data);
+
+                                         }
+                                     });
+
+
+
+                                 }
+                             }],
+
+                         }
+                     },
+                     {
+                         name: 'TerCode', index: 'TerCode', align: 'left', editable: true, edittype: 'select', search: false, viewable: true, editoptions: {
+                             multiple: true, dataUrl: function () {
+                                 var row_id = $('#ajaxGrid').getGridParam('selrow');
+                                 var HQFKID = $('#ajaxGrid').jqGrid('getCell', row_id, 'HQFKID');
+                                 var TerritoryFKID = $('#ajaxGrid').jqGrid('getCell', row_id, 'TerritoryFKID');
+                                 return 'NotSelectedTerritoryCode?type=' + 'NotSelectedTerCode' + '&HQFKID=' + HQFKID + '&TerritoryFKID=' + TerritoryFKID;
+                             }
+                         }, formoptions: {
+                             size: 35,
+                             elmprefix: "<span style='align:left;color:red'>*</span>&nbsp;"
+                         }
+                     },
+            {
+                name: 'forward', index: 'forward', align: 'left', hidden: true, editrules: { edithidden: true }, edittype: 'button', editable: true, editoptions: {
+                    value: '>>',
+                    dataEvents:
+                        [
+                        {
+                            type: 'click', fn: function (e) {
+
+                                MoveSelected();
+                            }
+                        }]
+
+                }, formoptions: { rowpos: 5, colpos: 3 }
+            },
+
+            {
+
+                name: 'backward', index: 'backward', align: 'right', hidden: true, edittype: 'button', editrules: { edithidden: true }, editable: true, editoptions: {
+                    value: '<<',
+                    dataEvents:
+                        [
+                        {
+                            type: 'click', fn: function (e) {
+
+                                ReverseSelected();
+                            }
+                        }]
+
+                }, formoptions: { rowpos: 5, colpos: 4 }
+
+
+            },
+
+            {
+                name: 'SelTerritory', index: 'SelTerritory', align: 'left', editable: true,hidden: true,  edittype: 'select', editoptions: {
+                    multiple: true, dataUrl: function () {
+                        var row_id = $('#ajaxGrid').getGridParam('selrow');
+                        var HQFKID = $('#ajaxGrid').jqGrid('getCell', row_id, 'HQFKID');
+                        var TerritoryFKID = $('#ajaxGrid').jqGrid('getCell', row_id, 'TerritoryFKID');
+                        return 'SelectedTerritoryCode?type=' + 'SelectedTerCode' + '&HQFKID=' + HQFKID + '&TerritoryFKID=' + TerritoryFKID;
+                    }
+                }, formoptions: { rowpos: 5, colpos: 5 },viewable:true
+
+            },
+                     {
+                         name: 'TerName', index: 'TerName', align: 'left', resizable: false, formoptions: {
+                             elmprefix: "<span style='align:left;color:red'>*</span>&nbsp;"
+
+                         }, search: false
+                     },
+                     {
+                         name: 'IsActive', index: 'IsActive', align: 'left', resizable: false, editable: true, edittype: 'checkbox', editoptions: { value: "Active:Passive", defaultValue: "Active" }, formoptions: {
+                             elmprefix: "&nbsp;&nbsp;&nbsp;"
+
+                         }, search: false, edit: false
+                     },
+            ],
+            caption: "Territory HQ Link Master",
+            autowidth: true,
+            gridview: true,
+            sortable: true,
+            hidegrid: true,
+            altRows: true,
+            sortname: 'PKID',
+            sortorder: 'desc',
+            rowTotal: 10,
+            rowNum: 10,
+            gridComplete: function () {
+
+                if (jQuery("#ajaxGrid").getGridParam("records") == 0) {
+                    jQuery("#ajaxGrid").addRowData(
+                    "blankRow", { "TerCode": "No records to view" });
+                }
+            },
+            viewrecords: true,
+            pager: $('#ajaxGridPager'),
+            height: 'auto',
+            editable: true,
+            editurl: '@Url.Action("EditTerritoryHQLink")'
+        });
+
+
+        jQuery("#ajaxGrid").jqGrid('navGrid', '#ajaxGridPager', { edit: true, add: true, del: true, search: true, view: true },
+            {
+                // Edit Portion
+                closeOnEscape: true,
+                width: 600,
+                recreateForm: true,
+                checkOnSubmit: true,
+                afterShowForm: function (form_id) {
+
+
+
+                    var thisForm = form_id.selector.replace('FrmGrid_', 'editmod')
+                    var dialogHeight = $(thisForm).height();
+                    var dialogWidth = $(thisForm).width();
+                    var windowHeight = $(window).height();
+                    var windowWidth = $(window).width();
+                    $(thisForm).css('position', 'fixed');
+                    $(thisForm).css('top', ((windowHeight - dialogHeight) / 2));
+                    $(thisForm).css('left', ((windowWidth - dialogWidth) / 2));
+                },
+                beforeShowForm: function (form) {
+
+
+                    $('#tr_IsActive', form).show();
+                    $('#tr_Specialflag', form).show();
+
+                },
+                beforeSubmit: function (response, postdata) {
+
+                    var count = 0;
+                    var error = "";
+                    $('select').css("border", "1px solid #C0C0C0");
+                    if ($("#CityName option:selected").text() == "Select") {
+                        error = "Please Select First HQ Name";
+                        $("#CityName").css("background-color", "#FFE8E8").css("border", "1px solid #FF6666");
+                        count++;
+
+                    }
+                    else if ($('#SelTerritory').val() == 0 || $('#SelTerritory').val() == null) {
+                        error = "Please Select Territory Code";
+                        $("#TerCode").css("background-color", "#FFE8E8").css("border", "1px solid #FF6666");
+                        count++;
+                    }
+
+                    if (parseInt(count) > 0) {
+
+
+                        $('#FormError').html("<td class='ui-state-error' colspan='10'>" + error + ":Field is required</td>");
+
+                        return [false, response.responseText];
+                    }
+                    else {
+
+                        return [true, response.responseText];
+                    }
+                },
+
+                onclickSubmit: function (params, posdata) {
+
+                    params.url = '@Url.Action("AddTerritoryBrickLinkMaster")?SelAreaName=' + $('#SelAreaName').val() + '&TerCode=' + $('#TerCode').val() + '&IsActive=' + $('#IsActive').val();
+                },
+                afterSubmit: function (response, postdata) {
+
+                    if (response.responseText == "\"Territory Brick Links already Exists\"") {
+                        $('#TblGrid_ajaxGrid td.ui-state-highlight').removeClass('ui-state-highlight').addClass('ui-state-error');
+                        return [false, response.responseText];
+                    }
+                    else {
+                        $("#ajaxGrid").jqGrid('setGridParam', { datatype: 'json' }).trigger('reloadGrid');
+                        $('#TblGrid_ajaxGrid td.ui-state-error').removeClass('ui-state-error').addClass('ui-state-highlight');
+
+                        $('select').val(0);
+                        $("#IsActive").prop('checked', false);
+                        return [false, response.responseText];
+                    }
+
+                }
+
+
+
+            },
+
+        {
+            //Add Portion
+            closeOnEscape: true,
+            closeAfterAdd: true,
+            recreateForm: true,
+            width: 450,
+            afterShowForm: function (form_id) {
+                var thisForm = form_id.selector.replace('FrmGrid_', 'editmod');
+                var dialogHeight = $(thisForm).height();
+                var dialogWidth = $(thisForm).width();
+                var windowHeight = $(window).height();
+                var windowWidth = $(window).width();
+                $(thisForm).css('position', 'fixed');
+                $(thisForm).css('top', ((windowHeight - dialogHeight) / 2));
+                $(thisForm).css('left', ((windowWidth - dialogWidth) / 2));
+            },
+            beforeShowForm: function (form) {
+
+                $('#tr_IsActive', form).show();
+                $('#tr_Specialflag', form).show();
+            },
+            beforeSubmit: function (response, postdata) {
+
+                var count = 0;
+                var error = "";
+                $('select').css("border", "1px solid #C0C0C0");
+                if ($("#CityName option:selected").text() == "Select")
+                {
+                    error = "Please Select First HQ Name";
+                    $("#CityName").css("background-color", "#FFE8E8").css("border", "1px solid #FF6666");
+                    count++;
+
+                }
+                else if ($('#SelTerritory').val() == 0 || $('#SelTerritory').val() == null) {
+                    error = "Please Select Territory Code";
+                    $("#TerCode").css("background-color", "#FFE8E8").css("border", "1px solid #FF6666");
+                    count++;
+                }
+
+                if (parseInt(count) > 0) {
+
+
+                    $('#FormError').html("<td class='ui-state-error' colspan='10'>" + error + ":Field is required</td>");
+
+                    return [false, response.responseText];
+                }
+                else {
+
+                    return [true, response.responseText];
+                }
+            },
+
+            onclickSubmit: function (params, posdata) {
+
+                params.url = '@Url.Action("AddTerritoryHQLink")?SelTerritory=' + $('#SelTerritory').val() + '&CityName=' + $('#CityName').val();
+            },
+            afterSubmit: function (response, postdata) {
+
+
+
+                if (response.responseText != "\"Territory HQ Link Master Added Successfully.\"") {
+                    $('#TblGrid_ajaxGrid td.ui-state-highlight').removeClass('ui-state-highlight').addClass('ui-state-error');
+                    return [false, response.responseText];
+                }
+                else {
+
+
+                    $("#ajaxGrid").jqGrid('setGridParam', { datatype: 'json' }).trigger('reloadGrid');
+                    $('#TblGrid_ajaxGrid td.ui-state-error').removeClass('ui-state-error').addClass('ui-state-highlight');
+
+                    $('select').val(0);
+
+                    $('#SelTerritory').empty();
+                    $('#SelTerritory')
+                    .append($('<option selected="selected" value="">')
+                    .text('Select'));
+                    $("#IsActive").prop('checked', false);
+                    return [false, response.responseText];
+                }
+
+
+            }
+        },
+        {
+            //Delete
+            closeOnEscape: true,
+            recreateForm: true,
+            width: 450,
+            beforeShowForm: function (form) {
+
+                //POP UP Screen Fit Screen
+
+                var thisForm = $("#delmod" + jQuery("#ajaxGrid")[0].id);
+                var dialogHeight = $(thisForm).height();
+                var dialogWidth = $(thisForm).width();
+                var windowHeight = $(window).height();
+                var windowWidth = $(window).width();
+                $(thisForm).css('position', 'fixed');
+                $(thisForm).css('top', ((windowHeight - dialogHeight) / 2));
+                $(thisForm).css('left', ((windowWidth - dialogWidth) / 2));
+
+
+
+                var col1 = $('#ajaxGrid').jqGrid('getGridParam', 'selrow');
+
+                var IsActive = $('#ajaxGrid').jqGrid('getCell', col1, 'IsActive');
+
+                $('tr td.delmsg').html('Delete selected record(s)?');
+
+
+                if (IsActive == "Inactive") {
+                    $('tr td.delmsg').html('Record Already Deleted');
+                    $('#dData').hide();
+                }
+                else
+                    $('#dData').show();
+
+                //var col1 = $('#ajaxGrid').jqGrid('getGridParam', 'selrow');
+                //var CityName = $('#ajaxGrid').jqGrid('getCell', col1, 'CityName');
+                //var TerCode = $('#ajaxGrid').jqGrid('getCell', col1, 'TerCode');
+                //var TerName = $('#ajaxGrid').jqGrid('getCell', col1, 'TerName');
+                //var IsActive = $('#ajaxGrid').jqGrid('getCell', col1, 'IsActive');
+
+
+                //GetHQFKID();
+
+                //var html = "<form><table><tr><td class='CaptionTD'>HQ Name</td><td class=='DataTD'>&nbsp;&nbsp;<input type='text' class='FormElement ui-widget-content ui-corner-all' readonly='true'  value='" + CityName + "'/></td> </tr>";
+                //html += "<tr><td class='CaptionTD'>Territory Code</td><td class=='DataTD'>&nbsp;&nbsp;<input type='text' class='FormElement ui-widget-content ui-corner-all' readonly='true'  value='" + TerCode + "'/></td></tr>";
+                //html += "<tr><td class='CaptionTD'>Territory Name</td><td class=='DataTD'>&nbsp;&nbsp;<input type='text' class='FormElement ui-widget-content ui-corner-all' readonly='true'  value='" + TerName + "'/></td></tr>";
+
+                //if (IsActive == "Active")
+                //    html += "<tr><td class='CaptionTD'>Status</td><td class=='DataTD'>&nbsp;&nbsp;<input class='FormElement ui-widget-content ui-corner-all'   type='checkbox' checked  disabled/></td>";
+                //if (IsActive == "Inactive")
+                //    html += "<tr><td class='CaptionTD'>Status</td><td class=='DataTD'>&nbsp;&nbsp; <input class='FormElement ui-widget-content ui-corner-all'   type='checkbox' disabled /></td></tr>";
+                //html += "</table></form>";
+                //$("td.delmsg", form[0]).html(html);
+
+
+                //End POP UP Screen Fit Screen
+
+
+            },
+            afterSubmit: function (response, postdata) {
+                $('tr td.delmsg').html('');
+                $('#dData').hide();
+                $("#ajaxGrid").jqGrid('setGridParam', { datatype: 'json' }).trigger('reloadGrid');
+                $('#DelTbl_ajaxGrid td.ui-state-error').removeClass('ui-state-error').addClass('ui-state-highlight');
+
+                return [false, response.responseText];
+
+
+            }
+        },
+            {
+                //Search
+
+                closeOnEscape: true,
+                modal: true,
+                recreateForm: true,
+                width: 600,
+                caption: "Search",
+                searchOnEnter: true,
+                beforeShowSearch: function (form) {
+
+                    $('#jqg1').val('');
+                    $('#fbox_ajaxGrid_reset').click();
+
+                    var dialogHeight = $("#searchmodfbox_ajaxGrid").height();
+                    var dialogWidth = $("#searchmodfbox_ajaxGrid").width();
+                    var windowHeight = $(window).height();
+                    var windowWidth = $(window).width();
+                    $("#searchmodfbox_ajaxGrid").css('position', 'fixed');
+                    $("#searchmodfbox_ajaxGrid").css('top', ((windowHeight - dialogHeight) / 2));
+                    $("#searchmodfbox_ajaxGrid").css('left', ((windowWidth - dialogWidth) / 2));
+
+                    return [true, ""];
+                },
+            },
+            {
+                //View :
+                closeOnEscape: true,
+                recreateForm: true,
+                width: 600,
+
+                beforeShowForm: function (form) {
+
+
+                    var row_id = $('#ajaxGrid').getGridParam('selrow');
+                    var HQFKID = $('#ajaxGrid').jqGrid('getCell', row_id, 'HQFKID');
+                    var TerritoryFKID = $('#ajaxGrid').jqGrid('getCell', row_id, 'TerritoryFKID');
+
+                    $.ajax({
+                        type: 'POST',
+                        url: '@Url.Action("SelectedTerritoryCode")?type=' + 'viewSelectedTerCode'+ '&HQFKID=' + HQFKID + '&TerritoryFKID=' + TerritoryFKID,
+
+                        success: function (data) {
+
+                            $('#trv_TerCode  td:nth-child(2)').html(data);
+
+                        }
+                    });
+
+                    $('#trv_TerCode  td:nth-child(2)').removeClass('DataTD form-view-data ui-helper-reset ui-widget-content');
+                    var thisForm = $("#viewmod" + jQuery("#ajaxGrid")[0].id);
+                    var dialogHeight = $(thisForm).height();
+                    var dialogWidth = $(thisForm).width();
+                    var windowHeight = $(window).height();
+                    var windowWidth = $(window).width();
+                    $(thisForm).css('position', 'fixed');
+                    $(thisForm).css('top', ((windowHeight - dialogHeight) / 2));
+                    $(thisForm).css('left', ((windowWidth - dialogWidth) / 2));
+
+                    @*  $('#nData').click(function () {
+                      $('#trv_TerCode  td:nth-child(2)').html('');
+
+                        var row_id1 = $('#ajaxGrid').getGridParam('selrow');
+
+                        var CityName = $('#ajaxGrid').jqGrid('getCell', row_id1, 'CityName');
+                        var TerName = $('#ajaxGrid').jqGrid('getCell', row_id1, 'TerName');
+                        var IsActive = $('#ajaxGrid').jqGrid('getCell', row_id1, 'IsActive');
+
+
+                        var HQFKID1 = $('#ajaxGrid').jqGrid('getCell', row_id1, 'HQFKID');
+                        var TerritoryFKID1 = $('#ajaxGrid').jqGrid('getCell', row_id1, 'TerritoryFKID');
+
+                        $.ajax({
+                            type: 'POST',
+                            url: '@Url.Action("SelectedTerritoryCode")?type=' + 'viewSelectedTerCode' + '&HQFKID=' + HQFKID1 + '&TerritoryFKID=' + TerritoryFKID1,
+
+                            success: function (data) {
+
+                                $('#trv_TerCode  td:nth-child(2)').html(data);
+
+                            }
+                        });
+
+                        $('#trv_TerCode  td:nth-child(2)').removeClass('DataTD form-view-data ui-helper-reset ui-widget-content');
+                        $('#trv_CityName  td:nth-child(2)').html(CityName);
+                        $('#trv_TerName  td:nth-child(2)').html(TerName);
+                        $('#trv_IsActive  td:nth-child(2)').html(IsActive);
+                        $('table tr:trv_TerCode').css('display', 'table-row');
+                        return [true];
+                    });
+*@
+                    },
+
+
+
+                    }
+
+                );
+
+
+        setMethod('ajaxGrid', 'ajaxGridPager', 'Customer Grid');
+
+    }
+
+    function setMethod(gid, id, pgTitle) {
+        // alert(1);
+        var btnTitle = 'Export to Excel';
+        $('#' + gid).jqGrid('navSeparatorAdd', '#' + id, { sepclass: "ui-separator" });
+        $('#' + gid).jqGrid('navButtonAdd', '#' + id, { caption: '', title: btnTitle, position: 'last', buttonicon: 'ui-icon-calculator', onClickButton: function () { ExcelExport(); } });
+
+        var btnTitle = 'Export to PDF';
+        $('#' + gid).jqGrid('navSeparatorAdd', '#' + id, { sepclass: "ui-separator" });
+        $('#' + gid).jqGrid('navButtonAdd', '#' + id, { caption: '', title: btnTitle, position: 'last', buttonicon: 'ui-icon-bookmark', onClickButton: function () { PDFExport(); } });
+
+        var btnTitle = 'Export to CSV';
+        $('#' + gid).jqGrid('navSeparatorAdd', '#' + id, { sepclass: "ui-separator" });
+        $('#' + gid).jqGrid('navButtonAdd', '#' + id, { caption: '', title: btnTitle, position: 'last', buttonicon: 'ui-icon-note', onClickButton: function () { CSVExport(); } });
+
+
+        var btnTitle = 'Print Grid';
+        $('#' + gid).jqGrid('navSeparatorAdd', '#' + id, { sepclass: "ui-separator" });
+        $('#' + gid).jqGrid('navButtonAdd', '#' + id, { caption: '', title: btnTitle, position: 'last', buttonicon: 'ui-icon-print', onClickButton: function () { PrintGrid(gid); } });
+    }
+    function ExcelExport() {
+        window.location = '@Url.Action("ExportTerritoryHQLinkToExcel")';
+    }
+    function PDFExport() {
+        window.location = '@Url.Action("ExportTerritoryHQLinkToPDF")';
+    }
+    function CSVExport() {
+        window.location = '@Url.Action("ExportTerritoryHQLinkToCsv")';
+    }
+    function PrintGrid(gid) {
+
+        var rows = $('#ajaxGrid').jqGrid('getRowData');
+        for (var i = 0; i < rows.length; i++) {
+            var row = rows[i];
+            $('#Table1').append("<tr><td>" + row.CityName + "</td><td>" + row.TerCode + "</td><td>" + row.TerName + "</td><td>" + row.IsActive + "</td></tr>");
+
+        }
+        $(function () { printChrome('prt-container') });
+
+    }
+
+    function printChrome(divContainer) {
+
+        var printContent = document.getElementById(divContainer);
+        window.document.body.innerHTML = printContent.innerHTML;
+        window.print();
+        window.location.reload();
+    }
+
+
+</script>
+<div id='prt-container' style="display:none">
+    <table id="Table1" border="1" width="100%">
+        <thead>
+            <tr>
+                <td><b>HQ Name</b></td>
+                <td><b>Territory Code</b></td>
+                <td><b>Territory Name</b></td>  
+                <td><b>Status</b></td>
+            </tr>
+
+        </thead>
+        <tbody></tbody>
+
+    </table>
+</div>

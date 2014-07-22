@@ -1,0 +1,336 @@
+﻿@{
+    ViewBag.Title = "CreateUser";
+    Layout = "~/Views/Shared/MasterLayout.cshtml";
+}
+
+<body>
+    @using (Html.BeginForm(FormMethod.Post))
+{
+        
+    <div class="inner_tbldiv">
+        <div class="man_field">* Mandatory Field</div><label id="lblError" name="lblError" style=" color:red"> </label>
+        <table width="100%" border="0" cellspacing="0" cellpadding="0" align="left" class="inner_tb">
+            <tr>
+                <th colspan="2">Create User</th>
+            </tr>
+
+            <tr>
+                <td width="35%" class="tb-r2">Employee<span class="star">*</span></td>
+                <td width="65%" class="tb-r2">
+                    @Html.DropDownList("ddlEmployeeList", PfizerEntity.UsefulLink.GetEmployee(), "Select")
+                </td>
+            </tr>
+            <tr>
+                <td width="35%" class="tb-r1">Login User<span class="star">*</span></td>
+                <td width="65%" class="tb-r1">
+                    <input type="text" class="tboxlarge" id="txtLogin" name="txtLogin" value="" />
+                    <br /><br />
+                    &nbsp;&nbsp;&nbsp;<input type="checkbox" name="checkbox" id="chkPwd" class="checkbox" />
+                    <span class="checkbox_txt">Set Default Password</span>
+
+                </td>
+            </tr>
+
+            <tr>
+                <td width="35%" class="tb-r2">Password<span class="star">*</span></td>
+                <td width="65%" class="tb-r2" valign="middle">
+                    <input type="password" id="txtPwd" class="tboxlarge" value="" name="txtPwd" />
+                    <br /><br />
+                    &nbsp;<input type="checkbox" name="checkbox" id="chkAnswers" class="checkbox" />
+                    <span class="checkbox_txt">Set Default Answer</span>
+                    <input class="orange_button add_btn" type="button" id="btnAnswer" value="Show Answer">
+
+
+                </td>
+            </tr>
+
+            <tr>
+                <td width="35%" class="tb-r1">Confirm Password<span class="star">*</span></td>
+                <td width="65%" class="tb-r1">
+                    <input type="password" id="txtConfirmPwd" name="txtConfirmPwd" class="tboxlarge" value="" />
+                </td>
+            </tr>
+            
+            <tr>
+                <td width="35%" class="tb-r1">Role<span class="star">*</span></td>
+                <td width="65%" class="tb-r1">
+                    <table>
+                        <tr>
+                            <td>
+
+                                @Html.ListBox("lstGetRole", new[]{
+
+                                            new SelectListItem { Text="", Value=""} }, new { @class = "listboxnew", @size = "10" })
+
+
+                            </td>
+                            <td>
+                                <input class="orange_button add_btn" type="button" width="5%" id="btnForward" value=">>"><br />
+                                <br /><input class="orange_button add_btn" type="button" id="btnReverse" width="5%" value="<<">
+                            </td>
+
+                            <td>
+                                @Html.ListBox("lstGetSelectedRole", new[]{
+
+                                            new SelectListItem { Text="", Value=""} }, new { @class = "listboxnew", @size = "10"})
+                            </td>
+                        </tr>
+                    </table>
+
+                </td>
+            </tr>
+
+            <tr>
+                <td colspan="2" class="tb-r1">
+                    <table width="100%" align="center">
+                        <tr>
+                            <td width="50%" valign="middle" align="center">
+
+                                <div id="divQuestion"></div>
+                            </td>
+                        </tr>
+                    </table>
+                </td>
+
+            </tr>
+            <tr>
+                <td colspan="2" valign="middle" align="center"><input class="blue_button add_btn" type="button" width="5%" id="btnSubmit" value="Submit"> &nbsp;&nbsp;<input class="blue_button add_btn" type="button" width="5%" value="Clear">
+                   
+                </td>
+
+
+            </tr>
+
+        </table>
+    </div>
+}
+
+    <script type="text/javascript">
+
+        $('#btnSubmit').click(function () {
+            var str = "";
+            var i = 1;
+            var msg = "";
+
+            if ($('#ddlEmployeeList').val() == '')
+            { 
+                $('[id$=lblError]').text("Please Select Employee");
+                $("#ddlEmployeeList").css("background-color", "#FFE8E8").css("border", "1px solid #FF6666");
+                $('#ddlEmployeeList').focus();
+                return false;
+            }
+            else if ($('#txtLogin').val() == '') {
+                $('[id$=lblError]').text("Please Enter Login User");
+                $("#txtLogin").css("background-color", "#FFE8E8").css("border", "1px solid #FF6666");
+                $('#txtLogin').focus();
+                return false;
+            }
+            else if ($('#txtPwd').val() == '') {
+                $('[id$=lblError]').text("Please Enter Password");
+                $("#txtPwd").css("background-color", "#FFE8E8").css("border", "1px solid #FF6666");
+                $('#txtPwd').focus();
+                return false;
+            }
+
+            else if ($('#txtConfirmPwd').val() == '') {
+                $('[id$=lblError]').text("Please Enter Confirm Password");
+                $("#txtConfirmPwd").css("background-color", "#FFE8E8").css("border", "1px solid #FF6666");
+                $('#txtConfirmPwd').focus();
+                return false;
+            }
+
+            
+
+            
+
+            var role = "";
+
+            $('#lstGetSelectedRole option').each(function() {
+                if ($(this).not(':selected')) {
+                    
+                    role += $(this).val() + ","; 
+
+                }
+            });
+
+             
+            if(role=="0,")
+            {
+                $('[id$=lblError]').text("Please Select Role");
+                $("#lstGetRole").css("background-color", "#FFE8E8").css("border", "1px solid #FF6666");
+                $('#lstGetRole').focus();
+                return false;
+            }
+            
+            $("#divQuestion :text").each(function () {
+                 
+                if (i == 1) {
+                    
+                    str += $(this).val() + "|";
+                    i++;
+                }
+                else {
+                    str += $(this).val() + "|"; 
+                    i = 1;
+                }
+
+            });
+             
+
+
+            $.getJSON('@Url.Action("JsPostUser")?XMLstr=' + str + '&Employee=' + $('#ddlEmployeeList').val() + '&Login=' + $('#txtLogin').val() + '&Pwd=' + $('#txtPwd').val() + '&ConfirmPwd=' + $('#txtConfirmPwd').val() + '&role=' + role, function (data) {
+                $('select').css("border", "1px solid #C0C0C0");
+                $("input[type=text]").css("border", "1px solid #C0C0C0");
+                $('[id$=lblError]').text(data.rslt);
+                
+                
+               
+                $('select').val('');
+                $("#txtLogin").val('');
+                $("#txtPwd").val('');
+                $("#txtConfirmPwd").val('');
+                $('#lstGetRole').empty();
+                $('#lstGetSelectedRole').empty();
+
+                $('#lstGetRole')
+                        .append($('<option selected="selected" value="0">')
+                      .text('Select'));
+
+                $('#lstGetSelectedRole')
+                      .append($('<option selected="selected" value="0">')
+                      .text('Select'));
+                $("div").scrollTop(0);
+                
+                
+            });
+
+          
+            
+        });
+
+        $('#btnForward').click(function () {
+
+            $('#lstGetRole :selected').each(function (i, selected) {
+
+                if ($(selected).val() != "0") {
+
+                    $('#lstGetSelectedRole')
+                         .append($('<option selected="selected" value=' + $(selected).val() + '>')
+                         .text($(selected).text()));
+                    $('#lstGetRole :selected').remove();
+                }
+
+
+            });
+
+
+        });
+
+        $('#btnReverse').click(function () {
+
+            $('#lstGetSelectedRole :selected').each(function (i, selected) {
+                if ($(selected).val() != "0") {
+                    $('#lstGetRole')
+                         .append($('<option>', { value: $(selected).val() })
+                         .text($(selected).text()));
+                    $('#lstGetSelectedRole :selected').remove();
+                }
+
+            });
+
+            $("#lstGetSelectedRole option").prop("selected", true);
+            $("#lstGetSelectedRole option:first").removeAttr('selected');
+          
+
+        });
+
+
+
+    $('#chkPwd').change(function () {
+        if ($(this).is(":checked")) {
+            $('#txtPwd').val('optimaii');
+            $('#txtConfirmPwd').val('optimaii');
+        }
+
+    });
+
+
+    $('#chkAnswers').change(function () {
+        if ($(this).is(":checked")) {
+
+
+            $.getJSON('@Url.Action("JsonSetDefault")?id=' + $('#ddlEmployeeList').val(), function (data) {
+                    $('#divQuestion').html(data.tbl);
+                });
+
+            }
+            else {
+
+               $.getJSON('@Url.Action("JsonGetQuestion")?id=' + $('#ddlEmployeeList').val(), function (data) {
+                    $('#divQuestion').html(data.tbl);
+                });
+
+            }
+
+        });
+
+
+
+        $(document).ready(function () {
+
+
+
+            $('#lstGetRole').append("<option value='0'>Select</option>");
+            $('#lstGetSelectedRole').append("<option value='0'>Select</option>");
+            $('#ddlEmployeeList').change(function () {
+
+                $('#lstGetRole').empty();
+                $('#lstGetSelectedRole').empty();
+
+                $('#lstGetRole').append("<option value='0'>Select</option>");
+                $.getJSON('@Url.Action("JsonLoadUserRoles")?pkid=' + $('#ddlEmployeeList').val() + '&type=' + '1', function (data) {
+                $('#txtLogin').val(data.loginUser);
+                $('#txtPwd').val(data.pwd);
+                $('#txtConfirmPwd').val(data.pwd);
+
+                for (var i = 0; i < data.countyCount; i++) {
+                    $('#lstGetRole').append("<option value='" + data.countyItems[i].Value + "'>" + data.countyItems[i].Text + "</option>");
+                }
+
+                
+
+
+            });
+            $('#lstGetSelectedRole').append("<option value='0'>Select</option>");
+            $.getJSON('@Url.Action("JsonLoadUserRoles")?pkid=' + $('#ddlEmployeeList').val() + '&type=' + '2', function (data) {
+                for (var i = 0; i < data.countyCount; i++) {
+                    $('#lstGetSelectedRole').append("<option value='" + data.countyItems[i].Value + "'>" + data.countyItems[i].Text + "</option>");
+                }
+
+
+            });
+
+
+
+            }); 
+
+
+        $('#btnAnswer').click(function () {
+
+            if ($('#ddlEmployeeList').val() != "" && $('#ddlEmployeeList').val() != "0") {
+                $.getJSON('@Url.Action("JsonGetQuestion")?id=' + $('#ddlEmployeeList').val(), function (data) {
+                    $('#divQuestion').html(data.tbl);
+                });
+            }
+            else {
+                $.getJSON('@Url.Action("JsonGetDefaultQuestion")', function (data) {
+                    $('#divQuestion').html(data.tbl);
+                });
+            }
+
+        });
+
+    });
+
+    </script>
+</body>

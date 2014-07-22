@@ -1,0 +1,30 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>JamesDibble.Extensions.System.Data</name>
+    </assembly>
+    <members>
+        <member name="T:System.Data.Entity.EntityFrameworkExtensions">
+            <summary>
+            The entity framework extensions.
+            </summary>
+        </member>
+        <member name="M:System.Data.Entity.EntityFrameworkExtensions.Includes``1(System.Linq.IQueryable{``0},System.Linq.Expressions.Expression{System.Func{``0,System.Object}}[])">
+            <summary>
+            Retrieve related objects for the given <typeparamref name="T"/>.
+            </summary>
+            <param name="query">
+            The set of objects to include objects onto.
+            </param>
+            <param name="includeProperties">
+            The related objects to include in the set.
+            </param>
+            <typeparam name="T">
+            The type of the <see cref="T:System.Linq.IQueryable`1"/>.
+            </typeparam>
+            <returns>
+            The <see cref="T:System.Linq.IQueryable"/>.
+            </returns>
+        </member>
+    </members>
+</doc>

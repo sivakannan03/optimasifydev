@@ -1,0 +1,600 @@
+﻿@{
+    ViewBag.Title = "HospitalMaster";
+    Layout = "~/Views/Shared/MasterLayout.cshtml";
+}
+
+<h2>HospitalMaster</h2>
+
+
+<body>
+    @using (Html.BeginForm(FormMethod.Post))
+    {
+        <div>
+            <table border="0" style="width: 100%">
+                <tr>
+                    <td>
+                        <!--JqGrid Starts-->
+                        <table style="margin-top: 7px; width :100%" border="0">
+                            <tr>
+                                <td>
+                                    <table id="ajaxGrid" style="width: 100%" border="0"></table>
+                                    <div id="ajaxGridPager">
+                                    </div>
+                                </td>
+                            </tr>
+                        </table>
+                        <!--Ends-->
+                    </td>
+                </tr>
+
+            </table>
+        </div>
+        <script type="text/javascript">
+
+           
+
+            jQuery(document).ready(function () {
+
+                initGrid();
+            });
+
+            function initGrid() {
+                jQuery("#ajaxGrid").jqGrid({
+                    url: '@Url.Action("GridDataHospitalMaster")',
+
+                    datatype: "json",
+                    jsonReader: { repeatitems: false, id: "HospitalID" },
+                    colNames: ['PKID', 'Hospital Name', 'Address', 'Street', 'City', 'Area', 'ZipCode', 'Phone Number', 'Email', 'Status', 'CityCode'],
+                    colModel: [
+
+                         { name: 'HospitalID', index: 'PKID', align: 'left', hidden: true, editrules: { edithidden: true, required: true },viewable:false },
+
+                         {
+                             name: 'NameofHospital', index: 'NameofHospital', align: 'left', editable: true, editrules: { edithidden: true, required: false },
+                             editoptions: { maxlength: 100, dataEvents: [{ type: 'keyup', fn: function (e) { CharacterAndNumber(this); } }] },
+                             formoptions: {size: 35,
+                                 elmprefix: "<span style='align:left;color:red'>*</span>&nbsp;"
+                             }, searchoptions: { sopt: ['eq', 'bw', 'ew', 'cn'] },search: true, searchrules: { required: true },
+                         },
+
+                         {
+                             name: 'HotelAddress', index: 'HotelAddress', align: 'left', editable: true, editrules: { edithidden: true, required: false },
+                             editoptions: { maxlength: 50, dataEvents: [{ type: 'keyup', fn: function (e) { CharacterAndNumber(this); } }] },
+                             formoptions: {size: 35,
+                                 elmprefix: "<span style='align:left;color:red'>*</span>&nbsp;"
+                             }, searchoptions: { sopt: ['eq', 'bw', 'ew', 'cn'] }, search: false
+                         },
+
+                         {
+                             name: 'Street', index: 'Street', align: 'left', editable: true, editrules: { edithidden: true, required: false },
+                             editoptions: { maxlength: 50, dataEvents: [{ type: 'keyup', fn: function (e) { CharacterAndNumber(this); } }] },
+                             formoptions: {size: 35,
+                                 elmprefix: "<span style='align:left;color:red'>*</span>&nbsp;"
+                             }, searchoptions: { sopt: ['eq', 'bw', 'ew', 'cn'] }, search: false
+                         },
+
+
+                         {
+                             name: 'City', index: 'City', align: 'left', editable: true, editrules: { edithidden: true }, editrules: { edithidden: true, required: false }, edittype: 'select', editoptions: {
+                                 dataUrl: function () {
+
+                                     var row_id = $('#ajaxGrid').getGridParam('selrow');
+                                     return 'AllCityTerritoryMaster?type=' + 'City' + '&data=' + row_id;
+                                                                         
+                                 },
+
+                                 dataEvents: [{
+                                     type: 'change',
+                                     fn: function (e) {
+                                         var postData = e.currentTarget.value;
+                                          //alert(postData);
+                                         $.ajax({
+                                             type: 'POST',
+                                             url: '@Url.Action("AreaNameLoad")?type=' + 'AreaName',
+                                             data: { AreaCode: postData },
+                                             success: function (data) {                                                 
+                                                 $('#tr_Area  td:nth-child(2)').html("<span style='align:left;color:red'>*</span><td class='DataTD'>" + data + "</td>");
+
+                                             }
+                                         });
+
+                                     }
+                                 }]
+                            }
+                             , formoptions: {
+                                 size: 35,
+                                 elmprefix: "<span style='align:left;color:red'>*</span>&nbsp;"
+                             }, searchoptions: { sopt: ['eq', 'bw', 'ew', 'cn'] }, search: false
+                         },
+
+                            {
+                                name: 'Area', index: 'Area', align: 'left', editable: true, hidden: false ,search: false, editrules: { edithidden: true, required: false }, edittype: 'select',
+                                formoptions: {
+                                    size: 35,
+                                    elmprefix: "<span style='align:left;color:red'>*</span>&nbsp;"
+                                },
+                             editoptions: { dataUrl: function () {
+                                 var row_id = $('#ajaxGrid').getGridParam('selrow');
+                                 var City = $('#ajaxGrid').jqGrid('getCell', row_id, 'CityCode');
+                                 return 'AreaCodeLoad?type=' + 'CityName' + '&City=' + City;             
+                             }
+                             },
+                         },
+
+                          {
+                              name: 'ZipCode', index: 'ZipCode', align: 'left', editable: true, editrules: { edithidden: true, required: false },
+                              editoptions: { maxlength: 6, dataEvents: [{ type: 'keyup', fn: function (e) { OnlyNumber(this); } }] },
+                              formoptions: {size: 35,
+                                  elmprefix: "<span style='align:left;color:red'>*</span>&nbsp;"
+                              }, searchoptions: { sopt: ['eq', 'bw', 'ew', 'cn'] }, search: false
+                          },
+
+                         {
+                             name: 'PhoneNumber', index: 'PhoneNumber', align: 'left', editable: true, editrules: { edithidden: true, required: false },
+                             editoptions: { maxlength:10, dataEvents: [{ type: 'keyup', fn: function (e) { OnlyNumber(this); } }] },
+                             formoptions: {size: 35, elmprefix: "&nbsp;&nbsp;&nbsp;",
+                             }, searchoptions: { sopt: ['eq', 'bw', 'ew', 'cn'] }, search: false
+                         },
+
+                         {
+                             name: 'Email', index: 'Email', align: 'left', editable: true, editrules: { edithidden: true,required:false }, formoptions: {
+                                 size: 35, elmprefix: "&nbsp;&nbsp;&nbsp;",
+                             }, searchoptions: { sopt: ['eq', 'bw', 'ew', 'cn'] }, search: false
+                         },
+
+
+                         {
+                             name: 'Status', index: 'Status', align: 'left', resizable: false, editable: true, edittype: 'checkbox', editoptions: { value: "Active:Passive", defaultValue: "Active" }, formoptions: {
+                                 elmprefix: "&nbsp;&nbsp;&nbsp;"
+
+                             }, search: false
+                         },
+                           { name: 'CityCode', index: 'CityCode', align: 'left', hidden: true, editrules: { edithidden: true, required: false },viewable:false },
+                    ],
+                    caption: "Hospital Master",
+                    autowidth: true,
+                    gridview: true,
+                    hidegrid: true,
+                    altRows: true,
+                    rowTotal: 10,
+                    rowNum: 10,
+                    gridComplete: function () {
+
+                        if (jQuery("#ajaxGrid").getGridParam("records") == 0) {
+                            jQuery("#ajaxGrid").addRowData(
+                            "blankRow", { "NameofHospital": "No records to view" });
+                        }
+                    },
+                    viewrecords: true,
+                    pager: $('#ajaxGridPager'),
+                    height: 'auto',
+                    editable: true,
+                    editurl: '@Url.Action("EditHospitalMaster")'
+                });
+
+           jQuery("#ajaxGrid").jqGrid('navGrid', '#ajaxGridPager', { edit: true, add: true, del: true, search: true, view: true },
+                    {
+                        // Edit Portion
+                        closeOnEscape: true,
+                        width: 450,
+                        closeOnEscape: true,
+                        modal: true,
+                        width: 600,
+                        recreateForm: true,
+                        checkOnSubmit: true,
+                        afterShowForm: function (form_id) {
+                            var thisForm = form_id.selector.replace('FrmGrid_', 'editmod')
+                            var dialogHeight = $(thisForm).height();
+                            var dialogWidth = $(thisForm).width();
+                            var windowHeight = $(window).height();
+                            var windowWidth = $(window).width();
+                            $(thisForm).css('position', 'fixed');
+                            $(thisForm).css('top', ((windowHeight - dialogHeight) / 2));
+                            $(thisForm).css('left', ((windowWidth - dialogWidth) / 2));
+
+                            var sel_id = $('#ajaxGrid').jqGrid('getGridParam', 'selrow');
+
+                            var City = $('#ajaxGrid').jqGrid('getCell', sel_id, 'City');
+
+                            //alert(City);
+                        },
+                        beforeShowForm: function (form) {
+
+                            var sel_id = $('#ajaxGrid').jqGrid('getGridParam', 'selrow');
+                            var value = $('#ajaxGrid').jqGrid('getCell', sel_id, 'Status');
+
+                            if (value == 'Inactive') {
+                                $('#tr_Status', form).show();
+                            }
+                            else {
+
+                                $('#tr_Status', form).hide();
+                            }
+                        },
+                        beforeSubmit: function (response, postdata) {
+
+                            $('select').css("border", "1px solid #C0C0C0");
+                            $("input[type=text]").css("border", "1px solid #C0C0C0");
+                            var error = " ";
+                            if ($("#NameofHospital").val().charAt(0) == ' ' || $("#NameofHospital").val().charAt($("#NameofHospital").val().length - 1) == ' ' || $("#NameofHospital").val() == "") {
+                                $('#TblGrid_ajaxGrid td.ui-state-highlight').removeClass('ui-state-highlight').addClass('ui-state-error');
+                                $("#NameofHospital").css("background-color", "#FFE8E8").css("border", "1px solid #FF6666");
+                                $('#NameofHospital').val("");
+                                $('#NameofHospital').focus();
+                                return [false, 'Enter Valid NameofHospital'];
+                            }
+                            else if ($("#HotelAddress").val().charAt(0) == ' ' || $("#HotelAddress").val().charAt($("#HotelAddress").val().length - 1) == ' ' || $("#HotelAddress").val() == "") {
+                                $('#TblGrid_ajaxGrid td.ui-state-highlight').removeClass('ui-state-highlight').addClass('ui-state-error');
+                                $("#HotelAddress").css("background-color", "#FFE8E8").css("border", "1px solid #FF6666");
+                                $('#HotelAddress').val("");
+                                $('#HotelAddress').focus();
+                                return [false, 'Enter Valid HotelAddress'];
+                            }
+                            else if ($("#Street").val().charAt(0) == ' ' || $("#Street").val().charAt($("#Street").val().length - 1) == ' ' || $("#Street").val() == "") {
+                                $('#TblGrid_ajaxGrid td.ui-state-highlight').removeClass('ui-state-highlight').addClass('ui-state-error');
+                                $("#Street").css("background-color", "#FFE8E8").css("border", "1px solid #FF6666");
+                                $('#Street').val("");
+                                $('#Street').focus();
+                                return [false, 'Enter Valid Street'];
+                            }
+                            else if ($("#City").val() == 0) {
+                                error += "City";
+                                $('#FormError').html("<td class='ui-state-error' colspan='2'>" + error + ":Field is required</td>");
+                                $("#City").css("background-color", "#FFE8E8").css("border", "1px solid #FF6666");
+                                return [false, response.responseText];
+                            }
+                            else if ($("#Area").val() == 0) {
+                                error += "Area";
+                                $('#FormError').html("<td class='ui-state-error' colspan='2'>" + error + ":Field is required</td>");
+                                $("#Area").css("background-color", "#FFE8E8").css("border", "1px solid #FF6666");
+                                return [false, response.responseText];
+                            }
+                            else if ($("#ZipCode").val().charAt(0) == ' ' || $("#ZipCode").val().charAt($("#ZipCode").val().length - 1) == ' ' || $("#ZipCode").val() == "") {
+                                $('#TblGrid_ajaxGrid td.ui-state-highlight').removeClass('ui-state-highlight').addClass('ui-state-error');
+                                $("#ZipCode").css("background-color", "#FFE8E8").css("border", "1px solid #FF6666");
+                                $('#ZipCode').val("");
+                                $('#ZipCode').focus();
+                                return [false, 'Enter Valid ZipCode'];
+                            }
+
+                            else {
+                                return [true, response.responseText];
+                            }
+
+                        },
+
+                        afterSubmit: function (response, postdata) {
+                           $("#ajaxGrid").jqGrid('setGridParam', { datatype: 'json' }).trigger('reloadGrid');
+                            $('#TblGrid_ajaxGrid td.ui-state-error').removeClass('ui-state-error').addClass('ui-state-highlight');
+                            $('#NameofHospital').val("");
+                            $('#HotelAddress').val("");
+                            $('#Street').val("");
+                            $('#City').val(0);
+                            $('#Area').val(0);
+                            $('#ZipCode').val("");
+                            $('#PhoneNumber').val("");
+                            $('#Email').val("");
+                            $("#Status").prop("checked", false);
+                           return [false, response.responseText];
+                        },
+                        closeAfterEdit: true,
+                     
+                    },
+
+                {
+                    //Add Portion
+                    closeOnEscape: true,
+                    closeAfterAdd: true,
+                    modal: true,
+                    recreateForm: true,
+                    width: 450,
+                    afterShowForm: function (form_id) {
+                        var thisForm = form_id.selector.replace('FrmGrid_', 'editmod');
+                        var dialogHeight = $(thisForm).height();
+                        var dialogWidth = $(thisForm).width();
+                        var windowHeight = $(window).height();
+                        var windowWidth = $(window).width();
+                        $(thisForm).css('position', 'fixed');
+                        $(thisForm).css('top', ((windowHeight - dialogHeight) / 2));
+                        $(thisForm).css('left', ((windowWidth - dialogWidth) / 2));
+                    },
+                    beforeShowForm: function (form) {
+
+                        $('#tr_Status', form).hide();
+                    },
+
+
+                    beforeSubmit: function (response, postdata) {
+
+                        $('select').css("border", "1px solid #C0C0C0");
+                        $("input[type=text]").css("border", "1px solid #C0C0C0");
+                        var error = " ";
+                        if ($("#NameofHospital").val().charAt(0) == ' ' || $("#NameofHospital").val().charAt($("#NameofHospital").val().length - 1) == ' ' || $("#NameofHospital").val() == "") {
+                            $('#TblGrid_ajaxGrid td.ui-state-highlight').removeClass('ui-state-highlight').addClass('ui-state-error');
+                            $("#NameofHospital").css("background-color", "#FFE8E8").css("border", "1px solid #FF6666");
+                            $('#NameofHospital').val("");
+                            $('#NameofHospital').focus();
+                            return [false, 'Enter Valid NameofHospital'];
+                        }
+                        else if ($("#HotelAddress").val().charAt(0) == ' ' || $("#HotelAddress").val().charAt($("#HotelAddress").val().length - 1) == ' ' || $("#HotelAddress").val() == "") {
+                            $('#TblGrid_ajaxGrid td.ui-state-highlight').removeClass('ui-state-highlight').addClass('ui-state-error');
+                            $("#HotelAddress").css("background-color", "#FFE8E8").css("border", "1px solid #FF6666");
+                            $('#HotelAddress').val("");
+                            $('#HotelAddress').focus();
+                            return [false, 'Enter Valid HotelAddress'];
+                        }
+                        else if ($("#Street").val().charAt(0) == ' ' || $("#Street").val().charAt($("#Street").val().length - 1) == ' ' || $("#Street").val() == "") {
+                            $('#TblGrid_ajaxGrid td.ui-state-highlight').removeClass('ui-state-highlight').addClass('ui-state-error');
+                            $("#Street").css("background-color", "#FFE8E8").css("border", "1px solid #FF6666");
+                            $('#Street').val("");
+                            $('#Street').focus();
+                            return [false, 'Enter Valid Street'];
+                        }
+                        else if ($("#City").val() == 0) {
+                            error += "City";
+                            $('#FormError').html("<td class='ui-state-error' colspan='2'>" + error + ":Field is required</td>");
+                            $("#City").css("background-color", "#FFE8E8").css("border", "1px solid #FF6666");
+                            return [false, response.responseText];
+                        }
+                        else if($("#Area").val() == 0)
+                        {
+                            error += "Area";
+                            $('#FormError').html("<td class='ui-state-error' colspan='2'>" + error + ":Field is required</td>");
+                            $("#Area").css("background-color", "#FFE8E8").css("border", "1px solid #FF6666");
+                            return [false, response.responseText];
+                        }
+                        else if ($("#ZipCode").val().charAt(0) == ' ' || $("#ZipCode").val().charAt($("#ZipCode").val().length - 1) == ' ' || $("#ZipCode").val() == "") {
+                            $('#TblGrid_ajaxGrid td.ui-state-highlight').removeClass('ui-state-highlight').addClass('ui-state-error');
+                            $("#ZipCode").css("background-color", "#FFE8E8").css("border", "1px solid #FF6666");
+                            $('#ZipCode').val("");
+                            $('#ZipCode').focus();
+                            return [false, 'Enter Valid ZipCode'];
+                        }
+
+                        else {
+                            return [true, response.responseText];
+                        }
+
+                    },
+                    afterSubmit: function (response, postdata) {
+                        $("#ajaxGrid").jqGrid('setGridParam', { datatype: 'json' }).trigger('reloadGrid');
+                        var errorId = " ";
+                        if (response.responseText == "\"Hospital Master Added Successfully.\"") {
+                            errorId += "Hospital Master Added Successfully";
+                            $('#FormError').html("<td class='ui-state-error' colspan='10'>" + errorId + "</td>");
+                            $('#TblGrid_ajaxGrid td.ui-state-error').removeClass('ui-state-error').addClass('ui-state-highlight');
+                            $('#NameofHospital').val("");
+                            $('#HotelAddress').val("");
+                            $('#Street').val("");
+                            $('#City').val(0);
+                            $('#Area').val(0);
+                            $('#ZipCode').val("");
+                            $('#PhoneNumber').val("");
+                            $('#Email').val("");
+                            return [false, response.responseText];
+                        }
+                        else {
+                             errorId += "Hospital Master already Exists";
+                            $('#FormError').html("<td class='ui-state-error' colspan='2'>" + errorId + "</td>");
+                            $('#TblGrid_ajaxGrid td.ui-state-error').removeClass('ui-state-highlight').addClass('ui-state-error');
+                            $('#NameofHospital').val("");
+                            $('#HotelAddress').val("");
+                            $('#Street').val("");
+                            $('#City').val(0);
+                            $('#Area').val(0);
+                            $('#ZipCode').val("");
+                            $('#PhoneNumber').val("");
+                            $('#Email').val("");
+                            return [false, response.responseText];
+
+                        }
+
+
+                    },
+                    onclickSubmit: function (params, posdata) {
+                        //string oper, string NodeType, string Team, string ActivityName, string Defaultflag, string Specialflag, string Fieldwork, string id, string IsActive
+                        params.url = '@Url.Action("AddHospitalMaster")?NameofHospital=' + $('#NameofHospital').val() + '&HotelAddress=' + $('#HotelAddress').val() + '&Street=' + $('#Street').val() + '&City=' + $('#City').val() + '&Area=' + $('#Area').val() + '&ZipCode=' + $('#ZipCode').val() + '&PhoneNumber=' + $('#PhoneNumber').val() + '&Email=' + $('#Email').val();
+
+                    },
+
+
+                    
+                },
+
+                 {
+                     //DELETE
+                     closeOnEscape: true,
+                     closeAfterDelete: true,
+                     reloadAfterSubmit: true,
+                     closeOnEscape: true,
+                     modal: true,
+                     drag: true,
+                     width: 400,
+
+                     beforeShowForm: function (form) {
+
+                         //POP UP Screen Fit Screen
+                         var thisForm = $("#delmod" + jQuery("#ajaxGrid")[0].id);
+                         var dialogHeight = $(thisForm).height();
+                         var dialogWidth = $(thisForm).width();
+                         var windowHeight = $(window).height();
+                         var windowWidth = $(window).width();
+                         $(thisForm).css('position', 'fixed');
+                         $(thisForm).css('top', ((windowHeight - dialogHeight) / 2));
+                         $(thisForm).css('left', ((windowWidth - dialogWidth) / 2));
+
+                         var col1 = $('#ajaxGrid').jqGrid('getGridParam', 'selrow');
+
+                         var Statusfield = $('#ajaxGrid').jqGrid('getCell', col1, 'Status');
+                         //        var html = "<form><table><tr><td class='CaptionTD'>Hospital Name </td><td class=='DataTD'>&nbsp;&nbsp;<input type='text' class='FormElement ui-widget-content ui-corner-all' readonly='true'  value='" + NameofHospital + "'/></td> </tr>";
+                         //        html += "<tr><td class='CaptionTD'>Address</td><td class=='DataTD'>&nbsp;&nbsp;<input type='text' class='FormElement ui-widget-content ui-corner-all' readonly='true'  value='" + HotelAddress + "'/></td></tr>";
+                         //        html += "<tr><td class='CaptionTD'>Street</td><td class=='DataTD'>&nbsp;&nbsp;<input type='text' class='FormElement ui-widget-content ui-corner-all' readonly='true'  value='" + Street + "'/></td></tr>";
+                         //        html += "<tr><td class='CaptionTD'>City</td><td class=='DataTD'>&nbsp;&nbsp;<input type='text' class='FormElement ui-widget-content ui-corner-all' readonly='true'  value='" + City + "'/></td></tr>";
+                         //        html += "<tr><td class='CaptionTD'>Area</td><td class=='DataTD'>&nbsp;&nbsp;<input type='text' class='FormElement ui-widget-content ui-corner-all' readonly='true'  value='" + Area + "'/></td></tr>";
+                         //        html += "<tr><td class='CaptionTD'>ZipCode</td><td class=='DataTD'>&nbsp;&nbsp;<input type='text' class='FormElement ui-widget-content ui-corner-all' readonly='true'  value='" + ZipCode + "'/></td></tr>";
+                         //        html += "<tr><td class='CaptionTD'>Phone Number</td><td class=='DataTD'>&nbsp;&nbsp;<input type='text' class='FormElement ui-widget-content ui-corner-all' readonly='true'  value='" + PhoneNumber + "'/></td></tr>";
+                         //        html += "<tr><td class='CaptionTD'>Email</td><td class=='DataTD'>&nbsp;&nbsp;<input type='text' class='FormElement ui-widget-content ui-corner-all' readonly='true'  value='" + Email + "'/></td></tr>";
+
+
+                         //        if (IsActive == "Active")
+                         //            html += "<tr><td class='CaptionTD'>Status</td><td class=='DataTD'>&nbsp;&nbsp;<input class='FormElement ui-widget-content ui-corner-all'   type='checkbox' checked  disabled/></td>";
+                         //        if (IsActive == "Inactive")
+                         //            html += "<tr><td class='CaptionTD'>Status</td><td class=='DataTD'>&nbsp;&nbsp; <input class='FormElement ui-widget-content ui-corner-all'   type='checkbox' disabled /></td></tr>";
+                         //        html += "</table></form>";
+                         //        $("td.delmsg", form[0]).html(html);
+                         $('tr td.delmsg').html('Delete selected record(s)?');
+                         // alert(IsActive);
+                         if (Statusfield == "Inactive") {
+                             $('tr td.delmsg').html('Record Already Deleted');
+                             $('#dData').hide();
+                         }
+                         else
+                             $('#dData').show();
+
+                     },
+                     afterSubmit: function (response, postdata) {
+                         $('tr td.delmsg').html('');
+                         $("#ajaxGrid").jqGrid('setGridParam', { datatype: 'json' }).trigger('reloadGrid');
+                         $('#DelTbl_ajaxGrid td.ui-state-error').removeClass('ui-state-error').addClass('ui-state-highlight');
+                         $('#dData').hide();
+                         return [false, response.responseText];
+                     }
+                 },
+                       
+                    {
+                        //Search
+
+                        closeOnEscape: true,
+                        modal: true,
+                        recreateForm: true,
+                        width: 600,
+                        caption: "Search",
+                        searchOnEnter: true,
+                        beforeShowSearch: function (form) {
+
+                            $('#jqg1').val('');
+                            $('#fbox_ajaxGrid_reset').click();
+
+                            var dialogHeight = $("#searchmodfbox_ajaxGrid").height();
+                            var dialogWidth = $("#searchmodfbox_ajaxGrid").width();
+                            var windowHeight = $(window).height();
+                            var windowWidth = $(window).width();
+                            $("#searchmodfbox_ajaxGrid").css('position', 'fixed');
+                            $("#searchmodfbox_ajaxGrid").css('top', ((windowHeight - dialogHeight) / 2));
+                            $("#searchmodfbox_ajaxGrid").css('left', ((windowWidth - dialogWidth) / 2));
+
+                            return [true, ""];
+                        }
+                    },
+                    {
+                        //View :
+                        closeOnEscape: true,
+                        recreateForm: true,
+                        modal:true,
+                        width: 600,
+
+                        beforeShowForm: function (form) {
+
+                            var thisForm = $("#viewmod" + jQuery("#ajaxGrid")[0].id);
+                            var dialogHeight = $(thisForm).height();
+                            var dialogWidth = $(thisForm).width();
+                            var windowHeight = $(window).height();
+                            var windowWidth = $(window).width();
+                            $(thisForm).css('position', 'fixed');
+                            $(thisForm).css('top', ((windowHeight - dialogHeight) / 2));
+                            $(thisForm).css('left', ((windowWidth - dialogWidth) / 2));
+                        }
+
+                    }
+
+                );
+                setMethod('ajaxGrid', 'ajaxGridPager', 'Hospital Master');
+
+            }
+            function setMethod(gid, id, pgTitle) {
+
+                var btnTitle = 'Export to Excel';
+                $('#' + gid).jqGrid('navSeparatorAdd', '#' + id, { sepclass: "ui-separator" });
+                $('#' + gid).jqGrid('navButtonAdd', '#' + id, { caption: '', title: btnTitle, position: 'last', buttonicon: 'ui-icon-calculator', onClickButton: function () { ExcelExport(); } });
+
+                var btnTitle = 'Export to PDF';
+                $('#' + gid).jqGrid('navSeparatorAdd', '#' + id, { sepclass: "ui-separator" });
+                $('#' + gid).jqGrid('navButtonAdd', '#' + id, { caption: '', title: btnTitle, position: 'last', buttonicon: 'ui-icon-bookmark', onClickButton: function () { PDFExport(); } });
+
+                var btnTitle = 'Export to CSV';
+                $('#' + gid).jqGrid('navSeparatorAdd', '#' + id, { sepclass: "ui-separator" });
+                $('#' + gid).jqGrid('navButtonAdd', '#' + id, { caption: '', title: btnTitle, position: 'last', buttonicon: 'ui-icon-note', onClickButton: function () { CSVExport(); } });
+
+
+                var btnTitle = 'Print Grid';
+                $('#' + gid).jqGrid('navSeparatorAdd', '#' + id, { sepclass: "ui-separator" });
+                $('#' + gid).jqGrid('navButtonAdd', '#' + id, { caption: '', title: btnTitle, position: 'last', buttonicon: 'ui-icon-print', onClickButton: function () { PrintGrid(gid); } });
+            }
+            function ExcelExport() {
+                window.location = '@Url.Action("ExportHospitalMasToExcel")';
+            }
+            function PDFExport() {
+                window.location = '@Url.Action("ExportHospitalMasToPDF")';
+            }
+            function CSVExport() {
+                window.location = '@Url.Action("ExportHospitalMasToCsv")';
+            }
+            //function PrintGrid(gid) {
+
+            //    // empty the print div container.
+            //    $('#prt-container').empty();
+
+            //    // copy and append grid view to print div container.
+            //    $('#gview_' + gid).clone().appendTo('#prt-container').css({ 'page-break-after': 'auto' });
+            //    $(function () { printChrome('prt-container') });
+
+            //}
+            function PrintGrid(gid) {
+
+                // empty the print div container.
+                var rows = $('#ajaxGrid').jqGrid('getRowData');
+                for (var i = 0; i < rows.length; i++) {
+                    var row = rows[i];
+                    $('#Table1').append("<tr><td>" + row.NameofHospital + "</td><td>" + row.HotelAddress + "</td><td>" + row.Street + "</td><td>" + row.City + "</td><td>" + row.Area + "</td><td>" + row.ZipCode + "</td><td>" + row.PhoneNumber + "</td><td>" + row.Email + "</td><td>" + row.Status + "</td></tr>");
+
+                }
+                $(function () { printChrome('prt-container') });
+
+            }
+            function printChrome(divContainer) {
+
+                var printContent = document.getElementById(divContainer);
+                window.document.body.innerHTML = printContent.innerHTML;
+                window.print();
+                window.location.reload();
+            }
+
+
+        </script>
+        @*<div id='prt-container' style="display:none">
+        </div>*@
+        
+               <div id='prt-container' style="display:none">
+        <table id="Table1" border="1" width="100%">
+            <thead>
+                <tr>
+                    <td><b>Hospital Name</b></td>
+                    <td><b>Address</b></td>
+                    <td><b>Street</b></td>
+                    <td><b>City</b></td>
+                    <td><b>Area</b></td>
+                    <td><b>ZipCode</b></td>
+                    <td><b>PhoneNumber</b></td>
+                    <td><b>Email</b></td>
+                    <td><b>Status</b></td>
+                    </tr>
+              
+            </thead>
+            <tbody></tbody>
+
+        </table>
+    </div>
+        
+        
+    }
+</body>

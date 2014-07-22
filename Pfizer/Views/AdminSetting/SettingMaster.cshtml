@@ -1,0 +1,914 @@
+﻿ 
+ @{
+    ViewBag.Title = "SettingMaster";
+    Layout = "~/Views/Shared/MasterLayout.cshtml";
+}
+ 
+
+<body>
+    @using (Html.BeginForm(FormMethod.Post))
+    {
+         <div id="testDiv">
+            <table border="0" style="width: 100%">
+                <tr>
+                    <td>
+                        
+                        <table style="margin-top: 7px; width :100%" border="0">
+                            <tr>
+                                <td>
+                                    <table id="ajaxGrid" style="width: 100%" border="0"> </table>
+                                    <div id="divError" style="display:none">No records to view</div>
+                                    <div id="ajaxGridPager">
+                                    </div>
+                                </td>
+                            </tr>
+                            
+                        </table>
+                        <!--Ends-->
+                    </td>
+                </tr>
+            </table>
+            
+        </div>
+
+
+   <div id="divMasterView"  style="display:none">
+        <div >
+            <table border="0" cellspacing="0" cellpadding="0" align="left" class="MastTable" >
+
+                <tr class="FormData">
+                    <td class="CaptionTD">Impact Screen Name </td>
+                    <td class="DataTD">&nbsp;&nbsp;<input type="text" id="txtName" readonly="readonly" class="FormElement ui-widget-content ui-corner-all" /></td>
+                    <td class="CaptionTD" id="tdRange">&nbsp;&nbsp;Range</td>
+                    <td class="DataTD" id="tdRange1">&nbsp;&nbsp;<input type="checkbox" id="chkRange" checked readonly="readonly" class="FormElement ui-widget-content ui-corner-all" /></td>
+                </tr>
+                <tr class="FormData">
+                    <td class="CaptionTD">Code</td>
+                    <td class="DataTD" colspan="3">&nbsp;&nbsp;<input type="text" id="txtCode" readonly="readonly" class="FormElement ui-widget-content ui-corner-all" /></td>
+                </tr>
+                <tr class="FormData">
+                    <td class="CaptionTD">Setting Description</td>
+                    <td class="DataTD">&nbsp;&nbsp;<input type="text" id="txtDescription" readonly="readonly" class="FormElement ui-widget-content ui-corner-all" /></td>
+                    <td class="CaptionTD">&nbsp;&nbsp;Setting TypeCode</td>
+                    <td class="DataTD">&nbsp;&nbsp;<input type="text" id="txtTypeCode" readonly="readonly" class="FormElement ui-widget-content ui-corner-all" /></td>
+                </tr>
+                <tr class="FormData">
+                    <td class="CaptionTD">From Value</td>
+                    <td class="DataTD">&nbsp;&nbsp;<input type="text" id="txtFromVal" readonly="readonly" class="FormElement ui-widget-content ui-corner-all" /></td>
+                    <td class="CaptionTD" id="tdToVal1">&nbsp;&nbsp;To Value</td>
+                    <td class="DataTD" id="tdToVal2">&nbsp;&nbsp;<input type="text" readonly="readonly" id="txtToVal" class="FormElement ui-widget-content ui-corner-all" /></td>
+                </tr>
+
+                
+            </table>
+           
+
+        </div>
+    </div>
+ 
+
+
+<script type="text/javascript">
+    function validSpecial(objElement) {
+
+        var re = /^[a-zA-Z0-9-/\s.:]*/gi;
+        if (objElement.value.match(re) != objElement.value) {
+            alert('No Special Characters Allowed');
+            objElement.value = '';
+            return false;
+        }
+
+    }
+    function AlphaNumberPoints1(s) {
+        s.value = (s.value.replace(/(\s{2,})|[^0-9a-zA-Z]/g, ' '));
+        s.value = (s.value.replace(/^\s*/, ''));
+        return;
+    }
+        jQuery(document).ready(function () { 
+            initGrid();
+        });
+        function ShowPopUp(name, code, description, typeCode, fromVal, toVal, range)
+        {
+            $("#divMasterView").removeAttr("style");           
+            $(".jqgrid-overlay").hide();
+            $("#txtName").val(name);
+            $("#txtCode").val(code);
+            $("#txtDescription").val(description);
+            $("#txtTypeCode").val(typeCode);
+            $("#txtFromVal").val(fromVal);
+            $("#txtToVal").val(toVal);
+
+            if (typeCode == 'Text' || typeCode == 'Flag' || typeCode == 'Mail') {
+                $('#tdRange').hide(); $('#tdRange1').hide(); $('#tdToVal1').hide(); $('#tdToVal2').hide();                
+            }
+            else if (typeCode == 'Days')
+            {
+                $('#tdRange').hide(); $('#tdRange1').hide();
+            }
+            if (typeCode == 'Date' || typeCode == 'Time' || typeCode == 'Number')
+            {
+                $('#tdRange').show(); $('#tdRange1').show(); $('#tdToVal1').show(); $('#tdToVal2').show();
+
+            }
+           
+            $('#divMasterView').dialog({
+                resizable: false,
+                height: 220,
+                width: 670,
+                show: { effect: 'drop', direction: "up" },
+                modal: true,
+                draggable: true,
+                 title:"View",
+
+                open: function (event) {
+                    $(".ui-dialog-titlebar-close").show();                 
+
+                },
+
+            });
+
+        } 
+        
+
+
+        function initGrid() {
+            jQuery("#ajaxGrid").jqGrid({
+                url: '@Url.Action("GridSettingMaster")',
+
+                datatype: "json",
+                jsonReader: { repeatitems: false, id: "PKID" },
+                colNames: ['PKID', 'Impact Screen Name', 'Code', 'Setting Description', 'Setting Type', 'From Value', 'To Value', 'Status', 'Range', 'Flag Value', 'From Date', 'To date'],
+                colModel: [
+                    { name: 'PKID', index: 'PKID', align: 'left', hidden: true, editable: true },
+                    {
+                        name: 'ImpactScreenName', index: 'ImpactScreenName', align: 'left', hidden: false, formoptions: { rowpos: 2, colpos: 1, elmprefix: "<span style='align:left;color:red'>*</span>&nbsp;" }, editable: true,
+                        editoptions: {
+                            maxlength: 50,
+                            dataEvents: [{
+                                type: 'keyup', // blur
+                                fn: function (e) {
+                                    $('#FormError').hide();
+                                    SingleCharacter(this);
+                                    $("#ImpactScreenName").css('border','1px solid #C0C0C0')
+                                },
+                                
+                            }]
+                        },
+                        //ImpactScreenName,Code,SettingDescription,SettingType,FromValue,ToValue,IsActive
+                        editrules: { edithidden: true, required: false }, searchoptions: { sopt: ['eq', 'bw', 'ew', 'cn'] }, searchrules: { required: true }
+                    },
+                    {
+                        name: 'Code', index: 'Code', align: 'left', hidden: false, formoptions: { rowpos: 3, colpos: 1, elmprefix: "<span style='align:left;color:red'>*</span>&nbsp;" }, editable: true,
+                        editoptions: {
+                            maxlength: 30,
+                            dataEvents: [{
+                                type: 'keyup', // blur
+                                fn: function (e) {
+                                    AlphaNumberPoints1(this);
+                                    $("#Code").css('border', '1px solid #C0C0C0')
+                                },
+
+                            }]
+                        },
+                        editrules: { edithidden: true, required: false }, search: false
+                    },
+                    {
+                        name: 'SettingDescription', index: 'SettingDescription', align: 'left', resizable: false, formoptions: { rowpos: 4, colpos: 1, elmprefix: "<span style='align:left;color:red'>*</span>&nbsp;" }, editable: true,
+                        editoptions: {
+                            maxlength: 50,
+                            dataEvents: [{
+                                type: 'keyup', // blur
+                                fn: function (e) {
+                                    SingleCharacter(this);
+                                    $("#SettingDescription").css('border', '1px solid #C0C0C0')
+                                },
+
+                            }]
+                        },
+
+
+                        editrules: { edithidden: true, required: false }, search: false
+                    },
+                    {
+                        name: 'SettingType', index: 'SettingType', align: 'left', resizable: false, editable: true, formoptions: { rowpos: 4, colpos: 2, elmprefix: "<span style='align:left;color:red'>*</span>&nbsp;" }, editrules: { edithidden: true, required: false }, search: false, edittype: 'select', editoptions: {
+                            dataUrl: '@Url.Action("LoadSettingType")', dataEvents:
+                [
+                { type: 'change',fn: function(e) { 
+                    // 1 -- > Text : 2--> Number ; 3-->Flag; 4-->Date,5-->Time,6-->Mail,7-->Days
+                    
+                    if ($(this).val() == '1')
+                    {
+                      
+                        $('#tr_ImpactScreenName td:nth-child(3)').hide();
+                        $('#tr_ImpactScreenName td:nth-child(4)').hide();
+                        $('#tr_FromValue').show(); 
+                        $('#tr_FromValue td:nth-child(3)').hide();
+                        $('#tr_FromValue td:nth-child(4)').hide();
+                        $('#tr_Flag').hide();
+                        $('#tr_Fromdate').hide();
+                    }
+
+                    if ($(this).val() == '2') {
+                       
+
+                        $('#tr_ImpactScreenName td:nth-child(3)').show();
+                        $('#tr_ImpactScreenName td:nth-child(4)').show();
+                        $('#tr_FromValue').show();
+                        $('#tr_FromValue td:nth-child(3)').show();
+                        $('#tr_FromValue td:nth-child(4)').show();
+                        $('#tr_Flag').hide();
+                        $('#tr_Fromdate').hide();
+                        $('input:checkbox[name=Range]').attr('checked', true);
+
+                    }
+
+                    if ($(this).val() == '3') {
+                        
+                        $('#tr_ImpactScreenName td:nth-child(3)').hide();
+                        $('#tr_ImpactScreenName td:nth-child(4)').hide();
+                        $('#tr_FromValue').hide();
+                        $('#tr_Flag').hide();
+                        $('#tr_Fromdate').hide();
+                        $('#tr_Flag').show();
+                    }
+
+                    if ($(this).val() == '4') {
+                       
+                        $('#tr_Fromdate').hide();
+                        $('#tr_ImpactScreenName td:nth-child(3)').show();
+                        $('#tr_ImpactScreenName td:nth-child(4)').show();
+                        $('#tr_FromValue').hide();
+                        $('#tr_Flag').hide();
+                        $('input:checkbox[name=Range]').attr('checked', true);
+                        $('#tr_Fromdate').show();
+                    }
+
+                    if ($(this).val() == '5') {
+                        
+                        $('#tr_Fromdate').hide();
+                        $('#tr_FromValue').show();
+                        $('#tr_Flag').hide();
+                        $('input:checkbox[name=Range]').attr('checked', true);
+
+                    }
+
+                    if ($(this).val() == '6') {
+                       
+                        $('#tr_ImpactScreenName td:nth-child(3)').hide();
+                        $('#tr_ImpactScreenName td:nth-child(4)').hide();
+                        
+                        $('#tr_FromValue td:nth-child(3)').hide();
+                        $('#tr_FromValue td:nth-child(4)').hide();
+                        $('#tr_FromValue').show();
+                        $('#tr_Fromdate').hide();
+                        $('#tr_Flag').hide();
+                    }
+
+                  
+                    if ($(this).val() == '7') {
+                        
+                        $('#tr_Fromdate').hide();
+                        $('#tr_ImpactScreenName td:nth-child(3)').hide();
+                        $('#tr_ImpactScreenName td:nth-child(4)').hide();
+                        $('#tr_FromValue td:nth-child(3)').show();
+                        $('#tr_FromValue td:nth-child(4)').show();
+                        $('#tr_FromValue').show();
+                        $('#tr_Flag').hide();
+                    }
+
+                    
+                    
+
+                    //Example for call ActionResult
+                    //var ret = $.ajax({
+                    //    url:'selectdata.php?q=setState&amp;BuilderID='+$(this).val(),
+                    //    async:false
+                    //}).responseText;
+                    //$('#State').val(ret);
+ 
+                } }
+                ]
+                    },  
+                    },
+                    {
+                        name: 'FromValue', index: 'FromValue', align: 'left', editable: true, formoptions: { rowpos: 5, colpos: 1, elmprefix: "<span style='align:left;color:red'></span>&nbsp;" },
+                        editoptions: {
+                            maxlength: 30,
+                            dataEvents: [{
+                                type: 'keyup', // blur
+                                fn: function (e) {
+                                   
+                                    //validSpecial(this);
+                                    this.value = this.value.replace(/[^0-9\.]/g, '');
+                                    $("#FromValue").css('border', '1px solid #C0C0C0');
+                                   
+                                   // alert("Enter Numerics only");
+                                    
+                                },
+
+                            }]
+                        },
+
+                        editrules: { edithidden: true }, search: false
+                    },
+                    {
+                        name: 'ToValue', index: 'ToValue', align: 'left', hidden: false, editable: true, formoptions: { rowpos: 5, colpos: 2 },
+                        editoptions: {
+                            maxlength: 30,
+                            dataEvents: [{
+                                type: 'keyup', // blur
+                                fn: function (e) {
+                                    //validSpecial(this);
+                                    this.value = this.value.replace(/[^0-9\.]/g, '');
+                                   // alert("Enter Numerics only");
+                                    $("#ToValue").css('border', '1px solid #C0C0C0')
+                                },
+
+                            }]
+                        },
+                        editrules: { edithidden: true }, search: false
+                    },
+                    { name: 'IsActive', index: 'IsActive', align: 'left', resizable: false, editable: true, editrules: { edithidden: true }, edittype: 'checkbox' ,search: false },
+                    { name: 'Range', index: 'Range', align: 'left', hidden: true, formoptions: { rowpos: 2, colpos: 2 }, editable: true, editrules: { edithidden: true }, edittype: 'checkbox' },
+                    { name: 'Flag', index: 'Flag', align: 'left', hidden: true, formatter: 'select', formoptions: { rowpos: 6, colpos: 1 }, editable: true, editrules: { edithidden: true }, edittype: 'select', editoptions: { value: "0:No;1:Yes" } },
+
+                    {
+                        name: 'Fromdate', index: 'Fromdate',hidden:true,editrules:{edithidden: true} ,label: 'Enter from Date', width: 80, formoptions: { rowpos: 7, colpos: 1 },
+                        editable: true, edittype: 'text',
+                        editoptions: {
+                            size: 10, maxlengh: 10,
+                            dataInit: function (element) {
+                                $(element).datepicker({ dateFormat: 'dd/mm/yy' })
+                            }
+                        }
+                    },
+
+                     {
+                         name: 'Todate', index: 'Todate', label: 'Date', width: 80, formoptions: { rowpos: 7, colpos: 2},hidden:true,
+                         editable: true, edittype: 'text',
+                         editoptions: {
+                             size: 10, maxlengh: 10,
+                             dataInit: function (element) {
+                                 $(element).datepicker({ dateFormat: 'dd/mm/yy' })
+                             }
+                         }
+                     },
+                     
+                    
+                ],
+
+                autowidth: true,
+                gridview: true,
+                caption: 'Setting Master',
+                sortable: true,
+                hidegrid: false,
+                altRows: true,
+                sortname: 'PKID',
+                sortorder: 'desc', 
+                rowTotal: 10,
+                rowNum: 10,
+                viewrecords: true,
+                pager: $('#ajaxGridPager'),
+                height: 'auto',
+                editable: true,
+                
+                
+                gridComplete: function () {
+                   
+
+
+                    if (jQuery("#ajaxGrid").getGridParam("records") == 0) {
+                        jQuery("#ajaxGrid").addRowData(
+                              "blankRow", { "SettingType": "No records to view" });
+                    }
+                   
+
+                },
+                editurl: '@Url.Action("EditSettingMaster")',
+               
+            });
+
+            
+            jQuery("#ajaxGrid").jqGrid('navGrid', '#ajaxGridPager', { edit: true, add: true, del: true, search: true,view:true  },
+
+                {
+                    // Edit  
+                    closeOnEscape: true,
+                    recreateForm: true,
+                    width: 600, 
+                    checkOnSubmit: true,
+                    closeAfterEdit:false ,
+                    modal:true,
+                    beforeShowForm: function (form) {
+                      
+
+                        var thisForm = $("#editmod" + jQuery("#ajaxGrid")[0].id);
+                        var dialogHeight = $(thisForm).height();
+                        var dialogWidth = $(thisForm).width();
+                        var windowHeight = $(window).height();
+                        var windowWidth = $(window).width();
+                        $(thisForm).css('position', 'fixed');
+                        $(thisForm).css('top', ((windowHeight - dialogHeight) / 2));
+                        $(thisForm).css('left', ((windowWidth - dialogWidth) / 2));
+
+                        
+                        var s2 = $('#ajaxGrid').jqGrid('getGridParam', 'selrow');
+                        var value = $('#ajaxGrid').jqGrid('getCell', s2, 'SettingType'); 
+
+                        var s3=$('#ajaxGrid').jqGrid('getGridParam', 'selrow');
+                        var isActive = $('#ajaxGrid').jqGrid('getCell', s3, 'IsActive');
+                       
+                        $('#tr_Flag').hide();
+                        $('#tr_Fromdate').hide();
+
+                        if (isActive == "Active") {
+                            $('#tr_IsActive').hide();
+                        }
+                        else
+                            $('#tr_IsActive').show();
+
+                        if (value == 'Text' || value=='Flag' ||value=='Mail') {
+                            // Hide particular column in 'TR' :
+                            $('#tr_ImpactScreenName td:nth-child(3)').hide();
+                            $('#tr_ImpactScreenName td:nth-child(4)').hide();
+                            $('#tr_FromValue td:nth-child(3)').hide();
+                            $('#tr_FromValue td:nth-child(4)').hide();                      
+                        }   
+                        
+                        if (value == 'Number' ) {
+                           
+                            $('input:checkbox[name=Range]').attr('checked',true);
+                      
+                        }
+                        if (value == 'Time' || value == 'Date')
+                        {                            
+                            $('input:checkbox[name=Range]').attr('checked', true);
+                        }
+                        if(value=='Days')
+                        {
+                            $('#tr_ImpactScreenName td:nth-child(3)').hide();
+                            $('#tr_ImpactScreenName td:nth-child(4)').hide();
+                        }
+
+                        if (value == 'Flag') {
+                            $('#tr_FromValue').hide();
+                            $('#tr_Flag').show();
+                        }
+
+                    },
+                    beforeSubmit: function (response, postdata) {
+                        //ImpactScreenName
+                        //Code
+                        //SettingDescription
+                        //FromValue
+                        //ToValue
+
+                        if ($("#ImpactScreenName").val().charAt(0) == ' ' || $("#ImpactScreenName").val().charAt($("#ImpactScreenName").val().length - 1) == ' ') {
+                            $('#TblGrid_ajaxGrid td.ui-state-highlight').removeClass('ui-state-highlight').addClass('ui-state-error');
+                            $("#ImpactScreenName").css("background-color", "#FFE8E8").css("border", "1px solid #FF6666");
+                            $('#ImpactScreenName').val('');
+                            $('#ImpactScreenName').focus();
+                            return [false, 'Enter Valid ImpactScreenName'];
+                        }
+                        if ($("#Code").val().charAt(0) == ' ' || $("#Code").val().charAt($("#Code").val().length - 1) == ' ') {
+                            $('#TblGrid_ajaxGrid td.ui-state-highlight').removeClass('ui-state-highlight').addClass('ui-state-error');
+                            $("#Code").css("background-color", "#FFE8E8").css("border", "1px solid #FF6666");
+                            $('#Code').val('');
+                            $('#Code').focus();
+                            return [false, 'Enter Valid Code'];
+                        }
+                        if ($("#SettingDescription").val().charAt(0) == ' ' || $("#SettingDescription").val().charAt($("#SettingDescription").val().length - 1) == ' ') {
+                            $('#TblGrid_ajaxGrid td.ui-state-highlight').removeClass('ui-state-highlight').addClass('ui-state-error');
+                            $("#SettingDescription").css("background-color", "#FFE8E8").css("border", "1px solid #FF6666");
+                            $('#SettingDescription').val('');
+                            $('#SettingDescription').focus();
+                            return [false, 'Enter Valid SettingDescription'];
+                        }
+                        if ($("#FromValue").val().charAt(0) == ' ' || $("#FromValue").val().charAt($("#FromValue").val().length - 1) == ' ') {
+                            $('#TblGrid_ajaxGrid td.ui-state-highlight').removeClass('ui-state-highlight').addClass('ui-state-error');
+                            $("#FromValue").css("background-color", "#FFE8E8").css("border", "1px solid #FF6666");
+                            $('#FromValue').val('');
+                            $('#FromValue').focus();
+                            return [false, 'Enter Valid FromValue Field'];
+                        }
+                        if ($("#ToValue").val().charAt(0) == ' ' || $("#ToValue").val().charAt($("#ToValue").val().length - 1) == ' ') {
+                            $('#TblGrid_ajaxGrid td.ui-state-highlight').removeClass('ui-state-highlight').addClass('ui-state-error');
+                            $("#ToValue").css("background-color", "#FFE8E8").css("border", "1px solid #FF6666");
+                            $('#ToValue').val('');
+                            $('#ToValue').focus();
+                            return [false, 'Enter Valid ToValue Field'];
+                        }
+                        $('select').css("border", "1px solid #C0C0C0");
+                        $("input[type=text]").css("border", "1px solid #C0C0C0");
+                        var error = " ";
+                        if ($.trim($("#ImpactScreenName").val()) == "") {
+                            error += "ImpactScreenName";
+                            $('#FormError').html("<td class='ui-state-error' colspan='4'>" + error + ":Field is required</td>");
+                            $("#ImpactScreenName").val('');
+                            $('#ImpactScreenName').focus();
+                            $("#ImpactScreenName").css("background-color", "#FFE8E8").css("border", "1px solid #FF6666");
+                            return [false, response.responseText];
+                        }
+                        else if ($.trim($("#Code").val()) == "") {
+                            error += "Code";
+                            $('#FormError').html("<td class='ui-state-error' colspan='4'>" + error + ":Field is required</td>");
+                            $("#Code").val('');
+                            $('#Code').focus();
+                            $("#Code").css("background-color", "#FFE8E8").css("border", "1px solid #FF6666");
+                            return [false, response.responseText];
+                        }
+                        else if ($.trim($("#SettingDescription").val()) == "") {
+                            error += "SettingDescription";
+                            $('#FormError').html("<td class='ui-state-error' colspan='4'>" + error + ":Field is required</td>");
+                            $("#SettingDescription").val('');
+                            $('#SettingDescription').focus();
+                            $("#SettingDescription").css("background-color", "#FFE8E8").css("border", "1px solid #FF6666");
+                            return [false, response.responseText];
+                        }
+                        else if (($("#SettingType").val() == "select") || ($("#SettingType").val() == 0)) {
+                            error += "SettingType";
+                            $('#FormError').html("<td class='ui-state-error' colspan='4'>" + error + ":Field is required</td>");
+                            // $('#CycleStartYear').val(0).focus();
+                            $("#SettingType").css("background-color", "#FFE8E8").css("border", "1px solid #FF6666");
+                            return [false, response.responseText];
+                        }
+                        else {
+                            return [true, response.responseText];
+                        }
+                        
+                    },
+
+                    afterSubmit: function (response, postdata) {
+                        //alert('Information updated successfully');
+                        $("#ajaxGrid").jqGrid('setGridParam', { datatype: 'json' }).trigger('reloadGrid');
+                        $('#TblGrid_ajaxGrid td.ui-state-error').removeClass('ui-state-error').addClass('ui-state-highlight');
+                        $("input[type=text]").val('');
+                        $("#Range").prop('checked', false);
+                        $("#IsActive").prop('checked', false);
+                        $('select').val(0);
+                        //IsActive
+                        return [false, response.responseText];
+                    },
+                    //closeAfterEdit: true,
+                },
+
+            {
+               
+                //Add  
+                closeOnEscape: true,
+                //closeAfterAdd: true,
+                recreateForm: true,
+                width: 600,
+                modal:true,
+                beforeShowForm: function (form) {
+                    
+                        var thisForm = $("#editmod" + jQuery("#ajaxGrid")[0].id);
+                        var dialogHeight = $(thisForm).height();
+                        var dialogWidth = $(thisForm).width();
+                        var windowHeight = $(window).height();
+                        var windowWidth = $(window).width();
+                        $(thisForm).css('position', 'fixed');
+                        $(thisForm).css('top', ((windowHeight - dialogHeight) / 2));
+                        $(thisForm).css('left', ((windowWidth - dialogWidth) / 2));
+                   
+
+                    $('#tr_IsActive', form).hide();
+                    $('#tr_Fromdate', form).hide();
+                    $('#tr_Flag', form).hide();
+                    $('#tr_FromValue td:nth-child(3)').hide();
+                    $('#tr_FromValue td:nth-child(4)').hide();
+                    $('#tr_ImpactScreenName td:nth-child(3)').hide();
+                    $('#tr_ImpactScreenName td:nth-child(4)').hide(); 
+                    
+                    
+                },
+                beforeSubmit: function (response, postdata)
+
+                {
+                    //ImpactScreenName
+                    //Code
+                    //SettingDescription
+                    //FromValue
+                    //ToValue
+                   
+                    if ($("#ImpactScreenName").val().charAt(0) == ' ' || $("#ImpactScreenName").val().charAt($("#ImpactScreenName").val().length - 1) == ' ')
+                    {
+                        $('#TblGrid_ajaxGrid td.ui-state-highlight').removeClass('ui-state-highlight').addClass('ui-state-error');
+                        $("#ImpactScreenName").css("background-color", "#FFE8E8").css("border", "1px solid #FF6666");
+                        $('#ImpactScreenName').val('');
+                        $('#ImpactScreenName').focus();
+                        return [false, 'Enter Valid ImpactScreenName'];
+                    }
+                    if ($("#Code").val().charAt(0) == ' ' || $("#Code").val().charAt($("#Code").val().length - 1) == ' ') {
+                        $('#TblGrid_ajaxGrid td.ui-state-highlight').removeClass('ui-state-highlight').addClass('ui-state-error');
+                        $("#Code").css("background-color", "#FFE8E8").css("border", "1px solid #FF6666");
+                        $('#Code').val('');
+                        $('#Code').focus();
+                        return [false, 'Enter Valid Code'];
+                    }
+                    if ($("#SettingDescription").val().charAt(0) == ' ' || $("#SettingDescription").val().charAt($("#SettingDescription").val().length - 1) == ' ') {
+                        $('#TblGrid_ajaxGrid td.ui-state-highlight').removeClass('ui-state-highlight').addClass('ui-state-error');
+                        $("#SettingDescription").css("background-color", "#FFE8E8").css("border", "1px solid #FF6666");
+                        $('#SettingDescription').val('');
+                        $('#SettingDescription').focus();
+                        return [false, 'Enter Valid SettingDescription'];
+                    }
+                    if ($("#FromValue").val().charAt(0) == ' ' || $("#FromValue").val().charAt($("#FromValue").val().length - 1) == ' ') {
+                        $('#TblGrid_ajaxGrid td.ui-state-highlight').removeClass('ui-state-highlight').addClass('ui-state-error');
+                        $("#FromValue").css("background-color", "#FFE8E8").css("border", "1px solid #FF6666");
+                        $('#FromValue').val('');
+                        $('#FromValue').focus();
+                        return [false, 'Enter Valid FromValue Field'];
+                    }
+                    if ($("#ToValue").val().charAt(0) == ' ' || $("#ToValue").val().charAt($("#ToValue").val().length - 1) == ' ') {
+                        $('#TblGrid_ajaxGrid td.ui-state-highlight').removeClass('ui-state-highlight').addClass('ui-state-error');
+                        $("#ToValue").css("background-color", "#FFE8E8").css("border", "1px solid #FF6666");
+                        $('#ToValue').val('');
+                        $('#ToValue').focus();
+                        return [false, 'Enter Valid ToValue Field'];
+                    }
+                    $('select').css("border", "1px solid #C0C0C0");
+                    $("input[type=text]").css("border", "1px solid #C0C0C0");
+                    var error = " ";
+                    if ($.trim($("#ImpactScreenName").val()) == "") {
+                        error += "ImpactScreenName";
+                        $('#FormError').html("<td class='ui-state-error' colspan='4'>" + error + ":Field is required</td>");
+                        $("#ImpactScreenName").val('');
+                        $('#ImpactScreenName').focus();
+                        $("#ImpactScreenName").css("background-color", "#FFE8E8").css("border", "1px solid #FF6666");
+                        return [false, response.responseText];
+                    }
+                    else if ($.trim($("#Code").val()) == "") {
+                        error += "Code";
+                        $('#FormError').html("<td class='ui-state-error' colspan='4'>" + error + ":Field is required</td>");
+                        $("#Code").val('');
+                        $('#Code').focus();
+                        $("#Code").css("background-color", "#FFE8E8").css("border", "1px solid #FF6666");
+                        return [false, response.responseText];
+                    }
+                    else if ($.trim($("#SettingDescription").val()) == "") {
+                        error += "SettingDescription";
+                    $('#FormError').html("<td class='ui-state-error' colspan='4'>" + error + ":Field is required</td>");
+                    $("#SettingDescription").val('');
+                    $('#SettingDescription').focus();
+                    $("#SettingDescription").css("background-color", "#FFE8E8").css("border", "1px solid #FF6666");
+                    return [false, response.responseText];
+                    }
+                    else if (($("#SettingType").val() == "select") || ($("#SettingType").val() == 0)) {
+                        error += "SettingType";
+                        $('#FormError').html("<td class='ui-state-error' colspan='4'>" + error + ":Field is required</td>");
+                        // $('#CycleStartYear').val(0).focus();
+                        $("#SettingType").css("background-color", "#FFE8E8").css("border", "1px solid #FF6666");
+                        return [false, response.responseText];
+                    }
+                    else {
+                        return [true, response.responseText];
+                    }
+                },
+            
+               
+                afterSubmit: function (response, postdata) {
+                    
+                    //alert('Information Added Successfully');
+                    if (response.responseText == "\"Setting Master Added Successfully\"") {
+                        $("#ajaxGrid").jqGrid('setGridParam', { datatype: 'json' }).trigger('reloadGrid');
+                        $('#TblGrid_ajaxGrid td.ui-state-error').removeClass('ui-state-error').addClass('ui-state-highlight');
+                        $("input[type=text]").val('');
+                        $("#Range").prop('checked', false);
+                        $("#IsActive").prop('checked', false);
+                        $('select').val(0);
+                        return [false, response.responseText];
+                    }
+                    else {
+                        $("#ajaxGrid").jqGrid('setGridParam', { datatype: 'json' }).trigger('reloadGrid');
+                        $('#TblGrid_ajaxGrid td.ui-state-error').removeClass('ui-state-highlight').addClass('ui-state-error');
+                        $("input[type=text]").val('');
+                        $("#Range").prop('checked', false);
+                        $("#IsActive").prop('checked', false);
+                        $('select').val(0);
+                        return [false, response.responseText];
+
+                       }
+                    },
+                onclickSubmit: function (params, posdata) {
+                    params.url = '@Url.Action("AddSettingMaster")';
+                },
+            },
+           
+
+            //Delete 
+            {
+                closeOnEscape: true, 
+                recreateForm: true,
+                modal:true,
+                width: 600,
+                
+                beforeShowForm: function (form)
+                {
+                    $('tr td.delmsg').html('Delete selected record(s)?');
+                    var col1 = $('#ajaxGrid').jqGrid('getGridParam', 'selrow');
+                    var IsActive = $('#ajaxGrid').jqGrid('getCell', col1, 'IsActive');
+                    if (IsActive == "In Active") {
+                        $('tr td.delmsg').html('Record Already Deleted');
+
+                        $('#dData').hide();
+                    }
+                    else
+                        $('#dData').show();
+
+                    var dlgDiv = $("#delmod" + jQuery("#ajaxGrid")[0].id);
+                    var parentDiv = dlgDiv.parent();
+                    var dlgWidth = dlgDiv.width();
+                    var parentWidth = parentDiv.width();
+                    var dlgHeight = dlgDiv.height();
+                    var parentHeight = parentDiv.height();
+                    
+                    dlgDiv[0].style.left = Math.round((parentWidth - dlgWidth) / 2) + "px";
+
+                
+                    //var col1 = $('#ajaxGrid').jqGrid('getGridParam', 'selrow'); 
+
+                    //var ImpactScreenName = $('#ajaxGrid').jqGrid('getCell', col1, 'ImpactScreenName');
+                    //var Code = $('#ajaxGrid').jqGrid('getCell', col1, 'Code');
+                    //var SettingDescription = $('#ajaxGrid').jqGrid('getCell', col1, 'SettingDescription');
+                    //var SettingType = $('#ajaxGrid').jqGrid('getCell', col1, 'SettingType');
+                    //var FromValue = $('#ajaxGrid').jqGrid('getCell', col1, 'FromValue');
+                    //var ToValue = $('#ajaxGrid').jqGrid('getCell', col1, 'ToValue');
+                    //var Flag = $('#ajaxGrid').jqGrid('getCell', col1, 'Flag');
+                    //var PKID = $('#ajaxGrid').jqGrid('getCell', col1, 'PKID');
+                        
+                    
+                   
+                //    var html = "<form><table><tr><td class='CaptionTD'>Impact Screen Name </td><td class=='DataTD'>&nbsp;&nbsp;<input type='text' class='FormElement ui-widget-content ui-corner-all' readonly='true'  value='" + ImpactScreenName + "'/></td>";
+                //    if (SettingType != "Text" && SettingType != "Mail" && SettingType != "Days" && SettingType != "Flag") {
+                //        html += "<td class='CaptionTD'>&nbsp;&nbsp;Range</td><td class=='DataTD'>&nbsp;&nbsp;<input class='FormElement ui-widget-content ui-corner-all'  type='checkbox' checked/></td></tr>";
+                //    }
+                //    else {
+                //        html += "<td><input type='hidden' id='hdnPkId' value='" + PKID + "'/></td></tr>";
+                //    }
+                //    html += "<tr><td></td>";
+                //    html += "<td></td></tr>";
+
+                //    html += "<tr><td class='CaptionTD'>Code</td><td class=='DataTD'>&nbsp;&nbsp;<input class='FormElement ui-widget-content ui-corner-all' readonly='true'  type='text' value='" + Code + "'/></td>";
+                //    html += "<td></td><td></td></tr>";
+
+                //    html += "<tr><td class='CaptionTD'>Setting Description</td><td class=='DataTD'>&nbsp;&nbsp;<input class='FormElement ui-widget-content ui-corner-all'readonly='true'  type='text' value='" + SettingDescription + "'/></td>";
+                //    html += "<td class='CaptionTD'>&nbsp;&nbsp;Setting TypeCode</td><td>&nbsp;&nbsp;<input type='text' class='FormElement ui-widget-content ui-corner-all' readonly='true'  value='" + SettingType + "'/></td></tr>";
+
+                //    html += "<tr><td class='CaptionTD'>From Value</td><td class=='DataTD'>&nbsp;&nbsp;<input class='FormElement ui-widget-content ui-corner-all' readonly='true'  type='text' value='" + FromValue + "'/></td>";
+                //    if (SettingType != "Text" && SettingType != "Mail" && SettingType != "Flag") {
+                //        html += "<td class='CaptionTD'>&nbsp;&nbsp;To Value</td><td class=='DataTD'>&nbsp;&nbsp;<input class='FormElement ui-widget-content ui-corner-all'readonly='true'   type='text' value='" + ToValue + "'/></td></tr>";
+                //    }
+                //    html += "</table></form>";
+                 
+                //    $("td.delmsg", form[0]).html(html);
+                    
+                },
+                //onclickSubmit: function (form) {
+                //    if (confirm('Are you sure you want to update this row?')) {
+                //        return true;
+                //    }
+                //    else {
+                //        $(form).close();
+                //    }
+                //},
+                afterSubmit: function (response, postdata) {
+                   
+                    
+                    $('tr td.delmsg').html('');
+                    $('#dData').hide();
+                    $("#ajaxGrid").jqGrid('setGridParam', { datatype: 'json' }).trigger('reloadGrid');
+                    $('#DelTbl_ajaxGrid td.ui-state-error').removeClass('ui-state-error').addClass('ui-state-highlight');
+                    return [false, response.responseText];
+                }
+            },
+            {
+                //search
+                closeOnEscape: true,
+                modal: true,
+                recreateForm: true,
+                width: 600,
+                caption: "Search",
+                searchOnEnter: true,
+                beforeShowSearch: function (form) {
+
+                    $('#jqg1').val('');
+                    $('#fbox_ajaxGrid_reset').click();
+
+                    var dialogHeight = $("#searchmodfbox_ajaxGrid").height();
+                    var dialogWidth = $("#searchmodfbox_ajaxGrid").width();
+                    var windowHeight = $(window).height();
+                    var windowWidth = $(window).width();
+                    $("#searchmodfbox_ajaxGrid").css('position', 'fixed');
+                    $("#searchmodfbox_ajaxGrid").css('top', ((windowHeight - dialogHeight) / 2));
+                    $("#searchmodfbox_ajaxGrid").css('left', ((windowWidth - dialogWidth) / 2));
+
+                    return [true, ""];
+                }
+            },
+             {
+                 //View :
+                 closeOnEscape: true,
+                 recreateForm: true,
+                 modal: true,
+                 width: 600,
+                 modal:true,
+
+                 beforeShowForm: function (form) {
+
+                     var thisForm = $("#viewmod" + jQuery("#ajaxGrid")[0].id);
+                     var dialogHeight = $(thisForm).height();
+                     var dialogWidth = $(thisForm).width();
+                     var windowHeight = $(window).height();
+                     var windowWidth = $(window).width();
+                     $(thisForm).css('position', 'fixed');
+                     $(thisForm).css('top', ((windowHeight - dialogHeight) / 2));
+                     $(thisForm).css('left', ((windowWidth - dialogWidth) / 2));
+                 }
+
+             }
+
+                    );
+
+       
+            setMethod('ajaxGrid', 'ajaxGridPager', 'Setting Master');
+        }
+        function setMethod(gid, id, pgTitle) {
+
+            var btnTitle = 'Export to Excel';
+            $('#' + gid).jqGrid('navSeparatorAdd', '#' + id, { sepclass: "ui-separator" });
+            $('#' + gid).jqGrid('navButtonAdd', '#' + id, { caption: '', title: btnTitle, position: 'last', buttonicon: 'ui-icon-calculator', onClickButton: function () { ExcelExport(); } });
+
+            var btnTitle = 'Export to PDF';
+            $('#' + gid).jqGrid('navSeparatorAdd', '#' + id, { sepclass: "ui-separator" });
+            $('#' + gid).jqGrid('navButtonAdd', '#' + id, { caption: '', title: btnTitle, position: 'last', buttonicon: 'ui-icon-bookmark', onClickButton: function () { PDFExport(); } });
+
+            var btnTitle = 'Export to CSV';
+            $('#' + gid).jqGrid('navSeparatorAdd', '#' + id, { sepclass: "ui-separator" });
+            $('#' + gid).jqGrid('navButtonAdd', '#' + id, { caption: '', title: btnTitle, position: 'last', buttonicon: 'ui-icon-note', onClickButton: function () { CSVExport(); } });
+
+
+            var btnTitle = 'Print Grid';
+            $('#' + gid).jqGrid('navSeparatorAdd', '#' + id, { sepclass: "ui-separator" });
+            $('#' + gid).jqGrid('navButtonAdd', '#' + id, { caption: '', title: btnTitle, position: 'last', buttonicon: 'ui-icon-print', onClickButton: function () { PrintGrid(gid); } });
+        }
+        function ExcelExport() {
+            window.location = '@Url.Action("ExportSettingMasToExcel")';
+        }
+        function PDFExport() {
+            window.location = '@Url.Action("ExportSettingMasToPDF")';
+        }
+        function CSVExport() {
+            window.location = '@Url.Action("ExportSettingMasToCsv")';
+        }
+        function PrintGrid(gid) {
+
+            //// empty the print div container.
+            //$('#prt-container').empty();
+
+            //// copy and append grid view to print div container.
+            //$('#gview_' + gid).clone().appendTo('#prt-container').css({ 'page-break-after': 'auto' });
+            //$(function () { printChrome('prt-container') });
+            var rows = $('#ajaxGrid').jqGrid('getRowData');
+            for (var i = 0; i < rows.length; i++) {
+                var row = rows[i];
+                $('#Table1').append("<tr><td>" + row.ImpactScreenName + "</td><td>" + row.Code + "</td><td>" + row.SettingDescription + "</td><td>" + row.SettingType + "</td><td>" + row.FromValue + "</td><td>" + row.ToValue + "</td><td>" + row.IsActive + "</td></tr>");
+                
+            }
+            $(function () { printChrome('prt-container') });
+
+        }
+
+        function printChrome(divContainer) {
+
+            var printContent = document.getElementById(divContainer);
+            window.document.body.innerHTML = printContent.innerHTML;
+            window.print();
+            window.location.reload();
+        }
+
+
+        </script>
+        <div id='prt-container' style="display:none">
+            <table id="Table1" border="1" width="100%">
+                <thead>
+                    <tr>
+                        <td><b>ImpactScreenName</b></td>
+                        <td><b>Code</b></td>
+                        <td><b>SettingDescription</b></td>
+                        <td><b>SettingType</b></td>
+                        <td><b>FromValue</b></td>
+                        <td><b>ToValue</b></td>
+                        <td><b>IsActive</b></td>
+                    </tr>
+
+                </thead>
+                <tbody></tbody>
+
+            </table>
+        </div>
+    
+    
+    }
+    </body>
+ 

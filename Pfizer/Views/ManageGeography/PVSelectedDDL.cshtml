@@ -1,0 +1,95 @@
+﻿@model Dictionary<int, string>
+
+
+@if (ViewBag.Type == "NotSelectedRegionName")
+{
+    <select>
+        <option value='' selected>Select</option>
+        @foreach (KeyValuePair<int, string> value in Model)
+        {
+            <option value='@value.Key.ToString()' >@value.Value</option>
+        }
+    </select>
+}
+
+@if (ViewBag.Type == "SelectedRegionName")
+{
+    <select>
+        <option value='' selected>Select</option>
+        @foreach (KeyValuePair<int, string> value in Model)
+        {
+            <option value='@value.Key.ToString()' selected="selected">@value.Value</option>
+        }
+    </select>
+}
+
+
+@if (ViewBag.Type == "TeamMasterName")
+{
+    <select>
+        <option value="" selected>Select</option>
+        @foreach (KeyValuePair<int, string> value in Model)
+        {
+            <option value='@value.Key.ToString()'>@value.Value</option>
+        }
+    </select>
+}
+
+@*  ############ Starts TerHQLinkMaster ####################*@
+
+@if (ViewBag.Type == "NotSelectedTerCode")
+{
+    <select>
+        <option value='0'>Select</option>
+        @foreach (KeyValuePair<int, string> value in Model)
+        {
+            <option value='@value.Key.ToString()'>@value.Value</option>
+        }
+    </select>
+}
+
+
+@if (ViewBag.Type == "SelectedTerCode")
+{
+    <select>
+        <option value='0'>Select</option>
+        @foreach (KeyValuePair<int, string> value in Model)
+{
+    <option value='@value.Key.ToString()' selected="selected">@value.Value</option>
+}
+    </select>
+}
+
+@if (ViewBag.Type == "HQName")
+{
+    <select>
+        <option value='0'>Select</option>
+        @foreach (KeyValuePair<int, string> value in Model)
+        {
+            <option value='@value.Key.ToString()' >@value.Value</option>
+        }
+    </select>
+}
+
+@if (ViewBag.Type == "NotSelectedNewTerCode")
+{
+    <select multiple id="TerCode">
+        <option value='0'>Select</option>
+        @foreach (KeyValuePair<int, string> value in Model)
+        {
+            <option value='@value.Key.ToString()'>@value.Value</option>
+        }
+    </select>
+}
+
+@if (ViewBag.Type == "viewSelectedTerCode")
+{
+    <select multiple style="height:50px !important">
+        <option value='0'>Select</option>
+        @foreach (KeyValuePair<int, string> value in Model)
+        {
+            <option value='@value.Key.ToString()' selected="selected">@value.Value</option>
+        }
+    </select>
+}
+

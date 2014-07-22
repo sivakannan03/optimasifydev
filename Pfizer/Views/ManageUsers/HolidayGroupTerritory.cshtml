@@ -1,0 +1,452 @@
+﻿@{
+    ViewBag.Title = "HolidayGroupTerritory";
+    Layout = "~/Views/Shared/MasterLayout.cshtml";
+}
+
+<body>
+
+    @using (Html.BeginForm(FormMethod.Post))
+    {
+        <div>
+            <table border="0" style="width: 100%">
+                <tr>
+                    <td>
+                        <!--JqGrid Starts-->
+                        <table style="margin-top: 7px; width :100%" border="0">
+                            <tr>
+                                <td>
+                                    <table id="TerritoryGrid" style="width: 100%" border="0"></table>
+                                    <div id="Pager">
+                                    </div>
+                                </td>
+                            </tr>
+                        </table>
+                        <!--Ends-->
+                    </td>
+                </tr>
+
+                <tr>
+                    <td>
+
+                        <input type="hidden" id="hdnSelTerritory" name="hdnSelTerritory" />
+
+                    </td>
+
+                </tr>
+            </table>
+
+
+
+        </div>
+
+
+
+        <script type="text/javascript">
+
+
+            jQuery(document).ready(function () {
+
+                initGrid();
+            });
+
+
+            function MoveSelected() {
+
+                $('#Territory :selected').each(function (i, selected) {
+                    $('#SelTerritory')
+                         .append($('<option selected="selected" value=' + $(selected).val() + '>')
+                         .text($(selected).text()));
+                    $('#Territory :selected').remove();
+                });
+
+
+            }
+
+            function ReverseSelected() {
+
+                $('#SelTerritory :selected').each(function (i, selected) {
+                    $('#Territory')
+                         .append($('<option>', { value: $(selected).val() })
+                         .text($(selected).text()));
+                    $('#SelTerritory :selected').remove();
+
+                });
+
+                $("#SelTerritory option").prop("selected", true);
+                $("#SelTerritory option:first").removeAttr('selected');
+
+            }
+            //var myCustomBwdFormatter = function (cellVal, options, rowObject) {
+            //    return "<input style='height:22px;' type='button' value='<<'   />";
+            //};
+
+            //var myCustomFwdFormatter = function (cellVal, options, rowObject) {
+            //    return "<input style='height:22px;' type='button' value='>>'  />";
+            //};
+
+            function initGrid() {
+                jQuery("#TerritoryGrid").jqGrid({
+                    url: '@Url.Action("TerritoryGridData")',
+
+                    datatype: "json",
+                    jsonReader: { repeatitems: false, id: "HolidaygroupFKID" },
+                    colNames: ['HolidaygroupFKID', 'Holiday Group', 'Territory', '', '', ''],
+                    colModel: [
+                         { name: 'HolidaygroupFKID', index: 'HolidaygroupFKID', align: 'left', hidden: true, editable: true },
+                        {
+                            name: 'HolidayGroupName', index: 'HolidayGroupName', align: 'left', edittype: 'select', editable: true, editrules: { required: true }, searchoptions: { sopt: ['eq', 'bw', 'ew', 'cn'] }, editoptions: {
+                                dataUrl: function () {
+                                    var row_id = $('#TerritoryGrid').getGridParam('selrow');
+                                    return 'LoadGroup?type=' + 'group' + '&rowId=' + row_id;
+                                }
+
+
+                            }, formoptions: { rowpos: 2, colpos: 2 }, searchrules: { required: true }
+                        },
+                        {
+                            name: 'Territory', index: 'Territory', align: 'left', editable: true, hidden: true, editrules: { edithidden: true }, edittype: 'select', editoptions: {
+                                multiple: true,
+                                dataUrl: function () {
+                                    var row_id = $('#TerritoryGrid').getGridParam('selrow');
+                                    var HolidaygroupFKID = $('#TerritoryGrid').jqGrid('getCell', row_id, 'HolidaygroupFKID');
+                                    return 'LoadTerritory?type=' + 'NSHDay' + '&rowId=' + row_id + '&HolidaygroupFKID=' + HolidaygroupFKID;
+                                }
+
+
+                            }, formoptions: { rowpos: 3, colpos: 2 },
+                        },
+            {
+                name: 'forward', index: 'forward', align: 'left', hidden: true, editrules: { edithidden: true }, edittype: 'button', editable: true, editoptions: {
+                    value: '>>',
+                    dataEvents:
+                        [
+                        {
+                            type: 'click', fn: function (e) {
+
+                                MoveSelected();
+                            }
+                        }]
+
+                }, formoptions: { rowpos: 3, colpos: 4 }
+            },
+
+            {
+
+                name: 'backward', index: 'backward', align: 'right', hidden: true, edittype: 'button', editrules: { edithidden: true }, editable: true, editoptions: {
+                    value: '<<',
+                    dataEvents:
+                        [
+                        {
+                            type: 'click', fn: function (e) {
+
+                                ReverseSelected();
+                            }
+                        }]
+
+                }, formoptions: { rowpos: 3, colpos: 5 }
+
+
+            },
+
+            {
+                name: 'SelTerritory', index: 'SelTerritory', align: 'left', editable: true, hidden: true, editrules: { edithidden: true }, edittype: 'select', editoptions: {
+                    multiple: true, dataUrl: function () {
+                        var row_id = $('#TerritoryGrid').getGridParam('selrow');
+                        var HolidaygroupFKID = $('#TerritoryGrid').jqGrid('getCell', row_id, 'HolidaygroupFKID');
+
+                        return 'LoadSubTerritory?type=' + 'SHDay' + '&rowId=' + row_id + '&HolidaygroupFKID=' + HolidaygroupFKID;
+                    }
+
+                }, formoptions: { rowpos: 3, colpos: 6 },
+            }
+                    ],
+
+                    autowidth: true,
+                    gridview: true,
+                    caption: 'Holiday Group Territory Link Master',
+                    jqModal: true,                    
+                    align: 'center',
+                    sortable: true,
+                    hidegrid: true,
+                    altRows: true,
+                    sortname: 'HolidayGroupName',
+                    sortorder: 'asc',
+                    rowTotal: 10,
+                    rowNum: 10,
+                    viewrecords: true,
+                    gridComplete: function () {
+
+                        if (jQuery("#TerritoryGrid").getGridParam("records") == 0) {
+                            jQuery("#TerritoryGrid").addRowData(
+                            "blankRow", { "HolidayGroupName": "No records to view" });
+                        }
+                    },
+                    pager: $('#Pager'),
+                    height: 'auto',
+                    editable: true,
+                    editurl: '@Url.Action("EditHolidayTerritory")',
+                });
+
+
+                jQuery("#TerritoryGrid").jqGrid('navGrid', '#Pager', { edit: true, add: true, del: false, search: true, view: false },
+
+                    {
+                        // Edit
+                        closeOnEscape: true,
+                        recreateForm: true,
+                        width: 600,
+                        checkOnSubmit: true,
+                        modal: true,
+                        beforeShowForm: function (form) {
+
+                            $('#tr_Territory td:nth-child(5)').hide();
+                            $('#tr_Territory td:nth-child(6)').hide();
+                            $('#tr_Territory td:nth-child(7)').hide();
+                            $('#tr_Territory td:nth-child(9)').hide();
+
+                        },
+                        afterShowForm: function (form_id) {
+                            var thisForm = form_id.selector.replace('FrmGrid_', 'editmod')
+                            var dialogHeight = $(thisForm).height();
+                            var dialogWidth = $(thisForm).width();
+                            var windowHeight = $(window).height();
+                            var windowWidth = $(window).width();
+                            $(thisForm).css('position', 'fixed');
+                            $(thisForm).css('top', ((windowHeight - dialogHeight) / 2));
+                            $(thisForm).css('left', ((windowWidth - dialogWidth) / 2));
+                        },
+                        beforeSubmit: function (response, postdata) {
+
+                            $('select').css("border", "1px solid #C0C0C0");
+                            var error = " ";
+                            if ($("#HolidayGroupName option:selected").text() == "Select") {
+                                error = "Holiday Group Name";
+                                $('#FormError').html("<td class='ui-state-error' colspan='12'>" + error + ":Field is required</td>");
+                                $('#HolidayGroupName').focus();
+                                $("#HolidayGroupName").css("background-color", "#FFE8E8").css("border", "1px solid #FF6666");
+                                return [false, response.responseText];
+                            }
+
+                            else if ($("#SelTerritory").val() == "0" || $("#SelTerritory").val() == null) {
+                                error += "Selected Territory";
+                                $('#FormError').html("<td class='ui-state-error' colspan='12'>" + error + ":Field is required</td>");
+                                $('#Territory').focus();
+                                $("#Territory").css("background-color", "#FFE8E8").css("border", "1px solid #FF6666");
+                                return [false, response.responseText];
+                            }
+                            else {
+                                return [true, response.responseText];
+                            }
+
+                        },                    
+
+                        afterSubmit: function (response, postdata) {
+                            if (response.responseText != "\"Holiday Group Link Master Added Successfully.\"") {
+                                
+                                $('#TblGrid_TerritoryGrid td.ui-state-error').removeClass('ui-state-error').addClass('ui-state-highlight');
+                                return [false, response.responseText];
+                            }
+                            else {
+                                $("#TerritoryGrid").jqGrid('setGridParam', { datatype: 'json' }).trigger('reloadGrid');
+                                $('#TblGrid_TerritoryGrid td.ui-state-highlight').removeClass('ui-state-highlight').addClass('ui-state-error');
+
+                                $("#SelTerritory option:selected").remove();
+                                $('select').val(0);
+                                return [false, response.responseText];
+                            }
+                        },
+                        closeAfterEdit: true,
+                        onClose: function () {
+
+                            $("#TerritoryGrid").jqGrid('setGridParam', { datatype: 'json' }).trigger('reloadGrid');
+                        }
+                    },
+
+                {
+
+                    //Add
+                    closeOnEscape: true,
+                    recreateForm: true,
+                    width: 600,
+                    modal: true,
+
+
+                    beforeShowForm: function (form) {
+
+                        $('#tr_Territory td:nth-child(5)').hide();
+                        $('#tr_Territory td:nth-child(6)').hide();
+                        $('#tr_Territory td:nth-child(7)').hide();
+                        $('#tr_Territory td:nth-child(9)').hide();
+                    },
+
+                    afterShowForm: function (form_id) {
+                        var thisForm = form_id.selector.replace('FrmGrid_', 'editmod')
+                        var dialogHeight = $(thisForm).height();
+                        var dialogWidth = $(thisForm).width();
+                        var windowHeight = $(window).height();
+                        var windowWidth = $(window).width();
+                        $(thisForm).css('position', 'fixed');
+                        $(thisForm).css('top', ((windowHeight - dialogHeight) / 2));
+                        $(thisForm).css('left', ((windowWidth - dialogWidth) / 2));
+                    },
+                   
+
+                    beforeSubmit: function (response, postdata) {
+
+                        $('select').css("border", "1px solid #C0C0C0");
+                        var error = " ";
+                        if ($("#HolidayGroupName option:selected").text() == "Select") {
+                            error = "Holiday Group Name";
+                            $('#FormError').html("<td class='ui-state-error' colspan='12'>" + error + ":Field is required</td>");
+                            $('#HolidayGroupName').focus();
+                            $("#HolidayGroupName").css("background-color", "#FFE8E8").css("border", "1px solid #FF6666");
+                            return [false, response.responseText];
+                        }
+
+                        else if ($("#SelTerritory").val() == "0" || $("#SelTerritory").val() == null) {
+                            error += "Selected Territory";
+                            $('#FormError').html("<td class='ui-state-error' colspan='12'>" + error + ":Field is required</td>");
+                            $('#Territory').focus();
+                            $("#Territory").css("background-color", "#FFE8E8").css("border", "1px solid #FF6666");
+                            return [false, response.responseText];
+                        }
+                        else {
+                            return [true, response.responseText];
+                        }
+
+                    },                  
+
+                    afterSubmit: function (response, postdata) {
+                        if (response.responseText != "\"Holiday Group Link Master Added Successfully.\"") {
+                            $('#TblGrid_TerritoryGrid td.ui-state-highlight').removeClass('ui-state-highlight').addClass('ui-state-error');
+                            return [false, response.responseText];
+                        }
+                        else {
+                            $("#TerritoryGrid").jqGrid('setGridParam', { datatype: 'json' }).trigger('reloadGrid');
+                            $('#TblGrid_TerritoryGrid td.ui-state-error').removeClass('ui-state-error').addClass('ui-state-highlight');
+
+                            $("#SelTerritory option:selected").remove();
+                            $('select').val(0);
+                            return [false, response.responseText];
+                        }
+                    },                 
+
+                    onclickSubmit: function (params, posdata) {
+                        params.url = '@Url.Action("AddHolidayTerritory")?HolidayGroupName=' + $('#HolidayGroupName').val() + '&SelTerritory=' + $('#SelTerritory').val();
+                    },
+                },
+                 {
+                     //Delete.
+                     modal: true,
+
+                 },
+        {
+            //search
+            closeOnEscape: true,
+            modal: true,
+            recreateForm: true,
+            width: 552,
+            caption: "Search",
+            searchOnEnter: true,
+            beforeShowSearch: function (form) {
+
+                $('#jqg1').val('');
+                $('#fbox_TerritoryGrid_reset').click();
+
+                var dialogHeight = $("#searchmodfbox_TerritoryGrid").height();
+                var dialogWidth = $("#searchmodfbox_TerritoryGrid").width();
+                var windowHeight = $(window).height();
+                var windowWidth = $(window).width();
+                $("#searchmodfbox_TerritoryGrid").css('position', 'fixed');
+                $("#searchmodfbox_TerritoryGrid").css('top', ((windowHeight - dialogHeight) / 2));
+                $("#searchmodfbox_TerritoryGrid").css('left', ((windowWidth - dialogWidth) / 2));
+
+                return [true, ""];
+            },
+        },
+
+            {
+                //View :
+                closeOnEscape: true,
+                recreateForm: true,
+                width: 600,
+                modal: true,
+
+                beforeShowForm: function (form) {
+                    form.closest('div.ui-jqdialog').center();
+
+
+                }
+
+            }
+
+
+                        );
+
+
+                setMethod('TerritoryGrid', 'Pager', 'Holiday Group Master');
+            }
+            function setMethod(gid, id, pgTitle) {
+               
+                var btnTitle = 'Export to Excel';
+                $('#' + gid).jqGrid('navSeparatorAdd', '#' + id, { sepclass: "ui-separator" });
+                $('#' + gid).jqGrid('navButtonAdd', '#' + id, { caption: '', title: btnTitle, position: 'last', buttonicon: 'ui-icon-calculator', onClickButton: function () { ExcelExport(); } });
+
+                var btnTitle = 'Export to PDF';
+                $('#' + gid).jqGrid('navSeparatorAdd', '#' + id, { sepclass: "ui-separator" });
+                $('#' + gid).jqGrid('navButtonAdd', '#' + id, { caption: '', title: btnTitle, position: 'last', buttonicon: 'ui-icon-bookmark', onClickButton: function () { PDFExport(); } });
+
+                var btnTitle = 'Export to CSV';
+                $('#' + gid).jqGrid('navSeparatorAdd', '#' + id, { sepclass: "ui-separator" });
+                $('#' + gid).jqGrid('navButtonAdd', '#' + id, { caption: '', title: btnTitle, position: 'last', buttonicon: 'ui-icon-note', onClickButton: function () { CSVExport(); } });
+
+
+                var btnTitle = 'Print Grid';
+                $('#' + gid).jqGrid('navSeparatorAdd', '#' + id, { sepclass: "ui-separator" });
+                $('#' + gid).jqGrid('navButtonAdd', '#' + id, { caption: '', title: btnTitle, position: 'last', buttonicon: 'ui-icon-print', onClickButton: function () { PrintGrid(gid); } });
+            }
+            function ExcelExport() {
+                window.location = '@Url.Action("ExportHolidayGroupMasToExcel")';
+            }
+            function PDFExport() {
+                window.location = '@Url.Action("ExportHolidayGroupMasToPDF")';
+            }
+            function CSVExport() {
+                window.location = '@Url.Action("ExportHolidayGroupMasToCsv")';
+            }
+            function PrintGrid(gid) {
+
+                // empty the print div container.
+                var rows = $('#TerritoryGrid').jqGrid('getRowData');
+                for (var i = 0; i < rows.length; i++) {
+                    var row = rows[i];
+                    $('#Table1').append("<tr><td>" + row.HolidayGroupName + "</td></tr>");
+
+                }
+                $(function () { printChrome('prt-container') });
+
+            }
+
+            function printChrome(divContainer) {
+
+                var printContent = document.getElementById(divContainer);
+                window.document.body.innerHTML = printContent.innerHTML;
+                window.print();
+                window.location.reload();
+            }
+
+
+        </script>
+        <div id='prt-container' style="display:none">
+            <table id="Table1" border="1" width="100%">
+                <thead>
+                    <tr>
+                        <td><b>Holiday Group</b></td>                      
+                    </tr>
+                </thead>
+                <tbody></tbody>
+
+            </table>
+        </div>
+    }
+</body>

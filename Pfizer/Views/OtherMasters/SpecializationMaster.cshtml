@@ -1,0 +1,454 @@
+﻿@{
+    ViewBag.Title = "SpecializationMaster";
+    Layout = "~/Views/Shared/MasterLayout.cshtml";
+}
+
+<body>
+
+    @using (Html.BeginForm(FormMethod.Post))
+    {
+        <div>
+            <table border="0" style="width: 100%">
+                <tr>
+                    <td>
+                        <!--JqGrid Starts-->
+                        <table style="margin-top: 7px; width :100%" border="0">
+                            <tr>
+                                <td>
+                                    <table id="SpecializeGrid" style="width: 100%" border="0"></table>
+                                    <div id="Pager">
+                                    </div>
+                                </td>
+                            </tr>
+                        </table>
+                        <!--Ends-->
+                    </td>
+                </tr>
+            </table>
+
+        </div>
+    }
+
+    <script type="text/javascript">
+
+
+    function validSpecial(objElement) {
+
+        var re = /^[a-zA-Z0-9-/\s.:?]*/gi;
+        if (objElement.value.match(re) != objElement.value) {
+            alert('No Special Characters Allowed');
+            objElement.value = '';
+            return false;
+        }
+    }
+
+
+
+    jQuery(document).ready(function () {
+
+        initGrid();
+    });
+    function initGrid() {
+        jQuery("#SpecializeGrid").jqGrid({
+            url: '@Url.Action("SpecializeGridData")',
+            datatype: "json",
+            jsonReader: { repeatitems: false, id: "PKID" },
+            colNames: ['PKID', 'Specialization', 'Team Name','Status'],
+            colModel: [
+                { name: 'PKID', index: 'PKID', align: 'left', hidden: true, editable: false },
+                {
+                    name: 'Specialization', index: 'Specialization', align: 'left', editable: true, editrules: { edithidden: true, required: false },editoptions: {
+                        size: 35,
+            dataEvents: [
+                       {
+                           type: 'keyup', // blur
+                           fn: function (e) {
+                               SingleCharacter(this);
+                           }
+                       }
+            ]
+                    }, formoptions: {
+                        elmprefix: "<span style='align:left;color:red'>*</span>&nbsp;"
+                    }, searchoptions: { sopt: ['eq', 'bw', 'ew', 'cn'] }, searchrules: { required: true },
+                }, {
+                    name: 'TeamName', index: 'TeamName', align: 'left', hidden: false, editable: true,edittype: 'select', editoptions: {
+                        multiple: true,
+                        dataUrl: function () {
+                            var row_id = $('#SpecializeGrid').getGridParam('selrow');
+                            var PKID = $('#SpecializeGrid').jqGrid('getCell', row_id, 'PKID');
+                            return 'LoadSpecialization?type=' + 'Loadspecial' + '&PKID=' + PKID;;
+                        }
+                    }, editrules: { required: false }, formoptions: {
+                        elmprefix: "<span style='align:left;color:red'>*</span>&nbsp;"
+                    }, searchoptions: { sopt: ['eq', 'bw', 'ew', 'cn'] }, searchrules: { required: true },
+
+
+                },
+ 
+                {
+                    name: 'IsActive', index: 'IsActive', align: 'left', hidden: false, editable: true,search: false, edittype: 'checkbox',editoptions: { value: "Active:Passive", defaultValue: "Active" }, editrules: { required: true }, formoptions: {
+                        elmprefix: "&nbsp;&nbsp;&nbsp;"
+
+                    }
+
+
+                },
+            ],
+
+            autowidth: true,
+            gridview: true,
+            caption: 'Specialization Master',
+            jqModal: true,            
+            rowTotal: 10,
+            rowNum: 10,          
+            align: 'center',
+            sortable: true,
+            hidegrid: true,
+            altRows: true,
+            sortname: 'PKID',
+            sortorder: 'desc',
+            viewrecords: true,
+            pager: $('#Pager'),
+            height: 'auto',
+            editable: true,
+            gridComplete: function () {
+
+                if (jQuery("#SpecializeGrid").getGridParam("records") == 0) {
+                    jQuery("#SpecializeGrid").addRowData(
+                          "blankRow", { "TeamName": "No records to view" });
+                }
+
+
+            },
+            editurl: '@Url.Action("EditSpecializationMaster")'
+            });
+
+        jQuery("#SpecializeGrid").jqGrid('navGrid', '#Pager', { edit: true, add: true, del: true, search: true, view: true },
+
+                {
+                    // Edit
+                    closeOnEscape: true,
+                    recreateForm: true,
+                    modal:true,
+                    width: 600,
+                    checkOnSubmit: true,
+                    beforeShowForm: function (form) {
+
+                    },
+                    afterShowForm: function (form_id) {
+                        var thisForm = form_id.selector.replace('FrmGrid_', 'editmod')
+                        var dialogHeight = $(thisForm).height();
+                        var dialogWidth = $(thisForm).width();
+                        var windowHeight = $(window).height();
+                        var windowWidth = $(window).width();
+                        $(thisForm).css('position', 'fixed');
+                        $(thisForm).css('top', ((windowHeight - dialogHeight) / 2));
+                        $(thisForm).css('left', ((windowWidth - dialogWidth) / 2));
+                    },
+                    beforeSubmit: function (response, postdata) {
+                       
+                        if ($("#Specialization").val().charAt(0) == ' ' || $("#Specialization").val().charAt($("#Specialization").val().length - 1) == ' ') {
+                            $('#TblGrid_SpecializeGrid td.ui-state-highlight').removeClass('ui-state-highlight').addClass('ui-state-error');
+                            $("#Specialization").css("background-color", "#FFE8E8").css("border", "1px solid #FF6666");
+                            $('#Specialization').focus();
+                            return [false, 'Enter Valid Specialization'];
+                        }
+
+                        $('select').css("border", "1px solid #C0C0C0");
+                        $("input[type=text]").css("border", "1px solid #C0C0C0");
+
+                        var error = " ";
+                        if ($.trim($("#Specialization").val()) == "") {
+
+                            error += "Specialization";
+                            $('#FormError').html("<td class='ui-state-error' colspan='2'>" + error + ":Field is required</td>");
+                            $('#Specialization').val('');
+                            $('#Specialization').focus();
+                            $("#Specialization").css("background-color", "#FFE8E8").css("border", "1px solid #FF6666");
+                            return [false, response.responseText];
+                        }
+                        else if ($("#TeamName").val() == "0" || $("#TeamName").val() == null) {
+                            error += "TeamName:";
+                            $('#FormError').html("<td class='ui-state-error' colspan='2'>" + error + ":Field is required</td>");
+                            $('#TeamName').val(0).focus();
+                            $("#TeamName").css("background-color", "#FFE8E8").css("border", "1px solid #FF6666");
+                            return [false, response.responseText];
+                        }
+                        else {
+                            return [true, response.responseText];
+                        }
+                       
+                    },
+                   afterSubmit: function (response, postdata) {
+                        $("#SpecializeGrid").jqGrid('setGridParam', { datatype: 'json' }).trigger('reloadGrid');
+                        $('#TblGrid_SpecializeGrid td.ui-state-error').removeClass('ui-state-error').addClass('ui-state-highlight');
+                        $("#Specialization").val("");
+                        $("TeamName").val(0);
+                        $("#IsActive").prop('checked', false);
+                        return [false, response.responseText];
+                        return [false, response.responseText];
+                    },
+                    //closeAfterEdit: true,
+                },
+
+            {
+
+                //Add
+                closeOnEscape: true,
+                modal: true,
+                recreateForm: true,
+                width: 600,
+               
+                afterShowForm: function (form_id) {
+                    var thisForm = form_id.selector.replace('FrmGrid_', 'editmod')
+                    var dialogHeight = $(thisForm).height();
+                    var dialogWidth = $(thisForm).width();
+                    var windowHeight = $(window).height();
+                    var windowWidth = $(window).width();
+                    $(thisForm).css('position', 'fixed');
+                    $(thisForm).css('top', ((windowHeight - dialogHeight) / 2));
+                    $(thisForm).css('left', ((windowWidth - dialogWidth) / 2));
+                },
+
+                beforeSubmit: function (response, postdata) {
+
+                    if ($("#Specialization").val().charAt(0) == ' ' || $("#Specialization").val().charAt($("#Specialization").val().length - 1) == ' ') {
+                        $('#TblGrid_SpecializeGrid td.ui-state-highlight').removeClass('ui-state-highlight').addClass('ui-state-error');
+                        $("#Specialization").css("background-color", "#FFE8E8").css("border", "1px solid #FF6666");
+                        $('#Specialization').focus();
+                        return [false, 'Enter Valid Specialization'];
+                    }
+
+                    $('select').css("border", "1px solid #C0C0C0");
+                    $("input[type=text]").css("border", "1px solid #C0C0C0");
+
+                    var error = " ";
+                    if ($.trim($("#Specialization").val()) == "") {
+
+                        error += "FormName";
+                        $('#FormError').html("<td class='ui-state-error' colspan='2'>" + error + ":Field is required</td>");
+                        $('#Specialization').val('');
+                        $('#Specialization').focus();
+                        $("#Specialization").css("background-color", "#FFE8E8").css("border", "1px solid #FF6666");
+                        return [false, response.responseText];
+                    }
+                    else if ($("#TeamName").val() == "0" || $("#TeamName").val() == null) {
+                        error += "TeamName:";
+                        $('#FormError').html("<td class='ui-state-error' colspan='2'>" + error + ":Field is required</td>");
+                        $('#TeamName').val(0).focus();
+                        $("#TeamName").css("background-color", "#FFE8E8").css("border", "1px solid #FF6666");
+                        return [false, response.responseText];
+                    }
+                    else {
+                        return [true, response.responseText];
+                    }
+
+                },
+
+                afterSubmit: function (response, postdata) {
+                    $("#SpecializeGrid").jqGrid('setGridParam', { datatype: 'json' }).trigger('reloadGrid');
+                    var errorId = " ";
+                    $("#SpecializeGrid").jqGrid('setGridParam', { datatype: 'json' }).trigger('reloadGrid');
+                    $('#TblGrid_SpecializeGrid td.ui-state-error').removeClass('ui-state-error').addClass('ui-state-highlight');
+                    $("#Specialization").val("");
+                    $("TeamName").val(0);
+                    return [false, response.responseText];
+
+                    if (response.responseText == "\"Specialization Master Added Successfully\"") {
+                        errorId += "Specialization Master Added Successfully";
+                        $('#FormError').html("<td class='ui-state-error' colspan='2'>" + errorId + "</td>");
+                        $('#TblGrid_SpecializeGrid td.ui-state-error').removeClass('ui-state-error').addClass('ui-state-highlight');
+                        $("#FormName").val("");
+                        $("#TeamName").val();
+                        return [false, response.responseText];
+                    }
+                    else {
+                        errorId += "Specialization Master already Exists";
+                        $('#FormError').html("<td class='ui-state-error' colspan='2'>" + errorId + "</td>");
+                        $('#TblGrid_SpecializeGrid td.ui-state-error').removeClass('ui-state-highlight').addClass('ui-state-error');
+                        $("#FormName").val("");
+                        $("#TeamName").val();
+                        return [false, response.responseText];
+
+                    }
+
+                }
+              
+            },
+
+            //Delete
+            {
+                closeOnEscape: true,
+                recreateForm: true,
+                modal: true,
+                width: 600,
+
+                beforeShowForm: function (form) {
+
+                    
+                    var thisForm = $("#delmod" + jQuery("#SpecializeGrid")[0].id);
+                    var dialogHeight = $(thisForm).height();
+                    var dialogWidth = $(thisForm).width();
+                    var windowHeight = $(window).height();
+                    var windowWidth = $(window).width();
+                    $(thisForm).css('position', 'fixed');
+                    $(thisForm).css('top', ((windowHeight - dialogHeight) / 2));
+                    $(thisForm).css('left', ((windowWidth - dialogWidth) / 2));
+
+
+                    var col1 = $('#SpecializeGrid').jqGrid('getGridParam', 'selrow');
+
+                    $('tr td.delmsg').html('Delete selected record(s)?');
+
+                    $('#SpecializeGrid').jqGrid('getGridParam', 'selrow');
+                    var IsActive = $('#SpecializeGrid').jqGrid('getCell', col1, 'IsActive');
+                    if (IsActive == "In Active") {
+                        $('tr td.delmsg').html('Record Already Deleted');
+                        $('#dData').hide();
+                    }
+                    else
+                        $('#dData').show();
+
+                    //var Specialization = $('#SpecializeGrid').jqGrid('getCell', col1, 'Specialization');
+                    //var IsActive = $('#SpecializeGrid').jqGrid('getCell', col1, 'IsActive');
+
+
+                    //var html = "<form><table><tr><td class='CaptionTD'>Specialization  </td><td class=='DataTD'>&nbsp;&nbsp;<input type='text' class='FormElement ui-widget-content ui-corner-all' readonly='true' id='Specialization'  value='" + Specialization + "'/></td> </tr>";
+
+                    //if (IsActive == "Active")
+                    //    html += "<tr><td class='CaptionTD'>Status</td><td class=='DataTD'>&nbsp;&nbsp;<input class='FormElement ui-widget-content ui-corner-all' id='IsActive'  type='checkbox' checked readonly /></td>";
+                    //if(IsActive == "In Active")
+                    //html += "<tr><td class='CaptionTD'>Status</td><td class=='DataTD'>&nbsp;&nbsp; <input class='FormElement ui-widget-content ui-corner-all'   type='checkbox' readonly /></td></tr>";
+                    //html += "</table></form>";
+                    //$("td.delmsg", form[0]).html(html);
+
+                }, 
+
+                
+                afterSubmit: function (response, postdata) { 
+                    $('tr td.delmsg').html('');
+                    $('#dData').hide();
+                    $("#SpecializeGrid").jqGrid('setGridParam', { datatype: 'json' }).trigger('reloadGrid');
+                    $('#DelTbl_SpecializeGrid td.ui-state-error').removeClass('ui-state-error').addClass('ui-state-highlight');
+                    $("#Specialization").val("");
+                    $("#IsActive").prop('checked', false);
+                    return [false, response.responseText];
+                }
+            },
+             {
+                 //Search
+
+                 closeOnEscape: true,
+                 modal: true,
+                 recreateForm: true,
+                 width: 600,
+                 caption: "Search",
+                 searchOnEnter: true,
+                 beforeShowSearch: function (form) {
+
+                     $('#jqg1').val('');
+                     $('#fbox_SpecializeGrid_reset').click();
+
+                     var dialogHeight = $("#searchmodfbox_SpecializeGrid").height();
+                     var dialogWidth = $("#searchmodfbox_SpecializeGrid").width();
+                     var windowHeight = $(window).height();
+                     var windowWidth = $(window).width();
+                     $("#searchmodfbox_SpecializeGrid").css('position', 'fixed');
+                     $("#searchmodfbox_SpecializeGrid").css('top', ((windowHeight - dialogHeight) / 2));
+                     $("#searchmodfbox_SpecializeGrid").css('left', ((windowWidth - dialogWidth) / 2));
+
+                     return [true, ""];
+                 }
+             },
+            {
+                //View :
+                closeOnEscape: true,
+                modal: true,
+                recreateForm: true,
+                width: 600, 
+                beforeShowForm: function (form) { 
+                    
+                    var thisForm = $("#viewmod" + jQuery("#SpecializeGrid")[0].id);
+                    var dialogHeight = $(thisForm).height();
+                    var dialogWidth = $(thisForm).width();
+                    var windowHeight = $(window).height();
+                    var windowWidth = $(window).width();
+                    $(thisForm).css('position', 'fixed');
+                    $(thisForm).css('top', ((windowHeight - dialogHeight) / 2));
+                    $(thisForm).css('left', ((windowWidth - dialogWidth) / 2));
+
+                }
+
+            }
+
+                    );
+
+       
+        setMethod('SpecializeGrid', 'Pager', 'Question Master');
+    }
+    function setMethod(gid, id, pgTitle) {
+           
+        var btnTitle = 'Export to Excel';
+        $('#' + gid).jqGrid('navSeparatorAdd', '#' + id, { sepclass: "ui-separator" });
+        $('#' + gid).jqGrid('navButtonAdd', '#' + id, { caption: '', title: btnTitle, position: 'last', buttonicon: 'ui-icon-calculator', onClickButton: function () { ExcelExport(); } });
+
+        var btnTitle = 'Export to PDF';
+        $('#' + gid).jqGrid('navSeparatorAdd', '#' + id, { sepclass: "ui-separator" });
+        $('#' + gid).jqGrid('navButtonAdd', '#' + id, { caption: '', title: btnTitle, position: 'last', buttonicon: 'ui-icon-bookmark', onClickButton: function () { PDFExport(); } });
+
+        var btnTitle = 'Export to CSV';
+        $('#' + gid).jqGrid('navSeparatorAdd', '#' + id, { sepclass: "ui-separator" });
+        $('#' + gid).jqGrid('navButtonAdd', '#' + id, { caption: '', title: btnTitle, position: 'last', buttonicon: 'ui-icon-note', onClickButton: function () { CSVExport(); } });
+
+
+        var btnTitle = 'Print Grid';
+        $('#' + gid).jqGrid('navSeparatorAdd', '#' + id, { sepclass: "ui-separator" });
+        $('#' + gid).jqGrid('navButtonAdd', '#' + id, { caption: '', title: btnTitle, position: 'last', buttonicon: 'ui-icon-print', onClickButton: function () { PrintGrid(gid); } });
+    }
+    function ExcelExport() {
+        window.location = '@Url.Action("ExportSpecializationMasterToExcel")';
+    }
+    function PDFExport() {
+        window.location = '@Url.Action("ExportSpecializationMasterToPDF")';
+    }
+    function CSVExport() {
+        window.location = '@Url.Action("ExportSpecializationMasterToCsv")';
+    }
+        function PrintGrid(gid) {
+
+            // empty the print div container.
+            var rows = $('#SpecializeGrid').jqGrid('getRowData');
+            for (var i = 0; i < rows.length; i++) {
+                var row = rows[i];
+                $('#Table1').append("<tr><td>" + row.Specialization + "</td><td>" + row.TeamName + "</td><td>" + row.IsActive + "</td></tr>");
+
+            }
+            $(function () { printChrome('prt-container') });
+
+        }
+
+    function printChrome(divContainer) {
+
+        var printContent = document.getElementById(divContainer);
+        window.document.body.innerHTML = printContent.innerHTML;
+        window.print();
+        window.location.reload();
+    }
+
+
+    </script>
+    <div id='prt-container' style="display:none">
+        <table id="Table1" border="1" width="100%">
+            <thead>
+                <tr>
+                    <td><b>Specialization</b></td>
+                    <td><b>Team Name</b></td>
+                    <td><b>Status</b></td>
+                </tr>
+
+            </thead>
+            <tbody></tbody>
+
+        </table>
+    </div>
+</body>

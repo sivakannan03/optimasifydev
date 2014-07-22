@@ -1,0 +1,530 @@
+﻿@{
+    ViewBag.Title = "SampleInputReconcileSettings";
+    Layout = "~/Views/Shared/MasterLayout.cshtml";
+}
+
+<body>
+
+    @using (Html.BeginForm(FormMethod.Post))
+    {
+        <div>
+            <table border="0" style="width: 100%">
+                <tr>
+                    <td>
+                        <!--JqGrid Starts-->
+                        <table style="margin-top: 7px; width :100%" border="0">
+                            <tr>
+                                <td>
+                                    <table id="ReconcileGrid" style="width: 100%" border="0"></table>
+                                    <div id="Pager">
+                                    </div>
+                                </td>
+                            </tr>
+                        </table>
+                        <!--Ends-->
+                    </td>
+                </tr>
+            </table>
+
+        </div>
+   
+    <script type="text/javascript">
+
+ 
+
+
+    jQuery(document).ready(function () {
+
+        initGrid();
+    });
+
+
+
+    function MoveSelected() {
+
+        $('#TeamName :selected').each(function (i, selected) {
+            $('#SelTeamName')
+                 .append($('<option selected="selected" value=' + $(selected).val() + '>')
+                 .text($(selected).text()));
+            $('#TeamName :selected').remove();
+        });
+
+
+    }
+
+    function ReverseSelected() {
+
+        $('#SelTeamName :selected').each(function (i, selected) {
+            $('#TeamName')
+                 .append($('<option>', { value: $(selected).val() })
+                 .text($(selected).text()));
+            $('#SelTeamName :selected').remove();
+
+        });
+
+        $("#SelTeamName option").prop("selected", true);
+        $("#SelTeamName option:first").removeAttr('selected');
+
+    }
+
+    function initGrid() {
+        jQuery("#ReconcileGrid").jqGrid({
+            url: '@Url.Action("ReconcileGridData")',
+
+            datatype: "json",
+            jsonReader: { repeatitems: false, id: "PKID" },
+            colNames: ['PKID', 'Reconciliation Start Date', 'Team Name','','',''],
+            colModel: [
+                { name: 'PKID', index: 'PKID', align: 'left', hidden: true, editable: true },
+                 
+                   {
+                       name: 'DateofBegining', index: 'DateofBegining', align: 'left', editable: true, hidden: false, editrules: { edithidden: true, required: false }, search: false, formatter: "date",
+                       formatoptions: { dateFormat: "d/m/yy" }, edittype: 'text',
+                        editoptions: {
+                           size: 10, maxlengh: 10,
+                           dataInit: function (element) {
+                               $(element).datepicker({
+                                   dateFormat: 'dd/mm/yy',
+                                   changeMonth: true,
+                               changeYear: true
+                               })
+                           }
+                       },formoptions: {elmprefix: "<span style='align:left;color:red'>*</span>&nbsp;", rowpos: 3, colpos: 1 },
+                   },
+                
+                {
+                    
+                    name: 'TeamName', index: 'TeamName', align: 'left', hidden: false, editable: true, editrules: { edithidden: true, required: false }, edittype: 'select', editoptions: {
+                        multiple: true,
+                        dataUrl: function () {
+                            var row_id = $('#ReconcileGrid').getGridParam('selrow');
+                            return 'LoadTeam?type=' + 'NotSelected' + '&rowId=' + row_id;
+                        },
+                        dataEvents: [{
+
+                            type: 'change',
+                            fn: function (e) {
+
+                                $('#forward').css("border", "1px solid #FF6666");
+                               // $('#Team').css("border", "1px solid #FF6666");
+                            }
+
+
+
+                        }]
+
+                    } ,  searchoptions: { sopt: ['eq', 'bw', 'ew', 'cn'] }, formoptions: {rowpos: 2, colpos: 1 }, searchrules: { required: true }
+
+
+                },
+                
+            {
+                name: 'forward', index: 'forward', align: 'left', hidden: true, editrules: { edithidden: true }, edittype: 'button', editable: true, editoptions: {
+                    value: '>>',
+                    dataEvents:
+                        [
+                        {
+                            type: 'click', fn: function (e) {
+                                $('#forward').css("border", "1px solid #C0C0C0");
+                                MoveSelected();
+                            }
+                        }]
+
+                }, formoptions: { rowpos: 2, colpos: 2,}
+            },
+
+            {
+
+                name: 'backward', index: 'backward', align: 'right', hidden: true, edittype: 'button', editrules: { edithidden: true }, editable: true, editoptions: {
+                    value: '<<',
+                    dataEvents:
+                        [
+                        {
+                            type: 'click', fn: function (e) {
+
+                                ReverseSelected();
+                            }
+                        }]
+
+                }, formoptions: { rowpos: 3, colpos:2 }
+
+
+            },
+
+            {
+                name: 'SelTeamName', index: 'SelTeamName', align: 'left', editable: true, hidden: true, editrules: { edithidden: true,required:false }, edittype: 'select', editoptions: {
+                    multiple: true, dataUrl: function () {
+                        var row_id = $('#ReconcileGrid').getGridParam('selrow');
+                        return 'LoadSelectedTeam?type=' + 'Selected' + '&rowId=' + row_id;
+                    }
+
+                }, formoptions: { rowpos: 2, colpos: 4, elmprefix: "<span style='align:left;color:red'>*</span>&nbsp;", },
+            }
+            ],
+
+            autowidth: true,
+            gridview: true,
+            caption: 'Sample Input Reconcile Settings',
+            jqModal: true,
+             
+            rowTotal: 10,
+            rowNum: 10,
+            align: 'center',
+            sortable: true,
+            hidegrid: true,
+            altRows: true,
+           
+            sortname: 'PKID',
+            sortorder: 'desc',
+            viewrecords: true,
+            pager: $('#Pager'),
+            height: 'auto',
+            editable: true,
+            gridComplete: function () {
+
+                if (jQuery("#ReconcileGrid").getGridParam("records") == 0) {
+                    jQuery("#ReconcileGrid").addRowData(
+                          "blankRow", { "TeamName": "No records to view" });
+                }
+
+
+            },
+            editurl: '@Url.Action("EditReconcileGrid")'
+            });
+
+            jQuery("#ReconcileGrid").jqGrid('navGrid', '#Pager', { edit: true, add: true, del: true, search: true ,view:true},
+
+                {
+                    // Edit
+                    closeOnEscape: true,
+                    recreateForm: true,
+                    width: 600,
+                    modal:true,
+                    checkOnSubmit: true,
+                    beforeShowForm: function (form) {
+                        $('#ui-datepicker-div').css('display','none');
+                    },
+                    afterShowForm: function (form_id) {
+                        var thisForm = form_id.selector.replace('FrmGrid_', 'editmod')
+                        var dialogHeight = $(thisForm).height();
+                        var dialogWidth = $(thisForm).width();
+                        var windowHeight = $(window).height();
+                        var windowWidth = $(window).width();
+                        $(thisForm).css('position', 'fixed');
+                        $(thisForm).css('top', ((windowHeight - dialogHeight) / 2));
+                        $(thisForm).css('left', ((windowWidth - dialogWidth) / 2));
+                    },
+                    beforeSubmit: function (response, postdata) {
+                        $('select').css("border", "1px solid #C0C0C0");
+                        $("input[type=text]").css("border", "1px solid #C0C0C0");
+
+                        var error = " ";
+                        if (($("#SelTeamName").val() == 0) || ($("#SelTeamName").val() == "Select")) {
+                            error += "SelTeamName";
+                            $('#FormError').html("<td class='ui-state-error' colspan='10'>" + error + ":Field is required</td>");
+                            $('#SelTeamName').val(0);
+                            $("#SelTeamName").css("background-color", "#FFE8E8").css("border", "1px solid #FF6666");
+                            return [false, response.responseText];
+                        }
+                        else if ($("#DateofBegining").val() == "") {
+
+                            error += "DateofBegining";
+                            $('#FormError').html("<td class='ui-state-error' colspan='10'>" + error + ":Field is required</td>");
+                            $('#DateofBegining').val('');
+                            $('#DateofBegining').focus();
+                            $("#DateofBegining").css("background-color", "#FFE8E8").css("border", "1px solid #FF6666");
+                            return [false, response.responseText];
+                        }
+                        else {
+                            return [true, response.responseText];
+                        }
+
+                    },
+                    afterSubmit: function (response, postdata) {
+
+                        $("#ReconcileGrid").jqGrid('setGridParam', { datatype: 'json' }).trigger('reloadGrid');
+                        $('#TblGrid_ReconcileGrid td.ui-state-error').removeClass('ui-state-error').addClass('ui-state-highlight');
+                        $("#TeamName").val(0);
+                        $("#SelTeamName").val(0);
+                        $("#DateofBegining").val('');
+                        return [false, response.responseText];
+                    },
+                   // closeAfterEdit: true,
+                },
+
+            {
+
+                //Add
+                closeOnEscape: true,
+                recreateForm: true,
+                modal: true,
+                width: 600,
+                beforeShowForm: function (form) {
+                    $('#IsActive').attr('checked','true');
+                },
+
+
+                afterShowForm: function (form_id) {
+                    var thisForm = form_id.selector.replace('FrmGrid_', 'editmod')
+                    var dialogHeight = $(thisForm).height();
+                    var dialogWidth = $(thisForm).width();
+                    var windowHeight = $(window).height();
+                    var windowWidth = $(window).width();
+                    $(thisForm).css('position', 'fixed');
+                    $(thisForm).css('top', ((windowHeight - dialogHeight) / 2));
+                    $(thisForm).css('left', ((windowWidth - dialogWidth) / 2));
+                },
+                beforeSubmit: function (response, postdata) {
+                    //alert($("#DateofBegining").val());
+                    var date = $("#DateofBegining").val().substring(0, 2);
+                    //alert(date);
+                    var month = $("#DateofBegining").val().substring(3, 5);
+                    //alert(month);
+                    var year = $("#DateofBegining").val().substring(6, 10);
+                    //alert(year);
+                    var Mydate = date + "/" + month + "/" + year;
+
+                    var CurrentDay = new Date()
+                    var twoDigitMonth = ((CurrentDay.getMonth().length + 1) === 1) ? (CurrentDay.getMonth() + 1) : '0' + (CurrentDay.getMonth() + 1);
+                    var currentDate = CurrentDay.getDate() + "/" + twoDigitMonth + "/" + CurrentDay.getFullYear();
+                   
+                    $('select').css("border", "1px solid #C0C0C0");
+                    $("input[type=text]").css("border", "1px solid #C0C0C0");
+
+                    var error = " ";
+                    if (($("#SelTeamName").val() == 0) || ($("#SelTeamName").val() == null)) {
+                        error += "SelTeamName";
+                        $('#FormError').html("<td class='ui-state-error' colspan='10'>" + error + ":Field is required</td>");
+                        $("#SelTeamName").css("background-color", "#FFE8E8").css("border", "1px solid #FF6666");
+                        return [false, response.responseText];
+                    }
+                        //Date.now.toString()
+                   
+                    else if ($("#DateofBegining").val() == "" || (Mydate < currentDate && Mydate != currentDate)) {
+                        
+                        error += "DateofBegining";
+                        $('#FormError').html("<td class='ui-state-error' colspan='10'>" + error + ":Should be greater than or Equal to Todays Date</td>");
+                        $('#DateofBegining').val('');
+                        $('#DateofBegining').focus();
+                        $("#DateofBegining").css("background-color", "#FFE8E8").css("border", "1px solid #FF6666");
+                        return [false, response.responseText];
+                    }
+                    else {
+                        return [true, response.responseText];
+                    }
+                   
+                },
+
+
+                afterSubmit: function (response, postdata) {
+                   
+                    $("#ReconcileGrid").jqGrid('setGridParam', { datatype: 'json' }).trigger('reloadGrid');
+                    var errorId = " ";
+                    if (response.responseText == "\"Reconcile Date Added Successfully.\"") {
+                        errorId += "Reconcile Date Added Successfully.";
+                        $('#FormError').html("<td class='ui-state-error' colspan='10'>" + errorId + "</td>");
+                        
+                        $('#TblGrid_ReconcileGrid td.ui-state-error').removeClass('ui-state-error').addClass('ui-state-highlight');
+                        $("#TeamName").val(0);
+                        $("#SelTeamName").val(0);
+                        $("#DateofBegining").val('');
+                        return [false, response.responseText];
+                    }
+                    else {
+                        errorId += "Reconcile Date is already updated for one of the selected Team in the Selected Month";
+                        $('#FormError').html("<td class='ui-state-error' colspan='10'>" + errorId + "</td>");
+                        $("#ajaxGrid").jqGrid('setGridParam', { datatype: 'json' }).trigger('reloadGrid');
+                        $('#TblGrid_ReconcileGrid td.ui-state-error').removeClass('ui-state-highlight').addClass('ui-state-error');
+                        $("#TeamName").val(0);
+                        $("#SelTeamName").val(0);
+                        $("#DateofBegining").val('');
+                        $("#Status").prop("checked", false);
+                        return [false, response.responseText];
+
+                    }
+                    //if (response.responseText == "\"Reconcile Date Added Successfully.\"") {
+                    //    $("#ReconcileGrid").jqGrid('setGridParam', { datatype: 'json' }).trigger('reloadGrid');
+                    //    $('#TblGrid_ReconcileGrid td.ui-state-error').removeClass('ui-state-error').addClass('ui-state-highlight');
+                    //    $("#TeamName").val(0);
+                    //    $("#SelTeamName").val(0);
+                    //    $("#DateofBegining").val('');
+                    //    return [false, response.responseText];
+                    //}
+                    //else {
+                    //    alert(response.responseText);
+                    //    if (response.responseText == "\"Reconcile Date is already updated for one of the selected Team in the Selected Month\"") {
+                    //        $("#ReconcileGrid").jqGrid('setGridParam', { datatype: 'json' }).trigger('reloadGrid');
+                    //        $('#TblGrid_ReconcileGrid td.ui-state-error').removeClass('ui-state-highlight').addClass('ui-state-error');
+                    //        $("#TeamName").val(0);
+                    //        $("#SelTeamName").val(0);
+                    //        $("#DateofBegining").val('');
+                    //        return [false, response.responseText];
+                    //    }
+                    //}
+                },
+                onclickSubmit: function (params, posdata) {
+                   
+                    params.url = '@Url.Action("AddReconcileGrid")?DateofBegining=' + $('#DateofBegining').val() + '&SelTeamName=' + $('#SelTeamName').val() ;
+
+                },
+            },
+
+            //Delete
+            {
+                closeOnEscape: true,
+                recreateForm: true,
+                modal: true,
+                width: 600,
+
+                beforeShowForm: function (form) {
+                    $('tr td.delmsg').html('Delete selected record(s)?');
+                    var col1 = $('#ajaxGrid').jqGrid('getGridParam', 'selrow');
+                    var IsActive = $('#ajaxGrid').jqGrid('getCell', col1, 'IsActive');
+                    if (IsActive == "InActive") {
+                        $('tr td.delmsg').html('Record Already Deleted');
+
+                        $('#dData').hide();
+                    }
+                    else
+                        $('#dData').show();
+                    var thisForm = $("#delmod" + jQuery("#ReconcileGrid")[0].id);
+                    var dialogHeight = $(thisForm).height();
+                    var dialogWidth = $(thisForm).width();
+                    var windowHeight = $(window).height();
+                    var windowWidth = $(window).width();
+                    $(thisForm).css('position', 'fixed');
+                    $(thisForm).css('top', ((windowHeight - dialogHeight) / 2));
+                    $(thisForm).css('left', ((windowWidth - dialogWidth) / 2)); 
+
+                },
+
+
+
+                afterSubmit: function (response, postdata) {
+                    //alert(response.responseText);
+                    $('tr td.delmsg').html('');
+                    $('#dData').hide();
+                    $("#ReconcileGrid").jqGrid('setGridParam', { datatype: 'json' }).trigger('reloadGrid');
+                    $('#DelTbl_ReconcileGrid td.ui-state-error').removeClass('ui-state-error').addClass('ui-state-highlight');
+                    
+                    return [false, response.responseText];
+                }
+            }, {
+                //Search
+
+                closeOnEscape: true,
+                modal: true,
+                recreateForm: true,
+                width: 600,
+                caption: "Search",
+                searchOnEnter: true,
+                beforeShowSearch: function (form) {
+
+                    $('#jqg1').val('');
+                    $('#fbox_ReconcileGrid_reset').click();
+
+                    var dialogHeight = $("#searchmodfbox_ReconcileGrid").height();
+                    var dialogWidth = $("#searchmodfbox_ReconcileGrid").width();
+                    var windowHeight = $(window).height();
+                    var windowWidth = $(window).width();
+                    $("#searchmodfbox_ReconcileGrid").css('position', 'fixed');
+                    $("#searchmodfbox_ReconcileGrid").css('top', ((windowHeight - dialogHeight) / 2));
+                    $("#searchmodfbox_ReconcileGrid").css('left', ((windowWidth - dialogWidth) / 2));
+
+                    return [true, ""];
+                }
+            },
+            {
+                //View :
+                closeOnEscape: true,
+                recreateForm: true,
+                width: 600,
+                modal: true,
+                beforeShowForm: function (form) {
+
+
+                    var thisForm = $("#viewmod" + jQuery("#ReconcileGrid")[0].id);
+                    var dialogHeight = $(thisForm).height();
+                    var dialogWidth = $(thisForm).width();
+                    var windowHeight = $(window).height();
+                    var windowWidth = $(window).width();
+                    $(thisForm).css('position', 'fixed');
+                    $(thisForm).css('top', ((windowHeight - dialogHeight) / 2));
+                    $(thisForm).css('left', ((windowWidth - dialogWidth) / 2));
+
+                }
+
+            }
+
+                    );
+
+            setMethod('ReconcileGrid', 'Pager', 'Question Master');
+        }
+        function setMethod(gid, id, pgTitle) {
+
+            var btnTitle = 'Export to Excel';
+            $('#' + gid).jqGrid('navSeparatorAdd', '#' + id, { sepclass: "ui-separator" });
+            $('#' + gid).jqGrid('navButtonAdd', '#' + id, { caption: '', title: btnTitle, position: 'last', buttonicon: 'ui-icon-calculator', onClickButton: function () { ExcelExport(); } });
+
+            var btnTitle = 'Export to PDF';
+            $('#' + gid).jqGrid('navSeparatorAdd', '#' + id, { sepclass: "ui-separator" });
+            $('#' + gid).jqGrid('navButtonAdd', '#' + id, { caption: '', title: btnTitle, position: 'last', buttonicon: 'ui-icon-bookmark', onClickButton: function () { PDFExport(); } });
+
+            var btnTitle = 'Export to CSV';
+            $('#' + gid).jqGrid('navSeparatorAdd', '#' + id, { sepclass: "ui-separator" });
+            $('#' + gid).jqGrid('navButtonAdd', '#' + id, { caption: '', title: btnTitle, position: 'last', buttonicon: 'ui-icon-note', onClickButton: function () { CSVExport(); } });
+
+
+            var btnTitle = 'Print Grid';
+            $('#' + gid).jqGrid('navSeparatorAdd', '#' + id, { sepclass: "ui-separator" });
+            $('#' + gid).jqGrid('navButtonAdd', '#' + id, { caption: '', title: btnTitle, position: 'last', buttonicon: 'ui-icon-print', onClickButton: function () { PrintGrid(gid); } });
+        }
+        function ExcelExport() {
+            window.location = '@Url.Action("ExportReconcileToExcel")';
+        }
+        function PDFExport() {
+            window.location = '@Url.Action("ExportReconcileToPDF")';
+        }
+        function CSVExport() {
+            window.location = '@Url.Action("ExportReconcileToCsv")';
+        }
+        function PrintGrid(gid) {
+            ////DateofBeginingTeamName
+            var rows = $('#ReconcileGrid').jqGrid('getRowData');
+            for (var i = 0; i < rows.length; i++) {
+                var row = rows[i];
+                $('#Table1').append("<tr><td>" + row.DateofBegining + "</td><td>" + row.TeamName + "</td></tr>");
+                
+            }
+            $(function () { printChrome('prt-container') });
+
+
+        }
+
+        function printChrome(divContainer) {
+
+            var printContent = document.getElementById(divContainer);
+            window.document.body.innerHTML = printContent.innerHTML;
+            window.print();
+            window.location.reload();
+        }
+
+
+    </script>
+    <div id='prt-container' style="display:none">
+    <table id="Table1" border="1" width="100%">
+        <thead>
+            <tr>
+                <td><b>DateofBegining</b></td>
+                <td><b>TeamName</b></td>
+              </tr>
+
+        </thead>
+        <tbody></tbody>
+
+    </table>
+        </div>
+ 
+ }
+
+    </body>

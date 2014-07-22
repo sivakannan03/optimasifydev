@@ -1,0 +1,211 @@
+﻿@{
+    Layout = null;
+}
+
+
+<body>
+
+@using (Html.BeginForm(FormMethod.Post))
+{
+    <div>
+        <table border="0" style="width: 100%">
+            <tr>
+                <td>
+                    <!--JqGrid Starts-->
+                    <table style="margin-top: 7px; width :100%" border="0">
+                        <tr>
+                            <td>
+                                <table id="ajaxGrid" style="width: 100%" border="0"></table>
+                                <div id="ajaxGridPager">
+                                </div>
+                            </td>
+                        </tr>
+                    </table>
+                    <!--Ends-->
+                </td>
+            </tr>
+        </table>
+        
+    </div>
+}
+
+<script type="text/javascript">
+
+
+
+        jQuery(document).ready(function () {
+
+            initGrid();
+        });
+        function initGrid() {
+            jQuery("#ajaxGrid").jqGrid({
+                url: '@Url.Action("GridData")?fkId=' + jQuery('#hdnFkId').val(),
+
+                datatype: "json",
+                jsonReader: { repeatitems: false, id: "PKID" },
+                colNames: ['PKID', 'Table Type', 'Code', 'Name', 'Status'],
+                colModel: [
+                     { name: 'PKID', index: 'PKID', align: 'left', hidden: true, editable: true },
+                    { name: 'TableName', index: 'TableName', align: 'left', editable: true, editoptions: { defaultValue: '@ViewData["TableName"]', readonly: "readonly" }, searchoptions: { sopt: ['eq', 'bw', 'ew', 'cn'] } },
+                     { name: 'GenCode', index: 'GenCode', align: 'left', hidden: true, editable: true, editrules: { edithidden: true }, editrules: { edithidden: true, required: true } },
+                    { name: 'GenName', index: 'GenName', align: 'left', resizable: false, editable: true, editrules: { edithidden: true, required: true }, searchoptions: { sopt: ['eq', 'bw', 'ew', 'cn'] }, sortable: true, sorttype: 'text' },
+                    { name: 'IsActive', index: 'IsActive', align: 'left', resizable: false, editable: true, edittype: 'checkbox', editoptions: { value: "True:False" }, searchoptions: { sopt: ['eq', 'bw', 'ew', 'cn'] }, view: false },
+
+                ],
+
+                autowidth: true,
+                gridview: true,
+                caption: 'CampTypeMaster',
+                jqModal: true,
+                align: 'center',
+                sortable: true,
+                hidegrid: true,
+                altRows: true,
+                sortname: 'PKID',
+                sortorder: 'desc',
+                rowTotal: 10,
+                rowNum: 6,
+                viewrecords: true,
+                pager: $('#ajaxGridPager'),
+                height: 'auto',
+                editable: true,
+                editurl: '@Url.Action("Edit")?fkId=' + jQuery('#hdnFkId').val()
+            });
+
+
+            jQuery("#ajaxGrid").jqGrid('navGrid', '#ajaxGridPager', { edit: true, add: true, del: true, search: true },
+
+                {
+                    // Edit  
+                    closeOnEscape: true,
+                    recreateForm: true,
+                    width: 600,
+                    checkOnSubmit: true,
+                    beforeShowForm: function (form) { 
+                    },
+
+                    afterSubmit: function (response, postdata) {
+                        alert('Information updated successfully');
+                        $("#ajaxGrid").jqGrid('setGridParam', { datatype: 'json' }).trigger('reloadGrid');
+                        return [true, "", ''];
+                    },
+                    closeAfterEdit: true,
+                },
+
+            {
+
+                //Add  
+                closeOnEscape: true,
+                closeAfterAdd: true,
+                recreateForm: true,
+                width: 600,
+
+                beforeShowForm: function (form) { 
+
+
+                },
+                afterShowForm: function (form_id) {
+                    var thisForm = form_id.selector.replace('FrmGrid_', 'editmod')
+                    var dialogHeight = $(thisForm).height();
+                    var dialogWidth = $(thisForm).width();
+                    var windowHeight = $(window).height();
+                    var windowWidth = $(window).width();
+                    $(thisForm).css('position', 'fixed');
+                    $(thisForm).css('top', ((windowHeight - dialogHeight) / 2));
+                    $(thisForm).css('left', ((windowWidth - dialogWidth) / 2));
+                },
+                afterShowForm: function (form_id) {
+                    var thisForm = form_id.selector.replace('FrmGrid_', 'editmod')
+                    var dialogHeight = $(thisForm).height();
+                    var dialogWidth = $(thisForm).width();
+                    var windowHeight = $(window).height();
+                    var windowWidth = $(window).width();
+                    $(thisForm).css('position', 'fixed');
+                    $(thisForm).css('top', ((windowHeight - dialogHeight) / 2));
+                    $(thisForm).css('left', ((windowWidth - dialogWidth) / 2));
+                },
+
+                afterSubmit: function (response, postdata) {
+                    alert('Information Added Successfully');
+                    $("#ajaxGrid").jqGrid('setGridParam', { datatype: 'json' }).trigger('reloadGrid');
+                    return [true, "", ''];
+                }
+            },
+
+            //Delete 
+            {
+                closeOnEscape: true,
+                recreateForm: true,
+                width: 600,
+
+                beforeShowForm: function (form) {
+
+                    var dlgDiv = $("#delmod" + jQuery("#ajaxGrid")[0].id);
+                    var parentDiv = dlgDiv.parent();
+                    var dlgWidth = dlgDiv.width();
+                    var parentWidth = parentDiv.width();
+                    var dlgHeight = dlgDiv.height();
+                    var parentHeight = parentDiv.height();
+
+                    dlgDiv[0].style.left = Math.round((parentWidth - dlgWidth) / 2) + "px";
+
+
+                    var col1 = $('#ajaxGrid').jqGrid('getGridParam', 'selrow');
+
+                    var ImpactScreenName = $('#ajaxGrid').jqGrid('getCell', col1, 'ImpactScreenName');
+                    var Code = $('#ajaxGrid').jqGrid('getCell', col1, 'Code');
+                    var SettingDescription = $('#ajaxGrid').jqGrid('getCell', col1, 'SettingDescription');
+                    var SettingType = $('#ajaxGrid').jqGrid('getCell', col1, 'SettingType');
+                    var FromValue = $('#ajaxGrid').jqGrid('getCell', col1, 'FromValue');
+                    var ToValue = $('#ajaxGrid').jqGrid('getCell', col1, 'ToValue');
+                    var Flag = $('#ajaxGrid').jqGrid('getCell', col1, 'Flag');
+                    var PKID = $('#ajaxGrid').jqGrid('getCell', col1, 'PKID');
+
+
+
+                    var html = "<form><table><tr><td class='CaptionTD'>Impact Screen Name </td><td class=='DataTD'>&nbsp;&nbsp;<input type='text' class='FormElement ui-widget-content ui-corner-all' readonly='true'  value='" + ImpactScreenName + "'/></td>";
+                    if (SettingType != "Text" && SettingType != "Mail" && SettingType != "Days" && SettingType != "Flag") {
+                        html += "<td class='CaptionTD'>&nbsp;&nbsp;Range</td><td class=='DataTD'>&nbsp;&nbsp;<input class='FormElement ui-widget-content ui-corner-all'  type='checkbox' checked/></td></tr>";
+                    }
+                    else {
+                        html += "<td><input type='hidden' id='hdnPkId' value='" + PKID + "'/></td></tr>";
+                    }
+                    html += "<tr><td></td>";
+                    html += "<td></td></tr>";
+
+                    html += "<tr><td class='CaptionTD'>Code</td><td class=='DataTD'>&nbsp;&nbsp;<input class='FormElement ui-widget-content ui-corner-all' readonly='true'  type='text' value='" + Code + "'/></td>";
+                    html += "<td></td><td></td></tr>";
+
+                    html += "<tr><td class='CaptionTD'>Setting Description</td><td class=='DataTD'>&nbsp;&nbsp;<input class='FormElement ui-widget-content ui-corner-all'readonly='true'  type='text' value='" + SettingDescription + "'/></td>";
+                    html += "<td class='CaptionTD'>&nbsp;&nbsp;Setting TypeCode</td><td>&nbsp;&nbsp;<input type='text' class='FormElement ui-widget-content ui-corner-all' readonly='true'  value='" + SettingType + "'/></td></tr>";
+
+                    html += "<tr><td class='CaptionTD'>From Value</td><td class=='DataTD'>&nbsp;&nbsp;<input class='FormElement ui-widget-content ui-corner-all' readonly='true'  type='text' value='" + FromValue + "'/></td>";
+                    if (SettingType != "Text" && SettingType != "Mail" && SettingType != "Flag") {
+                        html += "<td class='CaptionTD'>&nbsp;&nbsp;To Value</td><td class=='DataTD'>&nbsp;&nbsp;<input class='FormElement ui-widget-content ui-corner-all'readonly='true'   type='text' value='" + ToValue + "'/></td></tr>";
+                    }
+                    html += "</table></form>";
+                    // form.html(html);
+                    $("td.delmsg", form[0]).html(html);
+
+                },
+                onclickSubmit: function (form) {
+                    if (confirm('Are you sure you want to update this row?')) {
+                        return true;
+                    }
+                    else {
+                        $(form).close();
+                    }
+                },
+                afterSubmit: function (response, postdata) {
+
+                    $("#ajaxGrid").jqGrid('setGridParam', { datatype: 'json' }).trigger('reloadGrid');
+                    return [true, "", ''];
+                }
+            }
+
+                    );
+
+
+        }
+    </script>
+</body>

@@ -1,0 +1,142 @@
+﻿@{
+    ViewBag.Title = "TeamReminderLinkMaster";
+    Layout = "~/Views/Shared/MasterLayout.cshtml";
+}
+<style>
+    .colCell {
+        cursor: pointer;
+    }
+</style>
+
+
+
+<body>
+    @using (Html.BeginForm(FormMethod.Post))
+    {
+        <div>
+            <table border="0" style="width: 100%">
+                <tr>
+                    <td>
+                        <!--JqGrid Starts-->
+                        <table style="margin-top: 7px; width :100%" border="0">
+                            <tr>
+                                <td>
+                                    <table id="TeamReminderLinkMaster" style="width: 100%" border="0"></table>
+                                    <div id="TeamReminderLinkMasterPager"></div>
+                                </td>
+                            </tr>
+                            <tr>
+
+                                <td align="center">
+                                    <br />
+                                    <input type="button" id="Submit" class="blue_button" value="Submit" />
+                                </td>
+                            </tr>
+                        </table>
+                        <!--Ends-->
+                    </td>
+                </tr>
+            </table>
+
+        </div>
+    }
+    <script type="text/javascript">
+
+    jQuery(document).ready(function () {
+
+        initGrid();
+    });
+
+    var lastsel;
+    function initGrid() {
+        jQuery("#TeamReminderLinkMaster").jqGrid({
+            url: '@Url.Action("GetTeamReminderLinkMaster")',
+            datatype: "json",
+            jsonReader: { repeatitems: false, id: "PKID" },
+            colNames: ['PKID', 'TeamName', 'Reminder'],
+            colModel: [
+                         { name: 'PKID', index: 'PKID', align: 'left', viewable: true, key: true, hidden: true, editrules: { edithidden: true } },
+                         { name: 'TeamName', index: 'TeamName', align: 'left' },
+                           {
+                               name: 'Reminder', index: 'Reminder', align: 'left', editable: true,  edittype: 'select',
+                               editoptions: { value: { '1': 'Active', '0': 'In Active' } }, classes: 'colCell',
+                           },
+                         //{
+                         //    name: 'Reminder', index: 'Reminder', align: 'left', editable: true, formatter: 'checkbox', edittype: 'checkbox',
+                         //    editoptions:{value:"Active:Passive"}},
+                        
+                      ],
+            caption: "Team Reminder Link Master ",
+            autowidth: true,
+            gridview: true,
+            sortable: true,
+            hidegrid: false,
+            altRows: true,
+            viewrecords: true,
+            height: 'auto',
+            //onCellSelect: function (rowid, iCol, cellContent, e) {
+            //    alert(cellContent);
+            //    grid.jqGrid('restoreRow', lastSelection);
+            //    grid.jqGrid('editRow', rowid, true, null, null, null, null, null);
+            //    lastSelection = rowid;
+            //}            //,            //onSelectRow: function (id) {
+            //    $("#FormMaster").jqGrid('viewGridRow', id);
+            //},            ////onSelectRow: function (id) {
+            ////        if (id && id !== lastsel) {
+            ////           // alert(2);
+            ////            jQuery('#TeamReminderLinkMaster').jqGrid('restoreRow', lastsel);
+            ////            jQuery('#TeamReminderLinkMaster').jqGrid('editRow', id, true);
+            ////            lastsel = id;
+            ////        }
+            ////    }            onSelectRow: function (id, selected) {
+                if (id != lastsel) {
+                    jQuery('#TeamReminderLinkMaster').saveRow(lastsel);
+                    lastsel = id;
+                }
+                jQuery('#TeamReminderLinkMaster').editRow(id, true);
+                
+            },
+            'cellsubmit': 'clientArray',
+            'editurl': 'clientArray',
+        });
+    }
+
+        $("#Submit").click(function () {
+            /*
+          var gridData = jQuery("#TeamReminderLinkMaster").getRowData();
+          var postData = JSON.stringify(gridData);
+          */
+            jQuery('#TeamReminderLinkMaster').jqGrid('saveRow', lastsel);
+            var gridData = jQuery("#TeamReminderLinkMaster").getRowData();
+            var postData = JSON.stringify(gridData);
+            $.ajax({
+                url: '@Url.Action("UpdateTeamReminderLinkMaster")',
+                type: 'POST',
+                dataType: 'json',
+                data: { gridData: postData },
+                success: function (result) {
+                }
+            });
+            $("#TeamReminderLinkMaster").setGridParam({ datatype: 'json', page: 1 }).trigger('reloadGrid');
+            return true;
+
+
+
+          
+    @*$.ajax({
+        url: '@Url.Action("UpdateTeamReminderLinkMaster")',
+        type: 'POST',
+        dataType: 'json',
+        data: { gridData: postData},
+
+        success: function (result) {
+            alert(result);
+        }
+    });
+    return true;*@
+        });
+
+
+
+    </script>
+</body>

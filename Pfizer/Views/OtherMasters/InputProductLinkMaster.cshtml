@@ -1,0 +1,600 @@
+﻿@{
+    ViewBag.Title = "InputProductLinkMaster";
+    Layout = "~/Views/Shared/MasterLayout.cshtml";
+}
+<body>
+    @using (Html.BeginForm(FormMethod.Post))
+    {
+        <div>
+            <table border="0" style="width: 100%">
+                <tr>
+                    <td>
+                        <!--JqGrid Starts-->
+                        <table style="margin-top: 7px; width :100%" border="0">
+                            <tr>
+                                <td>
+                                    <table id="InputProductLinkMaster" style="width: 100%" border="0"></table>
+                                    <div id="InputProductLinkMasterPager">
+                                    </div>
+                                </td>
+                            </tr>
+                        </table>
+                        <!--Ends-->
+                    </td>
+                </tr>
+            </table>
+
+        </div>
+    }
+
+
+    <script type="text/javascript">
+
+    jQuery(document).ready(function () {
+
+        initGrid();
+    });
+
+
+    function MoveSelected() {
+
+        $('#ProductName :selected').each(function (i, selected) {
+            if ($(selected).val() != 0) {
+                $('#SelProductName')
+                     .append($('<option selected="selected" value=' + $(selected).val() + '>')
+                     .text($(selected).text()));
+                $('#ProductName :selected').remove();
+
+            }
+        });
+
+    }
+
+    function ReverseSelected() {
+
+        $('#SelProductName :selected').each(function (i, selected) {
+            $('#ProductName')
+                 .append($('<option>', { value: $(selected).val() })
+                 .text($(selected).text()));
+            $('#SelProductName :selected').remove();
+
+        });
+
+        $("#SelProductName option").prop("selected", true);
+        $("#SelProductName option:first").removeAttr('selected');
+
+    }
+
+
+    function initGrid() {
+        jQuery("#InputProductLinkMaster").jqGrid({
+            url: '@Url.Action("GetInputProductLinkMaster")',
+
+            datatype: "json",
+            jsonReader: { repeatitems: false, id: "PKID" },
+            colNames: ['PKID', 'InputFKID', 'ProductFKID', 'Input Name', 'Input Type', 'Product Name', '','',''],
+            colModel: [
+
+                        { name: 'PKID', index: 'PKID', align: 'left', viewable: false, key: true, hidden: true, editrules: { edithidden: true } },
+                        { name: 'InputFKID', index: 'InputFKID', align: 'left', viewable: false, key: true, hidden: true, editrules: { edithidden: true } },
+                         { name: 'ProductFKID', index: 'ProductFKID', align: 'left', viewable: false, key: true, hidden: true, editrules: { edithidden: true } },
+                        {
+                            name: 'InputName', index: 'InputName', align: 'left', editable: true, edittype: 'select', editoptions: {
+
+                                dataUrl: function () {
+                                    return 'GetProductInputName';
+                                },
+                                dataEvents:
+                [
+                {
+                    type: 'change', fn: function (e) {
+                        var row_id = $('#InputProductLinkMaster').getGridParam('selrow');
+                        var PKID = $('#InputProductLinkMaster').jqGrid('getCell', row_id, 'PKID');
+                        if (typeof (PKID) != "undefined") {
+                            $.ajax({
+                                type: 'POST',
+                                async: false,
+                                url: '@Url.Action("GetProductTeamName")?type=' + 'E' + '&pkid=' + $(this).val(),
+                                success: function (data) {
+                                    $('#tr_ProductName td:nth-child(2)').html(data);
+                                },
+
+                            });
+
+                            $.ajax({
+                                type: 'POST',
+                                async: false,
+                                url: '@Url.Action("GetProductSelectedTeamName")?type=' + 'E' + '&pkid=' + $(this).val(),
+                                success: function (data) {
+                                    $('#tr_ProductName td:nth-child(8)').html(data);
+
+                                }
+                            });
+
+
+
+                            $.getJSON('@Url.Action("JsonProductGetGenName")?type=' + 'A' + '&pkid=' + $(this).val(), function (data) {
+
+                                if (data.genId == "331") {
+
+                                    $("#GenName").val("331");
+
+                                }
+                                else {
+                                    $("#GenName").val("332");
+                                }
+                            });
+
+                        }
+                        else {
+                            $.ajax({
+                                type: 'POST',
+                                async: false,
+                                url: '@Url.Action("GetProductTeamName")?type=' + 'A' + '&pkid=' + $(this).val(),
+                                success: function (data) {
+                                    $('#tr_ProductName  td:nth-child(2)').html(data);
+                                },
+
+                            });
+
+                            $.ajax({
+                                type: 'POST',
+                                async: false,
+                                url: '@Url.Action("GetProductSelectedTeamName")?type=' + 'A' + '&pkid=' + $(this).val(),
+                                success: function (data) {
+                                    $('#tr_ProductName td:nth-child(8)').html(data);
+
+                                }
+                            });
+
+
+
+                            $.getJSON('@Url.Action("JsonGetProductGenName")?type=' + 'A' + '&pkid=' + $(this).val(), function (data) {
+
+                                if (data.genId == "331") {
+
+                                    $("#GenName").val("331");
+
+                                }
+                                else {
+                                    $("#GenName").val("332");
+                                }
+                            });
+
+
+                        }
+                    }
+                }]
+                            }, editrules: { required: true }, formoptions: { elmsuffix: "<span style='align:left;color:red'>*</span>&nbsp;", rowpos: 2, colpos: 1 }
+                                 , search: false
+
+                            },
+                             { name: 'GenName', index: 'GenName', align: 'left',search:false, editable: true, edittype: 'select', editoptions: { value: { 0: 'Select', 331: 'Doctor', 332: 'Chemist' }, disabled: 'disabled' }, editrules: { required: true }, formoptions: { rowpos: 2, colpos: 3 } },
+                          {
+                              name: 'ProductName', index: 'ProductName', align: 'left', editable: true, edittype: 'select',editoptions: {
+                        multiple: true
+                        , dataUrl: function () {
+                            return 'DefaultProductTeamLoad?name=' + 'ProductName';
+                        }
+                    }, editrules: {
+
+
+                    }, formoptions: { elmsuffix: "<span style='align:left;color:red'>*</span>&nbsp;" }, formoptions: { rowpos: 4, colpos: 1 }, searchoptions: { sopt: ['eq', 'bw', 'ew', 'cn'] }
+                          },
+
+
+                            {
+                                name: 'forward', index: 'forward', align: 'left', hidden: true, editrules: { edithidden: true }, edittype: 'button', editable: true, editoptions: {
+                                    value: '>>',
+                                    dataEvents:
+                                        [
+                                        {
+                                            type: 'click', fn: function (e) {
+
+                                                MoveSelected();
+                                            }
+                                        }]
+
+                                }, formoptions: { rowpos: 4, colpos: 2 }
+                            },
+
+            {
+
+                name: 'backward', index: 'backward', align: 'right', hidden: true, edittype: 'button', editrules: { edithidden: true }, editable: true, editoptions: {
+                    value: '<<',
+                    dataEvents:
+                        [
+                        {
+                            type: 'click', fn: function (e) {
+
+                                ReverseSelected();
+                            }
+                        }]
+
+                }, formoptions: { rowpos: 4, colpos: 3 }
+
+
+            },
+
+            {
+                name: 'SelProductName', index: 'SelProductName', align: 'left', editable: true, hidden: true, edittype: 'select', editoptions: {
+                    multiple: true
+                        , dataUrl: function () {
+                            return 'DefaultProductTeamLoad?name=' + 'SelProductName';
+                        }
+
+                }, editrules: { edithidden: true }, formoptions: { rowpos: 4, colpos: 4 },search:false
+
+            },
+
+
+            ],
+            caption: "Input Product Link Master",
+            autowidth: true,
+            gridview: true,
+            sortable: true,
+            hidegrid: true,
+
+            altRows: true,
+            rowTotal: 10,
+            sortname: 'PKID',
+            sortorder: 'asc',
+            rowNum: 10,
+            viewrecords: true,
+            pager: $('#InputProductLinkMasterPager'),
+            height: 'auto',
+            editable: true,
+           
+
+        });
+
+        jQuery("#InputProductLinkMaster").jqGrid('navGrid', '#InputProductLinkMasterPager', { edit: true, add: true, del: true, search: true, view: true },
+            {
+                //Edit
+
+                width: 600,
+                height: 210,
+                closeOnEscape: true,
+                reloadAfterSubmit: true,
+                drag: true,
+                modal:true,
+                afterShowForm: function (form) {
+                    form.closest('div.ui-jqdialog').center();
+                },
+                beforeShowForm: function (form) {
+                    var sel_id = $('#InputProductLinkMaster').jqGrid('getGridParam', 'selrow'); 
+                    var PKID = $('#InputProductLinkMaster').jqGrid('getCell', sel_id, 'PKID');
+                    $.ajax({
+                        type: 'POST',
+                        async: false,
+                        url: '@Url.Action("GetProductTeamName")?type=' + 'E' + '&pkid=' + PKID,
+                        success: function (data) {
+                            $('#tr_ProductName  td:nth-child(2)').html(data);
+                        },
+
+                    });
+
+                    $.ajax({
+                        type: 'POST',
+                        async: false,
+                        url: '@Url.Action("GetProductSelectedTeamName")?type=' + 'E' + '&pkid=' + PKID,
+                        success: function (data) {
+                            $('#tr_ProductName td:nth-child(8)').html(data);
+
+                        }
+                    });
+
+
+                    $.getJSON('@Url.Action("JsonGetProductGenName")?type=' + 'E' + '&pkid=' + PKID, function (data) {
+
+                        if (data.genId == "331") {
+
+                            $("#GenName").val("331");
+
+                        }
+                        else {
+                            $("#GenName").val("332");
+                        }
+                    });
+
+                },
+                beforeSubmit: function (response, postdata) {
+
+                    $('select').css("border", "1px solid #C0C0C0");
+                    var error = " ";
+                    if ($("#InputName option:selected").text() == "Select") {
+                        error = "Select Input Name";
+                        $('#FormError').html("<td class='ui-state-error' colspan='12'>" + error + ":Field is required</td>");
+                        $('#InputName').focus();
+                        $("#InputName").css("background-color", "#FFE8E8").css("border", "1px solid #FF6666");
+                        return [false, response.responseText];
+                    }
+
+                    else if ($("#SelProductName").val() == "0" || $("#SelProductName").val() == null) {
+                        error += "Selected Team Name";
+                        $('#FormError').html("<td class='ui-state-error' colspan='12'>" + error + ":Field is required</td>");
+                        $('#ProductName').focus();
+                        $("#ProductName").css("background-color", "#FFE8E8").css("border", "1px solid #FF6666");
+                        return [false, response.responseText];
+                    }
+                    else {
+                        return [true, response.responseText];
+                    }
+
+                },
+
+                onclickSubmit: function (params, posdata) {
+                    params.url = '@Url.Action("EditInfoProductLlink")?SelTeamName=' + $('#SelProductName').val() + '&InputName=' + $('#InputName').val();
+                },
+                afterSubmit: function (response, postdata) {
+                    if (response.responseText == "") {
+
+                        $(this).jqGrid('setGridParam', { datatype: 'json' }).trigger('reloadGrid'); //Reloads the grid after edit
+                        $('#TblGrid_InputProductLinkMaster td.ui-state-error').removeClass('ui-state-highlight').addClass('ui-state-error');
+                         return [true, '']
+                    }
+                    else {
+                        $(this).jqGrid('setGridParam', { datatype: 'json' }).trigger('reloadGrid'); //Reloads the grid after edit
+                        $('#TblGrid_InputProductLinkMaster td.ui-state-error').removeClass('ui-state-error').addClass('ui-state-highlight');
+                        return [false, response.responseText]//Captures and displays the response text on th Edit window
+                    }
+                }
+               
+                // Edit Portion
+               
+
+            },
+
+        {
+            //Add Portion
+            closeOnEscape: true,
+            modal: true,
+            width: 600,
+            height:210,
+            afterShowForm: function (form) {
+                form.closest('div.ui-jqdialog').center();
+            },
+          
+            onclickSubmit: function (params, posdata) {
+
+                params.url = '@Url.Action("AddInfoProductLlink")?SelTeamName=' + $('#SelProductName').val() + '&InputName=' + $('#InputName').val();
+            },
+
+            beforeSubmit: function (response, postdata) {
+
+                $('select').css("border", "1px solid #C0C0C0");
+                var error = " ";
+                if ($("#InputName option:selected").text() == "Select") {
+                    error = "Select Input Name";
+                    $('#FormError').html("<td class='ui-state-error' colspan='12'>" + error + ":Field is required</td>");
+                    $('#InputName').focus();
+                    $("#InputName").css("background-color", "#FFE8E8").css("border", "1px solid #FF6666");
+                    return [false, response.responseText];
+                }
+
+                else if ($("#SelProductName").val() == "0" || $("#SelProductName").val() == null) {
+                    error += "Selected Team Name";
+                    $('#FormError').html("<td class='ui-state-error' colspan='12'>" + error + ":Field is required</td>");
+                    $('#ProductName').focus();
+                    $("#ProductName").css("background-color", "#FFE8E8").css("border", "1px solid #FF6666");
+                    return [false, response.responseText];
+                }
+                else {
+                    return [true, response.responseText];
+                }
+
+            },
+
+            //afterSubmit: function (response, postdata) {
+            //    if (response.responseText == "") {
+
+            //        $(this).jqGrid('setGridParam', { datatype: 'json' }).trigger('reloadGrid')//Reloads the grid after Add
+            //        $('#TblGrid_InputProductLinkMaster td.ui-state-error').removeClass('ui-state-highlight').addClass('ui-state-error');
+            //        return [true, '']
+            //    }
+            //    else {
+            //        $(this).jqGrid('setGridParam', { datatype: 'json' }).trigger('reloadGrid')//Reloads the grid after Add
+            //        $('#TblGrid_InputProductLinkMaster td.ui-state-error').removeClass('ui-state-error').addClass('ui-state-highlight');
+            //         return [false, response.responseText]
+            //    }
+            //}
+            afterSubmit: function (response, postdata) {
+                if (response.responseText != "\"Input Product Team Link Added Successfully.\"") {
+                    $('#TblGrid_InputProductLinkMaster td.ui-state-highlight').removeClass('ui-state-highlight').addClass('ui-state-error');
+                    return [false, response.responseText];
+                }
+                else {
+                    $("#InputProductLinkMaster").jqGrid('setGridParam', { datatype: 'json' }).trigger('reloadGrid');
+                    $('#TblGrid_InputProductLinkMaster td.ui-state-error').removeClass('ui-state-error').addClass('ui-state-highlight');
+
+                    $("#SelProductName option:selected").remove();
+                    $('select').val(0);
+                    return [false, response.responseText];
+                }
+            },
+
+        },
+        {
+            //DELETE
+            closeOnEscape: true,
+            modal: true,
+            reloadAfterSubmit: true,
+            closeOnEscape: true,
+            drag: true,
+            width: 400,
+            beforeShowForm: function (form) {
+                var col1 = $('#InputProductLinkMaster').jqGrid('getGridParam', 'selrow');
+                $('tr td.delmsg').html('Delete selected record(s)?');
+
+                $('#InputProductLinkMaster').jqGrid('getGridParam', 'selrow');
+
+                //var id = jQuery("#InputProductLinkMaster").jqGrid('getGridParam', 'selrow');
+                //if (id) {
+                //    var ret = jQuery("#InputProductLinkMaster").jqGrid('getRowData', id);
+
+                //    $("td.delmsg", form[0]).html("<table width='100%'><tr><td><b>InputName</b></td><td>" + ret.InputName + "</td></tr><tr><td><b>InputType</b></td><td>" + ret.GenName + "</td></tr><tr><td><b>Product Name</b></td><td>" + ret.ProductName + "</td></tr><tr><td colspan=2></br>Are you sure want to delete selected record(s)?</td></tr></table> ");
+                //} else { alert("Please select row"); }
+
+            },
+
+            onclickSubmit: function (params, posdata) {
+                var sel_id = $('#InputProductLinkMaster').jqGrid('getGridParam', 'selrow');
+                var PKID = $('#InputProductLinkMaster').jqGrid('getCell', sel_id, 'PKID');
+                params.url = '@Url.Action("DeleteInfoProductLlink")?PKID=' + PKID;
+            },
+            afterShowForm: function (form) {
+                form.closest('div.ui-jqdialog').center();
+            },
+            afterSubmit: function (response, postdata) {
+
+                    $("#InputProductLinkMaster").trigger("reloadGrid", [{ current: true }]);
+                    $(this).jqGrid('setGridParam', { datatype: 'json' }).trigger('reloadGrid');
+                    $('tr td.delmsg').html('');
+                    $('#dData').hide();
+                    $('#DelTbl_InputProductLinkMaster td.ui-state-error').removeClass('ui-state-error').addClass('ui-state-highlight');
+                    return [false, response.responseText]
+                    
+
+                
+            },
+
+            Deldata: {
+                PKID: function () {
+                    var sel_id = $('#InputProductLinkMaster').jqGrid('getGridParam', 'selrow');
+                    var value = $('#InputProductLinkMaster').jqGrid('getCell', sel_id, '_id');
+                    return value;
+                }
+            }
+
+        },
+        {
+            closeOnEscape: true,
+            modal: true,
+            recreateForm: true,
+            width: 600,
+            caption: "Search",
+            searchOnEnter: true,
+            beforeShowSearch: function (form) {
+
+                $('#jqg1').val('');
+                $('#fbox_InputProductLinkMaster_reset').click();
+
+                var dialogHeight = $("#searchmodfbox_InputProductLinkMaster").height();
+                var dialogWidth = $("#searchmodfbox_InputProductLinkMaster").width();
+                var windowHeight = $(window).height();
+                var windowWidth = $(window).width();
+                $("#searchmodfbox_InputProductLinkMaster").css('position', 'fixed');
+                $("#searchmodfbox_InputProductLinkMaster").css('top', ((windowHeight - dialogHeight) / 2));
+                $("#searchmodfbox_InputProductLinkMaster").css('left', ((windowWidth - dialogWidth) / 2));
+
+                return [true, ""];
+            }
+        },
+        {
+            //View
+            width: 664,
+            height:119,
+            beforeShowForm: function (form) {
+                form.closest('div.ui-jqdialog').center();
+            }
+
+
+        }
+
+                );
+       
+
+        setMethod('InputProductLinkMaster', 'InputProductLinkMasterPager', 'Customer Grid');
+
+    }
+    //Center Popup
+    jQuery.fn.center = function () {
+        this.css("position", "absolute");
+        this.css("top", ($(window).height() - this.height()) / 2 + $(window).scrollTop() + "px");
+        this.css("left", ($(window).width() - this.width()) / 2 + $(window).scrollLeft() + "px");
+        return this;
+
+    }
+    function validSpecial(objElement) {
+
+        var re = /^[a-zA-Z0-9-/\s.:]*/gi;
+        if (objElement.value.match(re) != objElement.value) {
+            alert('Special Characters are Not Allowed');
+            objElement.value = '';
+
+            return false;
+        }
+
+    }
+
+    function setMethod(gid, id, pgTitle) {
+        // alert(1);
+        var btnTitle = 'Export to Excel';
+        $('#' + gid).jqGrid('navSeparatorAdd', '#' + id, { sepclass: "ui-separator" });
+        $('#' + gid).jqGrid('navButtonAdd', '#' + id, { caption: '', title: btnTitle, position: 'last', buttonicon: 'ui-icon-calculator', onClickButton: function () { ExcelExport(); } });
+
+        var btnTitle = 'Export to PDF';
+        $('#' + gid).jqGrid('navSeparatorAdd', '#' + id, { sepclass: "ui-separator" });
+        $('#' + gid).jqGrid('navButtonAdd', '#' + id, { caption: '', title: btnTitle, position: 'last', buttonicon: 'ui-icon-bookmark', onClickButton: function () { PDFExport(); } });
+
+        var btnTitle = 'Export to CSV';
+        $('#' + gid).jqGrid('navSeparatorAdd', '#' + id, { sepclass: "ui-separator" });
+        $('#' + gid).jqGrid('navButtonAdd', '#' + id, { caption: '', title: btnTitle, position: 'last', buttonicon: 'ui-icon-note', onClickButton: function () { CSVExport(); } });
+
+
+        var btnTitle = 'Print Grid';
+        $('#' + gid).jqGrid('navSeparatorAdd', '#' + id, { sepclass: "ui-separator" });
+        $('#' + gid).jqGrid('navButtonAdd', '#' + id, { caption: '', title: btnTitle, position: 'last', buttonicon: 'ui-icon-print', onClickButton: function () { PrintGrid(gid); } });
+    }
+    function ExcelExport() {
+        window.location = '@Url.Action("ExportInputProductinkMasterToExcel")';
+    }
+         
+    function PDFExport() {
+        window.location = '@Url.Action("ExportInputProductLinkMasterToPDF")';
+    }
+    function CSVExport() {
+
+        window.location = '@Url.Action("ExportUserInputProductLinkMasterCsv")';
+        // $('#NotificationMaster').table2CSV({ header: ['PKID', 'Notification', 'ExpiryDate', 'Status'] });
+    }
+        function PrintGrid(gid) {
+
+            // empty the print div container.
+            var rows = $('#InputProductLinkMaster').jqGrid('getRowData');
+            for (var i = 0; i < rows.length; i++) {
+                var row = rows[i];
+                $('#Table1').append("<tr><td>" + row.InputName + "</td><td>" + row.GenName + "</td><td>" + row.ProductName + "</td></tr>");
+
+            }
+            $(function () { printChrome('prt-container') });
+
+        }
+
+    function printChrome(divContainer) {
+
+        //  alert(9);
+        var printContent = document.getElementById(divContainer);
+        // alert(printContent.innerHTML);
+        window.document.body.innerHTML = printContent.innerHTML;
+        window.print();
+        window.location.reload();
+    }
+
+
+    </script>
+    <div id='prt-container' style="display:none">
+        <table id="Table1" border="1" width="100%">
+            <thead>
+                <tr>
+                    <td><b>Input Name</b></td>
+                    <td><b>Input Type</b></td>
+                    <td><b>Product Name</b></td>
+                </tr>
+
+            </thead>
+            <tbody></tbody>
+
+        </table>
+    </div>
+</body>

@@ -1,0 +1,412 @@
+﻿@{
+    ViewBag.Title = "LocationMaster";
+    Layout = "~/Views/Shared/MasterLayout.cshtml";
+}
+<script src="~/Content/js/GridExport.js"></script>
+<script src="~/Content/js/jquery.printElement.js"></script>
+<script src="~/Content/js/table2CSV.js"></script>
+<body>
+    @using (Html.BeginForm(FormMethod.Post))
+    {
+        <div>
+            <table border="0" style="width: 100%">
+                <tr>
+                    <td>
+                        <!--JqGrid Starts-->
+                        <table style="margin-top: 7px; width :100%" border="0">
+                            <tr>
+                                <td>
+                                    <table id="LocationMaster" style="width: 100%" border="0"></table>
+                                    <div id="LocationMasterPager">
+                                    </div>
+                                </td>
+                            </tr>
+                        </table>
+                        <!--Ends-->
+                    </td>
+                </tr>
+            </table>
+
+        </div>
+    }
+
+
+    <script type="text/javascript">
+
+        jQuery(document).ready(function () {
+
+            initGrid();
+
+        });
+
+        function initGrid() {
+            jQuery("#LocationMaster").jqGrid({
+                url: '@Url.Action("GetLocMaster")',
+
+                datatype: "json",
+                jsonReader: { repeatitems: false, id: "PKID" },
+                colNames: ['PKID', 'Location Description', 'Status'],
+                colModel: [
+                            //{ name: 'SLNo', index: 'SLNo', align: 'left' },
+                            { name: 'PKID', index: 'PKID', align: 'left', hidden: true },
+                            {
+                                name: 'LocationDesc', index: 'LocationDesc', align: 'left', editable: true, editrules: { required: false },
+                                editoptions: {
+                                    dataEvents: [{ type: 'keyup', fn: function (e) { SingleCharacter(this); } }]
+                                    , maxlength: 50
+                                }, formoptions: { elmsuffix: "<span style='align:left;color:red'>*</span>&nbsp;" },
+                                searchoptions: { sopt: ['eq', 'bw', 'ew', 'cn'] }, searchrules: { required: true }
+                            },
+                            { name: 'Status', index: 'Status', align: 'left', editable: true, edittype: 'checkbox',editrules: { required: false }, editoptions: { value: "Active:Passive", defaultValue: "Active" }, search: false },
+
+                ],
+                caption: "Location Master",
+                autowidth: true,
+                gridview: true,
+                sortable: true,
+                hidegrid: false,
+                gridComplete: function () {
+
+                    if (jQuery("#LocationMaster").getGridParam("records") == 0) {
+                        jQuery("#LocationMaster").addRowData(
+                        "blankRow", { "LocationDesc": "No records to view" });
+                    }
+                },
+                altRows: true,
+                rowTotal: 10,
+                sortname: 'PKID',
+                sortorder: 'asc',
+                rowNum: 10,
+                viewrecords: true,
+                pager: $('#LocationMasterPager'),
+                height: 'auto',
+                editable: true,
+                editurl: '@Url.Action("EditLocationMaster")'
+            });
+
+            jQuery("#LocationMaster").jqGrid('navGrid', '#LocationMasterPager', { edit: true, add: true, del: true, search: true, view: true },
+                {
+                    //EDIT
+
+                    closeOnEscape: true,
+                    width: 450,
+                    modal: true,
+                    closeOnEscape: true,
+                    width: 600,
+                    recreateForm: true,
+                    checkOnSubmit: true,
+                    afterShowForm: function (form) {
+                        form.closest('div.ui-jqdialog').center();
+                    },
+
+                    beforeSubmit: function (response, postdata) {
+
+                        $('select').css("border", "1px solid #C0C0C0");
+                        $("input[type=text]").css("border", "1px solid #C0C0C0");
+                        if ($("#LocationDesc").val().charAt(0) == ' ' || $("#LocationDesc").val().charAt($("#LocationDesc").val().length - 1) == ' ' || $("#LocationDesc").val() == "") {
+                            $('#TblGrid_LocationMaster td.ui-state-highlight').removeClass('ui-state-highlight').addClass('ui-state-error');
+                            $("#LocationDesc").css("background-color", "#FFE8E8").css("border", "1px solid #FF6666");
+                            $('#LocationDesc').val('');
+                            $('#LocationDesc').focus();
+                            return [false, 'Enter Valid Location Description'];
+                        }
+                        else if (!($('#Status').is(":checked"))) {
+                            $("#Status").css("background-color", "#FFE8E8").css("border", "1px solid #FF6666");
+                            $('#Status').focus();
+                            return [false, 'Please Check Status'];
+                        }
+                        else {
+                            return [true, response.responseText];
+                        }
+
+                    },
+                    afterSubmit: function (response, postdata) {
+
+                        $("#LocationMaster").jqGrid('setGridParam', { datatype: 'json' }).trigger('reloadGrid');
+                        $('#TblGrid_LocationMaster td.ui-state-error').removeClass('ui-state-error').addClass('ui-state-highlight');
+                        $("#LocationDesc").val("");
+                        $("#Status").prop('checked', false);                  
+                        return [false, response.responseText];
+                    },
+                    editData: {
+                        PKID: function () {
+                            var sel_id = $('#LocationMaster').jqGrid('getGridParam', 'selrow');
+                            var value = $('#LocationMaster').jqGrid('getCell', sel_id, '_id');
+                            return value;
+                        }
+                    }
+
+                },
+
+            {
+                //Add Portion
+                closeOnEscape: true,
+                closeAfterAdd: true,
+                modal: true,
+                recreateForm: true,
+                width: 450,
+                afterShowForm: function (form) {
+                    form.closest('div.ui-jqdialog').center();
+                },
+
+                beforeSubmit: function (response, postdata) {
+
+                    $('select').css("border", "1px solid #C0C0C0");
+                    $("input[type=text]").css("border", "1px solid #C0C0C0");
+                    if ($("#LocationDesc").val().charAt(0) == ' ' || $("#LocationDesc").val().charAt($("#LocationDesc").val().length - 1) == ' ' || $("#LocationDesc").val() =="") {
+                        $('#TblGrid_LocationMaster td.ui-state-highlight').removeClass('ui-state-highlight').addClass('ui-state-error');
+                        $("#LocationDesc").css("background-color", "#FFE8E8").css("border", "1px solid #FF6666");
+                        $('#LocationDesc').val('');
+                        $('#LocationDesc').focus();
+                        return [false, 'Enter Valid Location Description'];
+                    }
+                    else if (!($('#Status').is(":checked"))) {
+                        $("#Status").css("background-color", "#FFE8E8").css("border", "1px solid #FF6666");
+                        $('#Status').focus();
+                        return [false, 'Please Check Status'];
+                    }
+                    else {
+                        return [true, response.responseText];
+                    }
+
+                },
+                afterSubmit: function (response, postdata) {
+                    $("#LocationMaster").jqGrid('setGridParam', { datatype: 'json' }).trigger('reloadGrid');
+                    var errorId = " ";
+                    if (response.responseText == "\"Location Details added Successfully.\"") {
+                        errorId += "Location Details added Successfully";
+                        $('#FormError').html("<td class='ui-state-error' colspan='2'>" + errorId + "</td>");
+                        $('#TblGrid_LocationMaster td.ui-state-error').removeClass('ui-state-error').addClass('ui-state-highlight');
+                        $("#LocationDesc").val("");
+                        $("#Status").prop('checked', false);
+                        return [false, response.responseText]
+                    }
+                    else {
+                        errorId += "Location Details already Exists";
+                        $('#FormError').html("<td class='ui-state-error' colspan='2'>" + errorId + "</td>");
+                        $('#TblGrid_LocationMaster td.ui-state-error').removeClass('ui-state-highlight').addClass('ui-state-error');
+                        $("#LocationDesc").val("");
+                        $("#Status").prop('checked', false);
+                        return [false, response.responseText]
+                    }
+                },
+                onclickSubmit: function (params, posdata) {
+                    params.url = '@Url.Action("AddLocationMaster")?LocationDesc=' + $('#LocationDesc').val() + '&Status=' + $('#Status').val();
+                },
+            }
+            ,
+            {
+                //DELETE
+                closeOnEscape: true,
+                modal: true,
+                reloadAfterSubmit: true,
+                closeOnEscape: true,
+                drag: true,
+                width: 400,
+               
+                beforeShowForm: function (form) {
+
+                    //POP UP Screen Fit Screen
+
+                    var thisForm = $("#delmod" + jQuery("#LocationMaster")[0].id);
+                    var dialogHeight = $(thisForm).height();
+                    var dialogWidth = $(thisForm).width();
+                    var windowHeight = $(window).height();
+                    var windowWidth = $(window).width();
+                    $(thisForm).css('position', 'fixed');
+                    $(thisForm).css('top', ((windowHeight - dialogHeight) / 2));
+                    $(thisForm).css('left', ((windowWidth - dialogWidth) / 2));
+
+
+                    $('tr td.delmsg').html('Delete selected record(s)?');
+
+                    var col1 = $('#LocationMaster').jqGrid('getGridParam', 'selrow');
+                    var IsActive = $('#LocationMaster').jqGrid('getCell', col1, 'Status');
+
+                    if (IsActive == "InActive") {
+                        $('tr td.delmsg').html('Record Already Deleted');
+                        $('#dData').hide();
+                    }
+                    else {
+                        $('#dData').show();
+                    }
+
+                },
+                afterSubmit: function (response, postdata) {
+
+                    $('tr td.delmsg').html('');
+                    $("#LocationMaster").jqGrid('setGridParam', { datatype: 'json' }).trigger('reloadGrid');
+                    return [false, response.responseText];                
+                  
+                },
+
+
+              
+                delData: {
+                    PKID: function () {
+                        var sel_id = $('#LocationMaster').jqGrid('getGridParam', 'selrow');
+                        var value = $('#LocationMaster').jqGrid('getCell', sel_id, '_id');
+                        return value;
+                    }
+                }
+
+            },
+            {
+                //search
+                closeOnEscape: true,
+                modal: true,
+                recreateForm: true,
+                width: 552,
+                caption: "Search",
+                searchOnEnter: true,
+                beforeShowSearch: function (form) {
+
+                    $('#jqg1').val('');
+                    $('#fbox_LocationMaster_reset').click();
+
+                    var dialogHeight = $("#searchmodfbox_LocationMaster").height();
+                    var dialogWidth = $("#searchmodfbox_LocationMaster").width();
+                    var windowHeight = $(window).height();
+                    var windowWidth = $(window).width();
+                    $("#searchmodfbox_LocationMaster").css('position', 'fixed');
+                    $("#searchmodfbox_LocationMaster").css('top', ((windowHeight - dialogHeight) / 2));
+                    $("#searchmodfbox_LocationMaster").css('left', ((windowWidth - dialogWidth) / 2));
+
+                    return [true, ""];
+                },
+
+            },
+            {
+                //View
+                modal: true,
+                width: 400,
+                beforeShowForm: function (form) {
+                    form.closest('div.ui-jqdialog').center();
+                }
+            }
+
+                    );
+            //setMethod('LocationMaster', 'LocationMasterPager', 'Customer Grid', 'ManageUsers', 'LocationMaster.cshtml');
+            setMethod('LocationMaster', 'LocationMasterPager', 'Customer Grid');
+
+        }
+        //Center Popup
+        jQuery.fn.center = function () {
+            this.css("position", "absolute");
+            this.css("top", ($(window).height() - this.height()) / 2 + $(window).scrollTop() + "px");
+            this.css("left", ($(window).width() - this.width()) / 2 + $(window).scrollLeft() + "px");
+            return this;
+
+        }
+        function validSpecial(objElement) {
+
+            var re = /^[a-zA-Z0-9-/\s.:]*/gi;
+            if (objElement.value.match(re) != objElement.value) {
+                alert('Special Characters are Not Allowed');
+                objElement.value = '';
+
+                return false;
+            }
+
+        }
+
+        function setMethod(gid, id, pgTitle) {
+            // alert(1);
+            var btnTitle = 'Export to Excel';
+            $('#' + gid).jqGrid('navSeparatorAdd', '#' + id, { sepclass: "ui-separator" });
+            $('#' + gid).jqGrid('navButtonAdd', '#' + id, { caption: '', title: btnTitle, position: 'last', buttonicon: 'ui-icon-calculator', onClickButton: function () { ExcelExport(); } });
+
+            var btnTitle = 'Export to PDF';
+            $('#' + gid).jqGrid('navSeparatorAdd', '#' + id, { sepclass: "ui-separator" });
+            $('#' + gid).jqGrid('navButtonAdd', '#' + id, { caption: '', title: btnTitle, position: 'last', buttonicon: 'ui-icon-bookmark', onClickButton: function () { PDFExport(); } });
+
+            var btnTitle = 'Export to CSV';
+            $('#' + gid).jqGrid('navSeparatorAdd', '#' + id, { sepclass: "ui-separator" });
+            $('#' + gid).jqGrid('navButtonAdd', '#' + id, { caption: '', title: btnTitle, position: 'last', buttonicon: 'ui-icon-note', onClickButton: function () { CSVExport(); } });
+
+
+            var btnTitle = 'Print Grid';
+            $('#' + gid).jqGrid('navSeparatorAdd', '#' + id, { sepclass: "ui-separator" });
+            $('#' + gid).jqGrid('navButtonAdd', '#' + id, { caption: '', title: btnTitle, position: 'last', buttonicon: 'ui-icon-print', onClickButton: function () { PrintGrid(gid); } });
+        }
+        function ExcelExport() {
+
+            @*// var gridData = jQuery("#LocationMaster").getRowData();
+
+        alert(1);
+        var gridData = jQuery("#LocationMaster").getGridParam('records');
+        var postData = JSON.stringify(gridData);
+        alert(postData);
+        $.ajax({
+            url: '@Url.Action("ExportLocMasterToExcel")',
+            type: 'POST',
+            dataType: 'json',
+            data: { gridData: postData },
+
+            success: function (result) {
+                //alert('success');
+            }
+        });*@
+            window.location = '@Url.Action("ExportLocMasterToExcel")';
+        }
+        function PDFExport() {
+            window.location = '@Url.Action("ExportLocMasterToPDF")';
+        }
+        function CSVExport() {
+
+            window.location = '@Url.Action("ExportLocMasterCsv")';
+            // $('#LocationMaster').table2CSV({ header: ['PKID','Location Description', 'Status'] });
+        }
+        function PrintGrid(gid) {
+
+            //// empty the print div container.
+            //$('#prt-container').empty();
+            //// copy and append grid view to print div container.
+            //$('#gview_' + gid).clone().appendTo('#prt-container').css({ 'page-break-after': 'auto' });
+            //$(function () { printChrome('prt-container') });
+
+
+            // empty the print div container.
+            var rows = $('#LocationMaster').jqGrid('getRowData');
+            for (var i = 0; i < rows.length; i++) {
+                var row = rows[i];
+                $('#Table1').append("<tr><td>" + row.LocationDesc + "</td><td>" + row.Status + "</td></tr>");
+
+            }
+            $(function () { printChrome('prt-container') });
+
+
+        }
+
+        function printChrome(divContainer) {
+
+            //  alert(9);
+            var printContent = document.getElementById(divContainer);
+            // alert(printContent.innerHTML);
+            window.document.body.innerHTML = printContent.innerHTML;
+            window.print();
+            window.location.reload();
+        }
+        //function SingleCharacter(s)
+        //{    
+        //    s.value =  s.value.replace (/(s{2,})|[^a-zA-z]/g,'');
+        //    s.value =  s.value.replace (/^s*/,'');     
+        //    return;
+        //}
+
+    </script>
+    <div id='prt-container' style="display:none">
+        <table id="Table1" border="1" width="100%">
+            <thead>
+                <tr>
+                    <td><b>LocationDesc</b></td>
+                    <td><b>Status</b></td>
+                </tr>
+
+            </thead>
+            <tbody></tbody>
+
+        </table>
+    </div>
+
+</body>

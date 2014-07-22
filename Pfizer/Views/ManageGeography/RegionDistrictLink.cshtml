@@ -1,0 +1,543 @@
+﻿@{
+    ViewBag.Title = "RegionDistrictLink";
+    Layout = "~/Views/Shared/MasterLayout.cshtml";
+}
+<body>
+    @using (Html.BeginForm(FormMethod.Post))
+    {
+        <div>
+            <table border="0" style="width: 100%">
+                <tr>
+                    <td>
+                        <!--JqGrid Starts-->
+                        <table style="margin-top: 7px; width :100%" border="0">
+                            <tr>
+                                <td>
+                                    <table id="RegionDistrictLink" style="width: 100%" border="0"></table>
+                                    <div id="RegionDistrictLinkPager">
+                                    </div>
+                                </td>
+                            </tr>
+                        </table>
+                        <!--Ends-->
+                    </td>
+                </tr>
+            </table>
+
+        </div>
+    }
+
+
+    <script type="text/javascript">
+
+        jQuery(document).ready(function () {
+
+            initGrid();
+        });
+
+
+        function MoveSelected() {
+
+            $('#DistrictCode :selected').each(function (i, selected) {
+
+                if ($(selected).val() != 0) { 
+                    $('#SelDistrictCode')
+                         .append($('<option selected="selected" value=' + $(selected).val() + '>')
+                         .text($(selected).text()));
+                   
+                    $('#DistrictCode :selected').remove();
+                }
+            });
+            $("#SelDistrictCode option").prop("selected", true);
+            $("#SelDistrictCode option:first").removeAttr('selected');
+
+        }
+
+        function ReverseSelected() {
+
+
+            $('#SelDistrictCode :selected').each(function (i, selected) {
+
+                if ($(selected).val() != 0) {
+                    $('#DistrictCode')
+                         .append($('<option>', { value: $(selected).val() })
+                         .text($(selected).text()));
+
+                    $('#SelDistrictCode :selected').remove();
+                }
+
+            });
+            
+            $("#SelDistrictCode option").prop("selected", true);
+            $("#SelDistrictCode option:first").removeAttr('selected');
+        }
+
+
+        function initGrid() {
+            jQuery("#RegionDistrictLink").jqGrid({
+                url: '@Url.Action("GetRegionDistrictLink")',
+                datatype: "json",
+                jsonReader: { repeatitems: false, id: "PKID" },
+                colNames: ['PKID', 'RegionFKID', 'DistrictFKID', 'Region Code', 'Region Name', 'District Code', '', '', '', 'District Name', 'Status'],
+                colModel: [
+                            //{ name: 'SLNo', index: 'SLNo', align: 'left' },
+                            { name: 'PKID', index: 'PKID', align: 'left', viewable: true, key: true, hidden: true, editrules: { edithidden: true } },
+                            { name: 'RegionFKID', index: 'RegionFKID', align: 'left', hidden: true, editrules: { edithidden: true } },
+                            { name: 'DistrictFKID', index: 'DistrictFKID', align: 'left', viewable: true, hidden: true, editrules: { edithidden: true } },
+                            {
+                                name: 'RegionCode', index: 'RegionCode', align: 'left', editable: true, edittype: 'select', editoptions: {
+                                    dataUrl: function () {
+                                        return 'GetRegionCodeByXml?type=' + 'DDLRegionCode';
+                                    },
+                                    dataEvents: [{
+                                        type: 'change',
+                                        fn: function (e) {
+                                            var postData = e.currentTarget.value;
+
+                                            //alert(postData);
+
+                                            // Nodetype Dropdown change right Listbox Clear ...
+                                            $('#SelDistrictCode').empty();
+                                            $('#SelDistrictCode')
+                                             .append($('<option>', { value: '0' })
+                                                .text('Select'));
+                                            // end
+
+
+                                            var row_id = $('#RegionDistrictLink').getGridParam('selrow');
+                                            var RegionFKID = $('#RegionDistrictLink').jqGrid('getCell', row_id, 'RegionFKID');
+
+                                            //alert(RegionFKID);
+
+                                            $.ajax({
+                                                type: 'POST',
+                                                url: '@Url.Action("SelectedDistrictName")?type=' + 'SHDay',
+                                                data: { RegionFKID: postData },
+                                                success: function (data) {
+                                                    //$('#tr_DistrictCode  td:nth-child(10)').html("<td class='DataTD'>" + data + "<span style='align:left;color:red'>*</span></td>");
+
+                                                    $('#tr_DistrictCode  td:nth-child(10)').html(data);
+                                                }
+                                            });
+                                        }
+                                    }]
+
+                                },
+                                formoptions: { elmprefix: "<span style='align:left;color:red'>*</span>&nbsp;" }, searchoptions: { sopt: ['eq', 'bw', 'ew', 'cn'] }, searchrules: { required: true },
+                            },
+                            { name: 'RegionName', index: 'RegionName', align: 'left', editable: false },
+
+                            {
+                                name: 'DistrictCode', index: 'DistrictCode', align: 'left', editable: true, edittype: 'select', editoptions: {
+                                    multiple: true,
+
+                                    dataUrl: function () {
+
+                                        var row_id = $('#RegionDistrictLink').getGridParam('selrow');
+                                        var RegionFKID = $('#RegionDistrictLink').jqGrid('getCell', row_id, 'RegionFKID');
+
+                                        return 'GetDistrictNameforTerittoryByXml?type=' + 'NSHDay' + '&RegionFKID=' + RegionFKID;
+                                    },
+
+                                }, formoptions: { elmprefix: "<span style='align:left;color:red'>*</span>&nbsp;" }
+                            },
+
+
+
+                             //Backward & Forward
+
+                             {
+                                 name: 'forward', index: 'forward', align: 'left', hidden: true, editrules: { edithidden: true }, edittype: 'button', editable: true, editoptions: {
+                                     value: '>>',
+                                     dataEvents:
+                                         [
+                                         {
+                                             type: 'click', fn: function (e) {
+
+                                                 MoveSelected();
+                                             }
+                                         }]
+
+                                 }, formoptions: { rowpos: 2, colpos: 3 }
+                             },
+
+            {
+
+                name: 'backward', index: 'backward', align: 'right', hidden: true, edittype: 'button', editrules: { edithidden: true }, editable: true, editoptions: {
+                    value: '<<',
+                    dataEvents:
+                        [
+                        {
+                            type: 'click', fn: function (e) {
+
+                                ReverseSelected();
+                            }
+                        }]
+
+                }, formoptions: { rowpos: 2, colpos: 4 }
+
+
+            },
+
+            {
+                name: 'SelDistrictCode', index: 'SelDistrictCode', align: 'left', editable: true, hidden: true, edittype: 'select', editrules: { edithidden: true }, editoptions: {
+                    multiple: true, dataUrl: function () {
+
+                        var row_id = $('#RegionDistrictLink').getGridParam('selrow');
+                        var RegionFKID = $('#RegionDistrictLink').jqGrid('getCell', row_id, 'RegionFKID');
+
+                        return 'SelectedDistrictName?type=' + 'SHDay' + '&RegionFKID=' + RegionFKID;
+                    }
+                }, formoptions: { rowpos: 2, colpos: 5 }
+
+            },
+
+
+
+                            { name: 'DistrictName', index: 'DistrictName', align: 'left', editable: false, edittype: 'checkbox', editoptions: { value: "Active:Passive", defaultValue: "Active" } },
+                            { name: 'IsActive', index: 'IsActive', align: 'left', hidden: true, editrules: { edithidden: true }, editable: false, edittype: 'checkbox', editoptions: { value: "Active:Passive", defaultValue: "Active" } }
+
+
+                ],
+                caption: "Region District Link",
+                autowidth: true,
+                gridview: true,
+                sortable: true,
+                hidegrid: false,
+                //rownumbers: true,
+                altRows: true,
+                rowTotal: 10,
+                sortname: 'Parentid',
+                sortorder: 'asc',
+                rowNum: 10,
+                viewrecords: true,
+                pager: $('#RegionDistrictLinkPager'),
+                height: 'auto',
+                editable: true,
+                //onSelectRow: function (id) {
+                //    $("#FormMaster").jqGrid('viewGridRow', id);
+                //},
+                gridComplete: function () {
+
+                    if (jQuery("#RegionDistrictLink").getGridParam("records") == 0) {
+                        jQuery("#RegionDistrictLink").addRowData(
+                        "blankRow", { "RegionName": "No records to view" });
+                    }
+                },
+                editurl: '@Url.Action("EditRegionDistrictLink")'
+
+            });
+
+            jQuery("#RegionDistrictLink").jqGrid('navGrid', '#RegionDistrictLinkPager', { edit: true, add: true, del: true, search: true, view: true },
+                {
+                    //EDIT
+               
+                    closeOnEscape: true, //Closes the popup on pressing escape key
+                    reloadAfterSubmit: true,
+                    drag: true,
+                    width: 500,
+                    height: 'auto',
+                    modal: true,
+
+                    beforeShowForm: function (form) {
+
+                        $('select option:first-child').attr("selected", "selected");
+                       
+
+                    },
+                    afterShowForm: function (form) {
+                        form.closest('div.ui-jqdialog').center();
+                    },
+                    
+                    
+                    beforeSubmit: function (response, postdata) {
+                        $('select').css("border", "1px solid #C0C0C0");
+                        //$('#DistrictCode').css("border", "1px solid #C0C0C0");
+                        var error = " ";
+                        if ($("#RegionCode").val() == 0) {
+                            error += "RegionCode";
+                            $('#FormError').html("<td class='ui-state-error' colspan='10'>" + error + ":Field is required</td>");
+                            $("#RegionCode").val(0);
+                            $("#RegionCode").css("background-color", "#FFE8E8").css("border", "1px solid #FF6666");
+                            return [false, response.responseText];
+                        }
+                        else if ($("#SelDistrictCode").val() == 0 || ($("#SelDistrictCode").val() == null)) {
+                            error += "DistrictCode";
+                            $('#FormError').html("<td class='ui-state-error' colspan='10'>" + error + ":Field is required</td>");
+                            $("#DistrictCode").val(0);
+                            $('#DistrictCode').focus();
+                            $("#DistrictCode").css("background-color", "#FFE8E8").css("border", "1px solid #FF6666");
+                            return [false, response.responseText];
+                        }
+
+                        else {
+                            return [true, response.responseText];
+                        }
+
+                    },
+                    afterSubmit: function (response, postdata) {
+
+
+                        $("#RegionDistrictLink").jqGrid('setGridParam', { datatype: 'json' }).trigger('reloadGrid');
+                        $('#TblGrid_RegionDistrictLink td.ui-state-error').removeClass('ui-state-error').addClass('ui-state-highlight'); 
+                        $('select').val(0);
+                       
+                        return [false, response.responseText];
+
+                       
+                    },
+                    editData: {
+                        Parentid: function () {
+                            var sel_id = $('#RegionDistrictLink').jqGrid('getGridParam', 'selrow');
+                            var value = $('#RegionDistrictLink').jqGrid('getCell', sel_id, '_id');
+                            return value;
+                        }
+                    }
+                   
+
+                },
+
+            {
+                //Add Portion
+                closeOnEscape: true,
+                modal: true,
+                width: 500,
+                //closeAfterAdd: true,
+                afterShowForm: function (form) {
+                    form.closest('div.ui-jqdialog').center();
+                },
+                beforeShowForm: function (form) {
+                  
+                    $("#RegionCode").val($("#RegionCode option:first").val());
+                    $('#tr_Status', form).hide();
+
+                }, 
+
+                beforeSubmit: function (response, postdata) { 
+
+                    $('select').css("border", "1px solid #C0C0C0"); 
+                    var error = " ";
+                    if ($("#RegionCode").val() == 0) {
+                        error += "RegionCode";
+                        $('#FormError').html("<td class='ui-state-error' colspan='10'>" + error + ":Field is required</td>");
+                        $("#RegionCode").val('');
+                        $("#RegionCode").css("background-color", "#FFE8E8").css("border", "1px solid #FF6666");
+                        return [false, response.responseText];
+                    }
+                    else if (($("#SelDistrictCode").val() == 0) || ($("#SelDistrictCode").val() == null)) {
+                        error += "DistrictCode";
+                        $('#FormError').html("<td class='ui-state-error' colspan='10'>" + error + ":Field is required</td>");
+                        $("#DistrictCode").val(0);
+                        $('#DistrictCode').focus();
+                        $("#DistrictCode").css("background-color", "#FFE8E8").css("border", "1px solid #FF6666");
+                        return [false, response.responseText];
+                    }
+
+                    else {
+                        return [true, response.responseText];
+                    }
+
+                },
+                onclickSubmit: function (params, posdata) {
+
+                    params.url = '@Url.Action("AddRegionDistrictLink")?SelDistrictCode=' + $('#SelDistrictCode').val() + '&RegionCode=' + $('#RegionCode').val() + '&IsActive=' + $('#IsActive').val();
+                },
+                afterSubmit: function (response, postdata) {
+                     
+
+                    if (response.responseText != "\"Region District Link  Added Successfully.\"") {
+                        
+                        $('#TblGrid_RegionDistrictLink td.ui-state-highlight').removeClass('ui-state-highlight').addClass('ui-state-error');
+                        
+                    }
+                    else { 
+                        $("#RegionDistrictLink").jqGrid('setGridParam', { datatype: 'json' }).trigger('reloadGrid');
+                        $('#TblGrid_RegionDistrictLink td.ui-state-error').removeClass('ui-state-error').addClass('ui-state-highlight');
+                       
+                        $('#RegionCode').val('');
+                        $('select option:first-child').attr("selected", "selected");
+                        $('#SelDistrictCode').empty();
+                        $('#SelDistrictCode')
+                        .append($('<option selected="selected" value="">')
+                        .text("Select"));
+                    }
+                    return [false, response.responseText];
+                },
+                  
+            },
+            {
+                //DELETE
+                closeOnEscape: true,
+                closeAfterDelete: true,
+                reloadAfterSubmit: true,
+                modal: true,
+                closeOnEscape: true,
+                drag: true,
+                width: 400,
+                afterShowForm: function (form) {
+                    form.closest('div.ui-jqdialog').center();
+                },
+                beforeShowForm: function (form) {
+                    $('tr td.delmsg').html('Delete selected record(s)?');
+                    $('#dData').show();
+                    //var id = jQuery("#UserTeamLink").jqGrid('getGridParam', 'selrow');
+                    //if (id) {
+                    //    var ret = jQuery("#UserTeamLink").jqGrid('getRowData', id);
+
+                    //    $("td.delmsg", form[0]).html("<table width='100%'><tr><td><b>PKID</b></td><td>" + ret.PKID + "</td></tr><tr><td><b>RegionCode</b></td><td>" + ret.RegionCode + "</td></tr><tr><td><b>RegionName</b></td><td>" + ret.RegionName + "</td></tr><tr><td><b>DistrictCode</b></td><td>" + ret.DistrictCode + "</td></tr><tr><td><b>DistrictName</b></td><td>" + ret.DistrictName + "</td></tr><tr><td colspan=2></br>Are you sure want to delete selected record(s)?</td></tr></table> ");
+                    //} else { alert("Please select row"); }
+
+                },
+                afterSubmit: function (response, postdata) {
+                    $('tr td.delmsg').html('');
+                    $('#dData').hide();
+
+                    $('#dData').hide();
+                    $("#RegionDistrictLink").jqGrid('setGridParam', { datatype: 'json' }).trigger('reloadGrid');
+                    $('#DelTbl_RegionDistrictLink td.ui-state-error').removeClass('ui-state-error').addClass('ui-state-highlight');
+                    $('select').val(0);
+                     
+                    return [false, response.responseText]; 
+
+
+ 
+                },
+
+                Deldata: {
+                    PKID: function () {
+                        var sel_id = $('#RegionDistrictLink').jqGrid('getGridParam', 'selrow');
+                        var value = $('#RegionDistrictLink').jqGrid('getCell', sel_id, '_id');
+                        return value;
+                    }
+                }
+
+            },
+            {
+                //search
+                closeOnEscape: true,
+                modal: true,
+                recreateForm: true,
+                width: 600,
+                caption: "Search",
+                searchOnEnter: true,
+                beforeShowSearch: function (form) {
+
+                    $('#jqg1').val('');
+                    $('#fbox_RegionDistrictLink_reset').click();
+
+                    var dialogHeight = $("#searchmodfbox_RegionDistrictLink").height();
+                    var dialogWidth = $("#searchmodfbox_RegionDistrictLink").width();
+                    var windowHeight = $(window).height();
+                    var windowWidth = $(window).width();
+                    $("#searchmodfbox_RegionDistrictLink").css('position', 'fixed');
+                    $("#searchmodfbox_RegionDistrictLink").css('top', ((windowHeight - dialogHeight) / 2));
+                    $("#searchmodfbox_RegionDistrictLink").css('left', ((windowWidth - dialogWidth) / 2));
+
+                    return [true, ""];
+                },
+            },
+            {
+                //View
+                width: 400,
+                modal: true,
+                beforeShowForm: function (form) {
+                    form.closest('div.ui-jqdialog').center();
+
+
+                }
+            }
+                    );
+            // setMethod('LocationMaster', 'LocationMasterPager', 'Customer Grid', 'ManageUsers', 'LocationMaster.cshtml');
+
+            setMethod('RegionDistrictLink', 'RegionDistrictLinkPager', 'Customer Grid');
+
+        }
+        //Center Popup
+        jQuery.fn.center = function () {
+            this.css("position", "absolute");
+            this.css("top", ($(window).height() - this.height()) / 2 + $(window).scrollTop() + "px");
+            this.css("left", ($(window).width() - this.width()) / 2 + $(window).scrollLeft() + "px");
+            return this;
+
+        }
+        function validSpecial(objElement) {
+
+            var re = /^[a-zA-Z0-9-/\s.:]*/gi;
+            if (objElement.value.match(re) != objElement.value) {
+                alert('Special Characters are Not Allowed');
+                objElement.value = '';
+
+                return false;
+            }
+
+        }
+
+        function setMethod(gid, id, pgTitle) {
+            // alert(1);
+            var btnTitle = 'Export to Excel';
+            $('#' + gid).jqGrid('navSeparatorAdd', '#' + id, { sepclass: "ui-separator" });
+            $('#' + gid).jqGrid('navButtonAdd', '#' + id, { caption: '', title: btnTitle, position: 'last', buttonicon: 'ui-icon-calculator', onClickButton: function () { ExcelExport(); } });
+
+            var btnTitle = 'Export to PDF';
+            $('#' + gid).jqGrid('navSeparatorAdd', '#' + id, { sepclass: "ui-separator" });
+            $('#' + gid).jqGrid('navButtonAdd', '#' + id, { caption: '', title: btnTitle, position: 'last', buttonicon: 'ui-icon-bookmark', onClickButton: function () { PDFExport(); } });
+
+            var btnTitle = 'Export to CSV';
+            $('#' + gid).jqGrid('navSeparatorAdd', '#' + id, { sepclass: "ui-separator" });
+            $('#' + gid).jqGrid('navButtonAdd', '#' + id, { caption: '', title: btnTitle, position: 'last', buttonicon: 'ui-icon-note', onClickButton: function () { CSVExport(); } });
+
+
+            var btnTitle = 'Print Grid';
+            $('#' + gid).jqGrid('navSeparatorAdd', '#' + id, { sepclass: "ui-separator" });
+            $('#' + gid).jqGrid('navButtonAdd', '#' + id, { caption: '', title: btnTitle, position: 'last', buttonicon: 'ui-icon-print', onClickButton: function () { PrintGrid(gid); } });
+        }
+        function ExcelExport() {
+            window.location = '@Url.Action("ExportRegionDistrictLinkToExcel")';
+        }
+        function PDFExport() {
+            window.location = '@Url.Action("ExportRegionDistrictLinkToPDF")';
+        }
+        function CSVExport() {
+
+            window.location = '@Url.Action("ExportRegionDistrictLinkToCsv")';
+            // $('#NotificationMaster').table2CSV({ header: ['PKID', 'Notification', 'ExpiryDate', 'Status'] });
+        }
+        function PrintGrid(gid) {
+            var rows = $('#RegionDistrictLink').jqGrid('getRowData');
+            for (var i = 0; i < rows.length; i++) {
+                var row = rows[i];
+                $('#Table1').append("<tr><td>" + row.RegionCode + "</td><td>" + row.RegionName + "</td><td>" + row.DistrictCode + "</td><td>" + row.DistrictName + "</td></tr>");
+
+            }
+            $(function () { printChrome('prt-container') });
+            // alert(6);
+        }
+
+        function printChrome(divContainer) {
+
+            //  alert(9);
+            var printContent = document.getElementById(divContainer);
+            // alert(printContent.innerHTML);
+            window.document.body.innerHTML = printContent.innerHTML;
+            window.print();
+            window.location.reload();
+        }
+
+
+    </script>
+    <div id='prt-container' style="display:none">
+        <table id="Table1" border="1" width="100%">
+            <thead>
+                <tr>
+                    <td><b>Region Code</b></td>
+                    <td><b>Region Name</b></td>
+                    <td><b>District Code</b></td>
+                    <td><b>District Name</b></td>
+                </tr>
+
+            </thead>
+            <tbody></tbody>
+
+        </table>
+    </div>
+</body>

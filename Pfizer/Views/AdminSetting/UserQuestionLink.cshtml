@@ -1,0 +1,154 @@
+﻿@{
+    ViewBag.Title = "UserQuestionLink";
+    Layout = "~/Views/Shared/MasterLayout.cshtml";
+}
+<style>
+    .colCell {
+        cursor: pointer;
+    } 
+
+</style>
+
+<body>
+    @using (Html.BeginForm(FormMethod.Post))
+    {
+        <div>
+            <table border="0" style="width: 100%">
+                <tr>
+                    <td>
+                        <!--JqGrid Starts-->
+                        <table style="margin-top: 7px; width :100%" border="0">
+                            <tr>
+                                <td>
+                                    <table id="UserQLink" style="width: 100%" border="0"></table>
+                                    <div id="UserQLinkPager"></div>
+                                </td>
+                            </tr>
+                           
+                            <tr>
+                                
+                                <td align="center">
+                                    <br />
+                                    <input class="blue_button" type="button" id="Submit" value="submit" />
+                                </td>
+                            </tr>
+                        </table>
+                        <!--Ends-->
+                    </td>
+                </tr>
+            </table>
+           
+        </div>
+    }
+    <script type="text/javascript">
+
+    jQuery(document).ready(function () {
+
+        initGrid();
+    });
+
+    
+
+    function initGrid() {
+        
+        jQuery("#UserQLink").jqGrid({
+            url: '@Url.Action("gridUserQuestionLink")',
+            datatype: "json",
+            jsonReader: { repeatitems: false, id: "PKID" },
+            colNames: ['PKID', 'Question', 'Answer', 'errname'],
+            colModel: [
+                         { name: 'PKID', index: 'PKID', align: 'left', hidden: true },
+                         { name: 'Question', index: 'Question', align: 'left', editable: false, sortable: true, sorttype: 'text' },
+                         {
+                             name: 'Answer', index: 'Answer', align: 'left', editable: true, edittype: 'text', sortable: true, sorttype: 'text', editrules: { required: true }, classes: 'colCell', sorttype: function (value) {
+                                 return value;
+                             }
+                         },
+                         { name: 'errname', index: 'errname', align: 'left', hidden: true },
+                         
+
+            ],
+           
+            caption: "User Question Link",
+            autowidth: true,
+            gridview: true,
+            autoencode: true,
+            sortname: 'Id',
+            sortorder: 'desc',
+            loadonce: true,
+
+            hidegrid: false,
+            altRows: true, 
+            viewrecords: true, 
+            height: 'auto',
+            'cellEdit': true, 
+            'cellsubmit': 'clientArray',
+            editurl: 'clientArray'
+
+        });
+        $("#UserQLink").setGridParam({ datatype: 'json', page: 1 }).trigger('reloadGrid');
+       
+    }
+
+        function myValidate1(value, colname) {
+            
+            if (value == "" || value==null)
+            {
+                alert('adskf');
+                return [false, "not empty '" +
+                             colname + "'\nMax 5 char is permitted"];
+            }
+            if (value.length >2) {
+                return [false, " is too long for the column '" +
+                               colname + "'\nMax 5 char is permitted"];
+            } else {
+                return [true, ""];
+            }
+        }
+
+        $("#Submit").click(function () {
+
+            @*var localGridData = jQuery("#UserQLink").getRowData();//jqGrid('getGridParam', 'data');
+            
+             
+            var dataToSend = JSON.stringify(localGridData);
+            alert(dataToSend);
+                $.ajax({
+                    type: "POST",
+                    url: '@Url.Action("UpdateGridData")',
+                    dataType: "json",
+                    data: { gridData:gdataToSend},
+                     
+                    success: function (response, textStatus, jqXHR) {
+                        // display an success message if needed
+                        alert("success");
+                    },
+                    error: function (jqXHR, textStatus, errorThrown) {
+                        // display an error message in any way
+                        alert("error");
+                    }
+                });*@
+            
+              var gridData = jQuery("#UserQLink").getRowData();
+             // gridData = gridData.htmlDecode();
+          var postData = JSON.stringify(gridData);
+          alert(postData);
+    $.ajax({
+        url: '@Url.Action("UpdateGridData")',
+        type: 'POST',
+        dataType: 'json',
+       
+        data: { gridData: postData},
+      
+        success: function (result) {
+            alert('success');
+        }
+    });
+    return true;
+      });
+ 
+
+    </script>
+</body>
+
+

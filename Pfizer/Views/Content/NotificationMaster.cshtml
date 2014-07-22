@@ -1,0 +1,447 @@
+﻿@{
+    ViewBag.Title = "NotificationMaster";
+    Layout = "~/Views/Shared/MasterLayout.cshtml";
+}
+<style>
+    div.ui-datepicker {
+        font-size: 12px !important;
+    }
+</style>
+
+
+
+<body>
+    @using (Html.BeginForm(FormMethod.Post))
+    {
+        <div>
+            <table border="0" style="width: 100%">
+                <tr>
+                    <td>
+                        <!--JqGrid Starts-->
+                        <table style="margin-top: 7px; width :100%" border="0">
+                            <tr>
+                                <td>
+                                    <table id="NotificationMaster" style="width: 100%" border="0"></table>
+                                    <div id="NotificationMasterPager">
+                                    </div>
+                                </td>
+                            </tr>
+                        </table>
+                        <!--Ends-->
+                    </td>
+                </tr>
+            </table>
+
+        </div>
+    }
+
+
+    <script type="text/javascript">
+
+        jQuery(document).ready(function () {
+
+            initGrid();
+        });
+
+        function initGrid() {
+            jQuery("#NotificationMaster").jqGrid({
+                url: '@Url.Action("GetNotificationMaster")',
+
+                datatype: "json",
+                 jsonReader: { repeatitems: false, id: "PKID" },
+                 colNames: ['PKID', 'Notification', 'ExpiryDate', 'Status'],
+                colModel: [
+                            //{ name: 'SLNo', index: 'SLNo', align: 'left' },
+                            { name: 'PKID', index: 'PKID', align: 'left',viewable:true,key:true, hidden: true,editrules:{edithidden:true} },
+                            { name: 'Notification', index: 'Notification', align: 'left', editable: true, searchoptions: { sopt: ['eq', 'bw', 'ew', 'cn'] }, serach: true, searchrules: { required: true }, editrules: { required: false }, editoptions: { maxlength: 30, dataEvents: [{ type: 'keyup', fn: function (e) { SingleCharacter(this); } }] }, formoptions: { elmsuffix: "<span style='align:left;color:red'>*</span>&nbsp;" } },
+                            { name: 'ExpiryDate', index: 'ExpiryDate', align: 'left', editable: true,search:false, editoptions: { dataInit: function (elem) { $(elem).datepicker({ changeMonth: true, changeYear: true, dateFormat: 'dd/mm/yy', }); } }, editrules: { required: false }, formoptions: { elmsuffix: ' *' } },
+                            { name: 'Status', index: 'Status', align: 'left',  editable: true, edittype: 'checkbox',search:false, editoptions: { value: "Active:Passive", defaultValue: "Active" } },
+
+                ],
+                caption: "Notification Master",
+                autowidth: true,
+                gridview: true,
+                sortable: true,
+                hidegrid: false,
+                rownumbers: false,
+                altRows: true,
+                rowTotal: 10,
+                sortname: 'Notification',
+                sortorder: 'desc',
+                rowNum: 10,
+                viewrecords: true,
+                pager: $('#NotificationMasterPager'),
+                height: 'auto',
+                editable: true,
+                //onSelectRow: function (id) {
+                //    $("#FormMaster").jqGrid('viewGridRow', id);
+                //},
+                gridComplete: function () {
+
+                    if (jQuery("#NotificationMaster").getGridParam("records") == 0) {
+                        jQuery("#NotificationMaster").addRowData(
+                              "blankRow", { "Notification": "No records to view" });
+                    }
+
+
+                },
+                editurl: '@Url.Action("EditNotificationMaster")'
+
+            });
+
+            jQuery("#NotificationMaster").jqGrid('navGrid', '#NotificationMasterPager', { edit: true, add: true, del: true, search: true, view: true },
+                {
+                    //EDIT
+                    // height: 300,
+                    //width: 400,
+                    //top: 50,
+                    //left: 100,
+                    //dataheight: 280,
+                    closeOnEscape: true, //Closes the popup on pressing escape key
+                    reloadAfterSubmit: true,
+                    modal: true,
+                    width: 500,
+                    drag: true,
+                    checkOnSubmit: true,
+                    afterShowForm: function (form) {
+                        form.closest('div.ui-jqdialog').center();
+                    },
+                    beforeSubmit: function (response, postdata) {
+
+                        $('select').css("border", "1px solid #C0C0C0");
+                        $("input[type=text]").css("border", "1px solid #C0C0C0");
+
+                        var error = " ";
+                        var error = " ";
+                        //User Select DateFormat
+                        var date = $("#ExpiryDate").val().substring(0, 2);
+                        var month = $("#ExpiryDate").val().substring(3, 5);
+                        var year = $("#ExpiryDate").val().substring(6, 10);
+
+                        var Mydate = date + "/" + month + "/" + year;
+                        //System DateFormat currentdate Expirydata format
+                        var CurrentDay = new Date()
+                        var twoDigitMonth = ((CurrentDay.getMonth().length + 1) === 1) ? (CurrentDay.getMonth() + 1) : '0' + (CurrentDay.getMonth() + 1);
+                        var currentDate = CurrentDay.getDate() + "/" + twoDigitMonth + "/" + CurrentDay.getFullYear();
+
+
+                        if ($("#Notification").val().charAt(0) == ' ' || $("#Notification").val().charAt($("#Notification").val().length - 1) == ' ' || $("#Notification").val() == "")
+                        {
+                            $('#TblGrid_NotificationMaster td.ui-state-highlight').removeClass('ui-state-highlight').addClass('ui-state-error');
+                            $("#Notification").css("background-color", "#FFE8E8").css("border", "1px solid #FF6666");
+                            $('#Notification').val("");
+                            $('#Notification').focus();
+                            return [false, 'Enter Valid Notification'];
+                        }
+                        else if ($("#ExpiryDate").val() == "" || (Mydate < currentDate && Mydate != currentDate))
+                        {
+                            error += "ExpiryDate";
+                            $('#FormError').html("<td class='ui-state-error' colspan='2'>" + error + ":Field is required</td>");
+                            $("#ExpiryDate").val('');
+                            $('#ExpiryDate').focus();
+                            $("#ExpiryDate").css("background-color", "#FFE8E8").css("border", "1px solid #FF6666");
+                            return [false, response.responseText];
+                        }
+                        else {
+                            return [true, response.responseText];
+                        }
+
+                    },
+                    afterSubmit: function (response, postdata) {
+
+                        $("#NotificationMaster").jqGrid('setGridParam', { datatype: 'json' }).trigger('reloadGrid');
+                        $('#TblGrid_NotificationMaster td.ui-state-error').removeClass('ui-state-error').addClass('ui-state-highlight');
+                        $("#Notification").val("");
+                        $("#ExpiryDate").val("");
+                        $("#Status").prop("checked", false);
+                        return [false, response.responseText];
+                    },
+                   editData: {
+                        PKID: function () {
+                            var sel_id = $('#NotificationMaster').jqGrid('getGridParam', 'selrow');
+                            var value = $('#NotificationMaster').jqGrid('getCell', sel_id, '_id');
+                            return value;
+                        }
+                    }
+                    
+                },
+
+            {
+                //Add Portion
+                closeOnEscape: true,
+                modal: true,
+                width: 400,
+                //closeAfterAdd: true,
+                afterShowForm: function (form) {
+                    form.closest('div.ui-jqdialog').center();
+                },
+                beforeSubmit: function (response, postdata) {
+
+                    $('select').css("border", "1px solid #C0C0C0");
+                    $("input[type=text]").css("border", "1px solid #C0C0C0");
+
+                    var error = " ";
+                    //User Select DateFormat
+                    var date  = $("#ExpiryDate").val().substring(0, 2);
+                    var month = $("#ExpiryDate").val().substring(3, 5);
+                    var year  = $("#ExpiryDate").val().substring(6, 10);
+
+                    var Mydate = date + "/" + month + "/" + year;
+                    //System DateFormat currentdate Expirydata format
+                    var CurrentDay = new Date()
+                    var twoDigitMonth = ((CurrentDay.getMonth().length + 1) === 1) ? (CurrentDay.getMonth() + 1) : '0' + (CurrentDay.getMonth() + 1);
+                    var currentDate = CurrentDay.getDate() + "/" + twoDigitMonth + "/" + CurrentDay.getFullYear();
+
+
+                    if ($("#Notification").val().charAt(0) == ' ' || $("#Notification").val().charAt($("#Notification").val().length - 1) == ' ' || $("#Notification").val() == "") {
+                        $('#TblGrid_NotificationMaster td.ui-state-highlight').removeClass('ui-state-highlight').addClass('ui-state-error');
+                        $("#Notification").css("background-color", "#FFE8E8").css("border", "1px solid #FF6666");
+                        $('#Notification').val("");
+                        $('#Notification').focus();
+                        return [false, 'Enter Valid Notification'];
+                    }
+                    else if ($("#ExpiryDate").val() == "" || (Mydate < currentDate && Mydate != currentDate))
+                    {
+                        error += "ExpiryDate";
+                        $('#FormError').html("<td class='ui-state-error' colspan='2'>" + error + ":Field is required</td>");
+                        $("#ExpiryDate").val('');
+                        $('#ExpiryDate').focus();
+                        $("#ExpiryDate").css("background-color", "#FFE8E8").css("border", "1px solid #FF6666");
+                        return [false, response.responseText];
+                    }
+                    else {
+                        return [true, response.responseText];
+                    }
+
+                },
+                afterSubmit: function (response, postdata) {
+                    $("#FormMaster").jqGrid('setGridParam', { datatype: 'json' }).trigger('reloadGrid');
+                    var errorId = " ";
+                    if (response.responseText == "\"Notification Master Added Successfully.\"") {
+                        errorId += "Notification Master Added Successfully";
+                        $('#FormError').html("<td class='ui-state-error' colspan='2'>" + errorId + "</td>");
+                        $('#TblGrid_NotificationMaster td.ui-state-error').removeClass('ui-state-error').addClass('ui-state-highlight');
+                        $("#Notification").val("");
+                        $("#ExpiryDate").val("");
+                        $("#Status").prop("checked", false);
+                        return [false, response.responseText];
+                    }
+                    else {
+                        errorId += "Notification Master already Exists";
+                        $('#FormError').html("<td class='ui-state-error' colspan='2'>" + errorId + "</td>");
+                        $('#TblGrid_NotificationMaster td.ui-state-error').removeClass('ui-state-highlight').addClass('ui-state-error');
+                        $("#Notification").val("");
+                        $("#ExpiryDate").val("");
+                        $("#Status").prop("checked", false);
+                        return [false, response.responseText];
+
+                    }
+
+                },
+                onclickSubmit: function (params, posdata) {
+                    //string oper, string NodeType, string Team, string ActivityName, string Defaultflag, string Specialflag, string Fieldwork, string id, string IsActive
+                    params.url = '@Url.Action("NotificationMasterAdd")?Notification=' + $('#Notification').val() + '&ExpiryDate=' + $('#ExpiryDate').val() + '&Status=' + $('#Status').val();;
+
+                },
+                  
+            },
+
+            {
+                //DELETE
+                closeOnEscape: true,
+                modal: true,
+                closeAfterDelete: true,
+                reloadAfterSubmit: true,
+                closeOnEscape: true,
+                drag: true,
+                width: 400,
+                beforeShowForm: function (form) {
+
+                    //POP UP Screen Fit Screen
+                    var thisForm = $("#delmod" + jQuery("#NotificationMaster")[0].id);
+                    var dialogHeight = $(thisForm).height();
+                    var dialogWidth = $(thisForm).width();
+                    var windowHeight = $(window).height();
+                    var windowWidth = $(window).width();
+                    $(thisForm).css('position', 'fixed');
+                    $(thisForm).css('top', ((windowHeight - dialogHeight) / 2));
+                    $(thisForm).css('left', ((windowWidth - dialogWidth) / 2));
+                    //$("td.delmsg", form[0]).html("<table width='100%'><tr><td><b>PKID</b></td><td>" + ret.PKID + "</td></tr><tr><td><b>Notification</b></td><td>" + ret.Notification + "</td></tr><tr><td><b>ExpiryDate</b></td><td>" + ret.ExpiryDate + "</td></tr><tr><td><b>Status</b></td><td>" + ret.Status + "</td></tr><tr><td colspan=2></br>Are you sure want to delete selected record(s)?</td></tr></table> ");
+                    var col1 = $('#NotificationMaster').jqGrid('getGridParam', 'selrow');
+                    var Statusfield = $('#NotificationMaster').jqGrid('getCell', col1, 'Status');
+                    $('tr td.delmsg').html('Delete selected record(s)?');
+                    if (Statusfield == "InActive") {
+                        $('tr td.delmsg').html('Record Already Deleted');
+                        $('#dData').hide();
+                    }
+                    else
+                        $('#dData').show();
+
+                },
+
+                afterSubmit: function (response, postdata) {
+                    $('tr td.delmsg').html('');
+                    $("#NotificationMaster").jqGrid('setGridParam', { datatype: 'json' }).trigger('reloadGrid');
+                    $('#DelTbl_NotificationMaster td.ui-state-error').removeClass('ui-state-error').addClass('ui-state-highlight');
+                    $('#dData').hide();
+                    return [false, response.responseText];
+                },
+            },
+            {
+                //search
+                closeOnEscape: true,
+                modal: true,
+                recreateForm: true,
+                width: 600,
+                caption: "Search",
+                searchOnEnter: true,
+                beforeShowSearch: function (form) {
+
+                    $('#jqg1').val('');
+                    $('#fbox_NotificationMaster_reset').click();
+
+                    var dialogHeight = $("#searchmodfbox_NotificationMaster").height();
+                    var dialogWidth = $("#searchmodfbox_NotificationMaster").width();
+                    var windowHeight = $(window).height();
+                    var windowWidth = $(window).width();
+                    $("#searchmodfbox_NotificationMaster").css('position', 'fixed');
+                    $("#searchmodfbox_NotificationMaster").css('top', ((windowHeight - dialogHeight) / 2));
+                    $("#searchmodfbox_NotificationMaster").css('left', ((windowWidth - dialogWidth) / 2));
+
+                    return [true, ""];
+                }
+            },
+            {
+                //View
+                width: 400,
+                modal: true,
+                beforeShowForm: function (form) {
+                    form.closest('div.ui-jqdialog').center();
+                }
+
+
+            }
+
+                    );
+            // setMethod('LocationMaster', 'LocationMasterPager', 'Customer Grid', 'ManageUsers', 'LocationMaster.cshtml');
+
+            setMethod('NotificationMaster', 'NotificationMasterPager', 'Customer Grid');
+
+        }
+        //Center Popup
+        jQuery.fn.center = function () {
+            this.css("position", "absolute");
+            this.css("top", ($(window).height() - this.height()) / 2 + $(window).scrollTop() + "px");
+            this.css("left", ($(window).width() - this.width()) / 2 + $(window).scrollLeft() + "px");
+            return this;
+
+        }
+        function validSpecial(objElement) {
+
+            var re = /^[a-zA-Z0-9-/\s.:]*/gi;
+            if (objElement.value.match(re) != objElement.value) {
+                alert('Special Characters are Not Allowed');
+                objElement.value = '';
+
+                return false;
+            }
+
+        }
+
+        function setMethod(gid, id, pgTitle) {
+            // alert(1);
+            var btnTitle = 'Export to Excel';
+            $('#' + gid).jqGrid('navSeparatorAdd', '#' + id, { sepclass: "ui-separator" });
+            $('#' + gid).jqGrid('navButtonAdd', '#' + id, { caption: '', title: btnTitle, position: 'last', buttonicon: 'ui-icon-calculator', onClickButton: function () { ExcelExport(); } });
+
+            var btnTitle = 'Export to PDF';
+            $('#' + gid).jqGrid('navSeparatorAdd', '#' + id, { sepclass: "ui-separator" });
+            $('#' + gid).jqGrid('navButtonAdd', '#' + id, { caption: '', title: btnTitle, position: 'last', buttonicon: 'ui-icon-bookmark', onClickButton: function () { PDFExport(); } });
+
+            var btnTitle = 'Export to CSV';
+            $('#' + gid).jqGrid('navSeparatorAdd', '#' + id, { sepclass: "ui-separator" });
+            $('#' + gid).jqGrid('navButtonAdd', '#' + id, { caption: '', title: btnTitle, position: 'last', buttonicon: 'ui-icon-note', onClickButton: function () { CSVExport(); } });
+
+
+            var btnTitle = 'Print Grid';
+            $('#' + gid).jqGrid('navSeparatorAdd', '#' + id, { sepclass: "ui-separator" });
+            $('#' + gid).jqGrid('navButtonAdd', '#' + id, { caption: '', title: btnTitle, position: 'last', buttonicon: 'ui-icon-print', onClickButton: function () { PrintGrid(gid); } });
+        }
+        function ExcelExport() {
+            window.location = '@Url.Action("ExportNotificationmMasterToExcel")';
+        }
+        function PDFExport() {
+            window.location = '@Url.Action("ExportNotificationMasterToPDF")';
+        }
+        function CSVExport() {
+
+             window.location = '@Url.Action("ExportNotificationMasterToCsv")';
+           // $('#NotificationMaster').table2CSV({ header: ['PKID', 'Notification', 'ExpiryDate', 'Status'] });
+        }
+        //function PrintGrid(gid) {
+        //    //  alert(5);
+        //    // empty the print div container.
+        //    $('#prt-container').empty();
+        //    //alert(6);
+        //    // copy and append grid view to print div container.
+        //    $('#gview_' + gid).clone().appendTo('#prt-container').css({ 'page-break-after': 'auto' });
+        //    // alert(7);
+        //    // remove navigation div.
+        //    //  $('#prt-container div').remove('.ui-jqgrid-toppager,.ui-jqgrid-titlebar,.ui-jqgrid-pager');
+
+        //    // print the contents of the print container.
+        //    //$('#prt-container').printElement({ pageTitle: pgTitle, overrideElementCSS: [{ href: 'Content/css/print-grid.css', media: 'print' }], leaveOpen: true, printMode: 'popup' });
+        //    //    $("#prt-container").printElement(
+        //    //{
+        //    //    leaveOpen: true,
+        //    //    printMode: 'popup'
+        //    //    });
+        //    //   $("#prt-container").printElement({ leaveOpen: true, printMode: 'popup' });
+        //    //  $(function () { window.print(); });
+        //    $(function () { printChrome('prt-container') });
+        //    // alert(6);
+        //}
+
+        function PrintGrid(gid) {
+
+            // empty the print div container.
+            var rows = $('#NotificationMaster').jqGrid('getRowData');
+            for (var i = 0; i < rows.length; i++) {
+                var row = rows[i];
+                $('#Table1').append("<tr><td>" + row.Notification + "</td><td>" + row.ExpiryDate + "</td><td>" + row.Status + "</td></tr>");
+
+            }
+            $(function () { printChrome('prt-container') });
+
+        }
+
+        function printChrome(divContainer) {
+
+            //  alert(9);
+            var printContent = document.getElementById(divContainer);
+            // alert(printContent.innerHTML);
+            window.document.body.innerHTML = printContent.innerHTML;
+            window.print();
+            window.location.reload();
+        }
+
+
+    </script>
+    @*<div id='prt-container' style="display:none">
+    </div>*@
+    <div id='prt-container' style="display:none">
+        <table id="Table1" border="1" width="100%">
+            <thead>
+                <tr>
+                    <td><b>Notification</b></td>
+                    <td><b>ExpiryDate</b></td>
+                    <td><b>Status</b></td>
+                </tr>
+
+            </thead>
+            <tbody></tbody>
+
+        </table>
+    </div>
+  
+</body>

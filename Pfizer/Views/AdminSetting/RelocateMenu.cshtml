@@ -1,0 +1,42 @@
+﻿@{
+    ViewBag.Title = "RelocateMenu";
+    Layout = "~/Views/Shared/MasterLayout.cshtml";
+}
+
+
+<body>
+    @using (Html.BeginForm(FormMethod.Post))
+    {
+        <div>
+            <table width="50%" border="0" class="inner_tb" align="center">
+                <tr>
+                    
+                    <td  align="center" class="tb-r1" width="50%" ><label><b>Role</b></label></td>
+                    <td class="tb-r1">@Html.DropDownList("ddlRole", PfizerEntity.UsefulLink.DropDownListRoleContents(), "Select")</td>
+
+                </tr>
+
+            </table>
+            <table border="0" style="width: 100%">
+                <tr>
+                    <td>
+                        <!--JqGrid Starts-->
+                        <table style="margin-top: 7px; width :100%" border="0">
+                            <tr>
+                                <td>
+                                    <table id="ajaxGrid" style="width: 100%" border="0"></table>
+                                    <div id="ajaxGridPager">
+                                    </div>
+                                </td>
+                            </tr>
+                        </table>
+                        <!--Ends-->
+                    </td>
+                </tr>
+            </table>
+         
+        </div>
+    }
+
+</body>
+

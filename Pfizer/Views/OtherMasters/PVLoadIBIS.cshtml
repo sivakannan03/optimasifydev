@@ -1,0 +1,13 @@
+﻿@model Dictionary<string, string>
+@foreach (KeyValuePair<string, string> value in Model)
+    {
+
+    <input type="text" id="txttest" value="@value.Value" />
+    }
+@*<select>
+    
+    @foreach (KeyValuePair<string, string> value in Model)
+    {
+        <option value='@value.Key.ToString()'>@value.Value</option>
+    }
+</select>*@

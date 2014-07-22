@@ -1,0 +1,12 @@
+﻿@model Dictionary<decimal, string>
+@if (ViewBag.Type == "City")
+{
+<select>
+    <option value='0'>Select</option>
+    @foreach (KeyValuePair<decimal, string> value in Model)
+    {
+        <option value='@value.Key.ToString()'>@value.Value</option>
+    }
+</select>
+}
+

@@ -1,0 +1,75 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+	<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+	<title>Pfizer :: Login</title>
+	<link href="css/style.css" rel="stylesheet" type="text/css" />
+	<link href="css/reset.css" rel="stylesheet" type="text/css" />
+	<script type="text/javascript" src="js/jquery.min.js">
+
+</script>
+	<script type="text/javascript" src="js/jquery.flipcountdown.js"></script>
+	<link rel="stylesheet" type="text/css" href="css/flipcountdown.css" />
+	<script>
+$(function(){
+	var i = 1000;
+	$('#retroclockbox1').flipcountdown();
+	var i = 1;
+	$('#retroclockbox_counter').flipcountdown({
+		tick:function(){
+			return i++;
+		}
+	});
+
+})
+</script>
+	<script>
+$(function(){
+	$('#retroclockbox_sm').flipcountdown({size:'sm',showHour:false,showMinute:false,showSecond:true});})</script>
+	</head>
+	<body>
+    <div class="wrapper">
+      <div class="memlogin_container">
+        <div class="memlogin_header">
+          <div class="pfizer"><img src="images/pfizer.png" width="91" height="54" /></div>
+          <div class="optima"><img src="images/optima.jpg" width="151" height="64" /></div>
+          <div class="invalid">Error Message  Comes Here</div>
+        </div>
+        <div class="memlogin_mainbg">
+          <div class="memlogin_sec">
+            <h1>Member Login</h1>
+            <label>User ID</label>
+            <input name="" type="text"  value="Enter Your User ID"/>
+            <label>Password</label>
+            <input name="" type="password" value="*********************"  />
+            
+          </div>
+          <div class="question_maindiv">
+            <div class="question_leftsec">Question </div>
+            <div class="question_rightsec">What is you mother maiden name? What is you mother maiden name? What is you mother maiden name? What is you mother </div>
+            <div class="clear"></div>
+            <div class="answer">
+            <input name="input" type="text"  value="Answer"/>
+            <input class="orange_button" type="button" value="Login" onclick="window.location='innerpage.html'">
+          </div>
+            <div class="timer">
+            <h4>Question Timer</h4>
+            <div id="retroclockbox_sm"></div>
+          </div>
+          </div>
+          
+          
+        </div>
+        <div class="clear"></div>
+      </div>
+      <div class="memlogin_footer">
+        <div class="memlogin_container">
+          <div class="entrust"><img src="images/entrust.png" width="57" height="57" /></div>
+          <div class="memlogin_footer_links"> <a href="#">Forgot Password</a><span>|</span> <a href="#">Terms of Use</a><span>|</span><a href="#">Contact us</a></div>
+           <div class="copyright">Copyright 2014, <a href="#">Pfizer</a>. All rights reserved.</div>
+          <div></div>
+        </div>
+      </div>
+    </div>
+</body>
+</html>

@@ -1,0 +1,910 @@
+﻿@{
+    ViewBag.Title = "OpinionPoll";
+    Layout = "~/Views/Shared/MasterLayout.cshtml";
+}
+
+
+<body>
+
+    @using (Html.BeginForm(FormMethod.Post))
+    {
+        <div>
+            <table border="0" style="width: 100%">
+                <tr>
+                    <td>
+                        <!--JqGrid Starts-->
+                        <table style="margin-top: 7px; width :100%" border="0">
+                            <tr>
+                                <td>
+                                    <table id="OpinionGrid" style="width: 100%" border="0"></table>
+                                    <div id="Pager">
+                                    </div>
+                                </td>
+                            </tr>
+                        </table>
+                        <!--Ends-->
+                    </td>
+                </tr>
+            </table>
+
+        </div>
+    <div id="openDiv">
+     
+    </div>
+
+     <script type="text/javascript"> 
+      
+
+
+        jQuery(document).ready(function () {
+
+            initGrid();
+        });
+
+        function ShowRating(id) {
+
+            var row = id.split("=");
+            var row_ID = row[1];
+            
+            var sitename = $("#OpinionGrid").getCell(row_ID, 'Question');
+            $.getJSON('@Url.Action("JsonGetRating")?pkid=' + row_ID, function (data)
+            {
+                var html = "<table border='0' width='100%'><tr><td> This Article " + sitename + " has been Rated as<br/></br></td></tr>";
+                html += "<tr><td><table>";
+                if(data.option1!="")
+                    html += "<tr><td >" + data.option1 + "</td><td>&nbsp;:&nbsp;</td><td>" + data.count1 + "</td></tr>";
+                if (data.option2 != "")
+                    html += "<tr><td>" + data.option2 + "</td><td>&nbsp;:&nbsp;</td><td>" + data.count2 + "</td></tr>";
+                if (data.option3 != "")
+                    html += "<tr><td>" + data.option3 + "</td><td>&nbsp;:&nbsp;</td><td>" + data.count3 + "</td></tr>";
+                if (data.option4 != "")
+                    html += "<tr><td>" + data.option4 + "</td><td>&nbsp;:&nbsp;</td><td>" + data.count4 + "</td></tr>";
+                if (data.option5 != "")
+                    html += "<tr><td>" + data.option5 + "</td><td>&nbsp;:&nbsp;</td><td>" + data.count5 + "</td></tr>";
+
+                html += "</table></td></tr></table>";
+
+                $('#openDiv').html(html);
+                               
+                AlertPopUp("Show Opinion Rating");
+            });
+
+            
+
+        }
+
+
+        function AlertPopUp(val) {
+
+            /* $.noConflict(true);*/
+            jQuery('#openDiv').dialog({
+
+                resizable: false,
+                title: val,
+                height: 200,
+                width: 450,
+                show: { effect: 'drop', direction: "up" },
+                modal: true,
+                draggable: true,
+                open: function (event, ui) {
+                    //<span class="ui-button-icon-primary ui-icon ui-icon-closethick"></span>
+                    // jQuery(".ui-dialog-title").removeClass("ui-button-icon-primary ui-icon ui-icon-closethick");
+                    //jQuery(".ui-button-icon-primary ui-icon ui-icon-closethick").remove();
+                   // jQuery(".ui-button-icon-primary ui-icon ui-icon-closethick").css("border","2px");
+                    jQuery(".ui-dialog-titlebar-close").show();
+                  
+               },
+
+                buttons:
+                    {
+                       
+
+                        "Close": function () {
+                           // jQuery(".ui-dialog-title").removeClass("ui-button-icon-primary ui-icon ui-icon-closethick");
+                            jQuery(this).dialog("close");
+                      //      jQuery(".ui-button-icon-primary ui-icon ui-icon-closethick").remove();
+
+                        },
+
+                    },
+
+
+            });
+
+
+        }
+
+
+        function MoveSelected() {
+
+            $('#Division :selected').each(function (i, selected) {
+
+                if ($(selected).val() != "0") {
+
+                    $('#SelDivision')
+                         .append($('<option selected="selected" value=' + $(selected).val() + '>')
+                         .text($(selected).text()));
+                    $('#Division :selected').remove();
+                }
+                GetUser();
+
+            });
+
+
+        }
+
+        function ReverseSelected() {
+
+            $('#SelDivision :selected').each(function (i, selected) {
+                if ($(selected).val() != "0") {
+                    $('#Division')
+                         .append($('<option>', { value: $(selected).val() })
+                         .text($(selected).text()));
+                    $('#SelDivision :selected').remove();
+                }
+
+            });
+
+            $("#SelDivision option").prop("selected", true);
+            $("#SelDivision option:first").removeAttr('selected');
+            GetUser();
+
+        }
+
+
+
+        function MoveNodeTypeSelected() {
+
+            $('#NodeType :selected').each(function (i, selected) {
+                if ($(selected).val() != "0") {
+                    $('#SelNodeType')
+                         .append($('<option selected="selected" value=' + $(selected).val() + '>')
+                         .text($(selected).text()));
+                    $('#NodeType :selected').remove();
+                }
+            });
+            GetUser();
+
+
+        }
+
+        function ReverseNodeTypeSelected() {
+
+            $('#SelNodeType :selected').each(function (i, selected) {
+                if ($(selected).val() != "0") {
+                    $('#NodeType')
+                         .append($('<option>', { value: $(selected).val() })
+                         .text($(selected).text()));
+                    $('#SelNodeType :selected').remove();
+                }
+
+            });
+
+            $("#SelNodeType option").prop("selected", true);
+            $("#SelNodeType option:first").removeAttr('selected');
+
+            GetUser();
+
+        }
+
+
+
+
+        function MoveUserSelected() {
+
+            $('#User :selected').each(function (i, selected) {
+                if ($(selected).val() != "0") {
+                    $('#SelUserType')
+                         .append($('<option selected="selected" value=' + $(selected).val() + '>')
+                         .text($(selected).text()));
+                    $('#User :selected').remove();
+                }
+            });
+
+
+        }
+
+        function ReverseUserSelected() {
+
+            $('#SelUserType :selected').each(function (i, selected) {
+                if ($(selected).val() != "0") {
+                    $('#User')
+                         .append($('<option>', { value: $(selected).val() })
+                         .text($(selected).text()));
+                    $('#SelUserType :selected').remove();
+                }
+            });
+
+            $("#SelUserType option").prop("selected", true);
+            $("#SelUserType option:first").removeAttr('selected');
+
+        }
+
+        function GetUser() {
+            var division = $('#SelDivision').val();
+            var nodeType = $('#SelNodeType').val();
+
+
+            $('#User').empty();
+            $('#SelUserType').empty();
+            if (division != "" && nodeType != "") {
+                $("#User").prepend("<option value='0'>Select</option>");
+                $("#SelUserType").prepend("<option value='0'>Select</option>");
+
+
+                $.getJSON('@Url.Action("JsGetUser")?division=' + division + '&nodeType=' + nodeType, function (data) {
+
+                    for (var i = 0; i < data.count; i++) {
+
+                        $('#User')
+                                  .append($('<option  value=' + data.retutnUser[i].Value + '>')
+                                  .text(data.retutnUser[i].Text));
+                    }
+
+                });
+            }
+            else {
+                if (nodeType == "" && division != "") {
+                    $("#User").prepend("<option value='0'>Select</option>");
+                    $("#SelUserType").prepend("<option value='0'>Select</option>");
+
+                    alert("Please Select  Node Type");
+                }
+                else if (nodeType != "" && division == "") {
+                    $("#User").prepend("<option value='0'>Select</option>");
+                    $("#SelUserType").prepend("<option value='0'>Select</option>");
+                    alert("Please Select Division");
+                }
+                else if (nodeType == "" && division == "") {
+                    $("#User").prepend("<option value='0'>Select</option>");
+                    $("#SelUserType").prepend("<option value='0'>Select</option>");
+                    alert("Please Select Division and Node Type");
+
+                }
+
+
+            }
+        }
+
+
+
+
+
+        function initGrid() {
+            jQuery("#OpinionGrid").jqGrid({
+                url: '@Url.Action("OpinionGridData")?fkId=' + jQuery('#hdnFkId').val(),
+
+                datatype: "json",
+                jsonReader: { repeatitems: false, id: "PKID" },
+                colNames: ['PKID', 'Question', 'Option1', 'Option2', 'Status', 'Show Rating', 'Option3', 'Option4', 'Option5', 'Division', '', '', '', 'NodeType', '', '', '', 'User', '', '', ''],
+                colModel: [
+                    { name: 'PKID', index: 'PKID', align: 'left', hidden: true, editable: true },
+                    { name: 'Question', index: 'Question', align: 'left', editable: true, editrules: { edithidden: true, required: false }, searchoptions: { sopt: ['eq', 'bw', 'ew', 'cn'] }, formoptions: { rowpos: 2, colpos: 1, elmprefix: "<span style='align:left;color:red'>*</span>&nbsp;" }, searchrules: { required: true } },
+                    { name: 'Option1', index: 'Option1', align: 'left', hidden: false, editable: true, editrules: { edithidden: true, required: false }, formoptions: { rowpos: 3, colpos: 1, elmprefix: "<span style='align:left;color:red'>*</span>&nbsp;" },search: false  },
+                    { name: 'Option2', index: 'Option2', align: 'left', hidden: false, editable: true, editrules: { edithidden: true, required: false }, formoptions: { rowpos: 3, colpos: 2, elmprefix: "<span style='align:left;color:red'>*</span>&nbsp;" }, search: false },
+                    { name: 'IsActive', index: 'IsActive', align: 'left', hidden: false, edit: false, search: false },
+                    { name: 'ShowRating', index: 'ShowRating', align: 'left', hidden: false, sortable: false, viewable: false, edit: false, formatter: 'showlink', search: false, formatoptions: { baseLinkUrl: 'javascript:', showAction: "ShowRating('", addParam: "');", elmprefix: "<span style='align:left;color:red'>*</span>&nbsp;" } },
+                    { name: 'Option3', index: 'Option3', align: 'left', hidden: true, editable: true, viewable: false, editrules: { edithidden: true, required: false }, formoptions: { rowpos: 4, colpos: 1, elmprefix: "&nbsp;&nbsp;" } },
+                    { name: 'Option4', index: 'Option4', align: 'left', hidden: true, viewable: false, editable: true, editrules: { edithidden: true, required: false }, formoptions: { rowpos: 4, colpos: 2, elmprefix: "&nbsp;&nbsp;" } },
+                    { name: 'Option5', index: 'Option5', align: 'left', hidden: true, viewable: false, editable: true, editrules: { edithidden: true, required: false }, formoptions: { rowpos: 5, colpos: 1, elmprefix: "&nbsp;&nbsp;" } },
+                    {
+                        name: 'Division', index: 'Division', align: 'left', hidden: true, viewable: false, editable: true, editrules: { edithidden: true, required: false }, formoptions: { rowpos: 6, colpos: 1, elmprefix: "<span style='align:left;color:red'>*</span>&nbsp;" }, edittype: 'select', editoptions: {
+                            multiple: true,
+                            dataUrl: function () {
+                                var row_id = $('#OpinionGrid').getGridParam('selrow');
+                                return 'LoadDivision?type=' + 'Division' + '&rowId=' + row_id;
+                            },
+                            dataInit: function (elem) {
+                                $(elem).width(135);
+                            }
+
+
+                        }
+                    },
+                    {
+                        name: 'forwardDiv', index: 'forwardDiv', align: 'left', hidden: true, editrules: { edithidden: true, required: false }, edittype: 'button', editable: true, editoptions: {
+
+                            value: '>>',
+                            dataEvents:
+                                [
+                                {
+                                    type: 'click', fn: function (e) {
+
+                                        MoveSelected();
+                                    }
+                                }]
+
+                        }, formoptions: { rowpos: 6, colpos: 2 }
+                    },
+
+            {
+
+                name: 'backwardDiv', index: 'backwardDiv', align: 'right', hidden: true, edittype: 'button', editrules: { edithidden: true, required: false }, editable: true, editoptions: {
+                    value: '<<',
+                    dataEvents:
+                        [
+                        {
+                            type: 'click', fn: function (e) {
+
+                                ReverseSelected();
+                            }
+                        }]
+
+                }, formoptions: { rowpos: 6, colpos: 3 }
+            },
+
+               {
+                   name: 'SelDivision', index: 'SelDivision', align: 'left', editable: true, hidden: true, editrules: { edithidden: true, required: false }, edittype: 'select', editoptions: {
+                       multiple: true, dataUrl: function () {
+                           var row_id = $('#OpinionGrid').getGridParam('selrow');
+                           return 'LoadSelectedDivision?type=' + 'SelectedDivision' + '&rowId=' + row_id;
+                       },
+                       dataInit: function (elem) {
+                           $(elem).width(135);
+                       }
+
+                   }, formoptions: { rowpos: 6, colpos: 4, elmprefix: "<span style='align:left;color:red'>*</span>&nbsp;" }
+               },
+
+
+
+               {
+                   name: 'NodeType', index: 'NodeType', align: 'left', viewable: false, hidden: true, editable: true, editrules: { edithidden: true, required: false }, edittype: 'select',
+                   editoptions: {
+                       multiple: true, dataUrl: function () {
+                           var row_id = $('#OpinionGrid').getGridParam('selrow');
+                           return 'LoadNode?type=' + 'NodeType' + '&rowId=' + row_id;
+                       },
+                       dataInit: function (elem) {
+                           $(elem).width(135);
+                       }
+                   }
+               , formoptions: { rowpos: 7, colpos: 1, elmprefix: "<span style='align:left;color:red'>*</span>&nbsp;" }
+               },
+                        {
+                            name: 'forwardNDType', index: 'forwardNDType', align: 'left', hidden: true, editrules: { edithidden: true, required: false }, edittype: 'button', editable: true, editoptions: {
+
+                                value: '>>',
+                                dataEvents:
+                                    [
+                                    {
+                                        type: 'click', fn: function (e) {
+
+                                            MoveNodeTypeSelected();
+                                        }
+                                    }]
+
+                            }, formoptions: { rowpos: 7, colpos: 2 }
+                        },
+
+            {
+
+                name: 'backwardNDType', index: 'backwardNDType', align: 'right', hidden: true, edittype: 'button', editrules: { edithidden: true, required: false }, editable: true, editoptions: {
+
+                    value: '<<',
+                    dataEvents:
+                        [
+                        {
+                            type: 'click', fn: function (e) {
+
+                                ReverseNodeTypeSelected();
+                            }
+                        }]
+
+                }, formoptions: { rowpos: 7, colpos: 3 }
+            },
+
+               {
+                   name: 'SelNodeType', index: 'SelNodeType', align: 'left', editable: true, hidden: true, editrules: { edithidden: true, required: false }, edittype: 'select', editoptions: {
+                       multiple: true, dataUrl: function () {
+                           var row_id = $('#OpinionGrid').getGridParam('selrow');
+                           return 'LoadSelectedNode?type=' + 'SelectedNodeType' + '&rowId=' + row_id;
+                       },
+                       dataInit: function (elem) {
+                           $(elem).width(135);
+                       }
+
+                   }, formoptions: { rowpos: 7, colpos: 4, elmprefix: "<span style='align:left;color:red'>*</span>&nbsp;" }
+               },
+
+
+                {
+                    name: 'User', index: 'User ', align: 'left', hidden: true, viewable: false, editable: true, editrules: { edithidden: true, required: false }, edittype: 'select', editoptions: {
+                        multiple: true, dataUrl: function () {
+                            var row_id = $('#OpinionGrid').getGridParam('selrow');
+                            return 'LoadUser?type=' + 'User' + '&rowId=' + row_id;
+                        },
+                        dataInit: function (elem) {
+                            $(elem).width(135);
+                        }
+
+                    }, formoptions: { rowpos: 8, colpos: 1, elmprefix: "<span style='align:left;color:red'>*</span>&nbsp;" }
+                },
+                        {
+                            name: 'forwardUserType', index: 'forwardUserType', align: 'left', hidden: true, editrules: { edithidden: true, required: false }, edittype: 'button', editable: true, editoptions: {
+                                value: '>>',
+                                dataEvents:
+                                    [
+                                    {
+                                        type: 'click', fn: function (e) {
+
+                                            MoveUserSelected();
+                                        }
+                                    }]
+
+                            }, formoptions: { rowpos: 8, colpos: 2 }
+                        },
+
+            {
+
+                name: 'backwardUserType', index: 'backwardUserType', align: 'right', hidden: true, edittype: 'button', editrules: { edithidden: true, required: false }, editable: true, editoptions: {
+                    value: '<<',
+                    dataEvents:
+                        [
+                        {
+                            type: 'click', fn: function (e) {
+
+                                ReverseUserSelected();
+                            }
+                        }]
+
+                }, formoptions: { rowpos: 8, colpos: 3 }
+
+
+            },
+
+               {
+                   name: 'SelUserType', index: 'SelUserType', align: 'left', editable: true, hidden: true, editrules: { edithidden: true, required: false }, edittype: 'select', editoptions: {
+                       multiple: true, dataUrl: function () {
+                           var row_id = $('#OpinionGrid').getGridParam('selrow');
+                           return 'LoadSelectedUser?type=' + 'SelectedUser' + '&rowId=' + row_id;
+                       },
+                       dataInit: function (elem) {
+                           $(elem).width(135);
+                       }
+
+                   }, formoptions: { rowpos: 8, colpos: 4, elmprefix: "<span style='align:left;color:red'>*</span>&nbsp;" }
+               },
+
+
+                ],
+
+                autowidth: true,
+                gridview: true,
+                caption: 'Opinion Poll',
+                jqModal: true,
+                align: 'center',
+                sortable: true,
+                hidegrid: true,
+                altRows: true,
+                sortname: 'PKID',
+                sortorder: 'desc',
+                rowTotal: 10,
+                rowNum: 10,
+                viewrecords: true,
+                pager: $('#Pager'),
+                height: 'auto',
+                editable: true,
+                gridComplete: function () {
+
+                    if (jQuery("#OpinionGrid").getGridParam("records") == 0) {
+                        jQuery("#OpinionGrid").addRowData(
+                              "blankRow", { "Question": "No records to view" });
+                    }
+                },
+                editurl: '@Url.Action("EditOpinionGrid")'
+            });
+
+
+            jQuery("#OpinionGrid").jqGrid('navGrid', '#Pager', { edit: true, add: true, del: true, search: true, view: true },
+
+                {
+                    // Edit
+                    closeOnEscape: true,
+                    recreateForm: true,
+                    width: 650,
+                    checkOnSubmit: true,
+                    bSubmit: "Vote",
+                    modal:true,
+                    beforeShowForm: function (form) {
+
+
+                        var col1 = $('#OpinionGrid').jqGrid('getGridParam', 'selrow');
+
+                        var pkid = $('#OpinionGrid').jqGrid('getCell', col1, 'PKID');
+
+                        $.getJSON('@Url.Action("JsGetOpinionPoll")?pkid=' + pkid, function (data) {
+
+                            $('#Question').val(data.question);
+                            $('#Option1').val(data.option1);
+                            $('#Option2').val(data.option2);
+                            $('#Option3').val(data.option3);
+                            $('#Option4').val(data.option4);
+                            $('#Option5').val(data.option5);
+
+                        });
+
+
+                    },
+                    afterShowForm: function (form_id) {
+                        var thisForm = form_id.selector.replace('FrmGrid_', 'editmod')
+                        var dialogHeight = $(thisForm).height();
+                        var dialogWidth = $(thisForm).width();
+                        var windowHeight = $(window).height();
+                        var windowWidth = $(window).width();
+                        $(thisForm).css('position', 'fixed');
+                        $(thisForm).css('top', ((windowHeight - dialogHeight) / 2));
+                        $(thisForm).css('left', ((windowWidth - dialogWidth) / 2));
+                    },
+                    beforeSubmit: function (response, postdata) {
+
+                        $('select').css("border", "1px solid #C0C0C0");
+                        $("input[type=text]").css("border", "1px solid #C0C0C0");
+                        var error = " ";
+                        if ($("#Question").val().charAt(0) == ' ' || $("#Question").val().charAt($("#Question").val().length - 1) == ' ' || $("#Question").val() == "") {
+                            $('#TblGrid_OpinionGrid td.ui-state-highlight').removeClass('ui-state-highlight').addClass('ui-state-error');
+                            $("#Question").css("background-color", "#FFE8E8").css("border", "1px solid #FF6666");
+                            $('#Question').val("");
+                            $('#Question').focus();
+                            return [false, 'Enter Valid Question'];
+                        }
+                        else if ($("#Option1").val().charAt(0) == ' ' || $("#Option1").val().charAt($("#Option1").val().length - 1) == ' ' || $("#Option1").val() == "") {
+                            $('#TblGrid_OpinionGrid td.ui-state-highlight').removeClass('ui-state-highlight').addClass('ui-state-error');
+                            $("#Option1").css("background-color", "#FFE8E8").css("border", "1px solid #FF6666");
+                            $('#Option1').val("");
+                            $('#Option1').focus();
+                            return [false, 'Enter Valid Option1'];
+                        }
+                        else if ($("#Option2").val().charAt(0) == ' ' || $("#Option2").val().charAt($("#Option2").val().length - 1) == ' ' || $("#Option2").val() == "") {
+                            $('#TblGrid_OpinionGrid td.ui-state-highlight').removeClass('ui-state-highlight').addClass('ui-state-error');
+                            $("#Option2").css("background-color", "#FFE8E8").css("border", "1px solid #FF6666");
+                            $('#Option2').val("");
+                            $('#Option2').focus();
+                            return [false, 'Enter Valid Option2'];
+                        }
+                        else if (($("#SelDivision").val() == 0) || ($("#SelDivision").val() == null)) {
+                            error += "Division";
+                            $('#FormError').html("<td class='ui-state-error' colspan='10'>" + error + ":Field is required</td>");
+                            $("#SelDivision").css("background-color", "#FFE8E8").css("border", "1px solid #FF6666");
+                            return [false, response.responseText];
+                        }
+                        else if (($("#SelNodeType").val() == 0) || ($("#SelNodeType").val() == null)) {
+                            error += "NodeType";
+                            $('#FormError').html("<td class='ui-state-error' colspan='10'>" + error + ":Field is required</td>");
+                            $("#SelNodeType").css("background-color", "#FFE8E8").css("border", "1px solid #FF6666");
+                            return [false, response.responseText];
+                        }
+                        else if (($("#SelUserType").val() == 0) || ($("#SelUserType").val() == null)) {
+                            error += "UserType";
+                            $('#FormError').html("<td class='ui-state-error' colspan='10'>" + error + ":Field is required</td>");
+                            $("#SelUserType").css("background-color", "#FFE8E8").css("border", "1px solid #FF6666");
+                            return [false, response.responseText];
+                        }
+
+                        else {
+                            return [true, response.responseText];
+                        }
+
+                    },
+
+
+                    afterSubmit: function (response, postdata) {
+
+
+                        $("#OpinionGrid").jqGrid('setGridParam', { datatype: 'json' }).trigger('reloadGrid');
+                        $('#TblGrid_OpinionGrid td.ui-state-error').removeClass('ui-state-error').addClass('ui-state-highlight');
+                        $('#Question').val("");
+                        $('#Option1').val("");
+                        $('#Option2').val("");
+                        $('#Option3').val("");
+                        $('#Option4').val("");
+                        $('#Option5').val("");
+                        $("#SelUserType option:selected").remove();
+                        $("#SelNodeType option:selected").remove();
+                        $("#SelDivision option:selected").remove();
+                        $("select").val(0);
+                        return [false, response.responseText];
+                    },
+                    closeAfterEdit: true,
+                },
+
+            {
+
+                //Add
+                closeOnEscape: true,
+                modal: true,
+                closeAfterAdd: true,
+                recreateForm: true,
+                width: 650,
+                bSubmit: "Vote",
+                beforeShowForm: function (form) {
+
+
+                },
+                afterShowForm: function (form_id) {
+                    var thisForm = form_id.selector.replace('FrmGrid_', 'editmod')
+                    var dialogHeight = $(thisForm).height();
+                    var dialogWidth = $(thisForm).width();
+                    var windowHeight = $(window).height();
+                    var windowWidth = $(window).width();
+                    $(thisForm).css('position', 'fixed');
+                    $(thisForm).css('top', ((windowHeight - dialogHeight) / 2));
+                    $(thisForm).css('left', ((windowWidth - dialogWidth) / 2));
+                },
+                beforeSubmit: function (response, postdata) {
+
+                    $('select').css("border", "1px solid #C0C0C0");
+                    $("input[type=text]").css("border", "1px solid #C0C0C0");
+                    var error = " ";
+                    if ($("#Question").val().charAt(0) == ' ' || $("#Question").val().charAt($("#Question").val().length - 1) == ' ' || $("#Question").val() == "") {
+                        $('#TblGrid_OpinionGrid td.ui-state-highlight').removeClass('ui-state-highlight').addClass('ui-state-error');
+                        $("#Question").css("background-color", "#FFE8E8").css("border", "1px solid #FF6666");
+                        $('#Question').val("");
+                        $('#Question').focus();
+                        return [false, 'Enter Valid Question'];
+                    }
+                    else if ($("#Option1").val().charAt(0) == ' ' || $("#Option1").val().charAt($("#Option1").val().length - 1) == ' ' || $("#Option1").val() == "") {
+                        $('#TblGrid_OpinionGrid td.ui-state-highlight').removeClass('ui-state-highlight').addClass('ui-state-error');
+                        $("#Option1").css("background-color", "#FFE8E8").css("border", "1px solid #FF6666");
+                        $('#Option1').val("");
+                        $('#Option1').focus();
+                        return [false, 'Enter Valid Option1'];
+                    }
+                    else if ($("#Option2").val().charAt(0) == ' ' || $("#Option2").val().charAt($("#Option2").val().length - 1) == ' ' || $("#Option2").val() == "") {
+                        $('#TblGrid_OpinionGrid td.ui-state-highlight').removeClass('ui-state-highlight').addClass('ui-state-error');
+                        $("#Option2").css("background-color", "#FFE8E8").css("border", "1px solid #FF6666");
+                        $('#Option2').val("");
+                        $('#Option2').focus();
+                        return [false, 'Enter Valid Option2'];
+                    }
+                    else if (($("#SelDivision").val() == 0) || ($("#SelDivision").val() == null)) {
+                        error += "Division";
+                        $('#FormError').html("<td class='ui-state-error' colspan='10'>" + error + ":Field is required</td>");
+                        $("#SelDivision").css("background-color", "#FFE8E8").css("border", "1px solid #FF6666");
+                        return [false, response.responseText];
+                    }
+                    else if (($("#SelNodeType").val() == 0) || ($("#SelNodeType").val() == null)) {
+                        error += "NodeType";
+                        $('#FormError').html("<td class='ui-state-error' colspan='10'>" + error + ":Field is required</td>");
+                        $("#SelNodeType").css("background-color", "#FFE8E8").css("border", "1px solid #FF6666");
+                        return [false, response.responseText];
+                    }
+                    else if (($("#SelUserType").val() == 0) || ($("#SelUserType").val() == null)) {
+                        error += "UserType";
+                        $('#FormError').html("<td class='ui-state-error' colspan='10'>" + error + ":Field is required</td>");
+                        $("#SelUserType").css("background-color", "#FFE8E8").css("border", "1px solid #FF6666");
+                        return [false, response.responseText];
+                    }
+   
+                   else {
+                        return [true, response.responseText];
+                    }
+
+                },
+
+
+                afterSubmit: function (response, postdata) {
+                    $("#OpinionGrid").jqGrid('setGridParam', { datatype: 'json' }).trigger('reloadGrid');
+                    var errorId = " ";
+                    if (response.responseText == "\"Opinion Poll Added Successfully.\"") {
+                        errorId += "Opinion Poll Added Successfully";
+                        $('#FormError').html("<td class='ui-state-error' colspan='10'>" + errorId + "</td>");
+                        $('#TblGrid_OpinionGrid td.ui-state-error').removeClass('ui-state-error').addClass('ui-state-highlight');
+                        $('#Question').val("");
+                        $('#Option1').val("");
+                        $('#Option2').val("");
+                        $('#Option3').val("");
+                        $('#Option4').val("");
+                        $('#Option5').val("");
+                        $("#SelUserType option:selected").remove();
+                        $("#SelNodeType option:selected").remove();
+                        $("#SelDivision option:selected").remove();
+                        $("select").val(0);
+                        return [false, response.responseText];
+                    }
+                    else {
+                        errorId += "Opinion Poll already Exists";
+                        $('#FormError').html("<td class='ui-state-error' colspan='10'>" + errorId + "</td>");
+                        $('#TblGrid_OpinionGrid td.ui-state-error').removeClass('ui-state-highlight').addClass('ui-state-error');
+                        $('#Question').val("");
+                        $('#Option1').val("");
+                        $('#Option2').val("");
+                        $('#Option3').val("");
+                        $('#Option4').val("");
+                        $('#Option5').val("");
+                        $("#SelUserType option:selected").remove();
+                        $("#SelNodeType option:selected").remove();
+                        $("#SelDivision option:selected").remove();
+                        $("select").val(0);
+                        return [false, response.responseText];
+
+                    }
+
+
+                },
+
+                onclickSubmit: function (params, posdata) {
+                    //string oper, string NodeType, string Team, string ActivityName, string Defaultflag, string Specialflag, string Fieldwork, string id, string IsActive
+                    params.url = '@Url.Action("AddOpinionGrid")?Question=' + $('#Question').val() + '&Option1=' + $('#Option1').val() + '&Option2=' + $('#Option2').val() + '&Option3=' + $('#Option3').val() + '&Option4=' + $('#Option4').val() + '&Option5=' + $('#Option5').val() + '&SelUserType=' + $('#SelUserType').val() + '&SelNodeType=' + $('#SelNodeType').val() + '&SelDivision=' + $('#SelDivision').val(); 
+
+                },
+           
+            },
+             {
+                 //DELETE
+                 closeOnEscape: true,
+                 closeAfterDelete: true,
+                 reloadAfterSubmit: true,
+                 closeOnEscape: true,
+                 modal: true,
+                 drag: true,
+                 width: 400,
+
+                 beforeShowForm: function (form) {
+
+                     //POP UP Screen Fit Screen
+                     var thisForm = $("#delmod" + jQuery("#OpinionGrid")[0].id);
+                     var dialogHeight = $(thisForm).height();
+                     var dialogWidth = $(thisForm).width();
+                     var windowHeight = $(window).height();
+                     var windowWidth = $(window).width();
+                     $(thisForm).css('position', 'fixed');
+                     $(thisForm).css('top', ((windowHeight - dialogHeight) / 2));
+                     $(thisForm).css('left', ((windowWidth - dialogWidth) / 2));
+
+                     var col1 = $('#OpinionGrid').jqGrid('getGridParam', 'selrow');
+
+                     var Statusfield = $('#OpinionGrid').jqGrid('getCell', col1, 'Status');
+                     $('tr td.delmsg').html('Delete selected record(s)?');
+                     // alert(IsActive);
+                     if (Statusfield == "InActive") {
+                         $('tr td.delmsg').html('Record Already Deleted');
+                         $('#dData').hide();
+                     }
+                     else
+                         $('#dData').show();
+
+                 },
+                 afterSubmit: function (response, postdata) {
+                     $('tr td.delmsg').html('');
+                     $("#OpinionGrid").jqGrid('setGridParam', { datatype: 'json' }).trigger('reloadGrid');
+                     $('#DelTbl_OpinionGrid td.ui-state-error').removeClass('ui-state-error').addClass('ui-state-highlight');
+                     $('#dData').hide();
+                     return [false, response.responseText];
+                 }
+             },
+
+            {
+                //Search
+                closeOnEscape: true,
+                modal: true,
+                recreateForm: true,
+                width: 600,
+                caption: "Search",
+                searchOnEnter: true,
+                beforeShowSearch: function (form) {
+
+                    $('#jqg1').val('');
+                    $('#fbox_OpinionGrid_reset').click();
+
+                    var dialogHeight = $("#searchmodfbox_OpinionGrid").height();
+                    var dialogWidth = $("#searchmodfbox_OpinionGrid").width();
+                    var windowHeight = $(window).height();
+                    var windowWidth = $(window).width();
+                    $("#searchmodfbox_OpinionGrid").css('position', 'fixed');
+                    $("#searchmodfbox_OpinionGrid").css('top', ((windowHeight - dialogHeight) / 2));
+                    $("#searchmodfbox_OpinionGrid").css('left', ((windowWidth - dialogWidth) / 2));
+
+                    return [true, ""];
+                }
+            },
+            {
+                //View :
+                closeOnEscape: true,
+                modal: true,
+                recreateForm: true,
+                width: 600,
+                beforeShowForm: function (form) {
+
+
+                    var thisForm = $("#viewmod" + jQuery("#OpinionGrid")[0].id);
+                    var dialogHeight = $(thisForm).height();
+                    var dialogWidth = $(thisForm).width();
+                    var windowHeight = $(window).height();
+                    var windowWidth = $(window).width();
+                    $(thisForm).css('position', 'fixed');
+                    $(thisForm).css('top', ((windowHeight - dialogHeight) / 2));
+                    $(thisForm).css('left', ((windowWidth - dialogWidth) / 2));
+
+                }
+
+            }
+
+                    );
+
+            setMethod('OpinionGrid', 'Pager', 'Opinion Master');
+        }
+        function setMethod(gid, id, pgTitle) {
+
+            var btnTitle = 'Export to Excel';
+            $('#' + gid).jqGrid('navSeparatorAdd', '#' + id, { sepclass: "ui-separator" });
+            $('#' + gid).jqGrid('navButtonAdd', '#' + id, { caption: '', title: btnTitle, position: 'last', buttonicon: 'ui-icon-calculator', onClickButton: function () { ExcelExport(); } });
+
+            var btnTitle = 'Export to PDF';
+            $('#' + gid).jqGrid('navSeparatorAdd', '#' + id, { sepclass: "ui-separator" });
+            $('#' + gid).jqGrid('navButtonAdd', '#' + id, { caption: '', title: btnTitle, position: 'last', buttonicon: 'ui-icon-bookmark', onClickButton: function () { PDFExport(); } });
+
+            var btnTitle = 'Export to CSV';
+            $('#' + gid).jqGrid('navSeparatorAdd', '#' + id, { sepclass: "ui-separator" });
+            $('#' + gid).jqGrid('navButtonAdd', '#' + id, { caption: '', title: btnTitle, position: 'last', buttonicon: 'ui-icon-note', onClickButton: function () { CSVExport(); } });
+
+
+            var btnTitle = 'Print Grid';
+            $('#' + gid).jqGrid('navSeparatorAdd', '#' + id, { sepclass: "ui-separator" });
+            $('#' + gid).jqGrid('navButtonAdd', '#' + id, { caption: '', title: btnTitle, position: 'last', buttonicon: 'ui-icon-print', onClickButton: function () { PrintGrid(gid); } });
+        }
+        function ExcelExport() {
+            window.location = '@Url.Action("ExportOpinionMasToExcel")';
+        }
+        function PDFExport() {
+            window.location = '@Url.Action("ExportOpinionMasToPDF")';
+        }
+        function CSVExport() {
+            window.location = '@Url.Action("ExportOpinionupMasToCsv")';
+        }
+        //function PrintGrid(gid) {
+
+        //    // empty the print div container.
+        //    $('#prt-container').empty();
+
+        //    // copy and append grid view to print div container.
+        //    $('#gview_' + gid).clone().appendTo('#prt-container').css({ 'page-break-after': 'auto' });
+        //    $(function () { printChrome('prt-container') });
+
+        //}
+
+         function PrintGrid(gid) {
+
+             // empty the print div container.
+             var rows = $('#OpinionGrid').jqGrid('getRowData');
+             for (var i = 0; i < rows.length; i++) {
+                 var row = rows[i];
+                 $('#Table1').append("<tr><td>" + row.Question + "</td><td>" + row.Option1 + "</td><td>" + row.Option2 + "</td><td>" + row.IsActive + "</td></tr>");
+
+             }
+             $(function () { printChrome('prt-container') });
+
+         }
+      
+        function printChrome(divContainer) {
+
+            var printContent = document.getElementById(divContainer);
+            window.document.body.innerHTML = printContent.innerHTML;
+            window.print();
+            window.location.reload();
+        }
+
+
+    </script>
+    @*<div id='prt-container' style="display:none">
+    </div>*@
+        
+           <div id='prt-container' style="display:none">
+        <table id="Table1" border="1" width="100%">
+            <thead>
+                <tr>
+                    <td><b>Question</b></td>
+                    <td><b>Option1</b></td>
+                    <td><b>Option2</b></td>
+                    <td><b>Status</b></td>
+                    </tr>
+
+            </thead>
+            <tbody></tbody>
+
+        </table>
+    </div>
+        
+        
+    }
+</body>

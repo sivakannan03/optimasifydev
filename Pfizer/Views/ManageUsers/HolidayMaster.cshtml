@@ -1,0 +1,501 @@
+﻿@{
+    ViewBag.Title = "HolidayMaster";
+    Layout = "~/Views/Shared/MasterLayout.cshtml";
+}
+
+
+<body>
+    @using (Html.BeginForm(FormMethod.Post))
+    {
+        <div>
+            <table border="0" style="width: 100%">
+                <tr>
+                    <td>
+                        <!--JqGrid Starts-->
+                        <table style="margin-top: 7px; width :100%" border="0">
+                            <tr>
+                                <td>
+                                    <table id="ajaxGrid" style="width: 100%" border="0"></table>
+                                    <div id="ajaxGridPager">
+                                    </div>
+                                </td>
+                            </tr>
+                        </table>
+                        <!--Ends-->
+                    </td>
+                </tr>
+            </table>
+        </div>
+    }
+</body>
+
+
+<script type="text/javascript">
+
+    jQuery(document).ready(function () {
+
+        initGrid();
+    });
+
+
+    function initGrid() {
+        jQuery("#ajaxGrid").jqGrid({
+            url: '@Url.Action("GridDataHolidayMaster")',
+
+            datatype: "json",
+            jsonReader: { repeatitems: false, id: "PKID" },
+            colNames: ['PKID', 'Division', 'DisplayName', 'Holiday Date', 'Status'],
+            colModel: [
+                     { name: 'PKID', index: 'PKID', align: 'left', hidden: true, editable: true },
+                     {
+                         name: 'HolidayDescription', index: 'HolidayDescription', align: 'left', editable: true, editrules: { edithidden: true }, editrules: { edithidden: true, required: false },
+                         formoptions: {                           
+                             elmprefix: "<span style='align:left;color:red'>*</span>&nbsp;"
+                         }, searchoptions: { sopt: ['eq', 'bw', 'ew', 'cn'] }, search: true, searchrules: { required: true },
+                         editoptions: {
+                             size: 35,
+                             maxlength: 50,
+                             dataEvents: [
+                                 {
+                                     type: 'keyup', // blur
+                                     fn: function (e) {
+                                       
+                                         CharacterAndNumber(this);
+                                     }
+                                 }
+                             ]
+                         }
+                     },
+                     {
+                         name: 'DisplayName', index: 'DisplayName', align: 'left', hidden: true, editable: true, editrules: { edithidden: true }, editrules: { edithidden: true, required: false }, formoptions: {
+                             size: 35, maxlengh: 50,
+                             elmprefix: "<span style='align:left;color:red'>*</span>&nbsp;"
+                         }, searchoptions: { sopt: ['eq', 'bw', 'ew', 'cn'] }, search: false,
+                         editoptions: {
+                             size: 35,
+                             maxlength: 50,
+                             dataEvents: [
+                                 {
+                                     type: 'keyup', // blur
+                                     fn: function (e) {
+                                       
+                                         SingleCharacter(this);
+                                     }
+                                 }
+                             ]
+                         }
+                     },
+                     {
+                         name: 'HolidayDate', index: 'HolidayDate', align: 'left', editable: true, editrules: { edithidden: true, required: false }, search: false, formatter: "date", formatoptions: { newformat: "d/m/Y" }, editoptions: {
+                             size: 10, maxlengh: 20,
+                             dataInit: function (element) {
+                                 jQuery(element).datepicker({
+                                     yearRange: '1900:+1',
+                                     dateFormat: 'dd/mm/yy', changeMonth: true,
+                                     changeYear: true,
+                                 })
+                             }
+                         }, formoptions: {
+                             size: 35,
+                             elmprefix: "<span style='align:left;color:red'>*</span>&nbsp;"
+                         }, searchoptions: { sopt: ['eq', 'bw', 'ew', 'cn'] }, search: false
+                     },
+                     {
+                         name: 'IsActive', index: 'IsActive', align: 'left', resizable: false, editable: true, edittype: 'checkbox', editoptions: { value: "Active:Passive", defaultValue: "Active" }, searchoptions: { sopt: ['eq', 'bw', 'ew', 'cn'] }, formoptions: {
+                             elmprefix: "&nbsp;&nbsp;&nbsp;"
+
+                         }, search: false
+                     },
+
+            ],
+            caption: "Holiday Master",
+            autowidth: true,
+            gridview: true,
+            sortable: true,
+            hidegrid: false,
+            altRows: true,
+            sortname: 'PKID',
+            sortorder: 'desc',
+            rowTotal: 10,
+            rowNum: 10,
+            gridComplete: function () {
+
+                if (jQuery("#ajaxGrid").getGridParam("records") == 0) {
+                    jQuery("#ajaxGrid").addRowData(
+                    "blankRow", { "HolidayDescription": "No records to view" });
+                }
+            },
+            viewrecords: true,
+            pager: $('#ajaxGridPager'),
+            height: 'auto',
+            editable: true,
+            editurl: '@Url.Action("EditHolidayMaster")'
+        });
+
+
+        jQuery("#ajaxGrid").jqGrid('navGrid', '#ajaxGridPager', { edit: true, add: true, del: true, search: true, view: true },
+            {
+                // Edit Portion
+                closeOnEscape: true,
+                width: 600,
+                modal:true,
+                recreateForm: true,
+                checkOnSubmit: true,
+                afterShowForm: function (form_id) {
+                    var thisForm = form_id.selector.replace('FrmGrid_', 'editmod')
+                    var dialogHeight = $(thisForm).height();
+                    var dialogWidth = $(thisForm).width();
+                    var windowHeight = $(window).height();
+                    var windowWidth = $(window).width();
+                    $(thisForm).css('position', 'fixed');
+                    $(thisForm).css('top', ((windowHeight - dialogHeight) / 2));
+                    $(thisForm).css('left', ((windowWidth - dialogWidth) / 2));
+                },
+               beforeShowForm: function (form) {
+
+                    var sel_id = $('#ajaxGrid').jqGrid('getGridParam', 'selrow');
+                    var value = $('#ajaxGrid').jqGrid('getCell', sel_id, 'IsActive');
+
+                    if (value == 'Inactive') {
+                        $('#tr_IsActive', form).show();
+                    }
+                    else {
+
+                        $('#tr_IsActive', form).show();
+                    }
+               },
+
+               beforeSubmit: function (response, postdata) {
+                   $('select').css("border", "1px solid #C0C0C0");
+                   $("input[type=text]").css("border", "1px solid #C0C0C0");
+                   if ($("#HolidayDescription").val().charAt(0) == ' ' || $("#HolidayDescription").val().charAt($("#HolidayDescription").val().length - 1) == ' ' || $("#HolidayDescription").val() == "") {
+                       $('#TblGrid_ajaxGrid td.ui-state-highlight').removeClass('ui-state-highlight').addClass('ui-state-error');
+                       $("#HolidayDescription").css("background-color", "#FFE8E8").css("border", "1px solid #FF6666");
+                       $('#HolidayDescription').focus();
+                       return [false, 'Enter Valid Division'];
+                   }
+                   else if ($("#DisplayName").val().charAt(0) == ' ' || $("#DisplayName").val().charAt($("#DisplayName").val().length - 1) == ' ' || $("#DisplayName").val() == "") {
+                       $('#TblGrid_ajaxGrid td.ui-state-highlight').removeClass('ui-state-highlight').addClass('ui-state-error');
+                       $("#DisplayName").css("background-color", "#FFE8E8").css("border", "1px solid #FF6666");
+                       $('#DisplayName').focus();
+                       return [false, 'Enter Valid DisplayName'];
+                   }
+                   else if ($("#HolidayDate").val().charAt(0) == ' ' || $("#HolidayDate").val().charAt($("#HolidayDate").val().length - 1) == ' ' || $("#HolidayDate").val() == "") {
+                       $('#TblGrid_ajaxGrid td.ui-state-highlight').removeClass('ui-state-highlight').addClass('ui-state-error');
+                       $("#HolidayDate").css("background-color", "#FFE8E8").css("border", "1px solid #FF6666");
+                       $('#HolidayDate').focus();
+                       return [false, 'Enter Valid DisplayName'];
+                   }
+                   else if (!($('#IsActive').is(":checked"))) {
+                       $("#IsActive").css("background-color", "#FFE8E8").css("border", "1px solid #FF6666");
+                       $('#IsActive').focus();
+                       return [false, 'Please Check Status'];
+                   }
+                   else {
+                       return [true, response.responseText];
+                   }
+               },
+                afterSubmit: function (response, postdata) {
+
+                    $("#ajaxGrid").jqGrid('setGridParam', { datatype: 'json' }).trigger('reloadGrid');
+                    $('#TblGrid_ajaxGrid td.ui-state-error').removeClass('ui-state-error').addClass('ui-state-highlight');
+                    $("#HolidayDescription").val("");
+                    $("#DisplayName").val("");
+                    $("#HolidayDate").val("");
+                    $("#IsActive").prop('checked', false);
+                    return [false, response.responseText];
+                },
+            },
+
+        {
+            //Add Portion
+            closeOnEscape: true,
+            closeAfterAdd: true,
+            modal: true,
+            recreateForm: true,
+            width: 450,
+            afterShowForm: function (form_id) {
+                var thisForm = form_id.selector.replace('FrmGrid_', 'editmod');
+                var dialogHeight = $(thisForm).height();
+                var dialogWidth = $(thisForm).width();
+                var windowHeight = $(window).height();
+                var windowWidth = $(window).width();
+                $(thisForm).css('position', 'fixed');
+                $(thisForm).css('top', ((windowHeight - dialogHeight) / 2));
+                $(thisForm).css('left', ((windowWidth - dialogWidth) / 2));
+            },
+            beforeShowForm: function (form) {
+
+                $('#tr_IsActive', form).show();
+            },
+
+            beforeSubmit: function (response, postdata) {
+                $('select').css("border", "1px solid #C0C0C0");
+                $("input[type=text]").css("border", "1px solid #C0C0C0");
+
+                if ($("#HolidayDescription").val().charAt(0) == ' ' || $("#HolidayDescription").val().charAt($("#HolidayDescription").val().length - 1) == ' ' || $("#HolidayDescription").val() == "")
+                {
+                    $('#TblGrid_ajaxGrid td.ui-state-highlight').removeClass('ui-state-highlight').addClass('ui-state-error');
+                    $("#HolidayDescription").css("background-color", "#FFE8E8").css("border", "1px solid #FF6666");
+                    $('#HolidayDescription').val("");
+                    $('#HolidayDescription').focus();
+                    return [false, 'Enter Valid Division'];
+                }
+                else if ($("#DisplayName").val().charAt(0) == ' ' || $("#DisplayName").val().charAt($("#DisplayName").val().length - 1) == ' ' || $("#DisplayName").val() == "") {
+                    $('#TblGrid_ajaxGrid td.ui-state-highlight').removeClass('ui-state-highlight').addClass('ui-state-error');
+                    $("#DisplayName").css("background-color", "#FFE8E8").css("border", "1px solid #FF6666");
+                    $('#DisplayName').val("");
+                    $('#DisplayName').focus();
+                    return [false, 'Enter Valid DisplayName'];
+                }
+                else if ($("#HolidayDate").val().charAt(0) == ' ' || $("#HolidayDate").val().charAt($("#HolidayDate").val().length - 1) == ' ' || $("#HolidayDate").val() == "") {
+                    $('#TblGrid_ajaxGrid td.ui-state-highlight').removeClass('ui-state-highlight').addClass('ui-state-error');
+                    $("#HolidayDate").css("background-color", "#FFE8E8").css("border", "1px solid #FF6666");
+                    $('#HolidayDate').val("");
+                    $('#HolidayDate').focus();
+                    return [false, 'Enter Valid DisplayName'];
+                }
+                else if (!($('#IsActive').is(":checked"))) {
+                    $("#IsActive").css("background-color", "#FFE8E8").css("border", "1px solid #FF6666");
+                    $('#IsActive').focus();
+                    return [false, 'Please Check Status'];
+                }
+                else {
+                    return [true, response.responseText];
+                }
+                
+            },
+
+            afterSubmit: function (response, postdata) {
+                $("#ajaxGrid").jqGrid('setGridParam', { datatype: 'json' }).trigger('reloadGrid');
+                var errorId = " ";
+                if (response.responseText == "\"Holiday Master added Successfully.\"") {
+                    errorId += "Holiday Master added Successfully";
+                    $('#FormError').html("<td class='ui-state-error' colspan='2'>" + errorId + "</td>");
+                    $('#TblGrid_ajaxGrid td.ui-state-error').removeClass('ui-state-error').addClass('ui-state-highlight');
+                    $("#HolidayDescription").val("");
+                    $("#DisplayName").val("");
+                    $("#HolidayDate").val("");
+                    $("#IsActive").prop('checked', false);
+                    return [false, response.responseText]
+                }
+                else {
+                    errorId += "Holiday Master already Exists";
+                    $('#FormError').html("<td class='ui-state-error' colspan='2'>" + errorId + "</td>");
+                    $('#TblGrid_ajaxGrid td.ui-state-error').removeClass('ui-state-highlight').addClass('ui-state-error');
+                    $("#HolidayDescription").val("");
+                    $("#DisplayName").val("");
+                    $("#HolidayDate").val("");
+                    $("#IsActive").prop('checked', false);
+                    return [false, response.responseText]
+                }
+            },
+            onclickSubmit: function (params, posdata) {
+                params.url = '@Url.Action("AddHolidayMaster")?HolidayDescription=' + $('#HolidayDescription').val() + '&DisplayName=' + $('#DisplayName').val() + '&HolidayDate=' + $('#HolidayDate').val() + '&IsActive=' + $('#IsActive').val();
+            },
+
+            //afterSubmit: function (response, postdata) {
+
+            //    if (response.responseText == "already Exists") {
+            //        return [false, response.responseText];
+            //    }
+            //    else {
+            //        $("#ajaxGrid").jqGrid('setGridParam', { datatype: 'json' }).trigger('reloadGrid');
+            //        return [false, response.responseText];
+            //    }
+
+            //}
+        },
+                {
+                    //Delete
+                    closeOnEscape: true,
+                    recreateForm: true,
+                    modal: true,
+                    width: 450,
+                    beforeShowForm: function (form)
+                    {
+                        //POP UP Screen Fit Screen
+                        var thisForm = $("#delmod" + jQuery("#ajaxGrid")[0].id);
+                        var dialogHeight = $(thisForm).height();
+                        var dialogWidth = $(thisForm).width();
+                        var windowHeight = $(window).height();
+                        var windowWidth = $(window).width();
+                        $(thisForm).css('position', 'fixed');
+                        $(thisForm).css('top', ((windowHeight - dialogHeight) / 2));
+                        $(thisForm).css('left', ((windowWidth - dialogWidth) / 2));
+
+                        $('tr td.delmsg').html('Delete selected record(s)?');
+
+                        var col1 = $('#ajaxGrid').jqGrid('getGridParam', 'selrow');
+                        var IsActive = $('#ajaxGrid').jqGrid('getCell', col1, 'IsActive');
+
+                         if (IsActive == "Inactive") {
+                            $('tr td.delmsg').html('Record Already Deleted');
+                            $('#dData').hide();
+                        }
+                        else
+                         {
+                             $('#dData').show();
+                         }
+                            
+
+                        //var col1 = $('#ajaxGrid').jqGrid('getGridParam', 'selrow');
+                        //var HolidayDescription = $('#ajaxGrid').jqGrid('getCell', col1, 'HolidayDescription');
+                        //var DisplayName = $('#ajaxGrid').jqGrid('getCell', col1, 'DisplayName');
+                        //var HolidayDate = $('#ajaxGrid').jqGrid('getCell', col1, 'HolidayDate');
+                        //var IsActive = $('#ajaxGrid').jqGrid('getCell', col1, 'IsActive');
+
+                        //var html = "<form><table><tr><td class='CaptionTD'>Holiday Description </td><td class=='DataTD'>&nbsp;&nbsp;<input type='text' class='FormElement ui-widget-content ui-corner-all' readonly='true'  value='" + HolidayDescription + "'/></td> </tr>";
+                        //html += "<tr><td class='CaptionTD'>Display Name</td><td class=='DataTD'>&nbsp;&nbsp;<input type='text' class='FormElement ui-widget-content ui-corner-all' readonly='true'  value='" + DisplayName + "'/></td></tr>";
+                        //html += "<tr><td class='CaptionTD'>Holiday Date</td><td class=='DataTD'>&nbsp;&nbsp;<input type='text' class='FormElement ui-widget-content ui-corner-all' readonly='true'  value='" + HolidayDate + "'/></td></tr>";
+                        //if (IsActive == "Active")
+                        //    html += "<tr><td class='CaptionTD'>Status</td><td class=='DataTD'>&nbsp;&nbsp;<input class='FormElement ui-widget-content ui-corner-all'   type='checkbox' checked  disabled/></td>";
+                        //if (IsActive == "Inactive")
+                        //    html += "<tr><td class='CaptionTD'>Status</td><td class=='DataTD'>&nbsp;&nbsp; <input class='FormElement ui-widget-content ui-corner-all'   type='checkbox' disabled /></td></tr>";
+                        //html += "</table></form>";
+                        //$("td.delmsg", form[0]).html(html);
+
+
+                        //End POP UP Screen Fit Screen
+
+
+                    },
+                    afterSubmit: function (response, postdata) {
+                      
+                        $('tr td.delmsg').html('');
+                        $('#dData').hide();
+
+                        $("#ajaxGrid").jqGrid('setGridParam', { datatype: 'json' }).trigger('reloadGrid');
+                        return [false, response.responseText];
+                        
+                    }
+                },
+            {
+                //search
+                closeOnEscape: true,
+                modal: true,
+                recreateForm: true,
+                width: 552,
+                caption: "Search",
+                searchOnEnter: true,
+                beforeShowSearch: function (form) {
+
+                    $('#jqg1').val('');
+                    $('#fbox_ajaxGrid_reset').click();
+
+                    var dialogHeight = $("#searchmodfbox_ajaxGrid").height();
+                    var dialogWidth = $("#searchmodfbox_ajaxGrid").width();
+                    var windowHeight = $(window).height();
+                    var windowWidth = $(window).width();
+                    $("#searchmodfbox_ajaxGrid").css('position', 'fixed');
+                    $("#searchmodfbox_ajaxGrid").css('top', ((windowHeight - dialogHeight) / 2));
+                    $("#searchmodfbox_ajaxGrid").css('left', ((windowWidth - dialogWidth) / 2));
+
+                    return [true, ""];
+                },
+            },
+            {
+                //View :
+                closeOnEscape: true,
+                modal: true,
+                recreateForm: true,
+                width: 600,
+
+                beforeShowForm: function (form) {
+
+                    var thisForm = $("#viewmod" + jQuery("#ajaxGrid")[0].id);
+                    var dialogHeight = $(thisForm).height();
+                    var dialogWidth = $(thisForm).width();
+                    var windowHeight = $(window).height();
+                    var windowWidth = $(window).width();
+                    $(thisForm).css('position', 'fixed');
+                    $(thisForm).css('top', ((windowHeight - dialogHeight) / 2));
+                    $(thisForm).css('left', ((windowWidth - dialogWidth) / 2));
+                }
+
+            }
+
+
+                );
+
+        // setMethod('gridId', 'gridPager', 'pageTitle');
+        setMethod('ajaxGrid', 'ajaxGridPager', 'Customer Grid');
+
+    }
+
+    //Does not allow Special character 
+    function validSpecial(objElement) {
+
+        var re = /^[a-zA-Z0-9-/\s.:]*/gi;
+        if (objElement.value.match(re) != objElement.value) {
+            alert('Special Characters are Not Allowed');
+            objElement.value = '';
+
+            return false;
+        }
+
+    }
+
+    function setMethod(gid, id, pgTitle) {
+        // alert(1);
+        var btnTitle = 'Export to Excel';
+        $('#' + gid).jqGrid('navSeparatorAdd', '#' + id, { sepclass: "ui-separator" });
+        $('#' + gid).jqGrid('navButtonAdd', '#' + id, { caption: '', title: btnTitle, position: 'last', buttonicon: 'ui-icon-calculator', onClickButton: function () { ExcelExport(); } });
+
+        var btnTitle = 'Export to PDF';
+        $('#' + gid).jqGrid('navSeparatorAdd', '#' + id, { sepclass: "ui-separator" });
+        $('#' + gid).jqGrid('navButtonAdd', '#' + id, { caption: '', title: btnTitle, position: 'last', buttonicon: 'ui-icon-bookmark', onClickButton: function () { PDFExport(); } });
+
+        var btnTitle = 'Export to CSV';
+        $('#' + gid).jqGrid('navSeparatorAdd', '#' + id, { sepclass: "ui-separator" });
+        $('#' + gid).jqGrid('navButtonAdd', '#' + id, { caption: '', title: btnTitle, position: 'last', buttonicon: 'ui-icon-note', onClickButton: function () { CSVExport(); } });
+
+
+        var btnTitle = 'Print Grid';
+        $('#' + gid).jqGrid('navSeparatorAdd', '#' + id, { sepclass: "ui-separator" });
+        $('#' + gid).jqGrid('navButtonAdd', '#' + id, { caption: '', title: btnTitle, position: 'last', buttonicon: 'ui-icon-print', onClickButton: function () { PrintGrid(gid); } });
+    }
+    function ExcelExport() {
+        window.location = '@Url.Action("ExportHolidayMasterToExcel")';
+    }
+    function PDFExport() {
+        window.location = '@Url.Action("ExportHolidayMasterToPDF")';
+    }
+    function CSVExport() {
+        window.location = '@Url.Action("ExportHolidayMasterToCsv")';
+    }
+    function PrintGrid(gid) {
+        // empty the print div container.
+        var rows = $('#ajaxGrid').jqGrid('getRowData');
+        for (var i = 0; i < rows.length; i++) {
+            var row = rows[i];
+            $('#Table1').append("<tr><td>" + row.HolidayDescription + "</td><td>" + row.HolidayDate + "</td><td>" + row.IsActive + "</td></tr>");
+
+        } 
+        $(function () { printChrome('prt-container') });
+    }
+
+    function printChrome(divContainer) {
+
+        var printContent = document.getElementById(divContainer);
+        window.document.body.innerHTML = printContent.innerHTML;
+        window.print();
+        window.location.reload();
+    }
+
+
+</script>
+<div id='prt-container' style="display:none">
+    <table id="Table1" border="1" width="100%">
+        <thead>
+            <tr>
+                <td><b>Division</b></td>
+                <td><b>Holiday Date</b></td>
+                <td><b>Status</b></td>
+            </tr>
+
+        </thead>
+        <tbody></tbody>
+        
+    </table>
+</div>

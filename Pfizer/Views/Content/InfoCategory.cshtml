@@ -1,0 +1,421 @@
+﻿@{
+    ViewBag.Title = "InfoCategory";
+    Layout = "~/Views/Shared/MasterLayout.cshtml";
+}
+
+<body>
+    @using (Html.BeginForm(FormMethod.Post))
+    {
+        <div>
+            <table border="0" style="width: 100%">
+                <tr>
+                    <td>
+                        <!--JqGrid Starts-->
+                        <table style="margin-top: 7px; width :100%" border="0">
+                            <tr>
+                                <td>
+                                    <table id="InfoCategory" style="width: 100%" border="0"></table>
+                                    <div id="InfoCategoryPager">
+                                    </div>
+                                </td>
+                            </tr>
+                        </table>
+                        <!--Ends-->
+                    </td>
+                </tr>
+            </table>
+
+        </div>
+    }
+
+
+    <script type="text/javascript">
+
+        jQuery(document).ready(function () {
+
+            initGrid();
+        });
+
+        function initGrid() {
+            jQuery("#InfoCategory").jqGrid({
+                url: '@Url.Action("GetInfoCategory")',
+
+                datatype: "json",
+                jsonReader: { repeatitems: false, id: "Parentid" },
+                 colNames: ['Parentid', 'Category', 'Child', 'Status'],
+                colModel: [
+                            //{ name: 'SLNo', index: 'SLNo', align: 'left' },
+                            { name: 'Parentid', index: 'Parentid', align: 'left', viewable: true, key: true, hidden: true, editrules: { edithidden: true } },
+                            { name: 'ParentHeading', index: 'ParentHeading', align: 'left', editable: true, editrules: { required: false }, editoptions: { maxlength: 50, dataEvents: [{ type: 'keyup', fn: function (e) { SingleCharacter(this); } }] }, formoptions: { elmsuffix: "<span style='align:left;color:red'>*</span>&nbsp;" }, searchoptions: { sopt: ['eq', 'bw', 'ew', 'cn'] }, searchrules: { required: true } },
+                            { name: 'ChildHeading', index: 'ChildHeading', align: 'left', editable: true, edittype: 'select', editoptions: { dataUrl: '@Url.Action("SubCategory")' }, editrules: {}, search: false},
+                            { name: 'Status', index: 'Status', align: 'left', editable: true, edittype: 'checkbox', editoptions: { value: "Active:Passive", defaultValue: "Active" }, search: false },
+                                   ],
+                caption: "Info Bank Category",
+                autowidth: true,
+                gridview: true,
+                sortable: true,
+                hidegrid: false,
+                altRows: true,
+                rowTotal: 10,
+                sortname: 'Parentid',
+                sortorder: 'asc',
+                rowNum: 10,
+                viewrecords: true,
+                pager: $('#InfoCategoryPager'),
+                height: 'auto',
+                editable: true,
+                //onSelectRow: function (id) {
+                //    $("#FormMaster").jqGrid('viewGridRow', id);
+                //},
+                gridComplete: function () {
+
+                    if (jQuery("#InfoCategory").getGridParam("records") == 0) {
+                        jQuery("#InfoCategory").addRowData(
+                              "blankRow", { "ParentHeading": "No records to view" });
+                    }
+                },
+
+                editurl: '@Url.Action("EditInfoCategory")'
+
+            });
+
+            jQuery("#InfoCategory").jqGrid('navGrid', '#InfoCategoryPager', { edit: true, add: true, del: true, search: true, view: true },
+                {
+                    //EDIT
+                    // top: 50,
+                    // left: 100,
+                    //  dataheight: 280,
+                    closeOnEscape: true,
+                    width: 450,
+                    closeOnEscape: true,
+                    width: 600,
+                    modal: true,
+                    recreateForm: true,
+                    checkOnSubmit: true,
+
+                    afterShowForm: function (form) {
+                        form.closest('div.ui-jqdialog').center();
+                    },
+                    beforeShowForm: function (form) {
+                        var sel_id = $('#InfoCategory').jqGrid('getGridParam', 'selrow');
+                        $('#tr_Status', form).hide();
+                        
+                    },
+
+                    beforeSubmit: function (response, postdata) {
+
+                        $('select').css("border", "1px solid #C0C0C0");
+                        $("input[type=text]").css("border", "1px solid #C0C0C0");
+                        var error = " ";
+                       if ($("#ParentHeading").val().charAt(0) == ' ' || $("#ParentHeading").val().charAt($("#ParentHeading").val().length - 1) == ' ' || $("#ParentHeading").val() == "") {
+                            $('#TblGrid_InfoCategory td.ui-state-highlight').removeClass('ui-state-highlight').addClass('ui-state-error');
+                            $("#ParentHeading").css("background-color", "#FFE8E8").css("border", "1px solid #FF6666");
+                            $('#ParentHeading').val("");
+                            $('#ParentHeading').focus();
+                            return [false, 'Enter Valid GenCode'];
+                       }
+                     else  if ($.trim($("#ChildHeading").val()) == 0) {
+                           error += "Sub Category";
+                           $('#FormError').html("<td class='ui-state-error' colspan='2'>" + error + ":Field is required</td>");
+                           $("#ChildHeading").css("background-color", "#FFE8E8").css("border", "1px solid #FF6666");
+                           return [false, response.responseText];
+                       }
+                       
+                        else {
+                            return [true, response.responseText];
+                        }
+
+                    },
+
+                   afterSubmit: function (response, postdata) {
+
+                       $("#InfoCategory").jqGrid('setGridParam', { datatype: 'json' }).trigger('reloadGrid');
+                        $('#TblGrid_InfoCategory td.ui-state-error').removeClass('ui-state-error').addClass('ui-state-highlight');
+                        $('#ParentHeading').val("");
+                        $('#ChildHeading').val(0);
+                       return [false, response.responseText];
+                    },
+
+                        editData: {
+                                Parentid: function () {
+                                    var sel_id = $('#InfoCategory').jqGrid('getGridParam', 'selrow');
+                                    var value = $('#InfoCategory').jqGrid('getCell', sel_id, '_id');
+                                    return value;
+                                }
+                        }
+            },
+
+            {
+                //Add Portion
+                closeOnEscape: true,
+                //closeAfterAdd: true,
+                modal: true,
+                width:400,
+                afterShowForm: function (form) {
+                    form.closest('div.ui-jqdialog').center();
+                },
+                beforeShowForm: function (form) {
+                    var sel_id = $('#InfoCategory').jqGrid('getGridParam', 'selrow');
+                    $('#tr_ParentHeading  td:nth-child(1)').html('New Category ');
+                    $('#tr_ChildHeading  td:nth-child(1)').html('Sub Category of');
+                    $('#tr_Status', form).hide();
+
+                },
+
+                beforeSubmit: function (response, postdata) {
+
+                    $('select').css("border", "1px solid #C0C0C0");
+                    $("input[type=text]").css("border", "1px solid #C0C0C0");
+                    var error = " ";
+                    if ($("#ParentHeading").val().charAt(0) == ' ' || $("#ParentHeading").val().charAt($("#ParentHeading").val().length - 1) == ' ' || $("#ParentHeading").val() == "") {
+                        $('#TblGrid_InfoCategory td.ui-state-highlight').removeClass('ui-state-highlight').addClass('ui-state-error');
+                        $("#ParentHeading").css("background-color", "#FFE8E8").css("border", "1px solid #FF6666");
+                        $('#ParentHeading').val("");
+                        $('#ParentHeading').focus();
+                        return [false, 'Enter Valid New Category'];
+                    }
+                    else if ($.trim($("#ChildHeading").val()) == 0) {
+                        error += "Sub Category";
+                        $('#FormError').html("<td class='ui-state-error' colspan='2'>" + error + ":Field is required</td>");
+                        $("#ChildHeading").css("background-color", "#FFE8E8").css("border", "1px solid #FF6666");
+                        return [false, response.responseText];
+                    }
+
+                    else {
+                        return [true, response.responseText];
+                    }
+
+                },
+
+                afterSubmit: function (response, postdata) {
+                    $("#InfoCategory").jqGrid('setGridParam', { datatype: 'json' }).trigger('reloadGrid');
+                    var errorId = " ";
+                    if (response.responseText == "\"InfoCategory Added Successfully.\"") {
+                        errorId += "InfoCategory Added Successfully";
+                        $('#FormError').html("<td class='ui-state-error' colspan='2'>" + errorId + "</td>");
+                        $('#TblGrid_InfoCategory td.ui-state-error').removeClass('ui-state-error').addClass('ui-state-highlight');
+                        $('#ParentHeading').val("");
+                        $('#ChildHeading').val(0);
+                        return [false, response.responseText];
+                    }
+                    else {
+                        errorId += "InfoCategory already Exists";
+                        $('#FormError').html("<td class='ui-state-error' colspan='2'>" + errorId + "</td>");
+                        $('#TblGrid_InfoCategory td.ui-state-error').removeClass('ui-state-highlight').addClass('ui-state-error');
+                        $('#ParentHeading').val("");
+                        $('#ChildHeading').val(0);
+                        return [false, response.responseText];
+
+                    }
+
+
+                },
+
+                onclickSubmit: function (params, posdata) {
+                    //string oper, string NodeType, string Team, string ActivityName, string Defaultflag, string Specialflag, string Fieldwork, string id, string IsActive
+                    params.url = '@Url.Action("AddInfoCategory")?ParentHeading1=' + $('#ParentHeading').val() + '&ChildHeading1=' + $('#ChildHeading').val();
+                },
+ 
+            },
+             {
+                 //DELETE
+                 closeOnEscape: true,
+                 modal: true,
+                 closeAfterDelete: true,
+                 reloadAfterSubmit: true,
+                 closeOnEscape: true,
+                 drag: true,
+                 width: 400,
+                 beforeShowForm: function (form) {
+
+                     //POP UP Screen Fit Screen
+                     var thisForm = $("#delmod" + jQuery("#InfoCategory")[0].id);
+                     var dialogHeight = $(thisForm).height();
+                     var dialogWidth = $(thisForm).width();
+                     var windowHeight = $(window).height();
+                     var windowWidth = $(window).width();
+                     $(thisForm).css('position', 'fixed');
+                     $(thisForm).css('top', ((windowHeight - dialogHeight) / 2));
+                     $(thisForm).css('left', ((windowWidth - dialogWidth) / 2));
+                     //$("td.delmsg", form[0]).html("<table width='100%'><tr><td><b>Parentid</b></td><td>" + ret.Parentid + "</td></tr><tr><td><b>Category</b></td><td>" + ret.ParentHeading + "</td></tr><tr><td><b>Child</b></td><td>" + ret.ChildHeading + "</td></tr><tr><td><b>Status</b></td><td>" + ret.Status + "</td></tr><tr><td colspan=2></br>Are you sure want to delete selected record(s)?</td></tr></table> ");
+                     var col1 = $('#InfoCategory').jqGrid('getGridParam', 'selrow');
+                     var Statusfield = $('#InfoCategory').jqGrid('getCell', col1, 'Status');
+                     $('tr td.delmsg').html('Delete selected record(s)?');
+                     if (Statusfield == "InActive") {
+                         $('tr td.delmsg').html('Record Already Deleted');
+                         $('#dData').hide();
+                     }
+                     else
+                         $('#dData').show();
+
+                 },
+
+                 afterSubmit: function (response, postdata) {
+                     $('tr td.delmsg').html('');
+                     $("#InfoCategory").jqGrid('setGridParam', { datatype: 'json' }).trigger('reloadGrid');
+                     $('#DelTbl_InfoCategory td.ui-state-error').removeClass('ui-state-error').addClass('ui-state-highlight');
+                     $('#dData').hide();
+                     return [false, response.responseText];
+                 },
+             },
+           
+            {
+                //search
+                closeOnEscape: true,
+                modal: true,
+                recreateForm: true,
+                width: 600,
+                caption: "Search",
+                searchOnEnter: true,
+                beforeShowSearch: function (form) {
+
+                    $('#jqg1').val('');
+                    $('#fbox_InfoCategory_reset').click();
+
+                    var dialogHeight = $("#searchmodfbox_InfoCategory").height();
+                    var dialogWidth = $("#searchmodfbox_InfoCategory").width();
+                    var windowHeight = $(window).height();
+                    var windowWidth = $(window).width();
+                    $("#searchmodfbox_InfoCategory").css('position', 'fixed');
+                    $("#searchmodfbox_InfoCategory").css('top', ((windowHeight - dialogHeight) / 2));
+                    $("#searchmodfbox_InfoCategory").css('left', ((windowWidth - dialogWidth) / 2));
+
+                    return [true, ""];
+                }
+            },
+            {
+                //View
+                width: 500,
+                modal: true,
+                beforeShowForm: function (form) {
+                    form.closest('div.ui-jqdialog').center();
+                }
+
+
+            }
+
+                    );
+            // setMethod('LocationMaster', 'LocationMasterPager', 'Customer Grid', 'ManageUsers', 'LocationMaster.cshtml');
+
+            setMethod('InfoCategory', 'InfoCategoryPager', 'Customer Grid');
+
+        }
+        //Center Popup
+        jQuery.fn.center = function () {
+            this.css("position", "absolute");
+            this.css("top", ($(window).height() - this.height()) / 2 + $(window).scrollTop() + "px");
+            this.css("left", ($(window).width() - this.width()) / 2 + $(window).scrollLeft() + "px");
+            return this;
+
+        }
+        function validSpecial(objElement) {
+
+            var re = /^[a-zA-Z0-9-/\s.:]*/gi;
+            if (objElement.value.match(re) != objElement.value) {
+                alert('Special Characters are Not Allowed');
+                objElement.value = '';
+
+                return false;
+            }
+
+        }
+
+        function setMethod(gid, id, pgTitle) {
+            // alert(1);
+            var btnTitle = 'Export to Excel';
+            $('#' + gid).jqGrid('navSeparatorAdd', '#' + id, { sepclass: "ui-separator" });
+            $('#' + gid).jqGrid('navButtonAdd', '#' + id, { caption: '', title: btnTitle, position: 'last', buttonicon: 'ui-icon-calculator', onClickButton: function () { ExcelExport(); } });
+
+            var btnTitle = 'Export to PDF';
+            $('#' + gid).jqGrid('navSeparatorAdd', '#' + id, { sepclass: "ui-separator" });
+            $('#' + gid).jqGrid('navButtonAdd', '#' + id, { caption: '', title: btnTitle, position: 'last', buttonicon: 'ui-icon-bookmark', onClickButton: function () { PDFExport(); } });
+
+            var btnTitle = 'Export to CSV';
+            $('#' + gid).jqGrid('navSeparatorAdd', '#' + id, { sepclass: "ui-separator" });
+            $('#' + gid).jqGrid('navButtonAdd', '#' + id, { caption: '', title: btnTitle, position: 'last', buttonicon: 'ui-icon-note', onClickButton: function () { CSVExport(); } });
+
+
+            var btnTitle = 'Print Grid';
+            $('#' + gid).jqGrid('navSeparatorAdd', '#' + id, { sepclass: "ui-separator" });
+            $('#' + gid).jqGrid('navButtonAdd', '#' + id, { caption: '', title: btnTitle, position: 'last', buttonicon: 'ui-icon-print', onClickButton: function () { PrintGrid(gid); } });
+        }
+        function ExcelExport() {
+            window.location = '@Url.Action("ExportInfoCategoryToExcel")';
+        }
+        function PDFExport() {
+            window.location = '@Url.Action("ExportInfoCategoryToPDF")';
+        }
+        function CSVExport() {
+
+             window.location = '@Url.Action("ExportInfoCategoryToCsv")';
+           // $('#NotificationMaster').table2CSV({ header: ['PKID', 'Notification', 'ExpiryDate', 'Status'] });
+        }
+        //function PrintGrid(gid) {
+        //    //  alert(5);
+        //    // empty the print div container.
+        //    $('#prt-container').empty();
+        //    //alert(6);
+        //    // copy and append grid view to print div container.
+        //    $('#gview_' + gid).clone().appendTo('#prt-container').css({ 'page-break-after': 'auto' });
+        //    // alert(7);
+        //    // remove navigation div.
+        //     $('#prt-container div').remove('.ui-jqgrid-toppager,.ui-jqgrid-titlebar,.ui-jqgrid-pager');
+
+        //    // print the contents of the print container.
+        //    //$('#prt-container').printElement({ pageTitle: pgTitle, overrideElementCSS: [{ href: 'Content/css/print-grid.css', media: 'print' }], leaveOpen: true, printMode: 'popup' });
+        //    //    $("#prt-container").printElement(
+        //    //{
+        //    //    leaveOpen: true,
+        //    //    printMode: 'popup'
+        //    //    });
+        //    //   $("#prt-container").printElement({ leaveOpen: true, printMode: 'popup' });
+        //    //  $(function () { window.print(); });
+        //    $(function () { printChrome('prt-container') });
+        //    // alert(6);
+        //}
+
+
+        function PrintGrid(gid) {
+
+            // empty the print div container.
+            var rows = $('#InfoCategory').jqGrid('getRowData');
+            for (var i = 0; i < rows.length; i++) {
+                var row = rows[i];
+                $('#Table1').append("<tr><td>" + row.ParentHeading + "</td><td>" + row.ChildHeading + "</td><td>" + row.Status + "</td></tr>");
+
+            }
+            $(function () { printChrome('prt-container') });
+
+        }
+
+        function printChrome(divContainer) {
+
+            //  alert(9);
+            var printContent = document.getElementById(divContainer);
+            // alert(printContent.innerHTML);
+            window.document.body.innerHTML = printContent.innerHTML;
+            window.print();
+            window.location.reload();
+        }
+
+
+    </script>
+    @*<div id='prt-container' style="display:none">
+    </div>*@
+    <div id='prt-container' style="display:none">
+        <table id="Table1" border="1" width="100%">
+            <thead>
+                <tr>
+                    <td><b>Category</b></td>
+                    <td><b>Child</b></td>
+                    <td><b>Status</b></td>
+                </tr>
+
+            </thead>
+            <tbody>
+
+            </tbody>
+
+        </table>
+        </div>
+</body>

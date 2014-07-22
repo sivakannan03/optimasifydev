@@ -1,0 +1,344 @@
+﻿@{
+    ViewBag.Title = "FAQ";
+    Layout = "~/Views/Shared/MasterLayout.cshtml";
+}
+
+
+<body>
+    @using (Html.BeginForm(FormMethod.Post))
+    {
+        <div>
+            <table border="0" style="width: 100%">
+                <tr>
+                    <td>
+                        <!--JqGrid Starts-->
+                        <table style="margin-top: 7px; width :100%" border="0">
+                            <tr>
+                                <td>
+                                    <table id="ajaxGrid" style="width: 100%" border="0"></table>
+                                    <div id="ajaxGridPager">
+                                    </div>
+                                </td>
+                            </tr>
+                        </table>
+                        <!--Ends-->
+                    </td>
+                </tr>
+            </table>            
+        </div>
+    }
+
+    <script type="text/javascript">
+
+    function validSpecial(objElement) {
+
+        var re = /^[a-zA-Z0-9-/\s.:]*/gi;
+        if (objElement.value.match(re) != objElement.value) {
+            alert('No Special Characters Allowed');
+            objElement.value = '';
+
+            return false;
+        }
+
+    }
+
+
+    jQuery(document).ready(function () {
+
+        initGrid();
+    });
+    function initGrid() {
+        jQuery("#ajaxGrid").jqGrid({
+            url: '@Url.Action("GridDataFAQ")',
+
+            datatype: "json",
+            jsonReader: { repeatitems: false, id: "PKID" },
+            colNames: ['PKID', 'CategoryFKID', 'Category', 'Question Type', 'Answer', 'Status'],
+            colModel: [
+                 { name: 'PKID', index: 'PKID', align: 'left', hidden: true, editable: true },
+                 { name: 'CategoryFKID', index: 'CategoryFKID', align: 'left', hidden: true, editable: true },
+
+                {
+                    name: 'GenName', index: 'GenName', align: 'left',editable: true, sortable: true, edittype: 'select', editoptions: { dataUrl: '@Url.Action("FAQCategory")' }, formoptions: {
+                            size: 35,
+                            elmprefix: "<span style='align:left;color:red'>*</span>&nbsp;"
+                    }, searchoptions: { sopt: ['eq', 'bw', 'ew', 'cn'] }, search: true, searchrules: { required: true }
+                    },
+                     {
+                         name: 'Question', index: 'Question', align: 'left', editable: true, editrules: { edithidden: true, required: true }, search: false, editoptions: {
+                             size: 35,
+                             maxlength: 50,
+                             dataEvents: [
+                                 {
+                                     type: 'keyup', // blur
+                                     fn: function (e) {
+                                         validSpecial(this);
+                                     }
+                                 }
+                             ]
+                         }, formoptions: {
+                             elmprefix: "<span style='align:left;color:red'>*</span>&nbsp;"
+                         },
+                     },
+                    {
+                        name: 'Answer', index: 'Answer', align: 'left', resizable: false, editable: true, search: false, editrules: { edithidden: true, required: true }, editoptions: {
+                            size: 35, maxlength: 50,
+                            dataEvents: [
+                                {
+
+                                    type: 'keyup', // blur
+                                    fn: function (e) {
+                                        validSpecial(this);
+                                    }
+
+                                }
+                            ]
+                        }, formoptions: {
+                            elmprefix: "<span style='align:left;color:red'>*</span>&nbsp;"
+                        },
+                    },
+                    {
+                        name: 'IsActive', index: 'IsActive', align: 'left', resizable: false, editable: true, edittype: 'checkbox',editoptions: { value: "Active:Passive", defaultValue: "Active" }, formoptions: {
+                            elmprefix: "&nbsp;&nbsp;&nbsp;"
+
+                        }, search: false
+                    },
+
+                ],
+                autowidth: true,
+                gridview: true,
+                caption: 'FAQ',
+                jqModal: true,
+                align: 'center',
+                sortable: true,
+                hidegrid: true,
+                altRows: true,
+                sortname: 'PKID',
+                sortorder: 'desc',
+                rowTotal: 10,
+                rowNum: 10,
+                gridComplete: function () {
+
+                    if (jQuery("#ajaxGrid").getGridParam("records") == 0) {
+                        jQuery("#ajaxGrid").addRowData(
+                        "blankRow", { "GenName": "No records to view" });
+                    }
+                },
+
+                viewrecords: true,
+                pager: $('#ajaxGridPager'),
+                height: 'auto',
+                editable: true,
+               editurl: '@Url.Action("EditFAQ")'
+    });
+
+
+    jQuery("#ajaxGrid").jqGrid('navGrid', '#ajaxGridPager', { edit: true, add: true, del: true, search: true, view: true },
+        {
+            // Edit Portion
+            closeOnEscape: true,
+            width: 600,
+            recreateForm: true,
+            checkOnSubmit: true,
+            afterShowForm: function (form_id) {
+                var thisForm = form_id.selector.replace('FrmGrid_', 'editmod')
+                var dialogHeight = $(thisForm).height();
+                var dialogWidth = $(thisForm).width();
+                var windowHeight = $(window).height();
+                var windowWidth = $(window).width();
+                $(thisForm).css('position', 'fixed');
+                $(thisForm).css('top', ((windowHeight - dialogHeight) / 2));
+                $(thisForm).css('left', ((windowWidth - dialogWidth) / 2));
+            },
+            afterSubmit: function (response, postdata) {
+
+                $("#ajaxGrid").jqGrid('setGridParam', { datatype: 'json' }).trigger('reloadGrid');
+                return [false, response.responseText];
+            },
+
+        },
+
+    {
+        //Add Portion
+        closeOnEscape: true,
+        closeAfterAdd: true,
+        recreateForm: true,
+        width: 600,
+        afterShowForm: function (form_id) {
+            var thisForm = form_id.selector.replace('FrmGrid_', 'editmod');
+            var dialogHeight = $(thisForm).height();
+            var dialogWidth = $(thisForm).width();
+            var windowHeight = $(window).height();
+            var windowWidth = $(window).width();
+            $(thisForm).css('position', 'fixed');
+            $(thisForm).css('top', ((windowHeight - dialogHeight) / 2));
+            $(thisForm).css('left', ((windowWidth - dialogWidth) / 2));
+        },
+        beforeShowForm: function (form) {
+            $('#tr_IsActive', form).hide();
+        },
+
+
+        afterSubmit: function (response, postdata) {
+
+            if (response.responseText == "already Exists") {
+                return [false, response.responseText];
+            }
+            else {
+                $("#ajaxGrid").jqGrid('setGridParam', { datatype: 'json' }).trigger('reloadGrid');
+                return [false, response.responseText];
+            }
+
+        }
+    },
+        {
+            //Delete
+            closeOnEscape: true,
+            recreateForm: true,
+            width: 450,
+            beforeShowForm: function (form) {
+
+                //POP UP Screen Fit Screen
+
+                var thisForm = $("#delmod" + jQuery("#ajaxGrid")[0].id);
+                var dialogHeight = $(thisForm).height();
+                var dialogWidth = $(thisForm).width();
+                var windowHeight = $(window).height();
+                var windowWidth = $(window).width();
+                $(thisForm).css('position', 'fixed');
+                $(thisForm).css('top', ((windowHeight - dialogHeight) / 2));
+                $(thisForm).css('left', ((windowWidth - dialogWidth) / 2));
+
+
+                var col1 = $('#ajaxGrid').jqGrid('getGridParam', 'selrow');
+                var Category = $('#ajaxGrid').jqGrid('getCell', col1, 'GenName');
+                var Question = $('#ajaxGrid').jqGrid('getCell', col1, 'Question');
+                var Answer = $('#ajaxGrid').jqGrid('getCell', col1, 'Answer');
+                var IsActive = $('#ajaxGrid').jqGrid('getCell', col1, 'IsActive');
+
+                var html = "<form><table><tr><td class='CaptionTD'>Category </td><td class=='DataTD'>&nbsp;&nbsp;<input type='text' class='FormElement ui-widget-content ui-corner-all' readonly='true'  value='" + Category + "'/></td> </tr>";
+                html += "<tr><td class='CaptionTD'>Question Type</td><td class=='DataTD'>&nbsp;&nbsp;<input type='text' class='FormElement ui-widget-content ui-corner-all' readonly='true'  value='" + Question + "'/></td></tr>";
+                html += "<tr><td class='CaptionTD'>Answer</td><td class=='DataTD'>&nbsp;&nbsp;<input type='text' class='FormElement ui-widget-content ui-corner-all' readonly='true'  value='" + Answer + "'/></td></tr>";
+                if (IsActive == "Active")
+                    html += "<tr><td class='CaptionTD'>Status</td><td class=='DataTD'>&nbsp;&nbsp;<input class='FormElement ui-widget-content ui-corner-all'   type='checkbox' checked  disabled/></td>";
+                if (IsActive == "Inactive")
+                    html += "<tr><td class='CaptionTD'>Status</td><td class=='DataTD'>&nbsp;&nbsp; <input class='FormElement ui-widget-content ui-corner-all'   type='checkbox' disabled /></td></tr>";
+                html += "</table></form>";
+                $("td.delmsg", form[0]).html(html);
+
+
+                //End POP UP Screen Fit Screen
+
+
+            },
+            afterSubmit: function (response, postdata) {
+
+                $("#ajaxGrid").jqGrid('setGridParam', { datatype: 'json' }).trigger('reloadGrid');
+                return [false, response.responseText];
+            }
+        },
+    {
+        //Search
+
+        closeOnEscape: true,
+        recreateForm: true,
+        width: 600,
+
+        beforeShowForm: function (form) {
+
+
+            var thisForm = $("#delmod" + jQuery("#ajaxGrid")[0].id);
+            var dialogHeight = $(thisForm).height();
+            var dialogWidth = $(thisForm).width();
+            var windowHeight = $(window).height();
+            var windowWidth = $(window).width();
+            $(thisForm).css('position', 'fixed');
+            $(thisForm).css('top', ((windowHeight - dialogHeight) / 2));
+            $(thisForm).css('left', ((windowWidth - dialogWidth) / 2));
+
+        }
+    },
+    {
+        //View :
+        closeOnEscape: true,
+        recreateForm: true,
+        width: 600,
+
+        beforeShowForm: function (form) {
+
+            var thisForm = $("#viewmod" + jQuery("#ajaxGrid")[0].id);
+            var dialogHeight = $(thisForm).height();
+            var dialogWidth = $(thisForm).width();
+            var windowHeight = $(window).height();
+            var windowWidth = $(window).width();
+            $(thisForm).css('position', 'fixed');
+            $(thisForm).css('top', ((windowHeight - dialogHeight) / 2));
+            $(thisForm).css('left', ((windowWidth - dialogWidth) / 2));
+        }
+
+    }
+
+
+            );
+
+    // setMethod('LocationMaster', 'LocationMasterPager', 'Customer Grid', 'ManageUsers', 'LocationMaster.cshtml');
+
+    // setMethod('gridId', 'gridPager', 'pageTitle');
+    setMethod('ajaxGrid', 'ajaxGridPager', 'Customer Grid');
+
+    }
+
+    function setMethod(gid, id, pgTitle) {
+        // alert(1);
+        var btnTitle = 'Export to Excel';
+        $('#' + gid).jqGrid('navSeparatorAdd', '#' + id, { sepclass: "ui-separator" });
+        $('#' + gid).jqGrid('navButtonAdd', '#' + id, { caption: '', title: btnTitle, position: 'last', buttonicon: 'ui-icon-calculator', onClickButton: function () { ExcelExport(); } });
+
+        var btnTitle = 'Export to PDF';
+        $('#' + gid).jqGrid('navSeparatorAdd', '#' + id, { sepclass: "ui-separator" });
+        $('#' + gid).jqGrid('navButtonAdd', '#' + id, { caption: '', title: btnTitle, position: 'last', buttonicon: 'ui-icon-bookmark', onClickButton: function () { PDFExport(); } });
+
+        var btnTitle = 'Export to CSV';
+        $('#' + gid).jqGrid('navSeparatorAdd', '#' + id, { sepclass: "ui-separator" });
+        $('#' + gid).jqGrid('navButtonAdd', '#' + id, { caption: '', title: btnTitle, position: 'last', buttonicon: 'ui-icon-note', onClickButton: function () { CSVExport(); } });
+
+
+        var btnTitle = 'Print Grid';
+        $('#' + gid).jqGrid('navSeparatorAdd', '#' + id, { sepclass: "ui-separator" });
+        $('#' + gid).jqGrid('navButtonAdd', '#' + id, { caption: '', title: btnTitle, position: 'last', buttonicon: 'ui-icon-print', onClickButton: function () { PrintGrid(gid); } });
+    }
+    function ExcelExport() {
+        window.location = '@Url.Action("ExportFormMasterToExcel")';
+    }
+    function PDFExport() {
+        window.location = '@Url.Action("ExportFormMasterToPDF")';
+    }
+    function CSVExport() {
+        window.location = '@Url.Action("ExportFormMasterToCsv")';
+    }
+    function PrintGrid(gid) {
+
+        // empty the print div container.
+        $('#prt-container').empty();
+        //alert(6);
+        // copy and append grid view to print div container.
+        $('#gview_' + gid).clone().appendTo('#prt-container').css({ 'page-break-after': 'auto' });
+        $(function () { printChrome('prt-container') });
+
+    }
+
+    function printChrome(divContainer) {
+
+        var printContent = document.getElementById(divContainer);
+        window.document.body.innerHTML = printContent.innerHTML;
+        window.print();
+        window.location.reload();
+    }
+
+
+    </script>
+    <div id='prt-container' style="display:none">
+    </div>
+
+
+</body>

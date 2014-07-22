@@ -1,0 +1,2714 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Schema Namespace="pfizerModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
+  <EntityType Name="UserMaster">
+    <Key>
+      <PropertyRef Name="EmpFKID" />
+    </Key>
+    <Property Name="PKID" Type="Decimal" Precision="10" Scale="0" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="EmpFKID" Type="Decimal" Precision="10" Scale="0" Nullable="false" />
+    <Property Name="RoleFKID" Type="Decimal" Precision="10" Scale="0" Nullable="false" />
+    <Property Name="Loginname" Type="String" MaxLength="20" FixedLength="false" Unicode="false" Nullable="false" />
+    <Property Name="Password" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
+    <Property Name="IsActive" Type="Boolean" Nullable="false" />
+    <Property Name="CreatedDate" Type="DateTime" Nullable="false" Precision="3" />
+    <Property Name="CreatedBy" Type="Decimal" Precision="10" Scale="0" Nullable="false" />
+    <Property Name="ModifiedDate" Type="DateTime" Precision="3" />
+    <Property Name="ModifiedBy" Type="Decimal" Precision="10" Scale="0" />
+    <NavigationProperty Name="EmployeeMaster" Relationship="pfizerModel.FK_UserMaster_EmployeeMaster" FromRole="UserMaster" ToRole="EmployeeMaster" />
+  </EntityType>
+  <EntityContainer Name="pfizerEntities" annotation:LazyLoadingEnabled="true">
+    <EntitySet Name="UserMasters" EntityType="Self.UserMaster" />
+    <FunctionImport Name="LoginLock" ReturnType="Collection(Decimal)">
+      <Parameter Name="Loginname" Mode="In" Type="String" />
+    </FunctionImport>
+    <FunctionImport Name="GetQuestion" ReturnType="Collection(pfizerModel.GetQuestion_Result)" />
+    <FunctionImport Name="TimeSetting" ReturnType="Collection(pfizerModel.TimeSetting_Result)" />
+    <FunctionImport Name="AuthenticateUser7" ReturnType="Collection(pfizerModel.AuthenticateUser7_Result)">
+      <Parameter Name="Loginname" Mode="In" Type="String" />
+      <Parameter Name="Password" Mode="In" Type="String" />
+      <Parameter Name="QuestionFKID" Mode="In" Type="Decimal" />
+      <Parameter Name="Answer" Mode="In" Type="String" />
+    </FunctionImport>
+    <FunctionImport Name="GetUsefulLinks" ReturnType="Collection(pfizerModel.GetUsefulLinks_Result)" />
+    <FunctionImport Name="GetAlertsByXML" ReturnType="Collection(String)">
+      <Parameter Name="PKID" Mode="In" Type="Int32" />
+    </FunctionImport>
+    <FunctionImport Name="GetTopAlertsByXML" ReturnType="Collection(pfizerModel.GetTopAlertsByXML_Result)">
+      <Parameter Name="PKID" Mode="In" Type="Int32" />
+    </FunctionImport>
+    <FunctionImport Name="buildInfoBank" ReturnType="Collection(pfizerModel.buildInfoBank_Result1)" />
+    <FunctionImport Name="GetContentByXML" ReturnType="Collection(pfizerModel.GetContentByXML_Result)">
+      <Parameter Name="SecFKID" Mode="In" Type="Int32" />
+      <Parameter Name="UserDiv" Mode="In" Type="String" />
+    </FunctionImport>
+    <FunctionImport Name="GetNotificationByXML" ReturnType="Collection(pfizerModel.GetNotificationByXML_Result)" />
+    <FunctionImport Name="GetContentBodyTextByXML" ReturnType="Collection(pfizerModel.GetContentBodyTextByXML_Result)">
+      <Parameter Name="PKID" Mode="In" Type="String" />
+    </FunctionImport>
+    <FunctionImport Name="GetContentBodyTextByXML1">
+      <Parameter Name="PKID" Mode="In" Type="String" />
+    </FunctionImport>
+    <FunctionImport Name="GetNotificationTextByXML" ReturnType="Collection(pfizerModel.GetNotificationTextByXML_Result)">
+      <Parameter Name="PKID" Mode="In" Type="String" />
+    </FunctionImport>
+    <FunctionImport Name="GetAlertsTextByXML" ReturnType="Collection(pfizerModel.GetAlertsTextByXML_Result1)">
+      <Parameter Name="PKID" Mode="In" Type="String" />
+    </FunctionImport>
+    <FunctionImport Name="UpdatReadAlert">
+      <Parameter Name="PKID" Mode="In" Type="Decimal" />
+    </FunctionImport>
+    <FunctionImport Name="usp_AuthenticateUser" ReturnType="Collection(pfizerModel.usp_AuthenticateUser_Result)">
+      <Parameter Name="Loginname" Mode="In" Type="String" />
+      <Parameter Name="Password" Mode="In" Type="String" />
+      <Parameter Name="QuestionFKID" Mode="In" Type="Decimal" />
+      <Parameter Name="Answer" Mode="In" Type="String" />
+    </FunctionImport>
+    <EntitySet Name="vw_MeetingReminderReadstatus" EntityType="pfizerModel.vw_MeetingReminderReadstatus" />
+    <FunctionImport Name="BuildMenu" ReturnType="Collection(pfizerModel.BuildMenu_Result1)">
+      <Parameter Name="RoleFKID" Mode="In" Type="Decimal" />
+    </FunctionImport>
+    <FunctionImport Name="usp_AuthenticateUser1">
+      <Parameter Name="Loginname" Mode="In" Type="String" />
+      <Parameter Name="Password" Mode="In" Type="String" />
+      <Parameter Name="QuestionFKID" Mode="In" Type="Decimal" />
+      <Parameter Name="Answer" Mode="In" Type="String" />
+    </FunctionImport>
+    <FunctionImport Name="GetTopOneOpinionByXML" ReturnType="Collection(pfizerModel.GetTopOneOpinionByXML_Result)">
+      <Parameter Name="UserFKID" Mode="In" Type="Decimal" />
+    </FunctionImport>
+    <FunctionImport Name="UpdateOpinionPollAnswer">
+      <Parameter Name="OpFKID" Mode="In" Type="Decimal" />
+      <Parameter Name="Feedback" Mode="In" Type="Decimal" />
+      <Parameter Name="UserID" Mode="In" Type="Decimal" />
+    </FunctionImport>
+    <EntitySet Name="GeneralMasters" EntityType="pfizerModel.GeneralMaster" />
+    <FunctionImport Name="usp_AuthenticateUser2">
+      <Parameter Name="Loginname" Mode="In" Type="String" />
+      <Parameter Name="Password" Mode="In" Type="String" />
+      <Parameter Name="QuestionFKID" Mode="In" Type="Decimal" />
+      <Parameter Name="Answer" Mode="In" Type="String" />
+    </FunctionImport>
+    <FunctionImport Name="GetForgetPassword" ReturnType="Collection(pfizerModel.GetForgetPassword_Result)">
+      <Parameter Name="Loginname" Mode="In" Type="String" />
+      <Parameter Name="QuestionFKID" Mode="In" Type="Decimal" />
+      <Parameter Name="Answer" Mode="In" Type="String" />
+    </FunctionImport>
+    <FunctionImport Name="GetPassword" ReturnType="Collection(pfizerModel.GetPassword_Result)">
+      <Parameter Name="LoginId" Mode="In" Type="String" />
+    </FunctionImport>
+    <FunctionImport Name="USP_GET_EVALUATIONMASTER" ReturnType="Collection(pfizerModel.USP_GET_EVALUATIONMASTER_Result)" />
+    <FunctionImport Name="USP_GET_QUALIFICATIONMASTER" ReturnType="Collection(pfizerModel.USP_GET_QUALIFICATIONMASTER_Result)" />
+    <FunctionImport Name="USP_GET_STRATEGICPLANNINGMASTER" ReturnType="Collection(pfizerModel.USP_GET_STRATEGICPLANNINGMASTER_Result)" />
+    <FunctionImport Name="USP_GET_TAILOREDEXECUTIONMASTER" ReturnType="Collection(pfizerModel.USP_GET_TAILOREDEXECUTIONMASTER_Result)" />
+    <EntitySet Name="EvaluationMasters" EntityType="pfizerModel.EvaluationMaster" />
+    <EntitySet Name="StrategicPlanningMasters" EntityType="pfizerModel.StrategicPlanningMaster" />
+    <EntitySet Name="TailoredExecutionMasters" EntityType="pfizerModel.TailoredExecutionMaster" />
+    <EntitySet Name="QualificationMasters" EntityType="pfizerModel.QualificationMaster" />
+    <FunctionImport Name="USP_GET_CYCLE_DEFINITION_MASTER" ReturnType="Collection(pfizerModel.USP_GET_CYCLE_DEFINITION_MASTER_Result)" />
+    <FunctionImport Name="USP_GET_CYCLE_SETTING_MASTER" ReturnType="Collection(pfizerModel.USP_GET_CYCLE_SETTING_MASTER_Result)" />
+    <EntitySet Name="CycleDefinitionMasters" EntityType="pfizerModel.CycleDefinitionMaster" />
+    <EntitySet Name="CycleMasters" EntityType="pfizerModel.CycleMaster" />
+    <FunctionImport Name="USP_GET_MONTH" ReturnType="Collection(pfizerModel.USP_GET_MONTH_Result)" />
+    <FunctionImport Name="uspGetSettingMaster" ReturnType="Collection(pfizerModel.uspGetSettingMaster_Result1)" />
+    <FunctionImport Name="EditSettingMaster">
+      <Parameter Name="PKID" Mode="In" Type="Decimal" />
+      <Parameter Name="ImpactScreenName" Mode="In" Type="String" />
+      <Parameter Name="SettingDescription" Mode="In" Type="String" />
+      <Parameter Name="SettingType" Mode="In" Type="String" />
+      <Parameter Name="FromValue" Mode="In" Type="String" />
+      <Parameter Name="ToValue" Mode="In" Type="String" />
+      <Parameter Name="IsActive" Mode="In" Type="Boolean" />
+      <Parameter Name="ModifiedBy" Mode="In" Type="Int32" />
+      <Parameter Name="Code" Mode="In" Type="String" />
+    </FunctionImport>
+    <FunctionImport Name="AddSettingMaster">
+      <Parameter Name="ImpactScreenName" Mode="In" Type="String" />
+      <Parameter Name="SettingDescription" Mode="In" Type="String" />
+      <Parameter Name="SettingType" Mode="In" Type="String" />
+      <Parameter Name="FromValue" Mode="In" Type="String" />
+      <Parameter Name="ToValue" Mode="In" Type="String" />
+      <Parameter Name="IsActive" Mode="In" Type="Boolean" />
+      <Parameter Name="CreatedBy" Mode="In" Type="Int32" />
+      <Parameter Name="Code" Mode="In" Type="String" />
+    </FunctionImport>
+    <FunctionImport Name="DeleteSettingMaster">
+      <Parameter Name="PKID" Mode="In" Type="Decimal" />
+    </FunctionImport>
+    <FunctionImport Name="GetUserDefault" ReturnType="Collection(pfizerModel.GetUserDefault_Result)" />
+    <FunctionImport Name="AddUserMaster" ReturnType="Collection(Decimal)">
+      <Parameter Name="EmpFKID" Mode="In" Type="Decimal" />
+      <Parameter Name="RoleFKID" Mode="In" Type="String" />
+      <Parameter Name="Loginname" Mode="In" Type="String" />
+      <Parameter Name="Password" Mode="In" Type="String" />
+      <Parameter Name="IsActive" Mode="In" Type="String" />
+      <Parameter Name="CreatedBy" Mode="In" Type="Decimal" />
+      <Parameter Name="XmlStr" Mode="In" Type="String" />
+    </FunctionImport>
+    <FunctionImport Name="USP_GET_ACTIVITY_MASTER" ReturnType="Collection(pfizerModel.USP_GET_ACTIVITY_MASTER_Result)" />
+    <FunctionImport Name="USP_DELETE_ACTIVITYMASTER">
+      <Parameter Name="PKID" Mode="In" Type="Decimal" />
+    </FunctionImport>
+    <FunctionImport Name="USP_DELETE_UNLOCKUSERDETAILS">
+      <Parameter Name="GetPKID" Mode="In" Type="String" />
+    </FunctionImport>
+    <FunctionImport Name="USP_GET_NODETYPE_MASTER" ReturnType="Collection(pfizerModel.USP_GET_NODETYPE_MASTER_Result)" />
+    <FunctionImport Name="USP_GET_NODETYPEMASTER" ReturnType="Collection(pfizerModel.USP_GET_NODETYPEMASTER_Result)">
+      <Parameter Name="PkId" Mode="In" Type="Int32" />
+    </FunctionImport>
+    <FunctionImport Name="USP_GET_TEAM_MASTER" ReturnType="Collection(pfizerModel.USP_GET_TEAM_MASTER_Result)" />
+    <FunctionImport Name="USP_GET_TEAMMASTER" ReturnType="Collection(pfizerModel.USP_GET_TEAMMASTER_Result)">
+      <Parameter Name="PkId" Mode="In" Type="Int32" />
+    </FunctionImport>
+    <FunctionImport Name="USP_GETLOGDEAILS" ReturnType="Collection(pfizerModel.USP_GETLOGDEAILS_Result)" />
+    <FunctionImport Name="USP_UPDATE_NODETYPEMASTER">
+      <Parameter Name="oper" Mode="In" Type="String" />
+      <Parameter Name="NodetypeFKID" Mode="In" Type="String" />
+      <Parameter Name="TeamFKID" Mode="In" Type="String" />
+      <Parameter Name="ActivityName" Mode="In" Type="String" />
+      <Parameter Name="Defaultflag" Mode="In" Type="Boolean" />
+      <Parameter Name="Specialflag" Mode="In" Type="Boolean" />
+      <Parameter Name="Fieldwork" Mode="In" Type="Boolean" />
+      <Parameter Name="ActivityFKID" Mode="In" Type="String" />
+      <Parameter Name="IsActive" Mode="In" Type="String" />
+      <Parameter Name="CreatedBy" Mode="In" Type="String" />
+      <Parameter Name="CreatedDate" Mode="In" Type="String" />
+      <Parameter Name="ModifiedBy" Mode="In" Type="String" />
+      <Parameter Name="ModifiedDate" Mode="In" Type="String" />
+    </FunctionImport>
+    <FunctionImport Name="usp_GetSalesHierarchy" ReturnType="Collection(pfizerModel.usp_GetSalesHierarchy_Result)" />
+    <EntitySet Name="QuestionMasters" EntityType="pfizerModel.QuestionMaster" />
+    <EntitySet Name="SpecializationMasters" EntityType="pfizerModel.SpecializationMaster" />
+    <EntitySet Name="SpecializationTeamlinkMasters" EntityType="pfizerModel.SpecializationTeamlinkMaster" />
+    <EntitySet Name="TeamMasters" EntityType="pfizerModel.TeamMaster" />
+    <FunctionImport Name="GetSplTeamByXml" ReturnType="Collection(pfizerModel.GetSplTeamByXml_Result)" />
+    <FunctionImport Name="AddSpecializationTeamlinkMaster">
+      <Parameter Name="Specialization" Mode="In" Type="String" />
+      <Parameter Name="xml" Mode="In" Type="String" />
+      <Parameter Name="IsActive" Mode="In" Type="Boolean" />
+      <Parameter Name="CreatedBy" Mode="In" Type="Decimal" />
+    </FunctionImport>
+    <FunctionImport Name="DeleteSpecializationTeamlinkMaster">
+      <Parameter Name="PKID" Mode="In" Type="Decimal" />
+      <Parameter Name="ModifiedBy" Mode="In" Type="Decimal" />
+    </FunctionImport>
+    <FunctionImport Name="EditSpecializationMaster2">
+      <Parameter Name="PKID" Mode="In" Type="Decimal" />
+      <Parameter Name="xml" Mode="In" Type="String" />
+      <Parameter Name="Specialization" Mode="In" Type="String" />
+      <Parameter Name="IsActive" Mode="In" Type="Boolean" />
+      <Parameter Name="ModifiedBy" Mode="In" Type="Decimal" />
+    </FunctionImport>
+    <EntitySet Name="HolidayGroupMasters" EntityType="pfizerModel.HolidayGroupMaster" />
+    <EntitySet Name="RatingMasters" EntityType="pfizerModel.RatingMaster" />
+    <FunctionImport Name="usp_GetRBMMaster" ReturnType="Collection(pfizerModel.usp_GetRBMMaster_Result)" />
+    <FunctionImport Name="GetFTMName" ReturnType="Collection(pfizerModel.GetFTMName_Result)" />
+    <FunctionImport Name="GetRBMName" ReturnType="Collection(pfizerModel.GetRBMName_Result)" />
+    <FunctionImport Name="AddRBMFTMLinkMaster">
+      <Parameter Name="RBMFKID" Mode="In" Type="Int32" />
+      <Parameter Name="FTMFKID" Mode="In" Type="Int32" />
+    </FunctionImport>
+    <FunctionImport Name="DeleteRBMFTMLinkMaster">
+      <Parameter Name="PKID" Mode="In" Type="Decimal" />
+    </FunctionImport>
+    <FunctionImport Name="EditRBMFTMLinkMaster">
+      <Parameter Name="PKID" Mode="In" Type="Decimal" />
+      <Parameter Name="RBMFKID" Mode="In" Type="Int32" />
+      <Parameter Name="FTMFKID" Mode="In" Type="Int32" />
+      <Parameter Name="IsActive" Mode="In" Type="Boolean" />
+    </FunctionImport>
+    <FunctionImport Name="uspGetInputMaster" ReturnType="Collection(pfizerModel.uspGetInputMaster_Result)" />
+    <FunctionImport Name="uspGetInputType" ReturnType="Collection(pfizerModel.uspGetInputType_Result)" />
+    <FunctionImport Name="AddiNPUTMaster">
+      <Parameter Name="InputTypeFKID" Mode="In" Type="Decimal" />
+      <Parameter Name="InputName" Mode="In" Type="String" />
+      <Parameter Name="IBISCode" Mode="In" Type="String" />
+      <Parameter Name="UsrFKID" Mode="In" Type="Decimal" />
+    </FunctionImport>
+    <FunctionImport Name="DeleteINPUTMaster">
+      <Parameter Name="PKID" Mode="In" Type="Decimal" />
+      <Parameter Name="UsrFKID" Mode="In" Type="Decimal" />
+    </FunctionImport>
+    <FunctionImport Name="EditINPUTMaster">
+      <Parameter Name="PKID" Mode="In" Type="Decimal" />
+      <Parameter Name="InputTypeFKID" Mode="In" Type="Decimal" />
+      <Parameter Name="InputName" Mode="In" Type="String" />
+      <Parameter Name="IBISCode" Mode="In" Type="String" />
+      <Parameter Name="Status" Mode="In" Type="Int32" />
+      <Parameter Name="UsrFKID" Mode="In" Type="Decimal" />
+    </FunctionImport>
+    <FunctionImport Name="GetInputMasterbyID" ReturnType="Collection(pfizerModel.GetInputMasterbyID_Result)">
+      <Parameter Name="PKID" Mode="In" Type="Decimal" />
+    </FunctionImport>
+    <FunctionImport Name="GetEmployeeCreateUserMasterByXml" ReturnType="Collection(pfizerModel.GetEmployeeCreateUserMasterByXml_Result)" />
+    <FunctionImport Name="GetUserSelectedRoles" ReturnType="Collection(pfizerModel.GetUserSelectedRoles_Result)">
+      <Parameter Name="PKID" Mode="In" Type="Decimal" />
+    </FunctionImport>
+    <FunctionImport Name="GetRoles" ReturnType="Collection(pfizerModel.GetRoles_Result1)" />
+    <FunctionImport Name="GetUserQuestionMaster" ReturnType="Collection(pfizerModel.GetUserQuestionMaster_Result)">
+      <Parameter Name="UserFKID" Mode="In" Type="Decimal" />
+    </FunctionImport>
+    <FunctionImport Name="GetHolidayGroupTerritoryLinkmasterByXml" ReturnType="Collection(pfizerModel.GetHolidayGroupTerritoryLinkmasterByXml_Result)">
+      <Parameter Name="HolidaygroupFKID" Mode="In" Type="Decimal" />
+    </FunctionImport>
+    <EntitySet Name="RegionMasters" EntityType="pfizerModel.RegionMaster" />
+    <EntitySet Name="AreaMasters" EntityType="pfizerModel.AreaMaster" />
+    <EntitySet Name="NodeTypeMasters" EntityType="pfizerModel.NodeTypeMaster" />
+    <FunctionImport Name="USP_GET_BRICKMASTER" ReturnType="Collection(pfizerModel.USP_GET_BRICKMASTER_Result)" />
+    <FunctionImport Name="USP_GET_LOCALITY_MASTER" ReturnType="Collection(pfizerModel.USP_GET_LOCALITY_MASTER_Result)" />
+    <FunctionImport Name="USP_GET_LOCALITYMASTER" ReturnType="Collection(pfizerModel.USP_GET_LOCALITYMASTER_Result)">
+      <Parameter Name="PkId" Mode="In" Type="Int32" />
+    </FunctionImport>
+    <FunctionImport Name="USP_GET_MU_HOLIDAYMASTER" ReturnType="Collection(pfizerModel.USP_GET_MU_HOLIDAYMASTER_Result)" />
+    <FunctionImport Name="USP_GET_MU_NODETYPEMASTER" ReturnType="Collection(pfizerModel.USP_GET_MU_NODETYPEMASTER_Result)" />
+    <FunctionImport Name="USP_GET_MU_TEAMMASTER" ReturnType="Collection(pfizerModel.USP_GET_MU_TEAMMASTER_Result)" />
+    <FunctionImport Name="USP_GET_PROD_NODETYPEMASTER" ReturnType="Collection(pfizerModel.USP_GET_PROD_NODETYPEMASTER_Result)">
+      <Parameter Name="PkId" Mode="In" Type="Int32" />
+    </FunctionImport>
+    <FunctionImport Name="USP_GET_PROD_TEAMMASTER" ReturnType="Collection(pfizerModel.USP_GET_PROD_TEAMMASTER_Result)">
+      <Parameter Name="PkId" Mode="In" Type="Int32" />
+    </FunctionImport>
+    <FunctionImport Name="USP_GET_PRODUCTMASTER" ReturnType="Collection(pfizerModel.USP_GET_PRODUCTMASTER_Result)" />
+    <FunctionImport Name="USP_GET_ROLEMASTER" ReturnType="Collection(pfizerModel.USP_GET_ROLEMASTER_Result)" />
+    <FunctionImport Name="USP_GET_TERRITORY_MASTER" ReturnType="Collection(pfizerModel.USP_GET_TERRITORY_MASTER_Result)" />
+    <FunctionImport Name="USP_UPDATE_TERRITORYMASTER">
+      <Parameter Name="oper" Mode="In" Type="String" />
+      <Parameter Name="LocalityFKID" Mode="In" Type="String" />
+      <Parameter Name="PKID" Mode="In" Type="String" />
+      <Parameter Name="DivFKID" Mode="In" Type="String" />
+      <Parameter Name="TerCode" Mode="In" Type="String" />
+      <Parameter Name="TerName" Mode="In" Type="String" />
+      <Parameter Name="TownclassFKID" Mode="In" Type="String" />
+      <Parameter Name="IsActive" Mode="In" Type="String" />
+      <Parameter Name="CreatedBy" Mode="In" Type="String" />
+      <Parameter Name="ModifiedBy" Mode="In" Type="String" />
+    </FunctionImport>
+    <EntitySet Name="HolidayMasters" EntityType="pfizerModel.HolidayMaster" />
+    <EntitySet Name="TownClassMasters" EntityType="pfizerModel.TownClassMaster" />
+    <EntitySet Name="ActivityMasters" EntityType="pfizerModel.ActivityMaster" />
+    <EntitySet Name="CityMasters" EntityType="pfizerModel.CityMaster" />
+    <EntitySet Name="DivisionMasters" EntityType="pfizerModel.DivisionMaster" />
+    <EntitySet Name="RoleMasters" EntityType="pfizerModel.RoleMaster" />
+    <EntitySet Name="TerritoryMasters" EntityType="pfizerModel.TerritoryMaster" />
+    <AssociationSet Name="FK_TeamMaster_DivisionMaster" Association="pfizerModel.FK_TeamMaster_DivisionMaster">
+      <End Role="DivisionMaster" EntitySet="DivisionMasters" />
+      <End Role="TeamMaster" EntitySet="TeamMasters" />
+    </AssociationSet>
+    <FunctionImport Name="AddHolidayMaster">
+      <Parameter Name="HolidayDescription" Mode="In" Type="String" />
+      <Parameter Name="DisplayName" Mode="In" Type="String" />
+      <Parameter Name="HolidayDate" Mode="In" Type="DateTime" />
+      <Parameter Name="IsActive" Mode="In" Type="Boolean" />
+      <Parameter Name="CreatedBy" Mode="In" Type="Decimal" />
+    </FunctionImport>
+    <FunctionImport Name="DeleteTerritoryMaster">
+      <Parameter Name="PKID" Mode="In" Type="Decimal" />
+      <Parameter Name="ModifiedBy" Mode="In" Type="Decimal" />
+    </FunctionImport>
+    <FunctionImport Name="GetAllCityByTerritory" ReturnType="Collection(pfizerModel.GetAllCityByTerritory_Result)">
+      <Parameter Name="PSOFKID" Mode="In" Type="Decimal" />
+    </FunctionImport>
+    <FunctionImport Name="GetAllMetisProductName" ReturnType="Collection(pfizerModel.GetAllMetisProductName_Result)" />
+    <FunctionImport Name="GetGencodeCount" ReturnType="Collection(Int32)">
+      <Parameter Name="GenCode" Mode="In" Type="String" />
+      <Parameter Name="GenFKID" Mode="In" Type="Int32" />
+    </FunctionImport>
+    <FunctionImport Name="GetProductNameByXml" ReturnType="Collection(pfizerModel.GetProductNameByXml_Result)" />
+    <FunctionImport Name="GetSettingMasterTeamWise" ReturnType="Collection(pfizerModel.GetSettingMasterTeamWise_Result)" />
+    <EntitySet Name="DistrictMasters" EntityType="pfizerModel.DistrictMaster" />
+    <EntitySet Name="FormMasters" EntityType="pfizerModel.FormMaster" />
+    <EntitySet Name="MoleculeMasters" EntityType="pfizerModel.MoleculeMaster" />
+    <FunctionImport Name="AddGeneralMaster">
+      <Parameter Name="GeneralFKID" Mode="In" Type="Decimal" />
+      <Parameter Name="GenCode" Mode="In" Type="String" />
+      <Parameter Name="GenName" Mode="In" Type="String" />
+      <Parameter Name="IsActive" Mode="In" Type="Boolean" />
+      <Parameter Name="CreatedBy" Mode="In" Type="Decimal" />
+    </FunctionImport>
+    <FunctionImport Name="AddInfoCategory">
+      <Parameter Name="CategoryDesc" Mode="In" Type="String" />
+      <Parameter Name="ParentFKID" Mode="In" Type="Decimal" />
+      <Parameter Name="IsActive" Mode="In" Type="String" />
+      <Parameter Name="CreatedBy" Mode="In" Type="Decimal" />
+    </FunctionImport>
+    <FunctionImport Name="AddNotification1">
+      <Parameter Name="Notification" Mode="In" Type="String" />
+      <Parameter Name="ExpiryDate" Mode="In" Type="DateTime" />
+      <Parameter Name="CreatedBy" Mode="In" Type="Decimal" />
+    </FunctionImport>
+    <FunctionImport Name="AddProductMoleculeLinkMaster">
+      <Parameter Name="ProductFKID" Mode="In" Type="Decimal" />
+      <Parameter Name="xmlMoleculeFKID" Mode="In" Type="String" />
+      <Parameter Name="CreatedBy" Mode="In" Type="Int32" />
+    </FunctionImport>
+    <FunctionImport Name="DeleteGeneralMaster">
+      <Parameter Name="PKID" Mode="In" Type="Decimal" />
+    </FunctionImport>
+    <FunctionImport Name="DeleteInfoCategory">
+      <Parameter Name="PKID" Mode="In" Type="Decimal" />
+      <Parameter Name="IsActive" Mode="In" Type="String" />
+      <Parameter Name="ModifiedBy" Mode="In" Type="Decimal" />
+    </FunctionImport>
+    <FunctionImport Name="DeleteMoleculeProductMaster">
+      <Parameter Name="ProductFKID" Mode="In" Type="Decimal" />
+      <Parameter Name="MoleculeFKID" Mode="In" Type="Decimal" />
+    </FunctionImport>
+    <FunctionImport Name="DeleteNotification">
+      <Parameter Name="PKID" Mode="In" Type="Decimal" />
+    </FunctionImport>
+    <FunctionImport Name="EditGeneralMaster">
+      <Parameter Name="PKID" Mode="In" Type="Decimal" />
+      <Parameter Name="GeneralFKID" Mode="In" Type="Decimal" />
+      <Parameter Name="GenCode" Mode="In" Type="String" />
+      <Parameter Name="GenName" Mode="In" Type="String" />
+      <Parameter Name="IsActive" Mode="In" Type="Boolean" />
+      <Parameter Name="ModifiedBy" Mode="In" Type="Decimal" />
+    </FunctionImport>
+    <FunctionImport Name="EditInfoCategory">
+      <Parameter Name="PKID" Mode="In" Type="Decimal" />
+      <Parameter Name="CategoryDesc" Mode="In" Type="String" />
+      <Parameter Name="ParentFKID" Mode="In" Type="Decimal" />
+      <Parameter Name="IsActive" Mode="In" Type="String" />
+      <Parameter Name="ModifiedBy" Mode="In" Type="Decimal" />
+    </FunctionImport>
+    <FunctionImport Name="EditMoleculetest1">
+      <Parameter Name="MoleculeFKID" Mode="In" Type="Int32" />
+      <Parameter Name="ProductFKID" Mode="In" Type="Decimal" />
+      <Parameter Name="xmlMoleculeFKID" Mode="In" Type="String" />
+      <Parameter Name="CreatedBy" Mode="In" Type="Int32" />
+      <Parameter Name="IsActive" Mode="In" Type="Int32" />
+    </FunctionImport>
+    <FunctionImport Name="EditNotification">
+      <Parameter Name="PKID" Mode="In" Type="Decimal" />
+      <Parameter Name="Notification" Mode="In" Type="String" />
+      <Parameter Name="ExpiryDate" Mode="In" Type="DateTime" />
+      <Parameter Name="IsActive" Mode="In" Type="Boolean" />
+      <Parameter Name="ModifiedBy" Mode="In" Type="Decimal" />
+    </FunctionImport>
+    <FunctionImport Name="GetFormMaster" ReturnType="Collection(pfizerModel.GetFormMaster_Result)" />
+    <FunctionImport Name="GetInfoCategory" ReturnType="Collection(pfizerModel.GetInfoCategory_Result)" />
+    <FunctionImport Name="GetMoleculeforProductByXML" ReturnType="Collection(pfizerModel.GetMoleculeforProductByXML_Result)" />
+    <FunctionImport Name="GetMoleculeMaster" ReturnType="Collection(pfizerModel.GetMoleculeMaster_Result)" />
+    <FunctionImport Name="GetNotification" ReturnType="Collection(pfizerModel.GetNotification_Result)" />
+    <FunctionImport Name="GetProductType" ReturnType="Collection(pfizerModel.GetProductType_Result)">
+      <Parameter Name="GenFKID" Mode="In" Type="String" />
+    </FunctionImport>
+    <FunctionImport Name="GetProductforProductMatrixByXml" ReturnType="Collection(pfizerModel.GetProductforProductMatrixByXml_Result)" />
+    <FunctionImport Name="GetProductMoleculeLink" ReturnType="Collection(pfizerModel.GetProductMoleculeLink_Result)" />
+    <FunctionImport Name="GetProductMoleculeLink1" ReturnType="Collection(pfizerModel.GetProductMoleculeLink1_Result)" />
+    <FunctionImport Name="AddHolidayGroupTerritoryLinkMaster">
+      <Parameter Name="HolidaygroupFKID" Mode="In" Type="Decimal" />
+      <Parameter Name="xmlTerritoryFKID" Mode="In" Type="String" />
+      <Parameter Name="CreatedBy" Mode="In" Type="Int32" />
+    </FunctionImport>
+    <FunctionImport Name="EditHolidayGroupTerritoryLinkMaster">
+      <Parameter Name="HolidaygroupFKID" Mode="In" Type="Decimal" />
+      <Parameter Name="xmlTerritoryFKID" Mode="In" Type="String" />
+      <Parameter Name="CreatedBy" Mode="In" Type="Int32" />
+    </FunctionImport>
+    <FunctionImport Name="GetHolidayGroupNameByXml" ReturnType="Collection(pfizerModel.GetHolidayGroupNameByXml_Result)" />
+    <EntitySet Name="OpinionPollViews" EntityType="pfizerModel.OpinionPollView" />
+    <FunctionImport Name="GetOpinionPollByXML" ReturnType="Collection(pfizerModel.GetOpinionPollByXML_Result)">
+      <Parameter Name="PKID" Mode="In" Type="Decimal" />
+    </FunctionImport>
+    <FunctionImport Name="GetOpinionPollSelectedValues1" ReturnType="Collection(pfizerModel.GetOpinionPollSelectedValues1_Result)">
+      <Parameter Name="PKID" Mode="In" Type="Decimal" />
+    </FunctionImport>
+    <FunctionImport Name="GetDivisionByXML" ReturnType="Collection(pfizerModel.GetDivisionByXML_Result)" />
+    <FunctionImport Name="GetNodeTypeByXML" ReturnType="Collection(pfizerModel.GetNodeTypeByXML_Result)" />
+    <FunctionImport Name="GetUserByXml" ReturnType="Collection(pfizerModel.GetUserByXml_Result)" />
+    <FunctionImport Name="AddOpinionPoll">
+      <Parameter Name="TeamFKID" Mode="In" Type="String" />
+      <Parameter Name="Question" Mode="In" Type="String" />
+      <Parameter Name="Option1" Mode="In" Type="String" />
+      <Parameter Name="Option2" Mode="In" Type="String" />
+      <Parameter Name="Option3" Mode="In" Type="String" />
+      <Parameter Name="Option4" Mode="In" Type="String" />
+      <Parameter Name="Option5" Mode="In" Type="String" />
+      <Parameter Name="IsActive" Mode="In" Type="Decimal" />
+    </FunctionImport>
+    <FunctionImport Name="DeleteOpinionPoll">
+      <Parameter Name="PKID" Mode="In" Type="Decimal" />
+    </FunctionImport>
+    <FunctionImport Name="EditOpinionPoll">
+      <Parameter Name="TeamFKID" Mode="In" Type="String" />
+      <Parameter Name="Question" Mode="In" Type="String" />
+      <Parameter Name="Option1" Mode="In" Type="String" />
+      <Parameter Name="Option2" Mode="In" Type="String" />
+      <Parameter Name="Option3" Mode="In" Type="String" />
+      <Parameter Name="Option4" Mode="In" Type="String" />
+      <Parameter Name="Option5" Mode="In" Type="String" />
+      <Parameter Name="IsActive" Mode="In" Type="Decimal" />
+      <Parameter Name="PKID" Mode="In" Type="Decimal" />
+    </FunctionImport>
+    <FunctionImport Name="GetDivUserByXml" ReturnType="Collection(pfizerModel.GetDivUserByXml_Result)">
+      <Parameter Name="NodeID" Mode="In" Type="String" />
+      <Parameter Name="DivID" Mode="In" Type="String" />
+    </FunctionImport>
+    <FunctionImport Name="usp_ReconcileSettings" ReturnType="Collection(pfizerModel.usp_ReconcileSettings_Result)" />
+    <FunctionImport Name="GetTeamNameForReconcileByPKID" ReturnType="Collection(pfizerModel.GetTeamNameForReconcileByPKID_Result1)">
+      <Parameter Name="PKID" Mode="In" Type="Decimal" />
+    </FunctionImport>
+    <FunctionImport Name="EditSampleInputReconcileSettings">
+      <Parameter Name="StartDate" Mode="In" Type="String" />
+      <Parameter Name="XmlStr" Mode="In" Type="String" />
+      <Parameter Name="CreatedBy" Mode="In" Type="Int32" />
+      <Parameter Name="PKID" Mode="In" Type="Int64" />
+    </FunctionImport>
+    <FunctionImport Name="GetTeamsByXML" ReturnType="Collection(pfizerModel.GetTeamsByXML_Result)" />
+    <FunctionImport Name="AddSampleInputReconcileSettings">
+      <Parameter Name="StartDate" Mode="In" Type="String" />
+      <Parameter Name="XmlStr" Mode="In" Type="String" />
+      <Parameter Name="CreatedBy" Mode="In" Type="Int32" />
+    </FunctionImport>
+    <FunctionImport Name="DeleteSampleInputReconcileSettings">
+      <Parameter Name="PKID" Mode="In" Type="Decimal" />
+      <Parameter Name="CreatedBy" Mode="In" Type="Int32" />
+    </FunctionImport>
+    <FunctionImport Name="Usp_GetPSOsForCyclePlanUnlock" ReturnType="Collection(String)">
+      <Parameter Name="CycleFKID" Mode="In" Type="Int32" />
+      <Parameter Name="DivPKID" Mode="In" Type="Int32" />
+      <Parameter Name="TeamPKID" Mode="In" Type="Int32" />
+    </FunctionImport>
+    <FunctionImport Name="AddTeamRegionLinkMaster">
+      <Parameter Name="TeamFKID" Mode="In" Type="Decimal" />
+      <Parameter Name="xmlRegionFKID" Mode="In" Type="String" />
+      <Parameter Name="CreatedBy" Mode="In" Type="Int32" />
+    </FunctionImport>
+    <FunctionImport Name="AddTerritoryHQLinkMaster">
+      <Parameter Name="HQFKID" Mode="In" Type="Decimal" />
+      <Parameter Name="xmlTerFKID" Mode="In" Type="String" />
+      <Parameter Name="CreatedBy" Mode="In" Type="Int32" />
+    </FunctionImport>
+    <FunctionImport Name="DeleteTeamRegionLinkMaster">
+      <Parameter Name="TeamFKID" Mode="In" Type="Decimal" />
+      <Parameter Name="RegionFKID" Mode="In" Type="Decimal" />
+    </FunctionImport>
+    <FunctionImport Name="EditTeamRegionLinkMaster">
+      <Parameter Name="TeamFKID" Mode="In" Type="Decimal" />
+      <Parameter Name="IsActive" Mode="In" Type="Int32" />
+      <Parameter Name="CreatedBy" Mode="In" Type="Int32" />
+      <Parameter Name="xmlRegionFKID" Mode="In" Type="String" />
+      <Parameter Name="ModifiedBy" Mode="In" Type="Int32" />
+    </FunctionImport>
+    <FunctionImport Name="EditTerritoryHQLinkMaster">
+      <Parameter Name="HQFKID" Mode="In" Type="Decimal" />
+      <Parameter Name="IsActive" Mode="In" Type="Int32" />
+      <Parameter Name="CreatedBy" Mode="In" Type="Int32" />
+      <Parameter Name="xmlTerFKID" Mode="In" Type="String" />
+      <Parameter Name="ModifiedBy" Mode="In" Type="Int32" />
+    </FunctionImport>
+    <FunctionImport Name="GetAllRegionNotAssignedTeamByXml" ReturnType="Collection(pfizerModel.GetAllRegionNotAssignedTeamByXml_Result)" />
+    <FunctionImport Name="GetAllTeamRegionLinkByXml" ReturnType="Collection(pfizerModel.GetAllTeamRegionLinkByXml_Result)">
+      <Parameter Name="TeamFKID" Mode="In" Type="String" />
+    </FunctionImport>
+    <FunctionImport Name="GetHQNameByXML" ReturnType="Collection(pfizerModel.GetHQNameByXML_Result)" />
+    <FunctionImport Name="GetHQNameForTerByXML" ReturnType="Collection(pfizerModel.GetHQNameForTerByXML_Result)">
+      <Parameter Name="HQFKID" Mode="In" Type="String" />
+    </FunctionImport>
+    <FunctionImport Name="GetTeamMasteByPKIDByXML" ReturnType="Collection(pfizerModel.GetTeamMasteByPKIDByXML_Result)">
+      <Parameter Name="TeamFKID" Mode="In" Type="Int32" />
+    </FunctionImport>
+    <FunctionImport Name="GetTeamMasterByXML" ReturnType="Collection(pfizerModel.GetTeamMasterByXML_Result)" />
+    <FunctionImport Name="GetTerritoryNameforHQEditByXml" ReturnType="Collection(pfizerModel.GetTerritoryNameforHQEditByXml_Result)">
+      <Parameter Name="HQFKID" Mode="In" Type="String" />
+      <Parameter Name="TerritoryFKID" Mode="In" Type="String" />
+    </FunctionImport>
+    <FunctionImport Name="GetTerritoryNameforHQTerByXml" ReturnType="Collection(pfizerModel.GetTerritoryNameforHQTerByXml_Result)">
+      <Parameter Name="HQFKID" Mode="In" Type="String" />
+      <Parameter Name="TerritoryFKID" Mode="In" Type="String" />
+    </FunctionImport>
+    <FunctionImport Name="USP_GET_TeamRegionLink" ReturnType="Collection(pfizerModel.USP_GET_TeamRegionLink_Result)" />
+    <FunctionImport Name="USP_GET_TerritoryHQLink" ReturnType="Collection(pfizerModel.USP_GET_TerritoryHQLink_Result)" />
+    <FunctionImport Name="DeleteTerritoryHQLinkMaster">
+      <Parameter Name="HQFkid" Mode="In" Type="Decimal" />
+      <Parameter Name="TerritoryFKID" Mode="In" Type="Decimal" />
+    </FunctionImport>
+    <FunctionImport Name="AddProductSpecialityLinkMaster">
+      <Parameter Name="ProductFKID" Mode="In" Type="Decimal" />
+      <Parameter Name="xmlSpecialityFKID" Mode="In" Type="String" />
+      <Parameter Name="CreatedBy" Mode="In" Type="Int32" />
+    </FunctionImport>
+    <FunctionImport Name="DeleteProductSpecialityLinkMaster">
+      <Parameter Name="ProductFKID" Mode="In" Type="Decimal" />
+      <Parameter Name="SpecialityFKID" Mode="In" Type="Decimal" />
+    </FunctionImport>
+    <FunctionImport Name="EditSpecMaster">
+      <Parameter Name="SpecialityFKID" Mode="In" Type="Int32" />
+      <Parameter Name="ProductFKID" Mode="In" Type="Decimal" />
+      <Parameter Name="xmlSpecialityFKID" Mode="In" Type="String" />
+      <Parameter Name="CreatedBy" Mode="In" Type="Int32" />
+      <Parameter Name="IsActive" Mode="In" Type="Int32" />
+    </FunctionImport>
+    <FunctionImport Name="GetProductforSpecialityByXML" ReturnType="Collection(pfizerModel.GetProductforSpecialityByXML_Result)">
+      <Parameter Name="PKID" Mode="In" Type="Decimal" />
+    </FunctionImport>
+    <FunctionImport Name="GetPSOSample" ReturnType="Collection(pfizerModel.GetPSOSample_Result)">
+      <Parameter Name="UserFKID" Mode="In" Type="Decimal" />
+    </FunctionImport>
+    <FunctionImport Name="GetSpecforProductPKIDByXMLN" ReturnType="Collection(pfizerModel.GetSpecforProductPKIDByXMLN_Result)">
+      <Parameter Name="ProductFKID" Mode="In" Type="Int32" />
+    </FunctionImport>
+    <FunctionImport Name="GetSpecforProductPKIDByXMLNNotInN" ReturnType="Collection(pfizerModel.GetSpecforProductPKIDByXMLNNotInN_Result)">
+      <Parameter Name="ProductFKID" Mode="In" Type="Int32" />
+    </FunctionImport>
+    <FunctionImport Name="GetSpecializationforProductMatrixByXML" ReturnType="Collection(pfizerModel.GetSpecializationforProductMatrixByXML_Result)" />
+    <FunctionImport Name="SampleAllocationAck" ReturnType="Collection(pfizerModel.SampleAllocationAck_Result)">
+      <Parameter Name="XmlStr" Mode="In" Type="String" />
+    </FunctionImport>
+    <FunctionImport Name="USP_GET_ProductDetailingMatrix" ReturnType="Collection(pfizerModel.USP_GET_ProductDetailingMatrix_Result)" />
+    <FunctionImport Name="GetPSOInputSample" ReturnType="Collection(pfizerModel.GetPSOInputSample_Result)">
+      <Parameter Name="UserFKID" Mode="In" Type="Decimal" />
+    </FunctionImport>
+    <EntitySet Name="FAQS1View" EntityType="pfizerModel.FAQS1View" />
+    <FunctionImport Name="AddFAQS">
+      <Parameter Name="CategoryFKID" Mode="In" Type="Decimal" />
+      <Parameter Name="Question" Mode="In" Type="String" />
+      <Parameter Name="Answer" Mode="In" Type="String" />
+      <Parameter Name="IsActive" Mode="In" Type="Boolean" />
+      <Parameter Name="CreatedBy" Mode="In" Type="Decimal" />
+    </FunctionImport>
+    <FunctionImport Name="DeleteFAQS">
+      <Parameter Name="PKID" Mode="In" Type="Decimal" />
+    </FunctionImport>
+    <FunctionImport Name="EditFAQS">
+      <Parameter Name="PKID" Mode="In" Type="Decimal" />
+      <Parameter Name="CategoryFKID" Mode="In" Type="Decimal" />
+      <Parameter Name="Question" Mode="In" Type="String" />
+      <Parameter Name="Answer" Mode="In" Type="String" />
+      <Parameter Name="IsActive" Mode="In" Type="Boolean" />
+      <Parameter Name="ModifiedBy" Mode="In" Type="Decimal" />
+    </FunctionImport>
+    <FunctionImport Name="GetCategoryByID" ReturnType="Collection(pfizerModel.GetCategoryByID_Result)" />
+    <FunctionImport Name="USP_GET_InfoBankUpLoad" ReturnType="Collection(pfizerModel.USP_GET_InfoBankUpLoad_Result)" />
+    <FunctionImport Name="AddEmployeeMaster">
+      <Parameter Name="EmpCode" Mode="In" Type="String" />
+      <Parameter Name="TitleFKID" Mode="In" Type="Decimal" />
+      <Parameter Name="FirstName" Mode="In" Type="String" />
+      <Parameter Name="MiddleName" Mode="In" Type="String" />
+      <Parameter Name="LastName" Mode="In" Type="String" />
+      <Parameter Name="ShortName" Mode="In" Type="String" />
+      <Parameter Name="Sex" Mode="In" Type="String" />
+      <Parameter Name="DateOfBirth" Mode="In" Type="DateTime" />
+      <Parameter Name="JoiningDate" Mode="In" Type="DateTime" />
+      <Parameter Name="Address" Mode="In" Type="String" />
+      <Parameter Name="Street" Mode="In" Type="String" />
+      <Parameter Name="Area" Mode="In" Type="String" />
+      <Parameter Name="ZipCode" Mode="In" Type="String" />
+      <Parameter Name="PhoneNo" Mode="In" Type="String" />
+      <Parameter Name="Mobile" Mode="In" Type="String" />
+      <Parameter Name="Email" Mode="In" Type="String" />
+      <Parameter Name="HQ" Mode="In" Type="String" />
+      <Parameter Name="MartialStatusFKID" Mode="In" Type="Decimal" />
+      <Parameter Name="DesignationFKID" Mode="In" Type="Decimal" />
+      <Parameter Name="OldEmployeeCode" Mode="In" Type="String" />
+      <Parameter Name="ISDCode" Mode="In" Type="Int32" />
+      <Parameter Name="STDCode" Mode="In" Type="Int32" />
+      <Parameter Name="IsActive" Mode="In" Type="Boolean" />
+      <Parameter Name="CreatedBy" Mode="In" Type="Decimal" />
+    </FunctionImport>
+    <FunctionImport Name="AddHolidayGroupLinkMaster">
+      <Parameter Name="HolidaygroupFKID" Mode="In" Type="Decimal" />
+      <Parameter Name="xmlHolidayFKID" Mode="In" Type="String" />
+      <Parameter Name="CreatedBy" Mode="In" Type="Int32" />
+    </FunctionImport>
+    <FunctionImport Name="DeleteEmployeeMaster">
+      <Parameter Name="PKID" Mode="In" Type="Decimal" />
+      <Parameter Name="ModifiedBy" Mode="In" Type="Decimal" />
+    </FunctionImport>
+    <FunctionImport Name="EditEmployeeMaster">
+      <Parameter Name="PKID" Mode="In" Type="Decimal" />
+      <Parameter Name="EmpCode" Mode="In" Type="String" />
+      <Parameter Name="TitleFKID" Mode="In" Type="Decimal" />
+      <Parameter Name="FirstName" Mode="In" Type="String" />
+      <Parameter Name="MiddleName" Mode="In" Type="String" />
+      <Parameter Name="LastName" Mode="In" Type="String" />
+      <Parameter Name="ShortName" Mode="In" Type="String" />
+      <Parameter Name="Sex" Mode="In" Type="String" />
+      <Parameter Name="DateOfBirth" Mode="In" Type="DateTime" />
+      <Parameter Name="JoiningDate" Mode="In" Type="DateTime" />
+      <Parameter Name="Address" Mode="In" Type="String" />
+      <Parameter Name="Street" Mode="In" Type="String" />
+      <Parameter Name="Area" Mode="In" Type="String" />
+      <Parameter Name="ZipCode" Mode="In" Type="String" />
+      <Parameter Name="PhoneNo" Mode="In" Type="String" />
+      <Parameter Name="Mobile" Mode="In" Type="String" />
+      <Parameter Name="Email" Mode="In" Type="String" />
+      <Parameter Name="HQ" Mode="In" Type="String" />
+      <Parameter Name="MartialStatusFKID" Mode="In" Type="Decimal" />
+      <Parameter Name="DesignationFKID" Mode="In" Type="Decimal" />
+      <Parameter Name="OldEmployeeCode" Mode="In" Type="String" />
+      <Parameter Name="ISDCode" Mode="In" Type="Int32" />
+      <Parameter Name="STDCode" Mode="In" Type="Int32" />
+      <Parameter Name="IsActive" Mode="In" Type="Boolean" />
+      <Parameter Name="ModifiedBy" Mode="In" Type="Decimal" />
+    </FunctionImport>
+    <FunctionImport Name="EditHolidayGroupLinkMaster">
+      <Parameter Name="HolidaygroupFKID" Mode="In" Type="Decimal" />
+      <Parameter Name="xmlHolidayFKID" Mode="In" Type="String" />
+      <Parameter Name="CreatedBy" Mode="In" Type="Int32" />
+    </FunctionImport>
+    <FunctionImport Name="GetCityByXML" ReturnType="Collection(pfizerModel.GetCityByXML_Result)" />
+    <FunctionImport Name="GetDesignationByXML" ReturnType="Collection(pfizerModel.GetDesignationByXML_Result)" />
+    <FunctionImport Name="GetDesignationMasterDetail" ReturnType="Collection(pfizerModel.GetDesignationMasterDetail_Result)" />
+    <FunctionImport Name="GetEmployeMaster" ReturnType="Collection(pfizerModel.GetEmployeMaster_Result)" />
+    <FunctionImport Name="GetEmpNameByNodeTypeFKIDXml" ReturnType="Collection(pfizerModel.GetEmpNameByNodeTypeFKIDXml_Result)">
+      <Parameter Name="NodeTypeFKID" Mode="In" Type="Int32" />
+    </FunctionImport>
+    <FunctionImport Name="GetHolidayDescriptionByXml" ReturnType="Collection(pfizerModel.GetHolidayDescriptionByXml_Result)" />
+    <FunctionImport Name="GetHolidaygroup" ReturnType="Collection(pfizerModel.GetHolidaygroup_Result)" />
+    <FunctionImport Name="getUserTeamLink" ReturnType="Collection(pfizerModel.getUserTeamLink_Result)" />
+    <FunctionImport Name="USerTeamLinkAddLatest">
+      <Parameter Name="TeamFKID" Mode="In" Type="Decimal" />
+      <Parameter Name="NodeTypeFKID" Mode="In" Type="Decimal" />
+      <Parameter Name="XmlStr" Mode="In" Type="String" />
+      <Parameter Name="CreatedBy" Mode="In" Type="Int32" />
+      <Parameter Name="IsActive" Mode="In" Type="Boolean" />
+    </FunctionImport>
+    <FunctionImport Name="USerTeamLinkAddNew">
+      <Parameter Name="TeamFKID" Mode="In" Type="Decimal" />
+      <Parameter Name="NodeTypeFKID" Mode="In" Type="Decimal" />
+      <Parameter Name="XmlStr" Mode="In" Type="String" />
+      <Parameter Name="CreatedBy" Mode="In" Type="Int32" />
+      <Parameter Name="IsActive" Mode="In" Type="Boolean" />
+    </FunctionImport>
+    <FunctionImport Name="USerTeamLinkDelete">
+      <Parameter Name="PKID" Mode="In" Type="Decimal" />
+    </FunctionImport>
+    <EntitySet Name="DesignationMasters" EntityType="pfizerModel.DesignationMaster" />
+    <FunctionImport Name="AddDistrictTerritorylinkMaster">
+      <Parameter Name="DistrictFKID" Mode="In" Type="Decimal" />
+      <Parameter Name="xml" Mode="In" Type="String" />
+      <Parameter Name="IsActive" Mode="In" Type="Boolean" />
+      <Parameter Name="CreatedBy" Mode="In" Type="Decimal" />
+    </FunctionImport>
+    <FunctionImport Name="AddRegionDistrictLinkMaster">
+      <Parameter Name="RegionFKID" Mode="In" Type="Decimal" />
+      <Parameter Name="xml" Mode="In" Type="String" />
+      <Parameter Name="IsActive" Mode="In" Type="Boolean" />
+      <Parameter Name="CreatedBy" Mode="In" Type="Decimal" />
+    </FunctionImport>
+    <FunctionImport Name="DeleteRegionDistrictLinkMaster">
+      <Parameter Name="PKID" Mode="In" Type="Decimal" />
+    </FunctionImport>
+    <FunctionImport Name="GetDistrictNameforTerittoryByXml" ReturnType="Collection(pfizerModel.GetDistrictNameforTerittoryByXml_Result)">
+      <Parameter Name="RegionFKID" Mode="In" Type="String" />
+    </FunctionImport>
+    <FunctionImport Name="GetDistrictTerritoryLink" ReturnType="Collection(pfizerModel.GetDistrictTerritoryLink_Result)" />
+    <FunctionImport Name="GetRegionCodeByXml" ReturnType="Collection(pfizerModel.GetRegionCodeByXml_Result)" />
+    <FunctionImport Name="GetRegionDistrictLink" ReturnType="Collection(pfizerModel.GetRegionDistrictLink_Result)" />
+    <FunctionImport Name="DeleteDistrictTerritoryLinkMaster">
+      <Parameter Name="PKID" Mode="In" Type="Decimal" />
+    </FunctionImport>
+    <FunctionImport Name="AddInputProductLinkMaser">
+      <Parameter Name="InputFKID" Mode="In" Type="Decimal" />
+      <Parameter Name="XmlStr" Mode="In" Type="String" />
+      <Parameter Name="CreatedBy" Mode="In" Type="Int32" />
+    </FunctionImport>
+    <FunctionImport Name="AddInputTeamLinkMaser">
+      <Parameter Name="InputFKID" Mode="In" Type="Decimal" />
+      <Parameter Name="XmlStr" Mode="In" Type="String" />
+      <Parameter Name="CreatedBy" Mode="In" Type="Int32" />
+    </FunctionImport>
+    <FunctionImport Name="DeleteInputProductLinkMaser">
+      <Parameter Name="PKID" Mode="In" Type="Decimal" />
+      <Parameter Name="CreatedBy" Mode="In" Type="Int32" />
+    </FunctionImport>
+    <FunctionImport Name="DeleteInputTeamLinkMaser">
+      <Parameter Name="PKID" Mode="In" Type="Decimal" />
+      <Parameter Name="CreatedBy" Mode="In" Type="Int32" />
+    </FunctionImport>
+    <FunctionImport Name="GetInputNamebyXML" ReturnType="Collection(pfizerModel.GetInputNamebyXML_Result)" />
+    <FunctionImport Name="GetInputProductLinkMaster" ReturnType="Collection(pfizerModel.GetInputProductLinkMaster_Result)" />
+    <FunctionImport Name="GetInputteamlink" ReturnType="Collection(pfizerModel.GetInputteamlink_Result)" />
+    <FunctionImport Name="RR_GetAllTeam" ReturnType="Collection(pfizerModel.RR_GetAllTeam_Result)" />
+    <FunctionImport Name="RR_InsertUserReminderLink">
+      <Parameter Name="XmlStr" Mode="In" Type="String" />
+      <Parameter Name="UserFKID" Mode="In" Type="Int32" />
+    </FunctionImport>
+    <FunctionImport Name="GetOpinionPollTotalCount" ReturnType="Collection(String)">
+      <Parameter Name="GetColumn" Mode="In" Type="String" />
+      <Parameter Name="SearchLike" Mode="In" Type="String" />
+      <Parameter Name="PollFKID" Mode="In" Type="Decimal" />
+    </FunctionImport>
+    <FunctionImport Name="ShowOpinionPollRating" ReturnType="Collection(String)">
+      <Parameter Name="PKID" Mode="In" Type="Int32" />
+    </FunctionImport>
+    <FunctionImport Name="GetOpinionPollTotalCount1" ReturnType="Collection(Int32)">
+      <Parameter Name="GetColumn" Mode="In" Type="String" />
+      <Parameter Name="SearchLike" Mode="In" Type="String" />
+      <Parameter Name="PollFKID" Mode="In" Type="Decimal" />
+    </FunctionImport>
+    <FunctionImport Name="ShowOpinionPollRating1" ReturnType="Collection(pfizerModel.ShowOpinionPollRating1_Result)">
+      <Parameter Name="PKID" Mode="In" Type="Int32" />
+    </FunctionImport>
+    <FunctionImport Name="AddSettingMasterTeamWiseNew">
+      <Parameter Name="PSOFKID" Mode="In" Type="Decimal" />
+      <Parameter Name="XmlStr" Mode="In" Type="String" />
+      <Parameter Name="ModifiedBy" Mode="In" Type="Decimal" />
+    </FunctionImport>
+    <FunctionImport Name="InputAllocationAck">
+      <Parameter Name="XmlStr" Mode="In" Type="String" />
+    </FunctionImport>
+    <FunctionImport Name="InputMasterAck">
+      <Parameter Name="XmlStr" Mode="In" Type="String" />
+      <Parameter Name="UserFKID" Mode="In" Type="Decimal" />
+      <Parameter Name="TerritoryFKID" Mode="In" Type="Decimal" />
+    </FunctionImport>
+    <FunctionImport Name="GetDivisonMasterByPkid" ReturnType="Collection(pfizerModel.GetDivisonMasterByPkid_Result)" />
+    <FunctionImport Name="GetAreaDetailsPCL" ReturnType="Collection(pfizerModel.GetAreaDetailsPCL_Result)">
+      <Parameter Name="TerritoryFKID" Mode="In" Type="Int32" />
+    </FunctionImport>
+    <FunctionImport Name="AllPendingCustomer" ReturnType="Collection(pfizerModel.AllPendingCustomer_Result)">
+      <Parameter Name="PSOFKID" Mode="In" Type="Decimal" />
+      <Parameter Name="AreaFKID" Mode="In" Type="String" />
+      <Parameter Name="XMLCusCode" Mode="In" Type="String" />
+    </FunctionImport>
+    <FunctionImport Name="GetReportingByXml" ReturnType="Collection(pfizerModel.GetReportingByXml_Result)" />
+    <FunctionImport Name="getDistrictNameWSNew" ReturnType="Collection(pfizerModel.getDistrictNameWSNew_Result)" />
+    <FunctionImport Name="GetLocatioNameByXml" ReturnType="Collection(pfizerModel.GetLocatioNameByXml_Result)" />
+    <FunctionImport Name="getRegionNameNew" ReturnType="Collection(pfizerModel.getRegionNameNew_Result)" />
+    <FunctionImport Name="GetTeamMasterByXML_New" ReturnType="Collection(pfizerModel.GetTeamMasterByXML_New_Result)">
+      <Parameter Name="DivFKID" Mode="In" Type="Decimal" />
+    </FunctionImport>
+    <FunctionImport Name="GetTerritoryByXml" ReturnType="Collection(pfizerModel.GetTerritoryByXml_Result)">
+      <Parameter Name="DivFKID" Mode="In" Type="Int32" />
+    </FunctionImport>
+    <FunctionImport Name="getDistrictNameWSNew1" ReturnType="Collection(pfizerModel.getDistrictNameWSNew1_Result)" />
+    <FunctionImport Name="GetCreateUserByPKID" ReturnType="Collection(pfizerModel.GetCreateUserByPKID_Result)">
+      <Parameter Name="PKID" Mode="In" Type="Decimal" />
+    </FunctionImport>
+    <FunctionImport Name="DefaultAnswer" ReturnType="Collection(pfizerModel.DefaultAnswer_Result)" />
+    <FunctionImport Name="GetCActivityType" ReturnType="Collection(String)" />
+    <FunctionImport Name="GetCycleYearMonth" ReturnType="Collection(String)" />
+    <FunctionImport Name="GetDistrictNameExcludeforTerittoryByXml" ReturnType="Collection(pfizerModel.GetDistrictNameExcludeforTerittoryByXml_Result)">
+      <Parameter Name="RegionFKID" Mode="In" Type="String" />
+    </FunctionImport>
+    <FunctionImport Name="AddTerritoryAreaLinkMaster">
+      <Parameter Name="TerritoryFKID" Mode="In" Type="Decimal" />
+      <Parameter Name="IsActive" Mode="In" Type="Int32" />
+      <Parameter Name="CreatedBy" Mode="In" Type="Int32" />
+      <Parameter Name="xmlAreaFKID" Mode="In" Type="String" />
+    </FunctionImport>
+    <FunctionImport Name="DeleteTerritoryAreaLinkMaster">
+      <Parameter Name="TerritoryFKID" Mode="In" Type="Decimal" />
+      <Parameter Name="AreaFKID" Mode="In" Type="Decimal" />
+    </FunctionImport>
+    <FunctionImport Name="EditTerritoryAreaLinkMaster">
+      <Parameter Name="TerritoryFKID" Mode="In" Type="Decimal" />
+      <Parameter Name="IsActive" Mode="In" Type="Int32" />
+      <Parameter Name="CreatedBy" Mode="In" Type="Int32" />
+      <Parameter Name="xmlAreaFKID" Mode="In" Type="String" />
+      <Parameter Name="ModifiedBy" Mode="In" Type="Int32" />
+    </FunctionImport>
+    <FunctionImport Name="GetBrickNameforCityByXml" ReturnType="Collection(pfizerModel.GetBrickNameforCityByXml_Result)">
+      <Parameter Name="CityFKID" Mode="In" Type="String" />
+      <Parameter Name="TerritoryFKID" Mode="In" Type="String" />
+    </FunctionImport>
+    <FunctionImport Name="GetCityFCforTerritoryByXML" ReturnType="Collection(pfizerModel.GetCityFCforTerritoryByXML_Result)" />
+    <FunctionImport Name="GetCityforTerritoryByXML" ReturnType="Collection(pfizerModel.GetCityforTerritoryByXML_Result)">
+      <Parameter Name="FCCName" Mode="In" Type="String" />
+    </FunctionImport>
+    <FunctionImport Name="GetDistrictCodeByXml" ReturnType="Collection(pfizerModel.GetDistrictCodeByXml_Result)" />
+    <FunctionImport Name="GetTCodeFCforTerritoryByXML" ReturnType="Collection(pfizerModel.GetTCodeFCforTerritoryByXML_Result)" />
+    <FunctionImport Name="GetTCodeforTerritoryByXML" ReturnType="Collection(pfizerModel.GetTCodeforTerritoryByXML_Result)">
+      <Parameter Name="FCTCode" Mode="In" Type="String" />
+    </FunctionImport>
+    <FunctionImport Name="GetTerritoryNameExcludeforDistrictByXml" ReturnType="Collection(pfizerModel.GetTerritoryNameExcludeforDistrictByXml_Result)">
+      <Parameter Name="DistrictFKID" Mode="In" Type="String" />
+    </FunctionImport>
+    <FunctionImport Name="usp_GetTerritory" ReturnType="Collection(pfizerModel.usp_GetTerritory_Result)" />
+    <FunctionImport Name="GetTeamNamefromInputMaster" ReturnType="Collection(pfizerModel.GetTeamNamefromInputMaster_Result)">
+      <Parameter Name="PKID" Mode="In" Type="Decimal" />
+      <Parameter Name="ActType" Mode="In" Type="String" />
+    </FunctionImport>
+    <FunctionImport Name="GetInputProductLinkMaster1" ReturnType="Collection(pfizerModel.GetInputProductLinkMaster1_Result)" />
+    <FunctionImport Name="getInputTypebyInputMaster" ReturnType="Collection(pfizerModel.getInputTypebyInputMaster_Result)">
+      <Parameter Name="InputFKID" Mode="In" Type="Decimal" />
+      <Parameter Name="ActType" Mode="In" Type="String" />
+    </FunctionImport>
+    <FunctionImport Name="GetProductNamefromInputMaster" ReturnType="Collection(pfizerModel.GetProductNamefromInputMaster_Result)">
+      <Parameter Name="PKID" Mode="In" Type="Decimal" />
+      <Parameter Name="ActType" Mode="In" Type="String" />
+    </FunctionImport>
+    <FunctionImport Name="getInputTypebyInputProdLinkMaster" ReturnType="Collection(pfizerModel.getInputTypebyInputProdLinkMaster_Result)">
+      <Parameter Name="InputFKID" Mode="In" Type="Decimal" />
+      <Parameter Name="ActType" Mode="In" Type="String" />
+    </FunctionImport>
+    <FunctionImport Name="GetHolidayGroupLinkmasterByXml" ReturnType="Collection(pfizerModel.GetHolidayGroupLinkmasterByXml_Result)">
+      <Parameter Name="HolidaygroupFKID" Mode="In" Type="Decimal" />
+    </FunctionImport>
+    <FunctionImport Name="GetMoleculeforProductPKIDByXMLNotInN" ReturnType="Collection(pfizerModel.GetMoleculeforProductPKIDByXMLNotInN_Result)">
+      <Parameter Name="ProductFKID" Mode="In" Type="Int32" />
+    </FunctionImport>
+    <FunctionImport Name="USP_MoleculeProductMasterGrid" ReturnType="Collection(pfizerModel.USP_MoleculeProductMasterGrid_Result)" />
+    <FunctionImport Name="GetTerritoryNameforDistrictByXml" ReturnType="Collection(pfizerModel.GetTerritoryNameforDistrictByXml_Result)">
+      <Parameter Name="DistrictFKID" Mode="In" Type="String" />
+    </FunctionImport>
+    <FunctionImport Name="GetTerritoryNameforHQByXml" ReturnType="Collection(pfizerModel.GetTerritoryNameforHQByXml_Result)">
+      <Parameter Name="HQFKID" Mode="In" Type="String" />
+    </FunctionImport>
+    <EntitySet Name="LocationMasters" EntityType="pfizerModel.LocationMaster" />
+    <FunctionImport Name="GetLocationMaster" ReturnType="Collection(pfizerModel.GetLocationMaster_Result)" />
+    <FunctionImport Name="GetBrickforTerritoryByXml" ReturnType="Collection(pfizerModel.GetBrickforTerritoryByXml_Result)">
+      <Parameter Name="TerritoryFKID" Mode="In" Type="Decimal" />
+      <Parameter Name="AreaFKID" Mode="In" Type="Decimal" />
+    </FunctionImport>
+    <FunctionImport Name="GetCityNameForAreaXML" ReturnType="Collection(pfizerModel.GetCityNameForAreaXML_Result)">
+      <Parameter Name="AreaFKID" Mode="In" Type="Decimal" />
+    </FunctionImport>
+    <FunctionImport Name="GetCityNameforTerritoryByXML" ReturnType="Collection(pfizerModel.GetCityNameforTerritoryByXML_Result)">
+      <Parameter Name="TerritoryFKID" Mode="In" Type="Decimal" />
+      <Parameter Name="AreaFKID" Mode="In" Type="Decimal" />
+    </FunctionImport>
+    <FunctionImport Name="GetTerritoryforBrickXml" ReturnType="Collection(pfizerModel.GetTerritoryforBrickXml_Result)">
+      <Parameter Name="TerritoryFKID" Mode="In" Type="Decimal" />
+    </FunctionImport>
+    <FunctionImport Name="usp_Get_CampTypeMaster" ReturnType="Collection(pfizerModel.usp_Get_CampTypeMaster_Result2)" />
+    <EntitySet Name="SettingMasters" EntityType="pfizerModel.SettingMaster" />
+    <EntitySet Name="EmployeeMasters" EntityType="pfizerModel.EmployeeMaster" />
+    <AssociationSet Name="FK_UserMaster_EmployeeMaster" Association="pfizerModel.FK_UserMaster_EmployeeMaster">
+      <End Role="EmployeeMaster" EntitySet="EmployeeMasters" />
+      <End Role="UserMaster" EntitySet="UserMasters" />
+    </AssociationSet>
+    <FunctionImport Name="uspGetHolidayMaster" ReturnType="Collection(pfizerModel.uspGetHolidayMaster_Result1)" />
+    <EntitySet Name="Notifications" EntityType="pfizerModel.Notification" />
+    <FunctionImport Name="GetAllBrickDetailsByXML" ReturnType="Collection(pfizerModel.GetAllBrickDetailsByXML_Result)">
+      <Parameter Name="CityFKID" Mode="In" Type="Int32" />
+    </FunctionImport>
+    <FunctionImport Name="sp_delete_Hospitaldetails">
+      <Parameter Name="hospitalId" Mode="In" Type="Int32" />
+    </FunctionImport>
+    <FunctionImport Name="sp_delete_Stockistdetails">
+      <Parameter Name="StockistId" Mode="In" Type="Int32" />
+    </FunctionImport>
+    <FunctionImport Name="sp_insert_hospitaldetails">
+      <Parameter Name="NameofHospital" Mode="In" Type="String" />
+      <Parameter Name="HotelAddress" Mode="In" Type="String" />
+      <Parameter Name="Street" Mode="In" Type="String" />
+      <Parameter Name="City" Mode="In" Type="Int32" />
+      <Parameter Name="Area" Mode="In" Type="Int32" />
+      <Parameter Name="Zip" Mode="In" Type="Decimal" />
+      <Parameter Name="PhoneNumber" Mode="In" Type="String" />
+      <Parameter Name="Email" Mode="In" Type="String" />
+      <Parameter Name="PSOFKID" Mode="In" Type="Decimal" />
+    </FunctionImport>
+    <FunctionImport Name="sp_insert_Stockistdetails">
+      <Parameter Name="NameofStockist" Mode="In" Type="String" />
+      <Parameter Name="StockistAddress" Mode="In" Type="String" />
+      <Parameter Name="Street" Mode="In" Type="String" />
+      <Parameter Name="City" Mode="In" Type="Int32" />
+      <Parameter Name="Area" Mode="In" Type="Int32" />
+      <Parameter Name="Zip" Mode="In" Type="Decimal" />
+      <Parameter Name="PhoneNumber" Mode="In" Type="String" />
+      <Parameter Name="Email" Mode="In" Type="String" />
+      <Parameter Name="PSOFKID" Mode="In" Type="Decimal" />
+    </FunctionImport>
+    <FunctionImport Name="sp_update_hospitaldetails">
+      <Parameter Name="HospitalId" Mode="In" Type="Int32" />
+      <Parameter Name="NameofHospital" Mode="In" Type="String" />
+      <Parameter Name="HotelAddress" Mode="In" Type="String" />
+      <Parameter Name="Street" Mode="In" Type="String" />
+      <Parameter Name="City" Mode="In" Type="Int32" />
+      <Parameter Name="Area" Mode="In" Type="Int32" />
+      <Parameter Name="Zip" Mode="In" Type="Decimal" />
+      <Parameter Name="PhoneNumber" Mode="In" Type="String" />
+      <Parameter Name="Email" Mode="In" Type="String" />
+      <Parameter Name="IsActive" Mode="In" Type="String" />
+    </FunctionImport>
+    <FunctionImport Name="sp_update_Stockistdetails">
+      <Parameter Name="StockistId" Mode="In" Type="Int32" />
+      <Parameter Name="NameofStockist" Mode="In" Type="String" />
+      <Parameter Name="StockistAddress" Mode="In" Type="String" />
+      <Parameter Name="Street" Mode="In" Type="String" />
+      <Parameter Name="City" Mode="In" Type="Int32" />
+      <Parameter Name="Area" Mode="In" Type="Int32" />
+      <Parameter Name="Zip" Mode="In" Type="Decimal" />
+      <Parameter Name="PhoneNumber" Mode="In" Type="String" />
+      <Parameter Name="Email" Mode="In" Type="String" />
+      <Parameter Name="Isactive" Mode="In" Type="String" />
+    </FunctionImport>
+    <FunctionImport Name="GetSpecializationMasterByPKID" ReturnType="Collection(pfizerModel.GetSpecializationMasterByPKID_Result)">
+      <Parameter Name="PKID" Mode="In" Type="Decimal" />
+    </FunctionImport>
+    <EntitySet Name="Masters_Hospitalmaster_tb" EntityType="pfizerModel.Masters_Hospitalmaster_tb" />
+    <EntitySet Name="Masters_Stockistmaster_Tb" EntityType="pfizerModel.Masters_Stockistmaster_Tb" />
+    <FunctionImport Name="GetHospitalMaster_PSO" ReturnType="Collection(pfizerModel.GetHospitalMaster_PSO_Result1)">
+      <Parameter Name="PSOFKID" Mode="In" Type="Decimal" />
+    </FunctionImport>
+    <FunctionImport Name="GetStockistMaster_PSO" ReturnType="Collection(pfizerModel.GetStockistMaster_PSO_Result1)">
+      <Parameter Name="PSOFKID" Mode="In" Type="Decimal" />
+    </FunctionImport>
+    <FunctionImport Name="GetSplSelectedTeamByXml" ReturnType="Collection(pfizerModel.GetSplSelectedTeamByXml_Result)">
+      <Parameter Name="PKID" Mode="In" Type="Decimal" />
+    </FunctionImport>
+    <FunctionImport Name="GetLinkUserTeamMasterforDrpuserfillByXml" ReturnType="Collection(pfizerModel.GetLinkUserTeamMasterforDrpuserfillByXml_Result1)">
+      <Parameter Name="TeamFKID" Mode="In" Type="Decimal" />
+      <Parameter Name="NodeTypeFKID" Mode="In" Type="Decimal" />
+    </FunctionImport>
+  </EntityContainer>
+  <ComplexType Name="AuthenticateUser_Result">
+    <Property Type="String" Name="Result" Nullable="true" MaxLength="2" />
+    <Property Type="Decimal" Name="USER_FKID" Nullable="false" Precision="10" Scale="0" />
+    <Property Type="Decimal" Name="EMP_FKID" Nullable="false" Precision="10" Scale="0" />
+    <Property Type="String" Name="EmpName" Nullable="true" MaxLength="92" />
+    <Property Type="Decimal" Name="ROLE_FKID" Nullable="false" Precision="10" Scale="0" />
+    <Property Type="Decimal" Name="Division_FKID" Nullable="true" Precision="10" Scale="0" />
+    <Property Type="Decimal" Name="Territory_FKID" Nullable="true" Precision="10" Scale="0" />
+    <Property Type="Decimal" Name="NodeType_FKID" Nullable="true" Precision="10" Scale="0" />
+    <Property Type="String" Name="LastLogin" Nullable="true" MaxLength="22" />
+    <Property Type="String" Name="LoginName" Nullable="false" MaxLength="20" />
+    <Property Type="DateTime" Name="LastAddresUpdateDate" Nullable="true" Precision="23" />
+  </ComplexType>
+  <ComplexType Name="BuildMenuNew_Result">
+    <Property Type="Int32" Name="id" Nullable="false" />
+    <Property Type="String" Name="DisplayHeading" Nullable="false" MaxLength="50" />
+    <Property Type="String" Name="Href" Nullable="false" MaxLength="100" />
+    <Property Type="Int32" Name="id1" Nullable="false" />
+    <Property Type="String" Name="DisplayHeading1" Nullable="false" MaxLength="50" />
+    <Property Type="String" Name="Href1" Nullable="false" MaxLength="100" />
+  </ComplexType>
+  <ComplexType Name="GetQuestion_Result">
+    <Property Type="Decimal" Name="PKID" Nullable="false" Precision="10" Scale="0" />
+    <Property Type="String" Name="Question" Nullable="false" MaxLength="50" />
+  </ComplexType>
+  <ComplexType Name="TimeSetting_Result">
+    <Property Type="Decimal" Name="PKID" Nullable="false" Precision="10" Scale="0" />
+    <Property Type="String" Name="FromValue" Nullable="true" MaxLength="100" />
+    <Property Type="String" Name="Code" Nullable="true" MaxLength="10" />
+  </ComplexType>
+  <ComplexType Name="BuildMenuNew1_Result">
+    <Property Type="Int32" Name="id" Nullable="false" />
+    <Property Type="String" Name="DisplayHeading" Nullable="false" MaxLength="50" />
+    <Property Type="String" Name="Href" Nullable="false" MaxLength="100" />
+    <Property Type="Int32" Name="cid" Nullable="false" />
+    <Property Type="String" Name="cDisplayHeading" Nullable="false" MaxLength="50" />
+    <Property Type="String" Name="cHref" Nullable="false" MaxLength="100" />
+  </ComplexType>
+  <ComplexType Name="BuildMenuNew2_Result">
+    <Property Type="Int32" Name="id" Nullable="false" />
+    <Property Type="String" Name="DisplayHeading" Nullable="false" MaxLength="50" />
+    <Property Type="String" Name="Href" Nullable="false" MaxLength="100" />
+    <Property Type="Int32" Name="cid" Nullable="false" />
+    <Property Type="String" Name="cDisplayHeading" Nullable="false" MaxLength="50" />
+    <Property Type="String" Name="cHref" Nullable="false" MaxLength="100" />
+  </ComplexType>
+  <ComplexType Name="BuildMenuNew_Result1">
+    <Property Type="Int32" Name="id" Nullable="false" />
+    <Property Type="String" Name="DisplayHeading" Nullable="false" MaxLength="50" />
+    <Property Type="String" Name="Href" Nullable="false" MaxLength="100" />
+    <Property Type="Int32" Name="cid" Nullable="false" />
+    <Property Type="String" Name="cDisplayHeading" Nullable="false" MaxLength="50" />
+    <Property Type="String" Name="cHref" Nullable="false" MaxLength="100" />
+  </ComplexType>
+  <ComplexType Name="BuildMenuTemp_Result">
+    <Property Type="Int32" Name="id" Nullable="false" />
+    <Property Type="String" Name="DisplayHeading" Nullable="false" MaxLength="50" />
+    <Property Type="String" Name="Href" Nullable="false" MaxLength="100" />
+    <Property Type="Int32" Name="cid" Nullable="false" />
+    <Property Type="String" Name="cDisplayHeading" Nullable="false" MaxLength="50" />
+    <Property Type="String" Name="cHref" Nullable="false" MaxLength="100" />
+  </ComplexType>
+  <ComplexType Name="AuthenticateUser2_Result">
+    <Property Type="String" Name="Result" Nullable="true" MaxLength="2" />
+    <Property Type="Decimal" Name="USER_FKID" Nullable="false" Precision="10" Scale="0" />
+    <Property Type="Decimal" Name="EMP_FKID" Nullable="false" Precision="10" Scale="0" />
+    <Property Type="String" Name="EmpName" Nullable="true" MaxLength="92" />
+    <Property Type="Decimal" Name="ROLE_FKID" Nullable="false" Precision="10" Scale="0" />
+    <Property Type="Decimal" Name="Division_FKID" Nullable="true" Precision="10" Scale="0" />
+    <Property Type="Decimal" Name="Territory_FKID" Nullable="true" Precision="10" Scale="0" />
+    <Property Type="Decimal" Name="NodeType_FKID" Nullable="true" Precision="10" Scale="0" />
+    <Property Type="String" Name="LastLogin" Nullable="true" MaxLength="22" />
+    <Property Type="String" Name="LoginName" Nullable="false" MaxLength="20" />
+    <Property Type="DateTime" Name="LastAddresUpdateDate" Nullable="true" Precision="23" />
+  </ComplexType>
+  <ComplexType Name="AuthenticateUser3_Result">
+    <Property Type="String" Name="Result" Nullable="true" MaxLength="2" />
+    <Property Type="Decimal" Name="USER_FKID" Nullable="false" Precision="10" Scale="0" />
+    <Property Type="Decimal" Name="EMP_FKID" Nullable="false" Precision="10" Scale="0" />
+    <Property Type="String" Name="EmpName" Nullable="true" MaxLength="92" />
+    <Property Type="Decimal" Name="ROLE_FKID" Nullable="false" Precision="10" Scale="0" />
+    <Property Type="Decimal" Name="Division_FKID" Nullable="true" Precision="10" Scale="0" />
+    <Property Type="Decimal" Name="Territory_FKID" Nullable="true" Precision="10" Scale="0" />
+    <Property Type="Decimal" Name="NodeType_FKID" Nullable="true" Precision="10" Scale="0" />
+    <Property Type="String" Name="LastLogin" Nullable="true" MaxLength="22" />
+    <Property Type="String" Name="LoginName" Nullable="false" MaxLength="20" />
+    <Property Type="DateTime" Name="LastAddresUpdateDate" Nullable="true" Precision="23" />
+  </ComplexType>
+  <ComplexType Name="AuthenticateUser6_Result">
+    <Property Type="String" Name="Result" Nullable="true" MaxLength="2" />
+    <Property Type="Decimal" Name="USER_FKID" Nullable="false" Precision="10" Scale="0" />
+    <Property Type="Decimal" Name="EMP_FKID" Nullable="false" Precision="10" Scale="0" />
+    <Property Type="String" Name="EmpName" Nullable="true" MaxLength="92" />
+    <Property Type="Decimal" Name="ROLE_FKID" Nullable="false" Precision="10" Scale="0" />
+    <Property Type="Decimal" Name="Division_FKID" Nullable="true" Precision="10" Scale="0" />
+    <Property Type="Decimal" Name="Territory_FKID" Nullable="true" Precision="10" Scale="0" />
+    <Property Type="Decimal" Name="NodeType_FKID" Nullable="true" Precision="10" Scale="0" />
+    <Property Type="String" Name="LastLogin" Nullable="true" MaxLength="22" />
+    <Property Type="String" Name="LoginName" Nullable="false" MaxLength="20" />
+    <Property Type="DateTime" Name="LastAddresUpdateDate" Nullable="true" Precision="23" />
+  </ComplexType>
+  <ComplexType Name="AuthenticateUser7_Result">
+    <Property Type="String" Name="Result" Nullable="true" MaxLength="2" />
+    <Property Type="Decimal" Name="USER_FKID" Nullable="false" Precision="10" Scale="0" />
+    <Property Type="Decimal" Name="EMP_FKID" Nullable="false" Precision="10" Scale="0" />
+    <Property Type="String" Name="EmpName" Nullable="true" MaxLength="92" />
+    <Property Type="Decimal" Name="ROLE_FKID" Nullable="false" Precision="10" Scale="0" />
+    <Property Type="Decimal" Name="Division_FKID" Nullable="true" Precision="10" Scale="0" />
+    <Property Type="Decimal" Name="Territory_FKID" Nullable="true" Precision="10" Scale="0" />
+    <Property Type="Decimal" Name="NodeType_FKID" Nullable="true" Precision="10" Scale="0" />
+    <Property Type="String" Name="LastLogin" Nullable="true" MaxLength="22" />
+    <Property Type="String" Name="LoginName" Nullable="false" MaxLength="20" />
+    <Property Type="DateTime" Name="LastAddresUpdateDate" Nullable="true" Precision="23" />
+  </ComplexType>
+  <ComplexType Name="GetUsefulLinks_Result">
+    <Property Type="Decimal" Name="PKID" Nullable="true" Precision="10" Scale="0" />
+    <Property Type="String" Name="GenCode" Nullable="true" MaxLength="20" />
+    <Property Type="String" Name="GenName" Nullable="true" MaxLength="255" />
+  </ComplexType>
+  <ComplexType Name="GetAlertsTextByXML_Result">
+    <Property Type="Decimal" Name="PKID" Nullable="false" Precision="10" Scale="0" />
+    <Property Type="String" Name="Body1" Nullable="true" MaxLength="269" />
+    <Property Type="String" Name="Body3" Nullable="true" MaxLength="22" />
+    <Property Type="String" Name="Body" Nullable="true" MaxLength="500" />
+  </ComplexType>
+  <ComplexType Name="GetTopAlertsByXML_Result">
+    <Property Type="Decimal" Name="PKID" Nullable="false" Precision="10" Scale="0" />
+    <Property Type="String" Name="AlertStatus" Nullable="false" MaxLength="2" />
+    <Property Type="String" Name="Title" Nullable="true" MaxLength="500" />
+  </ComplexType>
+  <ComplexType Name="buildInfoBank_Result">
+    <Property Type="Decimal" Name="PKID" Nullable="false" Precision="10" Scale="0" />
+    <Property Type="String" Name="Category" Nullable="true" MaxLength="60" />
+    <Property Type="Decimal" Name="ParentFKID" Nullable="false" Precision="10" Scale="0" />
+    <Property Type="Boolean" Name="IsActive" Nullable="false" />
+    <Property Type="DateTime" Name="CreatedDate" Nullable="false" Precision="23" />
+    <Property Type="Decimal" Name="CreatedBy" Nullable="false" Precision="10" Scale="0" />
+    <Property Type="DateTime" Name="ModifiedDate" Nullable="true" Precision="23" />
+    <Property Type="Decimal" Name="ModifiedBy" Nullable="true" Precision="10" Scale="0" />
+  </ComplexType>
+  <ComplexType Name="buildInfoBank_Result1">
+    <Property Type="Decimal" Name="PKID" Nullable="false" Precision="10" Scale="0" />
+    <Property Type="String" Name="Category" Nullable="true" MaxLength="60" />
+    <Property Type="Decimal" Name="ParentFKID" Nullable="false" Precision="10" Scale="0" />
+    <Property Type="Boolean" Name="IsActive" Nullable="false" />
+    <Property Type="DateTime" Name="CreatedDate" Nullable="false" Precision="23" />
+    <Property Type="Decimal" Name="CreatedBy" Nullable="false" Precision="10" Scale="0" />
+    <Property Type="DateTime" Name="ModifiedDate" Nullable="true" Precision="23" />
+    <Property Type="Decimal" Name="ModifiedBy" Nullable="true" Precision="10" Scale="0" />
+  </ComplexType>
+  <ComplexType Name="GetContentByXML_Result">
+    <Property Type="Decimal" Name="PKID" Nullable="false" Precision="10" Scale="0" />
+    <Property Type="String" Name="Title" Nullable="false" MaxLength="Max" />
+    <Property Type="Boolean" Name="IsActive" Nullable="false" />
+    <Property Type="Decimal" Name="PriorityFKID" Nullable="false" Precision="10" Scale="0" />
+    <Property Type="Boolean" Name="NewStausFlag" Nullable="true" />
+  </ComplexType>
+  <ComplexType Name="GetNotificationByXML_Result">
+    <Property Type="Decimal" Name="PKID" Nullable="false" Precision="10" Scale="0" />
+    <Property Type="String" Name="Title" Nullable="true" MaxLength="50" />
+  </ComplexType>
+  <ComplexType Name="GetContentBodyTextByXML_Result">
+    <Property Type="Decimal" Name="PKID" Nullable="false" Precision="10" Scale="0" />
+    <Property Type="String" Name="GenName" Nullable="true" MaxLength="255" />
+    <Property Type="String" Name="Title" Nullable="false" MaxLength="Max" />
+    <Property Type="String" Name="Body" Nullable="false" MaxLength="Max" />
+  </ComplexType>
+  <ComplexType Name="GetNotificationTextByXML_Result">
+    <Property Type="Decimal" Name="PKID" Nullable="false" Precision="10" Scale="0" />
+    <Property Type="String" Name="GenName" Nullable="false" MaxLength="12" />
+    <Property Type="String" Name="Body" Nullable="false" MaxLength="50" />
+  </ComplexType>
+  <ComplexType Name="GetAlertsTextByXML_Result1">
+    <Property Type="Decimal" Name="PKID" Nullable="false" Precision="10" Scale="0" />
+    <Property Type="String" Name="Body1" Nullable="true" MaxLength="269" />
+    <Property Type="String" Name="Body3" Nullable="true" MaxLength="22" />
+    <Property Type="String" Name="Body" Nullable="true" MaxLength="500" />
+  </ComplexType>
+  <ComplexType Name="usp_AuthenticateUser_Result">
+    <Property Type="String" Name="Result" Nullable="true" MaxLength="2" />
+    <Property Type="Decimal" Name="USER_FKID" Nullable="false" Precision="10" Scale="0" />
+    <Property Type="Decimal" Name="EMP_FKID" Nullable="false" Precision="10" Scale="0" />
+    <Property Type="String" Name="EmpName" Nullable="true" MaxLength="92" />
+    <Property Type="Decimal" Name="ROLE_FKID" Nullable="false" Precision="10" Scale="0" />
+    <Property Type="Decimal" Name="Division_FKID" Nullable="true" Precision="10" Scale="0" />
+    <Property Type="Decimal" Name="Territory_FKID" Nullable="true" Precision="10" Scale="0" />
+    <Property Type="Decimal" Name="NodeType_FKID" Nullable="true" Precision="10" Scale="0" />
+    <Property Type="String" Name="LastLogin" Nullable="true" MaxLength="22" />
+    <Property Type="String" Name="LoginName" Nullable="false" MaxLength="20" />
+    <Property Type="DateTime" Name="LastAddresUpdateDate" Nullable="true" Precision="23" />
+  </ComplexType>
+  <ComplexType Name="BuildMenu_Result">
+    <Property Type="Int32" Name="id" Nullable="false" />
+    <Property Type="String" Name="DisplayHeading" Nullable="false" MaxLength="50" />
+    <Property Type="String" Name="Href" Nullable="false" MaxLength="100" />
+    <Property Type="Int32" Name="id1" Nullable="false" />
+    <Property Type="String" Name="DisplayHeading1" Nullable="false" MaxLength="50" />
+    <Property Type="String" Name="Href1" Nullable="false" MaxLength="100" />
+  </ComplexType>
+  <EntityType Name="vw_MeetingReminderReadstatus">
+    <Key>
+      <PropertyRef Name="Element" />
+    </Key>
+    <Property Name="Element" Type="String" Nullable="false" MaxLength="6" FixedLength="false" Unicode="false" />
+    <Property Name="UnReadstatusCurrentDate" Type="Int32" />
+  </EntityType>
+  <ComplexType Name="BuildMenu_Result1">
+    <Property Type="Int32" Name="id" Nullable="false" />
+    <Property Type="String" Name="DisplayHeading" Nullable="false" MaxLength="50" />
+    <Property Type="String" Name="Href" Nullable="false" MaxLength="100" />
+    <Property Type="Int32" Name="id1" Nullable="false" />
+    <Property Type="String" Name="cDisplayHeading" Nullable="false" MaxLength="50" />
+    <Property Type="String" Name="cHref" Nullable="false" MaxLength="100" />
+  </ComplexType>
+  <ComplexType Name="GetTopOneOpinionByXML_Result">
+    <Property Type="Decimal" Name="PKID" Nullable="false" Precision="10" Scale="0" />
+    <Property Type="String" Name="DisplayDate" Nullable="true" MaxLength="30" />
+    <Property Type="DateTime" Name="OrderbyDate" Nullable="true" Precision="23" />
+    <Property Type="String" Name="Question" Nullable="true" MaxLength="255" />
+    <Property Type="String" Name="Option1" Nullable="false" MaxLength="20" />
+    <Property Type="String" Name="Option2" Nullable="false" MaxLength="20" />
+    <Property Type="String" Name="Option3" Nullable="true" MaxLength="20" />
+    <Property Type="String" Name="Option4" Nullable="true" MaxLength="20" />
+    <Property Type="String" Name="Option5" Nullable="true" MaxLength="20" />
+  </ComplexType>
+  <ComplexType Name="usp_Get_CampTypeMaster_Result">
+    <Property Type="Decimal" Name="PKID" Nullable="false" Precision="10" Scale="0" />
+    <Property Type="String" Name="TableName" Nullable="true" MaxLength="30" />
+    <Property Type="String" Name="GenCode" Nullable="true" MaxLength="20" />
+    <Property Type="String" Name="GenName" Nullable="true" MaxLength="255" />
+    <Property Type="Decimal" Name="GenFKID" Nullable="false" Precision="10" Scale="0" />
+    <Property Type="String" Name="IsActive" Nullable="false" MaxLength="8" />
+  </ComplexType>
+  <EntityType Name="GeneralMaster">
+    <Key>
+      <PropertyRef Name="PKID" />
+    </Key>
+    <Property Name="PKID" Type="Decimal" Nullable="false" Precision="10" Scale="0" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="GenFKID" Type="Decimal" Nullable="false" Precision="10" Scale="0" />
+    <Property Name="GenCode" Type="String" MaxLength="20" FixedLength="false" Unicode="false" />
+    <Property Name="GenName" Type="String" MaxLength="255" FixedLength="false" Unicode="false" />
+    <Property Name="IsActive" Type="Boolean" Nullable="false" />
+    <Property Name="CreatedDate" Type="DateTime" Nullable="false" Precision="3" />
+    <Property Name="CreatedBy" Type="Decimal" Nullable="false" Precision="10" Scale="0" />
+    <Property Name="ModifiedDate" Type="DateTime" Precision="3" />
+    <Property Name="ModifiedBy" Type="Decimal" Precision="10" Scale="0" />
+  </EntityType>
+  <ComplexType Name="GetForgetPassword_Result">
+    <Property Type="String" Name="Pass" Nullable="true" MaxLength="30" />
+    <Property Type="Boolean" Name="status" Nullable="true" />
+  </ComplexType>
+  <ComplexType Name="GetPassword_Result">
+    <Property Type="String" Name="FirstName" Nullable="false" MaxLength="30" />
+    <Property Type="String" Name="Email" Nullable="false" MaxLength="100" />
+  </ComplexType>
+  <ComplexType Name="USP_GET_EVALUATIONMASTER_Result">
+    <Property Type="Decimal" Name="PKID" Nullable="false" Precision="10" Scale="0" />
+    <Property Type="String" Name="FormName" Nullable="false" MaxLength="20" />
+    <Property Type="String" Name="IsActive" Nullable="false" MaxLength="8" />
+  </ComplexType>
+  <ComplexType Name="USP_GET_QUALIFICATIONMASTER_Result">
+    <Property Type="Decimal" Name="PKID" Nullable="false" Precision="10" Scale="0" />
+    <Property Type="String" Name="QualificationName" Nullable="true" MaxLength="50" />
+    <Property Type="String" Name="IsActive" Nullable="false" MaxLength="8" />
+  </ComplexType>
+  <ComplexType Name="USP_GET_STRATEGICPLANNINGMASTER_Result">
+    <Property Type="Decimal" Name="PKID" Nullable="false" Precision="10" Scale="0" />
+    <Property Type="String" Name="FormName" Nullable="false" MaxLength="20" />
+    <Property Type="String" Name="IsActive" Nullable="false" MaxLength="8" />
+  </ComplexType>
+  <ComplexType Name="USP_GET_TAILOREDEXECUTIONMASTER_Result">
+    <Property Type="Decimal" Name="PKID" Nullable="false" Precision="10" Scale="0" />
+    <Property Type="String" Name="FormName" Nullable="false" MaxLength="20" />
+    <Property Type="String" Name="IsActive" Nullable="false" MaxLength="8" />
+  </ComplexType>
+  <EntityType Name="EvaluationMaster">
+    <Key>
+      <PropertyRef Name="PKID" />
+    </Key>
+    <Property Name="PKID" Type="Decimal" Nullable="false" Precision="10" Scale="0" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="FormName" Type="String" Nullable="false" MaxLength="20" FixedLength="false" Unicode="false" />
+    <Property Name="IsActive" Type="Boolean" Nullable="false" />
+    <Property Name="CreatedBy" Type="Decimal" Precision="10" Scale="0" />
+    <Property Name="CreatedDate" Type="DateTime" Precision="3" />
+    <Property Name="ModifiedBy" Type="Decimal" Precision="10" Scale="0" />
+    <Property Name="ModifiedDate" Type="DateTime" Precision="3" />
+  </EntityType>
+  <EntityType Name="StrategicPlanningMaster">
+    <Key>
+      <PropertyRef Name="PKID" />
+    </Key>
+    <Property Name="PKID" Type="Decimal" Nullable="false" Precision="10" Scale="0" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="FormName" Type="String" Nullable="false" MaxLength="20" FixedLength="false" Unicode="false" />
+    <Property Name="IsActive" Type="Boolean" Nullable="false" />
+    <Property Name="CreatedBy" Type="Decimal" Precision="10" Scale="0" />
+    <Property Name="CreatedDate" Type="DateTime" Precision="3" />
+    <Property Name="ModifiedBy" Type="Decimal" Precision="10" Scale="0" />
+    <Property Name="ModifiedDate" Type="DateTime" Precision="3" />
+  </EntityType>
+  <EntityType Name="TailoredExecutionMaster">
+    <Key>
+      <PropertyRef Name="PKID" />
+    </Key>
+    <Property Name="PKID" Type="Decimal" Nullable="false" Precision="10" Scale="0" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="FormName" Type="String" Nullable="false" MaxLength="20" FixedLength="false" Unicode="false" />
+    <Property Name="IsActive" Type="Boolean" Nullable="false" />
+    <Property Name="CreatedBy" Type="Decimal" Precision="10" Scale="0" />
+    <Property Name="CreatedDate" Type="DateTime" Precision="3" />
+    <Property Name="ModifiedBy" Type="Decimal" Precision="10" Scale="0" />
+    <Property Name="ModifiedDate" Type="DateTime" Precision="3" />
+  </EntityType>
+  <EntityType Name="QualificationMaster">
+    <Key>
+      <PropertyRef Name="PKID" />
+    </Key>
+    <Property Name="PKID" Type="Decimal" Nullable="false" Precision="10" Scale="0" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="QualificationName" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+    <Property Name="IsActive" Type="Boolean" />
+    <Property Name="CreatedDate" Type="DateTime" Precision="3" />
+    <Property Name="CreatedBy" Type="Decimal" Precision="10" Scale="0" />
+    <Property Name="ModifiedDate" Type="DateTime" Precision="3" />
+    <Property Name="ModifiedBy" Type="Decimal" Precision="10" Scale="0" />
+  </EntityType>
+  <ComplexType Name="USP_GET_CYCLE_DEFINITION_MASTER_Result">
+    <Property Type="Decimal" Name="PKID" Nullable="false" Precision="10" Scale="0" />
+    <Property Type="Decimal" Name="Year" Nullable="false" Precision="10" Scale="0" />
+    <Property Type="Decimal" Name="CycleNo" Nullable="false" Precision="10" Scale="0" />
+    <Property Type="String" Name="CycleName" Nullable="false" MaxLength="30" />
+    <Property Type="String" Name="CycleFromMonth" Nullable="false" MaxLength="10" />
+    <Property Type="String" Name="FromMonth" Nullable="true" MaxLength="255" />
+    <Property Type="Decimal" Name="CycleFromYear" Nullable="false" Precision="10" Scale="0" />
+    <Property Type="String" Name="CycleToMonth" Nullable="false" MaxLength="10" />
+    <Property Type="String" Name="ToMonth" Nullable="true" MaxLength="255" />
+    <Property Type="Decimal" Name="CycleToYear" Nullable="false" Precision="10" Scale="0" />
+    <Property Type="String" Name="IsActive" Nullable="false" MaxLength="8" />
+  </ComplexType>
+  <ComplexType Name="USP_GET_CYCLE_SETTING_MASTER_Result">
+    <Property Type="Decimal" Name="PKID" Nullable="false" Precision="10" Scale="0" />
+    <Property Type="Int32" Name="Year" Nullable="false" />
+    <Property Type="Int32" Name="NoOfCycles" Nullable="false" />
+    <Property Type="String" Name="Month" Nullable="true" MaxLength="255" />
+    <Property Type="Int32" Name="CycleStartYear" Nullable="false" />
+    <Property Type="String" Name="Status" Nullable="false" MaxLength="8" />
+  </ComplexType>
+  <EntityType Name="CycleDefinitionMaster">
+    <Key>
+      <PropertyRef Name="PKID" />
+    </Key>
+    <Property Name="PKID" Type="Decimal" Nullable="false" Precision="10" Scale="0" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="Year" Type="Int32" Nullable="false" />
+    <Property Name="NoOfCycles" Type="Int32" Nullable="false" />
+    <Property Name="CycleStartYear" Type="Int32" Nullable="false" />
+    <Property Name="IsActive" Type="Boolean" Nullable="false" />
+    <Property Name="CreatedDate" Type="DateTime" Nullable="false" Precision="3" />
+    <Property Name="CreatedBy" Type="Decimal" Nullable="false" Precision="10" Scale="0" />
+    <Property Name="ModifiedDate" Type="DateTime" Precision="3" />
+    <Property Name="ModifiedBy" Type="Decimal" Precision="10" Scale="0" />
+    <Property Name="CycleStartMonth" Type="Int32" Nullable="false" />
+  </EntityType>
+  <EntityType Name="CycleMaster">
+    <Key>
+      <PropertyRef Name="PKID" />
+    </Key>
+    <Property Name="PKID" Type="Decimal" Nullable="false" Precision="10" Scale="0" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="Year" Type="Decimal" Nullable="false" Precision="10" Scale="0" />
+    <Property Name="CycleNo" Type="Decimal" Nullable="false" Precision="10" Scale="0" />
+    <Property Name="CycleName" Type="String" Nullable="false" MaxLength="30" FixedLength="false" Unicode="false" />
+    <Property Name="CycleFromMonth" Type="String" Nullable="false" MaxLength="10" FixedLength="false" Unicode="false" />
+    <Property Name="CycleFromYear" Type="Decimal" Nullable="false" Precision="10" Scale="0" />
+    <Property Name="CycleToMonth" Type="String" Nullable="false" MaxLength="10" FixedLength="false" Unicode="false" />
+    <Property Name="CycleToYear" Type="Decimal" Nullable="false" Precision="10" Scale="0" />
+    <Property Name="IsActive" Type="Boolean" />
+    <Property Name="CreatedDate" Type="DateTime" Nullable="false" Precision="3" />
+    <Property Name="CreatedBy" Type="Decimal" Nullable="false" Precision="10" Scale="0" />
+    <Property Name="ModifiedDate" Type="DateTime" Precision="3" />
+    <Property Name="ModifiedBy" Type="Decimal" Precision="10" Scale="0" />
+  </EntityType>
+  <ComplexType Name="USP_GET_MONTH_Result">
+    <Property Type="Decimal" Name="PKID" Nullable="false" Precision="10" Scale="0" />
+    <Property Type="String" Name="GenName" Nullable="true" MaxLength="255" />
+  </ComplexType>
+  <ComplexType Name="GetSettingMaster_Result">
+    <Property Type="String" Name="ImpactScreenName" Nullable="true" MaxLength="200" />
+    <Property Type="String" Name="SettingDescription" Nullable="true" MaxLength="200" />
+    <Property Type="String" Name="SettingType" Nullable="true" MaxLength="50" />
+    <Property Type="String" Name="FromValue" Nullable="true" MaxLength="100" />
+    <Property Type="String" Name="ToValue" Nullable="true" MaxLength="100" />
+    <Property Type="String" Name="Code" Nullable="true" MaxLength="10" />
+    <Property Type="Boolean" Name="IsActive" Nullable="true" />
+  </ComplexType>
+  <ComplexType Name="GetSettingMaster_Result1">
+    <Property Type="String" Name="ImpactScreenName" Nullable="true" MaxLength="200" />
+    <Property Type="String" Name="SettingDescription" Nullable="true" MaxLength="200" />
+    <Property Type="String" Name="SettingType" Nullable="true" MaxLength="50" />
+    <Property Type="String" Name="FromValue" Nullable="true" MaxLength="100" />
+    <Property Type="String" Name="ToValue" Nullable="true" MaxLength="100" />
+    <Property Type="String" Name="Code" Nullable="true" MaxLength="10" />
+    <Property Type="Boolean" Name="IsActive" Nullable="true" />
+    <Property Type="Decimal" Name="PKID" Nullable="false" Precision="10" Scale="0" />
+    <Property Type="String" Name="Code1" Nullable="true" MaxLength="10" />
+  </ComplexType>
+  <ComplexType Name="uspGetSettingMaster_Result">
+    <Property Type="Decimal" Name="PKID" Nullable="false" Precision="10" Scale="0" />
+    <Property Type="String" Name="ImpactScreenName" Nullable="true" MaxLength="200" />
+    <Property Type="String" Name="SettingDescription" Nullable="true" MaxLength="200" />
+    <Property Type="String" Name="SettingType" Nullable="true" MaxLength="6" />
+    <Property Type="String" Name="FromValue" Nullable="true" MaxLength="100" />
+    <Property Type="String" Name="ToValue" Nullable="true" MaxLength="100" />
+    <Property Type="String" Name="Code" Nullable="true" MaxLength="10" />
+    <Property Type="Boolean" Name="IsActive" Nullable="true" />
+  </ComplexType>
+  <ComplexType Name="uspGetSettingMaster_Result1">
+    <Property Type="Decimal" Name="PKID" Nullable="false" Precision="10" Scale="0" />
+    <Property Type="String" Name="ImpactScreenName" Nullable="true" MaxLength="200" />
+    <Property Type="String" Name="SettingDescription" Nullable="true" MaxLength="200" />
+    <Property Type="String" Name="SettingType" Nullable="true" MaxLength="6" />
+    <Property Type="String" Name="hdnSettingType" Nullable="true" MaxLength="50" />
+    <Property Type="String" Name="FromValue" Nullable="true" MaxLength="100" />
+    <Property Type="String" Name="ToValue" Nullable="true" MaxLength="100" />
+    <Property Type="String" Name="Code" Nullable="true" MaxLength="10" />
+    <Property Type="String" Name="IsActive" Nullable="false" MaxLength="9" />
+  </ComplexType>
+  <ComplexType Name="GetUserDefault_Result">
+    <Property Type="Decimal" Name="PKID" Nullable="false" Precision="10" Scale="0" />
+    <Property Type="String" Name="Question" Nullable="false" MaxLength="50" />
+    <Property Type="String" Name="Answer" Nullable="false" MaxLength="100" />
+    <Property Type="String" Name="errname" Nullable="true" MaxLength="50" />
+  </ComplexType>
+  <ComplexType Name="USP_GET_ACTIVITY_MASTER_Result">
+    <Property Type="Decimal" Name="PKID" Nullable="false" Precision="10" Scale="0" />
+    <Property Type="String" Name="ActivityName" Nullable="false" MaxLength="20" />
+    <Property Type="String" Name="Defaultflag" Nullable="false" MaxLength="8" />
+    <Property Type="String" Name="Specialflag" Nullable="false" MaxLength="8" />
+    <Property Type="String" Name="Fieldwork" Nullable="false" MaxLength="8" />
+    <Property Type="String" Name="IsActive" Nullable="false" MaxLength="8" />
+  </ComplexType>
+  <ComplexType Name="USP_GET_NODETYPE_MASTER_Result">
+    <Property Type="Decimal" Name="NODETYPEFKID" Nullable="false" Precision="10" Scale="0" />
+    <Property Type="String" Name="NODENAME" Nullable="false" MaxLength="100" />
+  </ComplexType>
+  <ComplexType Name="USP_GET_NODETYPEMASTER_Result">
+    <Property Type="Decimal" Name="NODETYPEFKID" Nullable="false" Precision="10" Scale="0" />
+    <Property Type="String" Name="NODENAME" Nullable="false" MaxLength="101" />
+  </ComplexType>
+  <ComplexType Name="USP_GET_TEAM_MASTER_Result">
+    <Property Type="Decimal" Name="TEAMFKID" Nullable="false" Precision="10" Scale="0" />
+    <Property Type="String" Name="TEAMNAME" Nullable="false" MaxLength="225" />
+  </ComplexType>
+  <ComplexType Name="USP_GET_TEAMMASTER_Result">
+    <Property Type="Decimal" Name="TEAMFKID" Nullable="false" Precision="10" Scale="0" />
+    <Property Type="String" Name="TEAMNAME" Nullable="false" MaxLength="226" />
+  </ComplexType>
+  <ComplexType Name="USP_GETLOGDEAILS_Result">
+    <Property Type="Decimal" Name="PKID" Nullable="false" Precision="10" Scale="0" />
+    <Property Type="String" Name="EmployeeName" Nullable="true" MaxLength="92" />
+    <Property Type="String" Name="LockedDate" Nullable="true" MaxLength="30" />
+  </ComplexType>
+  <ComplexType Name="GetRoles_Result">
+    <Property Type="Decimal" Name="PKID" Nullable="false" Precision="10" Scale="0" />
+    <Property Type="String" Name="RoleCode" Nullable="true" MaxLength="20" />
+    <Property Type="String" Name="RoleName" Nullable="false" MaxLength="225" />
+  </ComplexType>
+  <ComplexType Name="usp_GetSalesHierarchy_Result">
+    <Property Type="Decimal" Name="PKID" Nullable="false" Precision="10" Scale="0" />
+    <Property Type="Decimal" Name="NodeTypeFKID" Nullable="true" Precision="10" Scale="0" />
+    <Property Type="Decimal" Name="ReportingUserFKID" Nullable="false" Precision="10" Scale="0" />
+    <Property Type="Decimal" Name="UserFKID" Nullable="true" Precision="10" Scale="0" />
+    <Property Type="Boolean" Name="IsActive" Nullable="true" />
+    <Property Type="Decimal" Name="NewPKID" Nullable="true" Precision="10" Scale="0" />
+    <Property Type="Decimal" Name="EmpFKID" Nullable="true" Precision="10" Scale="0" />
+    <Property Type="String" Name="Loginname" Nullable="true" MaxLength="20" />
+    <Property Type="String" Name="LMN" Nullable="true" MaxLength="30" />
+    <Property Type="String" Name="MiddleName" Nullable="true" MaxLength="30" />
+    <Property Type="String" Name="LastName" Nullable="true" MaxLength="30" />
+    <Property Type="Decimal" Name="EmpFKID1" Nullable="true" Precision="10" Scale="0" />
+    <Property Type="String" Name="FirstName" Nullable="true" MaxLength="30" />
+    <Property Type="String" Name="uMiddleName" Nullable="true" MaxLength="30" />
+    <Property Type="String" Name="uLastName" Nullable="true" MaxLength="30" />
+    <Property Type="String" Name="NodeName" Nullable="true" MaxLength="100" />
+  </ComplexType>
+  <EntityType Name="QuestionMaster">
+    <Key>
+      <PropertyRef Name="PKID" />
+    </Key>
+    <Property Name="PKID" Type="Decimal" Nullable="false" Precision="10" Scale="0" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="Question" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="false" />
+    <Property Name="IsActive" Type="Boolean" Nullable="false" />
+    <Property Name="CreatedDate" Type="DateTime" Nullable="false" Precision="3" />
+    <Property Name="CreatedBy" Type="Decimal" Nullable="false" Precision="10" Scale="0" />
+    <Property Name="ModifiedDate" Type="DateTime" Precision="3" />
+    <Property Name="ModifiedBy" Type="Decimal" Precision="10" Scale="0" />
+  </EntityType>
+  <EntityType Name="SpecializationMaster">
+    <Key>
+      <PropertyRef Name="PKID" />
+    </Key>
+    <Property Name="PKID" Type="Decimal" Nullable="false" Precision="10" Scale="0" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="Specialization" Type="String" Nullable="false" MaxLength="225" FixedLength="false" Unicode="false" />
+    <Property Name="IsActive" Type="Boolean" Nullable="false" />
+    <Property Name="CreatedDate" Type="DateTime" Nullable="false" Precision="3" />
+    <Property Name="CreatedBy" Type="Decimal" Nullable="false" Precision="10" Scale="0" />
+    <Property Name="ModifiedDate" Type="DateTime" Precision="3" />
+    <Property Name="ModifiedBy" Type="Decimal" Precision="10" Scale="0" />
+  </EntityType>
+  <EntityType Name="SpecializationTeamlinkMaster">
+    <Key>
+      <PropertyRef Name="PKID" />
+    </Key>
+    <Property Name="PKID" Type="Decimal" Nullable="false" Precision="10" Scale="0" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="TeamFKID" Type="Decimal" Nullable="false" Precision="10" Scale="0" />
+    <Property Name="SpecializationFKID" Type="Decimal" Nullable="false" Precision="10" Scale="0" />
+    <Property Name="IsActive" Type="Boolean" Nullable="false" />
+    <Property Name="CreatedDate" Type="DateTime" Nullable="false" Precision="3" />
+    <Property Name="CreatedBy" Type="Decimal" Nullable="false" Precision="10" Scale="0" />
+    <Property Name="ModifiedDate" Type="DateTime" Precision="3" />
+    <Property Name="ModifiedBy" Type="Decimal" Precision="10" Scale="0" />
+  </EntityType>
+  <EntityType Name="TeamMaster">
+    <Key>
+      <PropertyRef Name="PKID" />
+    </Key>
+    <Property Name="PKID" Type="Decimal" Nullable="false" Precision="10" Scale="0" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="DivFKID" Type="Decimal" Nullable="false" Precision="10" Scale="0" />
+    <Property Name="TeamCode" Type="String" Nullable="false" MaxLength="20" FixedLength="false" Unicode="false" />
+    <Property Name="TeamName" Type="String" Nullable="false" MaxLength="225" FixedLength="false" Unicode="false" />
+    <Property Name="IsActive" Type="Boolean" Nullable="false" />
+    <Property Name="CreatedDate" Type="DateTime" Nullable="false" Precision="3" />
+    <Property Name="CreatedBy" Type="Decimal" Nullable="false" Precision="10" Scale="0" />
+    <Property Name="ModifiedDate" Type="DateTime" Precision="3" />
+    <Property Name="ModifiedBy" Type="Decimal" Precision="10" Scale="0" />
+    <NavigationProperty Name="DivisionMaster" Relationship="pfizerModel.FK_TeamMaster_DivisionMaster" FromRole="TeamMaster" ToRole="DivisionMaster" />
+  </EntityType>
+  <ComplexType Name="GetSplTeamByXml_Result">
+    <Property Type="Decimal" Name="Teamid" Nullable="false" Precision="10" Scale="0" />
+    <Property Type="String" Name="TName" Nullable="false" MaxLength="225" />
+  </ComplexType>
+  <EntityType Name="HolidayGroupMaster">
+    <Key>
+      <PropertyRef Name="PKID" />
+    </Key>
+    <Property Name="PKID" Type="Decimal" Nullable="false" Precision="10" Scale="0" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="HolidayGroupCode" Type="String" MaxLength="20" FixedLength="false" Unicode="false" />
+    <Property Name="HolidayGroupName" Type="String" Nullable="false" MaxLength="100" FixedLength="false" Unicode="false" />
+    <Property Name="IsActive" Type="Boolean" Nullable="false" />
+    <Property Name="CreatedDate" Type="DateTime" Nullable="false" Precision="3" />
+    <Property Name="CreatedBy" Type="Decimal" Nullable="false" Precision="10" Scale="0" />
+    <Property Name="ModifiedDate" Type="DateTime" Precision="3" />
+    <Property Name="ModifiedBy" Type="Decimal" Precision="10" Scale="0" />
+  </EntityType>
+  <EntityType Name="RatingMaster">
+    <Key>
+      <PropertyRef Name="PKID" />
+    </Key>
+    <Property Name="PKID" Type="Decimal" Nullable="false" Precision="10" Scale="0" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="RatingCode" Type="String" Nullable="false" MaxLength="20" FixedLength="false" Unicode="false" />
+    <Property Name="RatingName" Type="String" Nullable="false" MaxLength="225" FixedLength="false" Unicode="false" />
+    <Property Name="IsActive" Type="Boolean" Nullable="false" />
+    <Property Name="CreatedDate" Type="DateTime" Nullable="false" Precision="3" />
+    <Property Name="CreatedBy" Type="Decimal" Nullable="false" Precision="10" Scale="0" />
+    <Property Name="ModifiedDate" Type="DateTime" Precision="3" />
+    <Property Name="ModifiedBy" Type="Decimal" Precision="10" Scale="0" />
+  </EntityType>
+  <ComplexType Name="usp_GetRBMMaster_Result">
+    <Property Type="Decimal" Name="PKID" Nullable="false" Precision="10" Scale="0" />
+    <Property Type="Decimal" Name="RBMFKID" Nullable="false" Precision="10" Scale="0" />
+    <Property Type="Decimal" Name="FTMFKID" Nullable="false" Precision="10" Scale="0" />
+    <Property Type="Boolean" Name="IsActive" Nullable="false" />
+    <Property Type="Decimal" Name="URBMFKID" Nullable="true" Precision="10" Scale="0" />
+    <Property Type="Decimal" Name="EmpFKID" Nullable="true" Precision="10" Scale="0" />
+    <Property Type="String" Name="RBMFirstName" Nullable="true" MaxLength="30" />
+    <Property Type="String" Name="RBMMiddleName" Nullable="true" MaxLength="30" />
+    <Property Type="String" Name="RBMLastName" Nullable="true" MaxLength="30" />
+    <Property Type="Decimal" Name="EmpFKID1" Nullable="true" Precision="10" Scale="0" />
+    <Property Type="String" Name="FTMFirstName" Nullable="true" MaxLength="30" />
+    <Property Type="String" Name="FTMMiddleName" Nullable="true" MaxLength="30" />
+    <Property Type="String" Name="FTMLastName" Nullable="true" MaxLength="30" />
+  </ComplexType>
+  <ComplexType Name="GetFTMName_Result">
+    <Property Type="Decimal" Name="FTMFKID" Nullable="true" Precision="10" Scale="0" />
+    <Property Type="String" Name="FTMName" Nullable="false" MaxLength="92" />
+  </ComplexType>
+  <ComplexType Name="GetRBMName_Result">
+    <Property Type="Decimal" Name="RBMFKID" Nullable="true" Precision="10" Scale="0" />
+    <Property Type="String" Name="RBMName" Nullable="false" MaxLength="92" />
+  </ComplexType>
+  <ComplexType Name="uspGetInputMaster_Result">
+    <Property Type="Decimal" Name="PKID" Nullable="false" Precision="10" Scale="0" />
+    <Property Type="Decimal" Name="InputTypeFKID" Nullable="false" Precision="10" Scale="0" />
+    <Property Type="String" Name="InputName" Nullable="false" MaxLength="255" />
+    <Property Type="Boolean" Name="IsActive" Nullable="false" />
+    <Property Type="String" Name="GenName" Nullable="true" MaxLength="255" />
+  </ComplexType>
+  <ComplexType Name="uspGetInputType_Result">
+    <Property Type="Decimal" Name="PKID" Nullable="false" Precision="10" Scale="0" />
+    <Property Type="String" Name="GenName" Nullable="true" MaxLength="255" />
+    <Property Type="Int32" Name="Seq" Nullable="false" />
+  </ComplexType>
+  <ComplexType Name="GetInputMasterbyID_Result">
+    <Property Type="Decimal" Name="InputTypeFKID" Nullable="false" Precision="10" Scale="0" />
+    <Property Type="String" Name="InputName" Nullable="false" MaxLength="255" />
+    <Property Type="String" Name="IBISCode" Nullable="true" MaxLength="50" />
+    <Property Type="Boolean" Name="IsActive" Nullable="false" />
+  </ComplexType>
+  <ComplexType Name="GetEmployeeCreateUserMasterByXml_Result">
+    <Property Type="Decimal" Name="EmployeeFKID" Nullable="false" Precision="10" Scale="0" />
+    <Property Type="String" Name="EmployeeName" Nullable="true" MaxLength="92" />
+  </ComplexType>
+  <ComplexType Name="GetUserRole_Result">
+    <Property Type="Decimal" Name="PKID" Nullable="false" Precision="10" Scale="0" />
+    <Property Type="String" Name="RoleName" Nullable="false" MaxLength="225" />
+  </ComplexType>
+  <ComplexType Name="GetUserSelectedRoles_Result">
+    <Property Type="String" Name="Element" Nullable="false" MaxLength="4" />
+    <Property Type="Decimal" Name="PKID" Nullable="false" Precision="10" Scale="0" />
+    <Property Type="String" Name="RoleName" Nullable="false" MaxLength="225" />
+  </ComplexType>
+  <ComplexType Name="GetRoles_Result1">
+    <Property Type="Decimal" Name="PKID" Nullable="false" Precision="10" Scale="0" />
+    <Property Type="String" Name="RoleCode" Nullable="true" MaxLength="20" />
+    <Property Type="String" Name="RoleName" Nullable="false" MaxLength="225" />
+  </ComplexType>
+  <ComplexType Name="GetUserQuestionMaster_Result">
+    <Property Type="Decimal" Name="PKID" Nullable="false" Precision="10" Scale="0" />
+    <Property Type="String" Name="Question" Nullable="false" MaxLength="50" />
+    <Property Type="String" Name="Answer" Nullable="false" MaxLength="100" />
+    <Property Type="String" Name="errname" Nullable="true" MaxLength="50" />
+  </ComplexType>
+  <ComplexType Name="uspGetHolidayMaster_Result">
+    <Property Type="Decimal" Name="HolidaygroupFKID" Nullable="false" Precision="10" Scale="0" />
+    <Property Type="String" Name="HolidayGroupName" Nullable="false" MaxLength="100" />
+  </ComplexType>
+  <ComplexType Name="GetHolidayGroupTerritoryLinkmasterByXml_Result">
+    <Property Type="String" Name="Element" Nullable="false" MaxLength="6" />
+    <Property Type="Decimal" Name="TerritoryFKID" Nullable="false" Precision="10" Scale="0" />
+    <Property Type="String" Name="TerCode" Nullable="true" MaxLength="248" />
+  </ComplexType>
+  <EntityType Name="RegionMaster">
+    <Key>
+      <PropertyRef Name="PKID" />
+    </Key>
+    <Property Name="RegionCode" Type="String" MaxLength="10" FixedLength="false" Unicode="false" />
+    <Property Name="RegionName" Type="String" MaxLength="75" FixedLength="false" Unicode="false" />
+    <Property Name="IsActive" Type="Boolean" />
+    <Property Name="CreatedDate" Type="DateTime" Precision="3" />
+    <Property Name="CreatedBy" Type="Decimal" Precision="10" Scale="0" />
+    <Property Name="ModifiedDate" Type="DateTime" Precision="3" />
+    <Property Name="ModifiedBy" Type="Decimal" Precision="10" Scale="0" />
+    <Property Name="PKID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+  </EntityType>
+  <EntityType Name="AreaMaster">
+    <Key>
+      <PropertyRef Name="PKID" />
+    </Key>
+    <Property Name="PKID" Type="Decimal" Nullable="false" Precision="10" Scale="0" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="CityFKID" Type="Decimal" Nullable="false" Precision="10" Scale="0" />
+    <Property Name="AreaCode" Type="String" Nullable="false" MaxLength="20" FixedLength="false" Unicode="false" />
+    <Property Name="AreaName" Type="String" Nullable="false" MaxLength="225" FixedLength="false" Unicode="false" />
+    <Property Name="Specialflag" Type="Boolean" Nullable="false" />
+    <Property Name="IsActive" Type="Boolean" Nullable="false" />
+    <Property Name="CreatedDate" Type="DateTime" Nullable="false" Precision="3" />
+    <Property Name="CreatedBy" Type="Decimal" Nullable="false" Precision="10" Scale="0" />
+    <Property Name="ModifiedDate" Type="DateTime" Precision="3" />
+    <Property Name="ModifiedBy" Type="Decimal" Precision="10" Scale="0" />
+  </EntityType>
+  <EntityType Name="NodeTypeMaster">
+    <Key>
+      <PropertyRef Name="PKID" />
+    </Key>
+    <Property Name="PKID" Type="Decimal" Nullable="false" Precision="10" Scale="0" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="NodeCode" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="false" />
+    <Property Name="NodeName" Type="String" Nullable="false" MaxLength="100" FixedLength="false" Unicode="false" />
+    <Property Name="DailyReportFlag" Type="Boolean" Nullable="false" />
+    <Property Name="IsActive" Type="Boolean" Nullable="false" />
+    <Property Name="CreatedDate" Type="DateTime" Nullable="false" Precision="3" />
+    <Property Name="CreatedBy" Type="Decimal" Nullable="false" Precision="10" Scale="0" />
+    <Property Name="ModifiedDate" Type="DateTime" Precision="3" />
+    <Property Name="ModifiedBy" Type="Decimal" Precision="10" Scale="0" />
+  </EntityType>
+  <ComplexType Name="USP_GET_BRICKMASTER_Result">
+    <Property Type="Decimal" Name="PKID" Nullable="false" Precision="10" Scale="0" />
+    <Property Type="String" Name="IsActive" Nullable="false" MaxLength="8" />
+    <Property Type="String" Name="AreaName" Nullable="false" MaxLength="225" />
+    <Property Type="String" Name="Specialflag" Nullable="false" MaxLength="8" />
+    <Property Type="Decimal" Name="CityFKID" Nullable="true" Precision="10" Scale="0" />
+    <Property Type="String" Name="CityCode" Nullable="true" MaxLength="20" />
+    <Property Type="String" Name="CityName" Nullable="true" MaxLength="225" />
+  </ComplexType>
+  <ComplexType Name="USP_GET_LOCALITY_MASTER_Result">
+    <Property Type="Decimal" Name="LocalityFKID" Nullable="false" Precision="10" Scale="0" />
+    <Property Type="String" Name="LocalityName" Nullable="true" MaxLength="20" />
+  </ComplexType>
+  <ComplexType Name="USP_GET_LOCALITYMASTER_Result">
+    <Property Type="Decimal" Name="NODETYPEFKID" Nullable="false" Precision="10" Scale="0" />
+    <Property Type="String" Name="NODENAME" Nullable="true" MaxLength="21" />
+  </ComplexType>
+  <ComplexType Name="USP_GET_MU_HOLIDAYMASTER_Result">
+    <Property Type="Decimal" Name="PKID" Nullable="false" Precision="10" Scale="0" />
+    <Property Type="String" Name="HolidayDescription" Nullable="false" MaxLength="20" />
+    <Property Type="String" Name="DisplayName" Nullable="true" MaxLength="50" />
+    <Property Type="DateTime" Name="HolidayDate" Nullable="false" Precision="23" />
+    <Property Type="String" Name="IsActive" Nullable="false" MaxLength="8" />
+  </ComplexType>
+  <ComplexType Name="USP_GET_MU_NODETYPEMASTER_Result">
+    <Property Type="Decimal" Name="PKID" Nullable="false" Precision="10" Scale="0" />
+    <Property Type="String" Name="NODENAME" Nullable="false" MaxLength="100" />
+    <Property Type="String" Name="DAILYREPORTFLAG" Nullable="false" MaxLength="8" />
+    <Property Type="String" Name="IsActive" Nullable="false" MaxLength="8" />
+  </ComplexType>
+  <ComplexType Name="USP_GET_MU_TEAMMASTER_Result">
+    <Property Type="Decimal" Name="PKID" Nullable="false" Precision="10" Scale="0" />
+    <Property Type="String" Name="DivName" Nullable="false" MaxLength="225" />
+    <Property Type="String" Name="TeamName" Nullable="false" MaxLength="225" />
+    <Property Type="String" Name="IsActive" Nullable="false" MaxLength="8" />
+  </ComplexType>
+  <ComplexType Name="USP_GET_PROD_NODETYPEMASTER_Result">
+    <Property Type="Decimal" Name="NodeTypeFKID" Nullable="false" Precision="10" Scale="0" />
+    <Property Type="String" Name="NodeName" Nullable="false" MaxLength="101" />
+  </ComplexType>
+  <ComplexType Name="USP_GET_PROD_TEAMMASTER_Result">
+    <Property Type="Decimal" Name="TEAMFKID" Nullable="false" Precision="10" Scale="0" />
+    <Property Type="String" Name="TEAMNAME" Nullable="false" MaxLength="226" />
+  </ComplexType>
+  <ComplexType Name="USP_GET_PRODUCTMASTER_Result">
+    <Property Type="Decimal" Name="PKID" Nullable="false" Precision="10" Scale="0" />
+    <Property Type="String" Name="ProductName" Nullable="true" MaxLength="45" />
+    <Property Type="String" Name="IMSCode" Nullable="false" MaxLength="20" />
+    <Property Type="String" Name="IsKDP" Nullable="false" MaxLength="3" />
+    <Property Type="Decimal" Name="ProdGroupFKID" Nullable="false" Precision="10" Scale="0" />
+    <Property Type="Decimal" Name="ProdTypeFKID" Nullable="true" Precision="10" Scale="0" />
+    <Property Type="String" Name="IsActive" Nullable="false" MaxLength="8" />
+    <Property Type="Decimal" Name="MetisProductID" Nullable="true" Precision="10" Scale="0" />
+    <Property Type="String" Name="GenName" Nullable="true" MaxLength="255" />
+    <Property Type="String" Name="METISProductName" Nullable="true" MaxLength="50" />
+  </ComplexType>
+  <ComplexType Name="USP_GET_ROLEMASTER_Result">
+    <Property Type="Decimal" Name="PKID" Nullable="false" Precision="10" Scale="0" />
+    <Property Type="Decimal" Name="GMPKID" Nullable="true" Precision="10" Scale="0" />
+    <Property Type="String" Name="GenCode" Nullable="true" MaxLength="20" />
+    <Property Type="String" Name="RoleType" Nullable="true" MaxLength="255" />
+    <Property Type="String" Name="RoleName" Nullable="false" MaxLength="225" />
+    <Property Type="String" Name="IsActive" Nullable="false" MaxLength="8" />
+  </ComplexType>
+  <ComplexType Name="USP_GET_TERRITORY_MASTER_Result">
+    <Property Type="Decimal" Name="PKID" Nullable="false" Precision="10" Scale="0" />
+    <Property Type="String" Name="TerCode" Nullable="false" MaxLength="20" />
+    <Property Type="String" Name="TerName" Nullable="true" MaxLength="225" />
+    <Property Type="String" Name="IsActive" Nullable="false" MaxLength="8" />
+    <Property Type="String" Name="DivName" Nullable="true" MaxLength="225" />
+    <Property Type="String" Name="Townclassname" Nullable="true" MaxLength="50" />
+  </ComplexType>
+  <EntityType Name="HolidayMaster">
+    <Key>
+      <PropertyRef Name="PKID" />
+    </Key>
+    <Property Name="PKID" Type="Decimal" Nullable="false" Precision="10" Scale="0" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="HolidayCode" Type="Decimal" Precision="10" Scale="0" />
+    <Property Name="HolidayDescription" Type="String" Nullable="false" MaxLength="20" FixedLength="false" Unicode="false" />
+    <Property Name="HolidayDate" Type="DateTime" Nullable="false" Precision="3" />
+    <Property Name="DisplayName" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+    <Property Name="IsActive" Type="Boolean" Nullable="false" />
+    <Property Name="CreatedDate" Type="DateTime" Nullable="false" Precision="3" />
+    <Property Name="CreatedBy" Type="Decimal" Nullable="false" Precision="10" Scale="0" />
+    <Property Name="ModifiedDate" Type="DateTime" Precision="3" />
+    <Property Name="ModifiedBy" Type="Decimal" Precision="10" Scale="0" />
+  </EntityType>
+  <EntityType Name="TownClassMaster">
+    <Key>
+      <PropertyRef Name="PKID" />
+    </Key>
+    <Property Name="PKID" Type="Decimal" Nullable="false" Precision="10" Scale="0" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="Townclasscode" Type="String" MaxLength="20" FixedLength="false" Unicode="false" />
+    <Property Name="Townclassname" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="false" />
+    <Property Name="IsActive" Type="Boolean" Nullable="false" />
+    <Property Name="CreatedDate" Type="DateTime" Nullable="false" Precision="3" />
+    <Property Name="CreatedBy" Type="Decimal" Nullable="false" Precision="10" Scale="0" />
+    <Property Name="ModifiedDate" Type="DateTime" Precision="3" />
+    <Property Name="ModifiedBy" Type="Decimal" Precision="10" Scale="0" />
+  </EntityType>
+  <EntityType Name="ActivityMaster">
+    <Key>
+      <PropertyRef Name="PKID" />
+    </Key>
+    <Property Name="PKID" Type="Decimal" Nullable="false" Precision="10" Scale="0" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="ActivityCode" Type="String" Nullable="false" MaxLength="10" FixedLength="false" Unicode="false" />
+    <Property Name="ActivityName" Type="String" Nullable="false" MaxLength="20" FixedLength="false" Unicode="false" />
+    <Property Name="Defaultflag" Type="Boolean" Nullable="false" />
+    <Property Name="Specialflag" Type="Boolean" Nullable="false" />
+    <Property Name="Fieldwork" Type="Boolean" Nullable="false" />
+    <Property Name="IsActive" Type="Boolean" Nullable="false" />
+    <Property Name="CreatedBy" Type="Decimal" Nullable="false" Precision="10" Scale="0" />
+    <Property Name="CreatedDate" Type="DateTime" Nullable="false" Precision="3" />
+    <Property Name="ModifiedBy" Type="Decimal" Precision="10" Scale="0" />
+    <Property Name="ModifiedDate" Type="DateTime" Precision="3" />
+  </EntityType>
+  <EntityType Name="CityMaster">
+    <Key>
+      <PropertyRef Name="PKID" />
+    </Key>
+    <Property Name="PKID" Type="Decimal" Nullable="false" Precision="10" Scale="0" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="CityCode" Type="String" MaxLength="20" FixedLength="false" Unicode="false" />
+    <Property Name="CityName" Type="String" MaxLength="225" FixedLength="false" Unicode="false" />
+    <Property Name="IsActive" Type="Boolean" />
+    <Property Name="CreatedDate" Type="DateTime" Precision="3" />
+    <Property Name="CreatedBy" Type="Decimal" Precision="10" Scale="0" />
+    <Property Name="ModifiedDate" Type="DateTime" Precision="3" />
+    <Property Name="ModifiedBy" Type="Decimal" Precision="10" Scale="0" />
+    <Property Name="HQFLAG" Type="Boolean" />
+  </EntityType>
+  <EntityType Name="DivisionMaster">
+    <Key>
+      <PropertyRef Name="PKID" />
+    </Key>
+    <Property Name="PKID" Type="Decimal" Nullable="false" Precision="10" Scale="0" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="DivCode" Type="String" Nullable="false" MaxLength="20" FixedLength="false" Unicode="false" />
+    <Property Name="DivName" Type="String" Nullable="false" MaxLength="225" FixedLength="false" Unicode="false" />
+    <Property Name="IsActive" Type="Boolean" Nullable="false" />
+    <Property Name="CreatedDate" Type="DateTime" Nullable="false" Precision="3" />
+    <Property Name="CreatedBy" Type="Decimal" Nullable="false" Precision="10" Scale="0" />
+    <Property Name="ModifiedDate" Type="DateTime" Precision="3" />
+    <Property Name="ModifiedBy" Type="Decimal" Precision="10" Scale="0" />
+    <NavigationProperty Name="TeamMasters" Relationship="pfizerModel.FK_TeamMaster_DivisionMaster" FromRole="DivisionMaster" ToRole="TeamMaster" />
+  </EntityType>
+  <EntityType Name="RoleMaster">
+    <Key>
+      <PropertyRef Name="PKID" />
+    </Key>
+    <Property Name="PKID" Type="Decimal" Nullable="false" Precision="10" Scale="0" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="RoleTypeFKID" Type="Decimal" Nullable="false" Precision="10" Scale="0" />
+    <Property Name="RoleCode" Type="String" MaxLength="20" FixedLength="false" Unicode="false" />
+    <Property Name="RoleName" Type="String" Nullable="false" MaxLength="225" FixedLength="false" Unicode="false" />
+    <Property Name="IsActive" Type="Boolean" Nullable="false" />
+    <Property Name="CreatedDate" Type="DateTime" Nullable="false" Precision="3" />
+    <Property Name="CreatedBy" Type="Decimal" Nullable="false" Precision="10" Scale="0" />
+    <Property Name="ModifiedDate" Type="DateTime" Precision="3" />
+    <Property Name="ModifiedBy" Type="Decimal" Precision="10" Scale="0" />
+  </EntityType>
+  <EntityType Name="TerritoryMaster">
+    <Key>
+      <PropertyRef Name="PKID" />
+    </Key>
+    <Property Name="PKID" Type="Decimal" Nullable="false" Precision="10" Scale="0" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="DivFKID" Type="Decimal" Nullable="false" Precision="10" Scale="0" />
+    <Property Name="TerCode" Type="String" Nullable="false" MaxLength="20" FixedLength="false" Unicode="false" />
+    <Property Name="TerName" Type="String" MaxLength="225" FixedLength="false" Unicode="false" />
+    <Property Name="TownclassFKID" Type="Decimal" Nullable="false" Precision="10" Scale="0" />
+    <Property Name="IsActive" Type="Boolean" Nullable="false" />
+    <Property Name="CreatedDate" Type="DateTime" Nullable="false" Precision="3" />
+    <Property Name="CreatedBy" Type="Decimal" Nullable="false" Precision="10" Scale="0" />
+    <Property Name="ModifiedDate" Type="DateTime" Precision="3" />
+    <Property Name="ModifiedBy" Type="Decimal" Precision="10" Scale="0" />
+  </EntityType>
+  <Association Name="FK_TeamMaster_DivisionMaster">
+    <End Type="pfizerModel.DivisionMaster" Role="DivisionMaster" Multiplicity="1" />
+    <End Type="pfizerModel.TeamMaster" Role="TeamMaster" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="DivisionMaster">
+        <PropertyRef Name="PKID" />
+      </Principal>
+      <Dependent Role="TeamMaster">
+        <PropertyRef Name="DivFKID" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <ComplexType Name="GetAllCityByTerritory_Result">
+    <Property Type="Decimal" Name="PKID" Nullable="true" Precision="10" Scale="0" />
+    <Property Type="String" Name="CityName" Nullable="true" MaxLength="225" />
+  </ComplexType>
+  <ComplexType Name="GetAllMetisProductName_Result">
+    <Property Type="Decimal" Name="PKID" Nullable="false" Precision="10" Scale="0" />
+    <Property Type="String" Name="MPName" Nullable="false" MaxLength="50" />
+  </ComplexType>
+  <ComplexType Name="GetHospitalMaster_PSO_Result">
+    <Property Type="Int32" Name="HospitalID" Nullable="false" />
+    <Property Type="String" Name="NameofHospital" Nullable="false" MaxLength="100" />
+    <Property Type="String" Name="HotelAddress" Nullable="false" MaxLength="50" />
+    <Property Type="String" Name="Street" Nullable="false" MaxLength="50" />
+    <Property Type="String" Name="City" Nullable="true" MaxLength="225" />
+    <Property Type="String" Name="Area" Nullable="false" MaxLength="225" />
+    <Property Type="Decimal" Name="ZipCode" Nullable="true" Precision="18" Scale="0" />
+    <Property Type="String" Name="PhoneNumber" Nullable="true" MaxLength="10" />
+    <Property Type="String" Name="Email" Nullable="true" MaxLength="50" />
+    <Property Type="String" Name="Status" Nullable="false" MaxLength="8" />
+  </ComplexType>
+  <ComplexType Name="GetProductNameByXml_Result">
+    <Property Type="Decimal" Name="PKID" Nullable="false" Precision="10" Scale="0" />
+    <Property Type="String" Name="ProductName" Nullable="true" MaxLength="255" />
+  </ComplexType>
+  <ComplexType Name="GetSettingMasterTeamWise_Result">
+    <Property Type="String" Name="Element" Nullable="false" MaxLength="9" />
+    <Property Type="Decimal" Name="TeamFKID" Nullable="false" Precision="10" Scale="0" />
+    <Property Type="String" Name="TeamName" Nullable="false" MaxLength="225" />
+    <Property Type="Int32" Name="CPDaysBeforeAllowed" Nullable="true" />
+    <Property Type="Int32" Name="MinMonthlyFrequency" Nullable="true" />
+    <Property Type="Int32" Name="MaxMothlyFrequency" Nullable="true" />
+    <Property Type="Boolean" Name="CPUnlockEntry" Nullable="true" />
+    <Property Type="Int32" Name="TPcutOffDays" Nullable="true" />
+    <Property Type="Int32" Name="TPNoOfMonths" Nullable="true" />
+    <Property Type="Boolean" Name="TPlock" Nullable="true" />
+    <Property Type="String" Name="DREntryAllowedTime" Nullable="true" MaxLength="50" />
+    <Property Type="Int32" Name="DREntryAllowedDays" Nullable="true" />
+    <Property Type="Boolean" Name="DRUnLockEntry" Nullable="true" />
+    <Property Type="Boolean" Name="DPPLOCKall" Nullable="true" />
+    <Property Type="Int32" Name="DPOLockPLStage" Nullable="true" />
+    <Property Type="Int32" Name="PTcutOffDay" Nullable="true" />
+    <Property Type="Int32" Name="CPRRVMinMonthlyFrequency" Nullable="true" />
+    <Property Type="Int32" Name="CPRRVMaxMothlyFrequency" Nullable="true" />
+    <Property Type="Int32" Name="CPRRBMinMonthlyFrequency" Nullable="true" />
+    <Property Type="Int32" Name="CPRRBMaxMothlyFrequency" Nullable="true" />
+    <Property Type="Boolean" Name="Product_Preloaded" Nullable="false" />
+    <Property Type="String" Name="DM_DREntryAllowedTime" Nullable="true" MaxLength="50" />
+    <Property Type="Int32" Name="DM_DREntryAllowedDays" Nullable="true" />
+    <Property Type="Boolean" Name="DM_DRUnLockEntry" Nullable="false" />
+    <Property Type="String" Name="RBM_DREntryAllowedTime" Nullable="true" MaxLength="50" />
+    <Property Type="Int32" Name="RBM_DREntryAllowedDays" Nullable="true" />
+    <Property Type="Boolean" Name="RBM_DRUnLockEntry" Nullable="false" />
+    <Property Type="Int32" Name="SS_MonthEnd" Nullable="false" />
+    <Property Type="Int32" Name="SS_MonthBegin" Nullable="false" />
+  </ComplexType>
+  <ComplexType Name="GetStockistMaster_PSO_Result">
+    <Property Type="Int32" Name="StockistID" Nullable="false" />
+    <Property Type="String" Name="NameofStockist" Nullable="true" MaxLength="100" />
+    <Property Type="String" Name="StockistAddress" Nullable="true" MaxLength="50" />
+    <Property Type="String" Name="Street" Nullable="true" MaxLength="50" />
+    <Property Type="String" Name="City" Nullable="true" MaxLength="225" />
+    <Property Type="String" Name="Area" Nullable="false" MaxLength="225" />
+    <Property Type="Decimal" Name="ZipCode" Nullable="true" Precision="18" Scale="0" />
+    <Property Type="String" Name="PhoneNumber" Nullable="false" MaxLength="10" />
+    <Property Type="String" Name="Email" Nullable="true" MaxLength="50" />
+    <Property Type="String" Name="Status" Nullable="false" MaxLength="8" />
+  </ComplexType>
+  <EntityType Name="DistrictMaster">
+    <Key>
+      <PropertyRef Name="PKID" />
+    </Key>
+    <Property Name="PKID" Type="Decimal" Nullable="false" Precision="10" Scale="0" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="DistrictCode" Type="String" MaxLength="10" FixedLength="false" Unicode="false" />
+    <Property Name="DistrictName" Type="String" MaxLength="75" FixedLength="false" Unicode="false" />
+    <Property Name="IsActive" Type="Boolean" />
+    <Property Name="CreatedDate" Type="DateTime" Precision="3" />
+    <Property Name="CreatedBy" Type="Decimal" Precision="10" Scale="0" />
+    <Property Name="ModifiedDate" Type="DateTime" Precision="3" />
+    <Property Name="ModifiedBy" Type="Decimal" Precision="10" Scale="0" />
+  </EntityType>
+  <EntityType Name="FormMaster">
+    <Key>
+      <PropertyRef Name="PKID" />
+    </Key>
+    <Property Name="PKID" Type="Decimal" Nullable="false" Precision="10" Scale="0" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="FormName" Type="String" Nullable="false" MaxLength="20" FixedLength="false" Unicode="false" />
+    <Property Name="IsActive" Type="Boolean" Nullable="false" />
+    <Property Name="CreatedDate" Type="DateTime" Nullable="false" Precision="3" />
+    <Property Name="CreatedBy" Type="Decimal" Nullable="false" Precision="10" Scale="0" />
+    <Property Name="ModifiedDate" Type="DateTime" Precision="3" />
+    <Property Name="ModifiedBy" Type="Decimal" Precision="10" Scale="0" />
+  </EntityType>
+  <EntityType Name="MoleculeMaster">
+    <Key>
+      <PropertyRef Name="PKID" />
+    </Key>
+    <Property Name="PKID" Type="Decimal" Nullable="false" Precision="10" Scale="0" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="MoleculeName" Type="String" MaxLength="60" FixedLength="false" Unicode="false" />
+    <Property Name="IsActive" Type="Boolean" Nullable="false" />
+    <Property Name="CreatedBy" Type="Decimal" Nullable="false" Precision="10" Scale="0" />
+    <Property Name="CreatedDate" Type="DateTime" Nullable="false" Precision="3" />
+    <Property Name="ModifiedBy" Type="Decimal" Precision="10" Scale="0" />
+    <Property Name="ModifiedDate" Type="DateTime" Precision="3" />
+  </EntityType>
+  <ComplexType Name="GetFormMaster_Result">
+    <Property Type="Decimal" Name="PKID" Nullable="false" Precision="10" Scale="0" />
+    <Property Type="String" Name="FormName" Nullable="false" MaxLength="20" />
+    <Property Type="String" Name="Status" Nullable="false" MaxLength="8" />
+  </ComplexType>
+  <ComplexType Name="GetInfoCategory_Result">
+    <Property Type="Decimal" Name="Parentid" Nullable="false" Precision="10" Scale="0" />
+    <Property Type="String" Name="ParentHeading" Nullable="true" MaxLength="60" />
+    <Property Type="String" Name="ChildHeading" Nullable="true" MaxLength="60" />
+    <Property Type="String" Name="Status" Nullable="false" MaxLength="8" />
+  </ComplexType>
+  <ComplexType Name="GetMoleculeforProductByXML_Result">
+    <Property Type="Decimal" Name="MoleculeID" Nullable="false" Precision="10" Scale="0" />
+    <Property Type="String" Name="MoleculeName" Nullable="true" MaxLength="60" />
+  </ComplexType>
+  <ComplexType Name="GetMoleculeMaster_Result">
+    <Property Type="Decimal" Name="PKID" Nullable="false" Precision="10" Scale="0" />
+    <Property Type="String" Name="MoleculeName" Nullable="true" MaxLength="60" />
+    <Property Type="String" Name="Status" Nullable="false" MaxLength="8" />
+  </ComplexType>
+  <ComplexType Name="GetNotification_Result">
+    <Property Type="Decimal" Name="PKID" Nullable="false" Precision="10" Scale="0" />
+    <Property Type="String" Name="Notification" Nullable="false" MaxLength="50" />
+    <Property Type="String" Name="ExpiryDate" Nullable="true" MaxLength="30" />
+    <Property Type="String" Name="Status" Nullable="false" MaxLength="8" />
+  </ComplexType>
+  <ComplexType Name="GetProductType_Result">
+    <Property Type="Decimal" Name="PKID" Nullable="false" Precision="10" Scale="0" />
+    <Property Type="String" Name="TableName" Nullable="true" MaxLength="30" />
+    <Property Type="String" Name="GenCode" Nullable="true" MaxLength="20" />
+    <Property Type="String" Name="GenName" Nullable="true" MaxLength="255" />
+    <Property Type="String" Name="Status" Nullable="false" MaxLength="8" />
+  </ComplexType>
+  <ComplexType Name="GetProductforProductMatrixByXml_Result">
+    <Property Type="Decimal" Name="PKID" Nullable="false" Precision="10" Scale="0" />
+    <Property Type="String" Name="ProductName" Nullable="true" MaxLength="45" />
+  </ComplexType>
+  <ComplexType Name="GetProductMoleculeLink_Result">
+    <Property Type="Decimal" Name="PKID" Nullable="false" Precision="10" Scale="0" />
+    <Property Type="Decimal" Name="ProductFKID" Nullable="false" Precision="10" Scale="0" />
+    <Property Type="Decimal" Name="MoleculeFKID" Nullable="false" Precision="10" Scale="0" />
+    <Property Type="String" Name="Status" Nullable="false" MaxLength="8" />
+    <Property Type="String" Name="ProductName" Nullable="true" MaxLength="45" />
+    <Property Type="String" Name="MoleculeName" Nullable="true" MaxLength="60" />
+  </ComplexType>
+  <ComplexType Name="GetProductMoleculeLink1_Result">
+    <Property Type="Decimal" Name="PKID" Nullable="false" Precision="10" Scale="0" />
+    <Property Type="Decimal" Name="ProductFKID" Nullable="false" Precision="10" Scale="0" />
+    <Property Type="Decimal" Name="MoleculeFKID" Nullable="false" Precision="10" Scale="0" />
+    <Property Type="String" Name="Status" Nullable="false" MaxLength="8" />
+    <Property Type="String" Name="ProductName" Nullable="true" MaxLength="45" />
+    <Property Type="String" Name="MoleculeName" Nullable="true" MaxLength="60" />
+  </ComplexType>
+  <ComplexType Name="GetHolidayGroupNameByXml_Result">
+    <Property Type="Decimal" Name="PKID" Nullable="false" Precision="10" Scale="0" />
+    <Property Type="String" Name="HolidayGroupName" Nullable="false" MaxLength="100" />
+  </ComplexType>
+  <EntityType Name="OpinionPollView">
+    <Key>
+      <PropertyRef Name="PKID" />
+      <PropertyRef Name="Option1" />
+      <PropertyRef Name="Option2" />
+      <PropertyRef Name="IsActive" />
+      <PropertyRef Name="status" />
+    </Key>
+    <Property Name="PKID" Type="Decimal" Nullable="false" Precision="10" Scale="0" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="Question" Type="String" MaxLength="255" FixedLength="false" Unicode="false" />
+    <Property Name="Option1" Type="String" Nullable="false" MaxLength="20" FixedLength="false" Unicode="false" />
+    <Property Name="Option2" Type="String" Nullable="false" MaxLength="20" FixedLength="false" Unicode="false" />
+    <Property Name="IsActive" Type="Boolean" Nullable="false" />
+    <Property Name="status" Type="String" Nullable="false" MaxLength="8" FixedLength="false" Unicode="false" />
+  </EntityType>
+  <ComplexType Name="GetOpinionPollByXML_Result">
+    <Property Type="Decimal" Name="PKID" Nullable="false" Precision="10" Scale="0" />
+    <Property Type="String" Name="Question" Nullable="false" MaxLength="255" />
+    <Property Type="String" Name="Option1" Nullable="false" MaxLength="20" />
+    <Property Type="String" Name="Option2" Nullable="false" MaxLength="20" />
+    <Property Type="String" Name="Option3" Nullable="true" MaxLength="20" />
+    <Property Type="String" Name="Option4" Nullable="true" MaxLength="20" />
+    <Property Type="String" Name="Option5" Nullable="true" MaxLength="20" />
+    <Property Type="Boolean" Name="IsActive" Nullable="false" />
+  </ComplexType>
+  <ComplexType Name="GetOpinionPollSelectedValues1_Result">
+    <Property Type="String" Name="Element" Nullable="false" MaxLength="8" />
+    <Property Type="Decimal" Name="PKID" Nullable="false" Precision="10" Scale="0" />
+    <Property Type="String" Name="DivName" Nullable="false" MaxLength="225" />
+  </ComplexType>
+  <ComplexType Name="GetDivisionByXML_Result">
+    <Property Type="Decimal" Name="DivFKID" Nullable="false" Precision="10" Scale="0" />
+    <Property Type="String" Name="DivName" Nullable="false" MaxLength="225" />
+  </ComplexType>
+  <ComplexType Name="GetNodeTypeByXML_Result">
+    <Property Type="Decimal" Name="NodeTypeFKID" Nullable="false" Precision="10" Scale="0" />
+    <Property Type="String" Name="NodeName" Nullable="false" MaxLength="100" />
+  </ComplexType>
+  <ComplexType Name="GetUserByXml_Result">
+    <Property Type="Decimal" Name="PKID" Nullable="false" Precision="10" Scale="0" />
+    <Property Type="String" Name="LoginName" Nullable="false" MaxLength="20" />
+  </ComplexType>
+  <ComplexType Name="GetDivUserByXml_Result">
+    <Property Type="Decimal" Name="PKID" Nullable="false" Precision="10" Scale="0" />
+    <Property Type="String" Name="UserName" Nullable="false" MaxLength="20" />
+  </ComplexType>
+  <ComplexType Name="usp_ReconcileSettings_Result">
+    <Property Type="Decimal" Name="PKID" Nullable="false" Precision="10" Scale="0" />
+    <Property Type="DateTime" Name="DateofBegining" Nullable="false" Precision="23" />
+    <Property Type="Decimal" Name="TeamFKID" Nullable="false" Precision="10" Scale="0" />
+    <Property Type="Boolean" Name="IsActive" Nullable="false" />
+    <Property Type="String" Name="TeamName" Nullable="true" MaxLength="225" />
+  </ComplexType>
+  <ComplexType Name="GetTeamNameForReconcileByPKID_Result">
+    <Property Type="String" Name="Element" Nullable="true" MaxLength="30" />
+    <Property Type="String" Name="PKID" Nullable="false" MaxLength="1" />
+    <Property Type="String" Name="TeamName" Nullable="false" MaxLength="1" />
+  </ComplexType>
+  <ComplexType Name="GetTeamNameForReconcileByPKID_Result1">
+    <Property Type="String" Name="Element" Nullable="true" MaxLength="30" />
+    <Property Type="Int32" Name="PKID" Nullable="true" />
+    <Property Type="String" Name="TeamName" Nullable="true" MaxLength="255" />
+  </ComplexType>
+  <ComplexType Name="GetTeamsByXML_Result">
+    <Property Type="Decimal" Name="PKID" Nullable="false" Precision="10" Scale="0" />
+    <Property Type="String" Name="TeamName" Nullable="false" MaxLength="225" />
+  </ComplexType>
+  <ComplexType Name="GetAllRegionNotAssignedTeamByXml_Result">
+    <Property Type="Int32" Name="RegionId" Nullable="false" />
+    <Property Type="String" Name="RegionCode" Nullable="true" MaxLength="10" />
+    <Property Type="String" Name="RegionName" Nullable="true" MaxLength="75" />
+  </ComplexType>
+  <ComplexType Name="GetAllTeamRegionLinkByXml_Result">
+    <Property Type="Int32" Name="PKID" Nullable="false" />
+    <Property Type="Decimal" Name="TeamFKID" Nullable="true" Precision="10" Scale="0" />
+    <Property Type="Decimal" Name="RegionFKID" Nullable="true" Precision="10" Scale="0" />
+    <Property Type="String" Name="RegionName" Nullable="true" MaxLength="75" />
+    <Property Type="String" Name="RegionCode" Nullable="true" MaxLength="10" />
+  </ComplexType>
+  <ComplexType Name="GetHQNameByXML_Result">
+    <Property Type="Decimal" Name="HQFKID" Nullable="false" Precision="10" Scale="0" />
+    <Property Type="String" Name="HQName" Nullable="true" MaxLength="225" />
+  </ComplexType>
+  <ComplexType Name="GetHQNameForTerByXML_Result">
+    <Property Type="Decimal" Name="HQFKID" Nullable="false" Precision="10" Scale="0" />
+    <Property Type="String" Name="HQName" Nullable="true" MaxLength="225" />
+  </ComplexType>
+  <ComplexType Name="GetTeamMasteByPKIDByXML_Result">
+    <Property Type="Decimal" Name="OptimaTeamId" Nullable="false" Precision="10" Scale="0" />
+    <Property Type="String" Name="TeamName" Nullable="false" MaxLength="225" />
+  </ComplexType>
+  <ComplexType Name="GetTeamMasterByXML_Result">
+    <Property Type="Decimal" Name="OptimaTeamId" Nullable="false" Precision="10" Scale="0" />
+    <Property Type="Decimal" Name="PKID" Nullable="false" Precision="10" Scale="0" />
+    <Property Type="String" Name="TeamName" Nullable="false" MaxLength="225" />
+  </ComplexType>
+  <ComplexType Name="GetTerritoryNameforHQEditByXml_Result">
+    <Property Type="Decimal" Name="PKID" Nullable="false" Precision="10" Scale="0" />
+    <Property Type="String" Name="TerritoryName" Nullable="false" MaxLength="20" />
+  </ComplexType>
+  <ComplexType Name="GetTerritoryNameforHQTerByXml_Result">
+    <Property Type="Decimal" Name="PKID" Nullable="false" Precision="10" Scale="0" />
+    <Property Type="String" Name="TerritoryName" Nullable="false" MaxLength="20" />
+  </ComplexType>
+  <ComplexType Name="USP_GET_TeamRegionLink_Result">
+    <Property Type="Decimal" Name="PKID" Nullable="false" Precision="10" Scale="0" />
+    <Property Type="Decimal" Name="TeamFKID" Nullable="true" Precision="10" Scale="0" />
+    <Property Type="Decimal" Name="RegionFKID" Nullable="true" Precision="10" Scale="0" />
+    <Property Type="String" Name="IsActive" Nullable="false" MaxLength="8" />
+    <Property Type="String" Name="TeamName" Nullable="true" MaxLength="225" />
+    <Property Type="String" Name="RegionCode" Nullable="true" MaxLength="10" />
+    <Property Type="String" Name="RegionName" Nullable="true" MaxLength="75" />
+  </ComplexType>
+  <ComplexType Name="USP_GET_TerritoryHQLink_Result">
+    <Property Type="Decimal" Name="PKID" Nullable="false" Precision="10" Scale="0" />
+    <Property Type="Decimal" Name="HQFKID" Nullable="false" Precision="10" Scale="0" />
+    <Property Type="Decimal" Name="TerritoryFKID" Nullable="false" Precision="10" Scale="0" />
+    <Property Type="String" Name="IsActive" Nullable="false" MaxLength="8" />
+    <Property Type="String" Name="CityName" Nullable="true" MaxLength="225" />
+    <Property Type="String" Name="TerCode" Nullable="true" MaxLength="20" />
+    <Property Type="String" Name="TerName" Nullable="true" MaxLength="225" />
+  </ComplexType>
+  <ComplexType Name="GetProductforSpecialityByXML_Result">
+    <Property Type="Decimal" Name="PKID" Nullable="false" Precision="10" Scale="0" />
+    <Property Type="String" Name="ProductName" Nullable="true" MaxLength="45" />
+  </ComplexType>
+  <ComplexType Name="GetPSOSample_Result">
+    <Property Type="Decimal" Name="PKID" Nullable="false" Precision="10" Scale="0" />
+    <Property Type="Decimal" Name="UserFKID" Nullable="false" Precision="10" Scale="0" />
+    <Property Type="String" Name="Samplepack" Nullable="true" MaxLength="45" />
+    <Property Type="String" Name="EffectiveDate" Nullable="true" MaxLength="30" />
+    <Property Type="DateTime" Name="EffectiveDate1" Nullable="false" Precision="23" />
+    <Property Type="Decimal" Name="AllocatedQty" Nullable="false" Precision="18" Scale="0" />
+    <Property Type="Decimal" Name="AcknowledgeQty" Nullable="true" Precision="18" Scale="0" />
+    <Property Type="Decimal" Name="Pendingack" Nullable="true" Precision="18" Scale="0" />
+    <Property Type="Decimal" Name="ProductSampleFKID" Nullable="false" Precision="10" Scale="0" />
+  </ComplexType>
+  <ComplexType Name="GetSpecforProductPKIDByXMLN_Result">
+    <Property Type="Decimal" Name="SpecilizationId" Nullable="false" Precision="10" Scale="0" />
+    <Property Type="String" Name="Specialization" Nullable="false" MaxLength="225" />
+  </ComplexType>
+  <ComplexType Name="GetSpecforProductPKIDByXMLNNotInN_Result">
+    <Property Type="Decimal" Name="SpecilizationId" Nullable="false" Precision="10" Scale="0" />
+    <Property Type="String" Name="Specialization" Nullable="false" MaxLength="225" />
+  </ComplexType>
+  <ComplexType Name="GetSpecializationforProductMatrixByXML_Result">
+    <Property Type="Decimal" Name="SpecializationFKID" Nullable="false" Precision="10" Scale="0" />
+    <Property Type="String" Name="Specialization" Nullable="false" MaxLength="225" />
+  </ComplexType>
+  <ComplexType Name="SampleAllocationAck_Result">
+    <Property Type="Int32" Name="Opbal" Nullable="true" />
+    <Property Type="Int32" Name="Clbal" Nullable="true" />
+  </ComplexType>
+  <ComplexType Name="USP_GET_ProductDetailingMatrix_Result">
+    <Property Type="Int32" Name="PKID" Nullable="false" />
+    <Property Type="Decimal" Name="ProductFKID" Nullable="false" Precision="10" Scale="0" />
+    <Property Type="Decimal" Name="SpecialityFKID" Nullable="false" Precision="10" Scale="0" />
+    <Property Type="String" Name="IsActive" Nullable="false" MaxLength="8" />
+    <Property Type="String" Name="ProductName" Nullable="true" MaxLength="45" />
+    <Property Type="String" Name="Specialization" Nullable="true" MaxLength="225" />
+  </ComplexType>
+  <ComplexType Name="GetPSOInputSample_Result">
+    <Property Type="Decimal" Name="PKID" Nullable="false" Precision="10" Scale="0" />
+    <Property Type="String" Name="InputName" Nullable="false" MaxLength="255" />
+    <Property Type="String" Name="GenName" Nullable="true" MaxLength="255" />
+    <Property Type="String" Name="AllocatedDate" Nullable="true" MaxLength="30" />
+    <Property Type="DateTime" Name="ODate" Nullable="false" Precision="23" />
+    <Property Type="String" Name="AllocBy" Nullable="false" MaxLength="100" />
+    <Property Type="Int32" Name="AllocatedQty" Nullable="false" />
+    <Property Type="Int32" Name="AcknowledgeQty" Nullable="false" />
+    <Property Type="Int32" Name="DistributedQty" Nullable="false" />
+    <Property Type="Int32" Name="LossDamageQty" Nullable="false" />
+    <Property Type="Int32" Name="ReturnQty" Nullable="false" />
+    <Property Type="Int32" Name="ClosureQty" Nullable="false" />
+    <Property Type="Int32" Name="BalanceQty" Nullable="false" />
+  </ComplexType>
+  <EntityType Name="FAQS1View">
+    <Key>
+      <PropertyRef Name="PKID" />
+      <PropertyRef Name="CategoryFKID" />
+      <PropertyRef Name="IsActive" />
+    </Key>
+    <Property Name="PKID" Type="Decimal" Nullable="false" Precision="10" Scale="0" />
+    <Property Name="CategoryFKID" Type="Decimal" Nullable="false" Precision="10" Scale="0" />
+    <Property Name="GenName" Type="String" MaxLength="255" FixedLength="false" Unicode="false" />
+    <Property Name="Question" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
+    <Property Name="Answer" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
+    <Property Name="IsActive" Type="String" Nullable="false" MaxLength="8" FixedLength="false" Unicode="false" />
+  </EntityType>
+  <ComplexType Name="GetCategoryByID_Result">
+    <Property Type="Decimal" Name="CategoryID" Nullable="true" Precision="10" Scale="0" />
+    <Property Type="String" Name="CategoryName" Nullable="true" MaxLength="255" />
+  </ComplexType>
+  <ComplexType Name="USP_GET_InfoBankUpLoad_Result">
+    <Property Type="Decimal" Name="PKID" Nullable="false" Precision="10" Scale="0" />
+    <Property Type="Decimal" Name="CategoryFKID" Nullable="false" Precision="10" Scale="0" />
+    <Property Type="String" Name="Title" Nullable="false" MaxLength="50" />
+    <Property Type="String" Name="KeyWords" Nullable="false" MaxLength="50" />
+    <Property Type="String" Name="IsActive" Nullable="false" MaxLength="8" />
+    <Property Type="String" Name="Category" Nullable="true" MaxLength="60" />
+  </ComplexType>
+  <ComplexType Name="GetCityByXML_Result">
+    <Property Type="Decimal" Name="CityID" Nullable="false" Precision="10" Scale="0" />
+    <Property Type="Decimal" Name="CityFKID" Nullable="false" Precision="10" Scale="0" />
+    <Property Type="String" Name="CityName" Nullable="true" MaxLength="225" />
+  </ComplexType>
+  <ComplexType Name="GetDesignationByXML_Result">
+    <Property Type="Decimal" Name="DesignationFKID" Nullable="false" Precision="10" Scale="0" />
+    <Property Type="String" Name="DesignationName" Nullable="false" MaxLength="50" />
+  </ComplexType>
+  <ComplexType Name="GetDesignationMasterDetail_Result">
+    <Property Type="Decimal" Name="PKID" Nullable="false" Precision="10" Scale="0" />
+    <Property Type="String" Name="DesignationName" Nullable="false" MaxLength="50" />
+    <Property Type="String" Name="Status" Nullable="false" MaxLength="8" />
+    <Property Type="Decimal" Name="NodeTypeFKID" Nullable="true" Precision="10" Scale="0" />
+    <Property Type="String" Name="NodeName" Nullable="true" MaxLength="100" />
+  </ComplexType>
+  <ComplexType Name="GetEmployeMaster_Result">
+    <Property Type="Decimal" Name="PKID" Nullable="false" Precision="10" Scale="0" />
+    <Property Type="String" Name="EmpCode" Nullable="true" MaxLength="20" />
+    <Property Type="String" Name="FirstName" Nullable="true" MaxLength="30" />
+    <Property Type="String" Name="MiddleName" Nullable="true" MaxLength="30" />
+    <Property Type="String" Name="LastName" Nullable="true" MaxLength="30" />
+    <Property Type="String" Name="EmpName" Nullable="true" MaxLength="92" />
+    <Property Type="Int32" Name="DesignationFKID" Nullable="true" />
+    <Property Type="String" Name="Area" Nullable="true" MaxLength="100" />
+    <Property Type="String" Name="Status" Nullable="false" MaxLength="8" />
+    <Property Type="String" Name="DesignationName" Nullable="true" MaxLength="50" />
+    <Property Type="String" Name="CityName" Nullable="true" MaxLength="225" />
+    <Property Type="Decimal" Name="TitleFKID" Nullable="true" Precision="10" Scale="0" />
+    <Property Type="String" Name="ShortName" Nullable="true" MaxLength="20" />
+    <Property Type="String" Name="Sex" Nullable="true" MaxLength="10" />
+    <Property Type="String" Name="DOB" Nullable="true" MaxLength="20" />
+    <Property Type="String" Name="DOJ" Nullable="true" MaxLength="20" />
+    <Property Type="String" Name="ZipCode" Nullable="true" MaxLength="20" />
+    <Property Type="String" Name="HomePhone" Nullable="true" MaxLength="20" />
+    <Property Type="String" Name="Mobile" Nullable="true" MaxLength="20" />
+    <Property Type="String" Name="Email" Nullable="true" MaxLength="100" />
+    <Property Type="String" Name="OldEmpCode" Nullable="true" MaxLength="20" />
+    <Property Type="String" Name="HQ" Nullable="true" MaxLength="20" />
+    <Property Type="Int32" Name="MartialStatusFKID" Nullable="true" />
+    <Property Type="String" Name="STDCODE" Nullable="true" MaxLength="10" />
+    <Property Type="String" Name="ISDCODE" Nullable="true" MaxLength="10" />
+    <Property Type="String" Name="Street" Nullable="true" MaxLength="100" />
+  </ComplexType>
+  <ComplexType Name="GetEmpNameByNodeTypeFKIDXml_Result">
+    <Property Type="String" Name="EmpName" Nullable="false" MaxLength="92" />
+    <Property Type="Decimal" Name="EmpFKID" Nullable="false" Precision="10" Scale="0" />
+    <Property Type="Decimal" Name="UserFKID" Nullable="true" Precision="10" Scale="0" />
+  </ComplexType>
+  <ComplexType Name="GetHolidayDescriptionByXml_Result">
+    <Property Type="Decimal" Name="HolidayFKID" Nullable="false" Precision="10" Scale="0" />
+    <Property Type="String" Name="HolidayDescription" Nullable="false" MaxLength="20" />
+  </ComplexType>
+  <ComplexType Name="GetHolidaygroup_Result">
+    <Property Type="Decimal" Name="HolidaygroupFKID" Nullable="false" Precision="10" Scale="0" />
+    <Property Type="String" Name="HolidayGroupName" Nullable="false" MaxLength="100" />
+  </ComplexType>
+  <ComplexType Name="getUserTeamLink_Result">
+    <Property Type="Decimal" Name="PKID" Nullable="false" Precision="10" Scale="0" />
+    <Property Type="Decimal" Name="UserFKID" Nullable="false" Precision="10" Scale="0" />
+    <Property Type="Decimal" Name="NodeTypeFKID" Nullable="true" Precision="10" Scale="0" />
+    <Property Type="Decimal" Name="TeamFKID" Nullable="false" Precision="10" Scale="0" />
+    <Property Type="String" Name="Status" Nullable="false" MaxLength="8" />
+    <Property Type="String" Name="TeamCode" Nullable="true" MaxLength="20" />
+    <Property Type="String" Name="TeamName" Nullable="true" MaxLength="225" />
+    <Property Type="String" Name="NodeName" Nullable="true" MaxLength="100" />
+    <Property Type="Decimal" Name="NewPKID" Nullable="true" Precision="10" Scale="0" />
+    <Property Type="Decimal" Name="EmpFKID" Nullable="true" Precision="10" Scale="0" />
+    <Property Type="String" Name="Loginname" Nullable="true" MaxLength="20" />
+    <Property Type="String" Name="FirstName" Nullable="true" MaxLength="30" />
+    <Property Type="String" Name="MiddleName" Nullable="true" MaxLength="30" />
+    <Property Type="String" Name="LastName" Nullable="true" MaxLength="30" />
+    <Property Type="String" Name="UserName" Nullable="true" MaxLength="92" />
+  </ComplexType>
+  <EntityType Name="DesignationMaster">
+    <Key>
+      <PropertyRef Name="PKID" />
+    </Key>
+    <Property Name="PKID" Type="Decimal" Nullable="false" Precision="10" Scale="0" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="DesignationCode" Type="String" Nullable="false" MaxLength="20" FixedLength="false" Unicode="false" />
+    <Property Name="DesignationName" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="false" />
+    <Property Name="NodeTypeFKID" Type="Decimal" Nullable="false" Precision="10" Scale="0" />
+    <Property Name="IsActive" Type="Boolean" Nullable="false" />
+    <Property Name="CreatedDate" Type="DateTime" Nullable="false" Precision="3" />
+    <Property Name="CreatedBy" Type="Decimal" Nullable="false" Precision="10" Scale="0" />
+    <Property Name="ModifiedDate" Type="DateTime" Precision="3" />
+    <Property Name="ModifiedBy" Type="Decimal" Precision="10" Scale="0" />
+  </EntityType>
+  <ComplexType Name="GetDistrictNameforTerittoryByXml_Result">
+    <Property Type="Decimal" Name="PKID" Nullable="false" Precision="10" Scale="0" />
+    <Property Type="String" Name="DistrictCode" Nullable="true" MaxLength="10" />
+  </ComplexType>
+  <ComplexType Name="GetDistrictTerritoryLink_Result">
+    <Property Type="Decimal" Name="PKID" Nullable="false" Precision="10" Scale="0" />
+    <Property Type="Decimal" Name="DistrictFKID" Nullable="true" Precision="10" Scale="0" />
+    <Property Type="Decimal" Name="TerritoryFKID" Nullable="true" Precision="10" Scale="0" />
+    <Property Type="Boolean" Name="IsActive" Nullable="true" />
+    <Property Type="String" Name="DistrictCode" Nullable="true" MaxLength="10" />
+    <Property Type="String" Name="DistrictName" Nullable="true" MaxLength="75" />
+    <Property Type="String" Name="TerCode" Nullable="true" MaxLength="20" />
+    <Property Type="String" Name="TerName" Nullable="true" MaxLength="225" />
+  </ComplexType>
+  <ComplexType Name="GetRegionCodeByXml_Result">
+    <Property Type="Int32" Name="RegionId" Nullable="false" />
+    <Property Type="String" Name="RegionCode" Nullable="true" MaxLength="10" />
+    <Property Type="String" Name="RegionName" Nullable="true" MaxLength="75" />
+  </ComplexType>
+  <ComplexType Name="GetRegionDistrictLink_Result">
+    <Property Type="Decimal" Name="PKID" Nullable="false" Precision="10" Scale="0" />
+    <Property Type="Decimal" Name="RegionFKID" Nullable="true" Precision="10" Scale="0" />
+    <Property Type="Decimal" Name="DistrictFKID" Nullable="true" Precision="10" Scale="0" />
+    <Property Type="Boolean" Name="IsActive" Nullable="true" />
+    <Property Type="String" Name="RegionCode" Nullable="true" MaxLength="10" />
+    <Property Type="String" Name="RegionName" Nullable="true" MaxLength="75" />
+    <Property Type="String" Name="DistrictCode" Nullable="true" MaxLength="10" />
+    <Property Type="String" Name="DistrictName" Nullable="true" MaxLength="75" />
+  </ComplexType>
+  <ComplexType Name="GetInputNamebyXML_Result">
+    <Property Type="Decimal" Name="PKID" Nullable="false" Precision="10" Scale="0" />
+    <Property Type="String" Name="InputName" Nullable="false" MaxLength="255" />
+    <Property Type="Int32" Name="Seq" Nullable="false" />
+  </ComplexType>
+  <ComplexType Name="GetInputProductLinkMaster_Result">
+    <Property Type="Decimal" Name="PKID" Nullable="false" Precision="10" Scale="0" />
+    <Property Type="Decimal" Name="InputFKID" Nullable="false" Precision="10" Scale="0" />
+    <Property Type="Decimal" Name="ProductFKID" Nullable="false" Precision="10" Scale="0" />
+    <Property Type="Boolean" Name="IsActive" Nullable="false" />
+    <Property Type="String" Name="InputName" Nullable="true" MaxLength="255" />
+    <Property Type="String" Name="ProductName" Nullable="true" MaxLength="45" />
+    <Property Type="String" Name="GenName" Nullable="true" MaxLength="255" />
+  </ComplexType>
+  <ComplexType Name="GetInputteamlink_Result">
+    <Property Type="Decimal" Name="PKID" Nullable="false" Precision="10" Scale="0" />
+    <Property Type="Decimal" Name="InputFKID" Nullable="false" Precision="10" Scale="0" />
+    <Property Type="Decimal" Name="TeamFKID" Nullable="false" Precision="10" Scale="0" />
+    <Property Type="Boolean" Name="IsActive" Nullable="false" />
+    <Property Type="String" Name="InputName" Nullable="true" MaxLength="255" />
+    <Property Type="String" Name="TeamName" Nullable="true" MaxLength="225" />
+    <Property Type="String" Name="GenName" Nullable="true" MaxLength="255" />
+  </ComplexType>
+  <ComplexType Name="RR_GetAllTeam_Result">
+    <Property Type="Decimal" Name="PKID" Nullable="false" Precision="10" Scale="0" />
+    <Property Type="String" Name="TeamName" Nullable="false" MaxLength="225" />
+    <Property Type="String" Name="Reminder" Nullable="false" MaxLength="8" />
+  </ComplexType>
+  <ComplexType Name="ShowOpinionPollRating1_Result">
+    <Property Type="String" Name="OPTION1" Nullable="false" MaxLength="20" />
+    <Property Type="String" Name="OPTION2" Nullable="false" MaxLength="20" />
+    <Property Type="String" Name="OPTION3" Nullable="true" MaxLength="20" />
+    <Property Type="String" Name="OPTION4" Nullable="true" MaxLength="20" />
+    <Property Type="String" Name="OPTION5" Nullable="true" MaxLength="20" />
+  </ComplexType>
+  <ComplexType Name="GetDivisonMasterByPkid_Result">
+    <Property Type="Decimal" Name="PKID" Nullable="false" Precision="10" Scale="0" />
+    <Property Type="String" Name="DivName" Nullable="false" MaxLength="225" />
+  </ComplexType>
+  <ComplexType Name="GetAreaDetailsPCL_Result">
+    <Property Type="Decimal" Name="PKID" Nullable="false" Precision="10" Scale="0" />
+    <Property Type="String" Name="AreaName" Nullable="false" MaxLength="225" />
+  </ComplexType>
+  <ComplexType Name="AllPendingCustomer_Result">
+    <Property Type="String" Name="Element" Nullable="false" MaxLength="8" />
+    <Property Type="String" Name="Type" Nullable="false" MaxLength="8" />
+    <Property Type="Decimal" Name="MASPKID" Nullable="true" Precision="10" Scale="0" />
+    <Property Type="String" Name="CustomerName" Nullable="true" MaxLength="100" />
+    <Property Type="String" Name="Specialization" Nullable="true" MaxLength="225" />
+    <Property Type="String" Name="AreaName" Nullable="true" MaxLength="225" />
+    <Property Type="DateTime" Name="CreatedDate" Nullable="true" Precision="23" />
+    <Property Type="String" Name="ReasonForRequest" Nullable="true" MaxLength="100" />
+  </ComplexType>
+  <ComplexType Name="GetReportingByXml_Result">
+    <Property Type="Decimal" Name="PKID" Nullable="false" Precision="10" Scale="0" />
+    <Property Type="String" Name="LoginName" Nullable="true" MaxLength="92" />
+  </ComplexType>
+  <ComplexType Name="getDistrictNameWSNew_Result">
+    <Property Type="Decimal" Name="PKID" Nullable="false" Precision="10" Scale="0" />
+    <Property Type="String" Name="DistrictName" Nullable="true" MaxLength="75" />
+    <Property Type="String" Name="DistrictCode" Nullable="true" MaxLength="10" />
+  </ComplexType>
+  <ComplexType Name="GetLocatioNameByXml_Result">
+    <Property Type="Decimal" Name="PKID" Nullable="false" Precision="10" Scale="0" />
+    <Property Type="String" Name="LocationName" Nullable="false" MaxLength="225" />
+  </ComplexType>
+  <ComplexType Name="getRegionNameNew_Result">
+    <Property Type="Int32" Name="PKID" Nullable="false" />
+    <Property Type="String" Name="RegionName" Nullable="true" MaxLength="75" />
+    <Property Type="String" Name="RegionCode" Nullable="true" MaxLength="10" />
+  </ComplexType>
+  <ComplexType Name="GetTeamMasterByXML_New_Result">
+    <Property Type="Decimal" Name="OptimaTeamId" Nullable="false" Precision="10" Scale="0" />
+    <Property Type="Decimal" Name="PKID" Nullable="false" Precision="10" Scale="0" />
+    <Property Type="String" Name="TeamName" Nullable="false" MaxLength="225" />
+  </ComplexType>
+  <ComplexType Name="GetTerritoryByXml_Result">
+    <Property Type="Decimal" Name="TerritoryID" Nullable="false" Precision="10" Scale="0" />
+    <Property Type="String" Name="TerritoryName" Nullable="true" MaxLength="225" />
+    <Property Type="String" Name="TerritoryCode" Nullable="false" MaxLength="20" />
+  </ComplexType>
+  <ComplexType Name="getDistrictNameWSNew1_Result">
+    <Property Type="Decimal" Name="PKID" Nullable="false" Precision="10" Scale="0" />
+    <Property Type="String" Name="DistrictName" Nullable="true" MaxLength="75" />
+    <Property Type="String" Name="DistrictCode" Nullable="true" MaxLength="10" />
+  </ComplexType>
+  <ComplexType Name="GetCreateUserByPKID_Result">
+    <Property Type="Decimal" Name="UserPKID" Nullable="false" Precision="10" Scale="0" />
+    <Property Type="Decimal" Name="EmpFKID" Nullable="false" Precision="10" Scale="0" />
+    <Property Type="String" Name="EmployeeName" Nullable="true" MaxLength="61" />
+    <Property Type="String" Name="LoginUser" Nullable="false" MaxLength="20" />
+    <Property Type="String" Name="Password" Nullable="false" MaxLength="100" />
+  </ComplexType>
+  <ComplexType Name="DefaultAnswer_Result">
+    <Property Type="Decimal" Name="PKID" Nullable="false" Precision="10" Scale="0" />
+    <Property Type="String" Name="Question" Nullable="false" MaxLength="50" />
+    <Property Type="String" Name="Answer" Nullable="false" MaxLength="100" />
+    <Property Type="String" Name="errname" Nullable="true" MaxLength="50" />
+  </ComplexType>
+  <ComplexType Name="GetDistrictNameExcludeforTerittoryByXml_Result">
+    <Property Type="Decimal" Name="PKID" Nullable="false" Precision="10" Scale="0" />
+    <Property Type="String" Name="DistrictCode" Nullable="true" MaxLength="10" />
+  </ComplexType>
+  <ComplexType Name="GetLinkUserTeamMasterforDrpuserfillByXml_Result">
+    <Property Type="String" Name="Element" Nullable="false" MaxLength="6" />
+    <Property Type="Decimal" Name="UserFKID" Nullable="false" Precision="10" Scale="0" />
+    <Property Type="String" Name="EmpName" Nullable="false" MaxLength="92" />
+  </ComplexType>
+  <ComplexType Name="GetBrickNameforCityByXml_Result">
+    <Property Type="Decimal" Name="PKID" Nullable="false" Precision="10" Scale="0" />
+    <Property Type="String" Name="AreaName" Nullable="false" MaxLength="225" />
+  </ComplexType>
+  <ComplexType Name="GetCityFCforTerritoryByXML_Result">
+    <Property Type="String" Name="PKID" Nullable="false" MaxLength="1" />
+    <Property Type="String" Name="CityName" Nullable="false" MaxLength="1" />
+  </ComplexType>
+  <ComplexType Name="GetCityforTerritoryByXML_Result">
+    <Property Type="Decimal" Name="CityFKID" Nullable="false" Precision="10" Scale="0" />
+    <Property Type="String" Name="CityName" Nullable="true" MaxLength="225" />
+  </ComplexType>
+  <ComplexType Name="GetDistrictCodeByXml_Result">
+    <Property Type="Decimal" Name="DistrictId" Nullable="false" Precision="10" Scale="0" />
+    <Property Type="String" Name="DistCode" Nullable="true" MaxLength="10" />
+  </ComplexType>
+  <ComplexType Name="GetTCodeFCforTerritoryByXML_Result">
+    <Property Type="String" Name="PKID" Nullable="false" MaxLength="1" />
+    <Property Type="String" Name="TerCode" Nullable="false" MaxLength="1" />
+  </ComplexType>
+  <ComplexType Name="GetTCodeforTerritoryByXML_Result">
+    <Property Type="Decimal" Name="PKID" Nullable="false" Precision="10" Scale="0" />
+    <Property Type="String" Name="TerCode" Nullable="false" MaxLength="20" />
+  </ComplexType>
+  <ComplexType Name="GetTerritoryNameExcludeforDistrictByXml_Result">
+    <Property Type="Decimal" Name="PKID" Nullable="false" Precision="10" Scale="0" />
+    <Property Type="String" Name="TerritoryName" Nullable="false" MaxLength="20" />
+  </ComplexType>
+  <ComplexType Name="usp_GetTerritory_Result">
+    <Property Type="Int32" Name="PKID" Nullable="false" />
+    <Property Type="Decimal" Name="TerritoryFKID" Nullable="false" Precision="10" Scale="0" />
+    <Property Type="Decimal" Name="AreaFKID" Nullable="false" Precision="10" Scale="0" />
+    <Property Type="String" Name="IsActive" Nullable="false" MaxLength="8" />
+    <Property Type="String" Name="TerCode" Nullable="true" MaxLength="20" />
+    <Property Type="String" Name="TerName" Nullable="true" MaxLength="225" />
+    <Property Type="String" Name="AreaName" Nullable="true" MaxLength="225" />
+  </ComplexType>
+  <ComplexType Name="GetTeamNamefromInputMaster_Result">
+    <Property Type="String" Name="Element" Nullable="false" MaxLength="6" />
+    <Property Type="Decimal" Name="PKID" Nullable="false" Precision="10" Scale="0" />
+    <Property Type="String" Name="TeamName" Nullable="false" MaxLength="225" />
+  </ComplexType>
+  <ComplexType Name="GetInputProductLinkMaster1_Result">
+    <Property Type="Decimal" Name="PKID" Nullable="false" Precision="10" Scale="0" />
+    <Property Type="Decimal" Name="InputFKID" Nullable="false" Precision="10" Scale="0" />
+    <Property Type="Decimal" Name="ProductFKID" Nullable="false" Precision="10" Scale="0" />
+    <Property Type="Boolean" Name="IsActive" Nullable="false" />
+    <Property Type="String" Name="InputName" Nullable="true" MaxLength="255" />
+    <Property Type="String" Name="ProductName" Nullable="true" MaxLength="45" />
+    <Property Type="String" Name="GenName" Nullable="true" MaxLength="255" />
+  </ComplexType>
+  <ComplexType Name="getInputTypebyInputMaster_Result">
+    <Property Type="Decimal" Name="PKID" Nullable="false" Precision="10" Scale="0" />
+    <Property Type="Decimal" Name="InputTypeFKID" Nullable="false" Precision="10" Scale="0" />
+  </ComplexType>
+  <ComplexType Name="GetProductNamefromInputMaster_Result">
+    <Property Type="String" Name="Element" Nullable="false" MaxLength="6" />
+    <Property Type="Decimal" Name="PKID" Nullable="false" Precision="10" Scale="0" />
+    <Property Type="String" Name="TeamName" Nullable="true" MaxLength="45" />
+  </ComplexType>
+  <ComplexType Name="getInputTypebyInputProdLinkMaster_Result">
+    <Property Type="Decimal" Name="PKID" Nullable="false" Precision="10" Scale="0" />
+    <Property Type="Decimal" Name="InputTypeFKID" Nullable="false" Precision="10" Scale="0" />
+  </ComplexType>
+  <ComplexType Name="GetHolidayGroupLinkmasterByXml_Result">
+    <Property Type="String" Name="Element" Nullable="false" MaxLength="5" />
+    <Property Type="Decimal" Name="HolidayFKID" Nullable="false" Precision="10" Scale="0" />
+    <Property Type="String" Name="HolidayDescription" Nullable="true" MaxLength="20" />
+  </ComplexType>
+  <ComplexType Name="GetMoleculeforProductPKIDByXMLNotInN_Result">
+    <Property Type="Decimal" Name="MoleculeId" Nullable="false" Precision="10" Scale="0" />
+    <Property Type="String" Name="MoleculeName" Nullable="true" MaxLength="60" />
+  </ComplexType>
+  <ComplexType Name="USP_MoleculeProductMasterGrid_Result">
+    <Property Type="Decimal" Name="PKID" Nullable="false" Precision="10" Scale="0" />
+    <Property Type="Decimal" Name="ProductFKID" Nullable="false" Precision="10" Scale="0" />
+    <Property Type="Decimal" Name="MoleculeFKID" Nullable="false" Precision="10" Scale="0" />
+    <Property Type="String" Name="ProductName" Nullable="true" MaxLength="45" />
+    <Property Type="String" Name="MoleculeName" Nullable="true" MaxLength="60" />
+    <Property Type="String" Name="IsActive" Nullable="false" MaxLength="8" />
+  </ComplexType>
+  <ComplexType Name="GetTerritoryNameforDistrictByXml_Result">
+    <Property Type="Decimal" Name="PKID" Nullable="false" Precision="10" Scale="0" />
+    <Property Type="String" Name="TerritoryName" Nullable="false" MaxLength="20" />
+  </ComplexType>
+  <ComplexType Name="GetTerritoryNameforHQByXml_Result">
+    <Property Type="Decimal" Name="PKID" Nullable="false" Precision="10" Scale="0" />
+    <Property Type="String" Name="TerritoryName" Nullable="false" MaxLength="20" />
+  </ComplexType>
+  <EntityType Name="LocationMaster">
+    <Key>
+      <PropertyRef Name="PKID" />
+    </Key>
+    <Property Name="PKID" Type="Decimal" Nullable="false" Precision="10" Scale="0" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="LocationCode" Type="String" MaxLength="20" FixedLength="false" Unicode="false" />
+    <Property Name="LocationDesc" Type="String" Nullable="false" MaxLength="225" FixedLength="false" Unicode="false" />
+    <Property Name="IsActive" Type="Boolean" Nullable="false" />
+    <Property Name="CreatedDate" Type="DateTime" Nullable="false" Precision="3" />
+    <Property Name="CreatedBy" Type="Decimal" Nullable="false" Precision="10" Scale="0" />
+    <Property Name="ModifiedDate" Type="DateTime" Precision="3" />
+    <Property Name="ModifiedBy" Type="Decimal" Precision="10" Scale="0" />
+    <Property Name="TerritoryFKID" Type="Decimal" Nullable="false" Precision="10" Scale="0" />
+  </EntityType>
+  <ComplexType Name="GetLocationMaster_Result">
+    <Property Type="Decimal" Name="PKID" Nullable="false" Precision="10" Scale="0" />
+    <Property Type="String" Name="Status" Nullable="false" MaxLength="8" />
+    <Property Type="String" Name="LocationDesc" Nullable="false" MaxLength="225" />
+  </ComplexType>
+  <ComplexType Name="GetBrickforTerritoryByXml_Result">
+    <Property Type="Decimal" Name="PKID" Nullable="false" Precision="10" Scale="0" />
+    <Property Type="String" Name="AreaName" Nullable="false" MaxLength="225" />
+  </ComplexType>
+  <ComplexType Name="GetCityNameForAreaXML_Result">
+    <Property Type="Decimal" Name="CityFKID" Nullable="false" Precision="10" Scale="0" />
+    <Property Type="String" Name="CityName" Nullable="true" MaxLength="1" />
+  </ComplexType>
+  <ComplexType Name="GetCityNameforTerritoryByXML_Result">
+    <Property Type="Decimal" Name="CityFKID" Nullable="false" Precision="10" Scale="0" />
+    <Property Type="String" Name="CityName" Nullable="true" MaxLength="225" />
+  </ComplexType>
+  <ComplexType Name="GetTerritoryforBrickXml_Result">
+    <Property Type="Decimal" Name="PKID" Nullable="false" Precision="10" Scale="0" />
+    <Property Type="String" Name="TerName" Nullable="true" MaxLength="225" />
+    <Property Type="String" Name="TerCode" Nullable="false" MaxLength="20" />
+    <Property Type="String" Name="FCTerCode" Nullable="true" MaxLength="1" />
+  </ComplexType>
+  <ComplexType Name="usp_Get_CampTypeMaster_Result1">
+    <Property Type="Decimal" Name="PKID" Nullable="false" Precision="10" Scale="0" />
+    <Property Type="String" Name="TableName" Nullable="true" MaxLength="30" />
+    <Property Type="String" Name="GenCode" Nullable="true" MaxLength="20" />
+    <Property Type="String" Name="GenName" Nullable="true" MaxLength="255" />
+    <Property Type="Decimal" Name="GenFKID" Nullable="false" Precision="10" Scale="0" />
+    <Property Type="String" Name="IsActive" Nullable="false" MaxLength="8" />
+  </ComplexType>
+  <ComplexType Name="usp_Get_CampTypeMaster_Result2">
+    <Property Type="Decimal" Name="PKID" Nullable="false" Precision="10" Scale="0" />
+    <Property Type="String" Name="TableName" Nullable="true" MaxLength="30" />
+    <Property Type="String" Name="GenCode" Nullable="true" MaxLength="20" />
+    <Property Type="String" Name="GenName" Nullable="true" MaxLength="255" />
+    <Property Type="Decimal" Name="GenFKID" Nullable="false" Precision="10" Scale="0" />
+    <Property Type="String" Name="IsActive" Nullable="false" MaxLength="8" />
+  </ComplexType>
+  <EntityType Name="SettingMaster">
+    <Key>
+      <PropertyRef Name="PKID" />
+    </Key>
+    <Property Name="PKID" Type="Decimal" Nullable="false" Precision="10" Scale="0" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="ImpactScreenName" Type="String" MaxLength="200" FixedLength="false" Unicode="false" />
+    <Property Name="SettingDescription" Type="String" MaxLength="200" FixedLength="false" Unicode="false" />
+    <Property Name="SettingType" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+    <Property Name="FromValue" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
+    <Property Name="ToValue" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
+    <Property Name="IsActive" Type="Boolean" />
+    <Property Name="CreatedDate" Type="DateTime" Precision="3" />
+    <Property Name="CreatedBy" Type="Decimal" Precision="10" Scale="0" />
+    <Property Name="ModifiedBy" Type="Decimal" Precision="10" Scale="0" />
+    <Property Name="ModifiedDate" Type="DateTime" Precision="3" />
+    <Property Name="Code" Type="String" MaxLength="10" FixedLength="false" Unicode="false" />
+  </EntityType>
+  <EntityType Name="EmployeeMaster">
+    <Key>
+      <PropertyRef Name="PKID" />
+    </Key>
+    <Property Name="PKID" Type="Decimal" Nullable="false" Precision="10" Scale="0" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="EmpCode" Type="String" MaxLength="20" FixedLength="false" Unicode="false" />
+    <Property Name="TitleFKID" Type="Decimal" Precision="10" Scale="0" />
+    <Property Name="FirstName" Type="String" MaxLength="30" FixedLength="false" Unicode="false" />
+    <Property Name="MiddleName" Type="String" MaxLength="30" FixedLength="false" Unicode="false" />
+    <Property Name="LastName" Type="String" MaxLength="30" FixedLength="false" Unicode="false" />
+    <Property Name="ShortName" Type="String" MaxLength="20" FixedLength="false" Unicode="false" />
+    <Property Name="Sex" Type="String" MaxLength="10" FixedLength="false" Unicode="false" />
+    <Property Name="DateOfBirth" Type="DateTime" Precision="3" />
+    <Property Name="JoiningDate" Type="DateTime" Precision="3" />
+    <Property Name="Address" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
+    <Property Name="Street" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
+    <Property Name="Area" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
+    <Property Name="ZipCode" Type="String" MaxLength="20" FixedLength="false" Unicode="false" />
+    <Property Name="PhoneNo" Type="String" MaxLength="20" FixedLength="false" Unicode="false" />
+    <Property Name="Mobile" Type="String" MaxLength="20" FixedLength="false" Unicode="false" />
+    <Property Name="Email" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
+    <Property Name="HQ" Type="String" MaxLength="20" FixedLength="false" Unicode="false" />
+    <Property Name="MartialStatusFKID" Type="Int32" />
+    <Property Name="DesignationFKID" Type="Int32" />
+    <Property Name="OldEmployeeCode" Type="String" MaxLength="20" FixedLength="false" Unicode="false" />
+    <Property Name="TempAddress1" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
+    <Property Name="TempAddress2" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
+    <Property Name="TempCity" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+    <Property Name="TempArea" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+    <Property Name="TempZipCode" Type="String" MaxLength="20" FixedLength="false" Unicode="false" />
+    <Property Name="LastAddresUpdateDate" Type="DateTime" Precision="3" />
+    <Property Name="IsActive" Type="Boolean" />
+    <Property Name="CreatedDate" Type="DateTime" Precision="3" />
+    <Property Name="CreatedBy" Type="Decimal" Precision="10" Scale="0" />
+    <Property Name="ModifiedDate" Type="DateTime" Precision="3" />
+    <Property Name="ModifiedBy" Type="Decimal" Precision="10" Scale="0" />
+    <Property Name="PhoneSTDCode" Type="String" MaxLength="10" FixedLength="false" Unicode="false" />
+    <Property Name="PhoneISDCode" Type="String" MaxLength="10" FixedLength="false" Unicode="false" />
+    <NavigationProperty Name="UserMaster" Relationship="pfizerModel.FK_UserMaster_EmployeeMaster" FromRole="EmployeeMaster" ToRole="UserMaster" />
+  </EntityType>
+  <Association Name="FK_UserMaster_EmployeeMaster">
+    <End Type="pfizerModel.EmployeeMaster" Role="EmployeeMaster" Multiplicity="1" />
+    <End Type="pfizerModel.UserMaster" Role="UserMaster" Multiplicity="0..1" />
+    <ReferentialConstraint>
+      <Principal Role="EmployeeMaster">
+        <PropertyRef Name="PKID" />
+      </Principal>
+      <Dependent Role="UserMaster">
+        <PropertyRef Name="EmpFKID" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <ComplexType Name="uspGetHolidayMaster_Result1">
+    <Property Type="Decimal" Name="HolidaygroupFKID" Nullable="false" Precision="10" Scale="0" />
+    <Property Type="String" Name="HolidayGroupName" Nullable="false" MaxLength="100" />
+  </ComplexType>
+  <EntityType Name="Notification">
+    <Key>
+      <PropertyRef Name="PKID" />
+    </Key>
+    <Property Name="PKID" Type="Decimal" Nullable="false" Precision="10" Scale="0" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="Notification1" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="false" />
+    <Property Name="ExpiryDate" Type="DateTime" Nullable="false" Precision="3" />
+    <Property Name="IsActive" Type="Boolean" Nullable="false" />
+    <Property Name="CreatedDate" Type="DateTime" Nullable="false" Precision="3" />
+    <Property Name="CreatedBy" Type="Decimal" Nullable="false" Precision="10" Scale="0" />
+    <Property Name="ModifiedDate" Type="DateTime" Precision="3" />
+    <Property Name="ModifiedBy" Type="Decimal" Precision="10" Scale="0" />
+  </EntityType>
+  <ComplexType Name="GetAllBrickDetailsByXML_Result">
+    <Property Type="Decimal" Name="PKID" Nullable="false" Precision="10" Scale="0" />
+    <Property Type="String" Name="AreaName" Nullable="false" MaxLength="225" />
+  </ComplexType>
+  <ComplexType Name="GetSpecializationMasterByPKID_Result">
+    <Property Type="Decimal" Name="PKID" Nullable="false" Precision="10" Scale="0" />
+    <Property Type="String" Name="Specialization" Nullable="true" MaxLength="225" />
+    <Property Type="Decimal" Name="Teamid" Nullable="false" Precision="10" Scale="0" />
+    <Property Type="Boolean" Name="IsActive" Nullable="false" />
+  </ComplexType>
+  <EntityType Name="Masters_Hospitalmaster_tb">
+    <Key>
+      <PropertyRef Name="HospitalId" />
+    </Key>
+    <Property Name="HospitalId" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="NameofHospital" Type="String" Nullable="false" MaxLength="100" FixedLength="false" Unicode="false" />
+    <Property Name="HotelAddress" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="false" />
+    <Property Name="Street" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="false" />
+    <Property Name="City" Type="Int32" Nullable="false" />
+    <Property Name="Area" Type="Int32" Nullable="false" />
+    <Property Name="ZipCode" Type="Decimal" Precision="18" Scale="0" />
+    <Property Name="PhoneNumber" Type="String" MaxLength="10" FixedLength="false" Unicode="false" />
+    <Property Name="Email" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+    <Property Name="MCLflag" Type="String" MaxLength="2" FixedLength="true" Unicode="false" />
+    <Property Name="IsActive" Type="Boolean" />
+    <Property Name="ApprovalStatus" Type="String" MaxLength="2" FixedLength="true" Unicode="false" />
+    <Property Name="ReasonForRequest" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
+    <Property Name="CreatedBy" Type="Decimal" Precision="10" Scale="0" />
+    <Property Name="CreatedDate" Type="DateTime" Precision="3" />
+    <Property Name="TerFKID" Type="Decimal" Precision="10" Scale="0" />
+  </EntityType>
+  <EntityType Name="Masters_Stockistmaster_Tb">
+    <Key>
+      <PropertyRef Name="StockistId" />
+    </Key>
+    <Property Name="StockistId" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="NameofStockist" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
+    <Property Name="StockistAddress" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+    <Property Name="Street" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+    <Property Name="City" Type="Int32" />
+    <Property Name="Area" Type="Int32" />
+    <Property Name="ZipCode" Type="Decimal" Precision="18" Scale="0" />
+    <Property Name="PhoneNumber" Type="String" Nullable="false" MaxLength="10" FixedLength="false" Unicode="false" />
+    <Property Name="Email" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+    <Property Name="MCLflag" Type="String" MaxLength="2" FixedLength="true" Unicode="false" />
+    <Property Name="IsActive" Type="Boolean" />
+    <Property Name="ApprovalStatus" Type="String" MaxLength="2" FixedLength="true" Unicode="false" />
+    <Property Name="ReasonForRequest" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
+    <Property Name="CreatedBy" Type="Decimal" Precision="10" Scale="0" />
+    <Property Name="CreatedDate" Type="DateTime" Precision="3" />
+    <Property Name="TerFKID" Type="Decimal" Precision="10" Scale="0" />
+  </EntityType>
+  <ComplexType Name="GetHospitalMaster_PSO_Result1">
+    <Property Type="Int32" Name="HospitalID" Nullable="false" />
+    <Property Type="String" Name="NameofHospital" Nullable="false" MaxLength="100" />
+    <Property Type="String" Name="HotelAddress" Nullable="false" MaxLength="50" />
+    <Property Type="String" Name="Street" Nullable="false" MaxLength="50" />
+    <Property Type="String" Name="City" Nullable="true" MaxLength="225" />
+    <Property Type="String" Name="CityCode" Nullable="true" MaxLength="20" />
+    <Property Type="String" Name="Area" Nullable="false" MaxLength="225" />
+    <Property Type="Decimal" Name="ZipCode" Nullable="true" Precision="18" Scale="0" />
+    <Property Type="String" Name="PhoneNumber" Nullable="true" MaxLength="10" />
+    <Property Type="String" Name="Email" Nullable="true" MaxLength="50" />
+    <Property Type="String" Name="Status" Nullable="false" MaxLength="8" />
+  </ComplexType>
+  <ComplexType Name="GetStockistMaster_PSO_Result1">
+    <Property Type="Int32" Name="StockistID" Nullable="false" />
+    <Property Type="String" Name="NameofStockist" Nullable="true" MaxLength="100" />
+    <Property Type="String" Name="StockistAddress" Nullable="true" MaxLength="50" />
+    <Property Type="String" Name="Street" Nullable="true" MaxLength="50" />
+    <Property Type="String" Name="City" Nullable="true" MaxLength="225" />
+    <Property Type="String" Name="CityCode" Nullable="true" MaxLength="20" />
+    <Property Type="String" Name="Area" Nullable="false" MaxLength="225" />
+    <Property Type="Decimal" Name="ZipCode" Nullable="true" Precision="18" Scale="0" />
+    <Property Type="String" Name="PhoneNumber" Nullable="false" MaxLength="10" />
+    <Property Type="String" Name="Email" Nullable="true" MaxLength="50" />
+    <Property Type="String" Name="Status" Nullable="false" MaxLength="8" />
+  </ComplexType>
+  <ComplexType Name="GetSplSelectedTeamByXml_Result">
+    <Property Type="Decimal" Name="Teamid" Nullable="false" Precision="10" Scale="0" />
+    <Property Type="String" Name="TName" Nullable="false" MaxLength="226" />
+  </ComplexType>
+  <ComplexType Name="GetLinkUserTeamMasterforDrpuserfillByXml_Result1">
+    <Property Type="String" Name="Element" Nullable="false" MaxLength="6" />
+    <Property Type="Decimal" Name="UserFKID" Nullable="false" Precision="10" Scale="0" />
+    <Property Type="String" Name="EmpName" Nullable="false" MaxLength="92" />
+  </ComplexType>
+</Schema>

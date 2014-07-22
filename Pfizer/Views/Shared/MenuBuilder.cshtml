@@ -1,0 +1,29 @@
+﻿ 
+ <head>
+     <script type="text/javascript">
+
+         function GetSelectedMenu(val) {
+           
+             $.getJSON('@Url.Action("JsonGetSelectedMenu")?menu=' + val + '&submenu='+ ''  , function (data) {
+
+             });
+             //   $('#hdnMainMenu').val(val); JsonGetSelectedMenu
+
+         }
+         function GetSelectedSubMenu(val) {
+          
+             $.getJSON('@Url.Action("JsonGetSelectedMenu")?menu=' + '' + '&submenu=' + val, function (data) {
+
+             });
+         }
+     </script>
+
+
+
+ </head>
+ 
+
+ @*@Html.Raw(Session["Menu"].ToString())*@
+ 
+
+@Html.Raw(ViewBag.Menu)

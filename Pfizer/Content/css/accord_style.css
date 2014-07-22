@@ -1,0 +1,89 @@
+@charset "utf-8";
+/* CSS Document */
+
+.glossymenu{
+margin:10px   auto 0;
+padding: 0;
+width: 200px;  /*width of menu*/
+
+}
+
+.glossymenu a.menuitem{
+background:  url(../images/menu_head_bg.jpg) repeat-x ;
+font: normal 12px/30px Arial, Helvetica, sans-serif;
+color: #ffffff;
+display: block;
+position: relative; /*To help in the anchoring of the ".statusicon" icon image*/
+width: auto;
+height: 30px;
+padding: 0px 0;
+padding-left: 10px;
+text-decoration: none;}
+
+
+
+.glossymenu a.menuitem .statusicon{ /*CSS for icon image that gets dynamically added to headers*/
+
+border: none;
+float: right;
+    margin-right:5px;
+    margin-top:3px;
+    position: relative;
+}
+
+.glossymenu a.menuitem:hover{
+background: url(../images/menu_head_active.jpg) repeat-x; 
+}
+
+.glossymenu a.menuitem:selected{
+background:  url(../images/menu_head_active.jpg) repeat-x ;
+}
+
+
+.glossymenu div.submenu{ /*DIV that contains each sub menu*/
+background: white;
+}
+
+.glossymenu div.submenu ul{ /*UL of each sub menu*/
+list-style-type: none;
+margin: 0;
+padding: 0;
+}
+
+.glossymenu div.submenu ul li{
+border-bottom: 1px solid #fff;
+}
+
+.glossymenu div.submenu ul li a{
+display:block;  
+	color: #4a4f53;
+	padding: 0 10px 0 25px;
+	font: normal 11px/18px Arial, sans-serif;
+	text-decoration: none;
+	height:18px;
+	background:#e5e5e5;
+background-repeat: no-repeat;
+	/*background-image: url(../images/bullet_ic.png);*/
+	background-position: 11px 11px;
+}
+
+.glossymenu div.submenu ul li a.active {
+	 background:#7fd6f7; color:#010101;
+	}
+
+
+.glossymenu div.submenu ul li a:hover{
+	color: #010101;
+	background: #7fd6f7; 
+	background-repeat: no-repeat;
+	background-position: 11px 11px; 
+	}
+
+.glossymenu a.menuitemactive{
+background: url(../images/menu_head_active.jpg) repeat-x;
+
+}
+
+
+.glossymenu a.menuitem .statusicon{ /*CSS for icon image that gets dynamically added to headers*/
+*position: absolute;*top:0px;*right:0px;*border: none;}

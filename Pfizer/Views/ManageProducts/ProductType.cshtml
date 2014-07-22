@@ -1,0 +1,460 @@
+﻿@{
+    ViewBag.Title = "ProductType";
+    Layout = "~/Views/Shared/MasterLayout.cshtml";
+}
+<body>
+    @using (Html.BeginForm(FormMethod.Post))
+    {
+        <div>
+            <table border="0" style="width: 100%">
+                <tr>
+                    <td>
+                        <!--JqGrid Starts-->
+                        <table style="margin-top: 7px; width :100%" border="0">
+                            <tr>
+                                <td>
+                                    <table id="ProductType" style="width: 100%" border="0"></table>
+                                    <div id="ProductTypePager">
+                                    </div>
+                                </td>
+                            </tr>
+                        </table>
+                        <!--Ends-->
+                    </td>
+                </tr>
+
+                <tr>
+                    <td>
+                        <input type="hidden" name="hdnTblName" id="hdnTblName" value="@ViewData["TableName"]" />
+
+                    </td>
+
+                </tr>
+            </table>
+
+        </div>
+    }
+
+
+    <script type="text/javascript">
+
+        jQuery(document).ready(function () {
+
+            initGrid();
+        });
+
+        function initGrid() {
+            jQuery("#ProductType").jqGrid({
+                url: '@Url.Action("GetProductType")',
+
+                datatype: "json",
+                 jsonReader: { repeatitems: false, id: "PKID" },
+                 colNames: ['PKID', 'TableName', 'GenCode', 'GenName', 'Status'],
+                colModel: [
+                            //{ name: 'SLNo', index: 'SLNo', align: 'left' },
+                            { name: 'PKID', index: 'PKID', align: 'left', viewable: true, key: true, hidden: true, editrules: { edithidden: true, required: false }},
+                            { name: 'TableName', index: 'TableName', align: 'left', editable: true, editoptions: { defaultValue: '@ViewData["TableName"]', readonly: "readonly" }, editrules: { required: false }, formoptions: { elmsuffix: ' *' }, search: false },
+                            { name: 'GenCode', index: 'GenCode', align: 'left', hidden: true, editable: true, editrules: { edithidden: true, required: false }, editoptions: { maxlength: 10, dataEvents: [{ type: 'keyup', fn: function (e) { OnlyNumber(this); } }] }, formoptions: { elmsuffix: "<span style='align:left;color:red'>*</span>&nbsp;", size: 35 } },
+                            { name: 'GenName', index: 'GenName', align: 'left', editable: true, editrules: { required: false }, editoptions: { maxlength: 30, dataEvents: [{ type: 'keyup', fn: function (e) { SingleCharacter(this); } }] }, formoptions: { elmsuffix: "<span style='align:left;color:red'>*</span>&nbsp;" }, searchoptions: { sopt: ['eq', 'bw', 'ew', 'cn'] }, searchrules: { required: true } },
+                            { name: 'Status', index: 'Status', align: 'left', editable: true, edittype: 'checkbox', editoptions: { value: "Active:Passive", defaultValue: "Active" }, search: false },
+
+                ],
+
+                caption: "Product Type",
+                autowidth: true,
+                gridview: true,
+                sortable: true,
+                hidegrid: false,
+                rownumbers: false,
+                altRows: true,
+                rowTotal: 10,
+                sortname: 'PKID',
+                sortorder: 'asc',
+                rowNum: 10,
+                viewrecords: true,
+                pager: $('#ProductTypePager'),
+                height: 'auto',
+                editable: true,
+                gridComplete: function () {
+
+                    if (jQuery("#ProductType").getGridParam("records") == 0) {
+                        jQuery("#ProductType").addRowData(
+                        "blankRow", { "GenName": "No records to view" });
+                    }
+                },
+                //onSelectRow: function (id) {
+                //    $("#FormMaster").jqGrid('viewGridRow', id);
+                //},
+                editurl: '@Url.Action("EditProductType")'
+
+            });
+
+            jQuery("#ProductType").jqGrid('navGrid', '#ProductTypePager', { edit: true, add: true, del: true, search: true, view: true },
+                {
+                    //EDIT
+                    //                       height: 300,
+                    //                       width: 400,
+                    //                       top: 50,
+                    //                       left: 100,
+                    //                       dataheight: 280,
+                    closeOnEscape: true,
+                    width: 450,
+                    closeOnEscape: true,
+                    width: 600,
+                    modal: true,
+                    recreateForm: true,
+                    checkOnSubmit: true,
+                    afterShowForm: function (form) {
+                        form.closest('div.ui-jqdialog').center();
+                    },
+                    beforeShowForm: function (form) {
+                        var sel_id = $('#ProductType').jqGrid('getGridParam', 'selrow');
+                        var value = $('#ProductType').jqGrid('getCell', sel_id, 'Status');
+                        
+                        if (value.toUpperCase() == 'INACTIVE') {
+                            $('#tr_Status', form).show();
+                        }
+                        else {
+                            $('#tr_Status', form).hide();
+                        }
+                    },
+
+                    beforeSubmit: function (response, postdata) {
+
+                        $('select').css("border", "1px solid #C0C0C0");
+                        $("input[type=text]").css("border", "1px solid #C0C0C0");
+                        var error = " ";
+                        if ($.trim($("#TableName").val()) == "") {
+                            error += "TableName";
+                            $('#FormError').html("<td class='ui-state-error' colspan='2'>" + error + ":Field is required</td>");
+                            $("#TableName").val("");
+                            $('#TableName').focus();
+                            $("#TableName").css("background-color", "#FFE8E8").css("border", "1px solid #FF6666");
+                            return [false, response.responseText];
+                        }
+                        else if ($("#GenCode").val().charAt(0) == ' ' || $("#GenCode").val().charAt($("#GenCode").val().length - 1) == ' ' || $("#GenCode").val() == "") {
+                            $('#TblGrid_ProductType td.ui-state-highlight').removeClass('ui-state-highlight').addClass('ui-state-error');
+                            $("#GenCode").css("background-color", "#FFE8E8").css("border", "1px solid #FF6666");
+                            $('#GenCode').val("");
+                            $('#GenCode').focus();
+                            return [false, 'Enter Valid GenCode'];
+                        }
+                        else if ($("#GenName").val().charAt(0) == ' ' || $("#GenName").val().charAt($("#GenName").val().length - 1) == ' ' || $("#GenName").val() == "") {
+                            $('#TblGrid_ProductType td.ui-state-highlight').removeClass('ui-state-highlight').addClass('ui-state-error');
+                            $("#GenName").css("background-color", "#FFE8E8").css("border", "1px solid #FF6666");
+                            $('#GenName').val("");
+                            $('#GenName').focus();
+                            return [false, 'Enter Valid GenName'];
+                        }
+                        else {
+                            return [true, response.responseText];
+                        }
+
+                    },
+                    afterSubmit: function (response, postdata) {
+
+                        $("#ProductType").jqGrid('setGridParam', { datatype: 'json' }).trigger('reloadGrid');
+                        $('#TblGrid_ProductType td.ui-state-error').removeClass('ui-state-error').addClass('ui-state-highlight');
+                        $("#TableName").val("");
+                        $('#GenCode').val("");
+                        $('#GenName').val("");
+                        $("#Status").prop("checked",false);
+                        return [false, response.responseText];
+                    },
+                },
+                 {
+                //Add Portion
+                closeOnEscape: true,
+                modal: true,
+                //closeAfterAdd: true,
+                afterShowForm: function (form) {
+                    form.closest('div.ui-jqdialog').center();
+                },
+                beforeShowForm: function (form) {
+                   // var sel_id = $('#ProductType').jqGrid('getGridParam', 'selrow');
+                   // var value = $('#ProductType').jqGrid('getCell', sel_id, 'Status');
+                   $('#tr_Status', form).hide();
+                   
+                },
+
+
+                beforeSubmit: function (response, postdata) {
+
+                    $('select').css("border", "1px solid #C0C0C0");
+                    $("input[type=text]").css("border", "1px solid #C0C0C0");
+                    var error = " ";
+                    if ($.trim($("#TableName").val()) == "") {
+                        error += "TableName";
+                        $('#FormError').html("<td class='ui-state-error' colspan='2'>" + error + ":Field is required</td>");
+                        $("#TableName").val("");
+                        $('#TableName').focus();
+                        $("#TableName").css("background-color", "#FFE8E8").css("border", "1px solid #FF6666");
+                        return [false, response.responseText];
+                    }
+                    else if ($("#GenCode").val().charAt(0) == ' ' || $("#GenCode").val().charAt($("#GenCode").val().length - 1) == ' ' || $("#GenCode").val() == "") {
+                        $('#TblGrid_ProductType td.ui-state-highlight').removeClass('ui-state-highlight').addClass('ui-state-error');
+                        $("#GenCode").css("background-color", "#FFE8E8").css("border", "1px solid #FF6666");
+                        $('#GenCode').val("");
+                        $('#GenCode').focus();
+                        return [false, 'Enter Valid GenCode'];
+                    }
+                    else if ($("#GenName").val().charAt(0) == ' ' || $("#GenName").val().charAt($("#GenName").val().length - 1) == ' ' || $("#GenName").val() == "") {
+                        $('#TblGrid_ProductType td.ui-state-highlight').removeClass('ui-state-highlight').addClass('ui-state-error');
+                        $("#GenName").css("background-color", "#FFE8E8").css("border", "1px solid #FF6666");
+                        $('#GenName').val("");
+                        $('#GenName').focus();
+                        return [false, 'Enter Valid GenName'];
+                    }
+                    else {
+                        return [true, response.responseText];
+                    }
+
+                },
+                afterSubmit: function (response, postdata) {
+                    $("#ProductType").jqGrid('setGridParam', { datatype: 'json' }).trigger('reloadGrid');
+                    var errorId = " ";
+                    if (response.responseText == "\"ProductType added Successfully.\"") {
+                        errorId += "ProductType added Successfully";
+                        $('#FormError').html("<td class='ui-state-error' colspan='2'>" + errorId + "</td>");
+                        $('#TblGrid_ProductType td.ui-state-error').removeClass('ui-state-error').addClass('ui-state-highlight');
+                        $('#GenCode').val("");
+                        $('#GenName').val("");
+                        return [false, response.responseText];
+                    }
+                    else {
+                        errorId += "ProductType Master already Exists";
+                        $('#FormError').html("<td class='ui-state-error' colspan='2'>" + errorId + "</td>");
+                        $('#TblGrid_ProductType td.ui-state-error').removeClass('ui-state-highlight').addClass('ui-state-error');
+                        $('#GenCode').val("");
+                        $('#GenName').val("");
+                        return [false, response.responseText];
+
+                    }
+
+                },
+               onclickSubmit: function (params, posdata) {
+                //string oper, string NodeType, string Team, string ActivityName, string Defaultflag, string Specialflag, string Fieldwork, string id, string IsActive
+               params.url = '@Url.Action("AddProductGroupMaster")?TableName1=' + $('#TableName').val() + '&GenCode1=' + $('#GenCode').val() + '&GenName1=' + $('#GenName').val() + '&Status1=' + $('#Status').val();
+
+                },
+
+
+            
+            },
+            {
+                //DELETE
+                closeOnEscape: true,
+                modal: true,
+                closeAfterDelete: true,
+                reloadAfterSubmit: true,
+                closeOnEscape: true,
+                drag: true,
+                width: 400,
+                //beforeShowForm: function (form) {
+
+                //    //var id = jQuery("#ProductType").jqGrid('getGridParam', 'selrow');
+                //    //if (id) {
+                //    //    var ret = jQuery("#ProductType").jqGrid('getRowData', id);
+
+                //    //    $("td.delmsg", form[0]).html("<table width='100%'><tr><td><b>PKID</b></td><td>" + ret.PKID + "</td></tr><tr><td><b>TableName</b></td><td>" + ret.TableName + "</td></tr><tr><td><b>GenCode</b></td><td>" + ret.GenCode + "</td></tr><tr><td><b>GenName</b></td><td>" + ret.GenName + "</td></tr><tr><td><b>Status</b></td><td>" + ret.Status + "</td></tr><tr><td colspan=2></br>Are you sure want to delete selected record(s)?</td></tr></table> ");
+                //    //} else { alert("Please select row"); }
+
+                //},
+                beforeShowForm: function (form) {
+
+                    //POP UP Screen Fit Screen
+                    var thisForm = $("#delmod" + jQuery("#ProductType")[0].id);
+                    var dialogHeight = $(thisForm).height();
+                    var dialogWidth = $(thisForm).width();
+                    var windowHeight = $(window).height();
+                    var windowWidth = $(window).width();
+                    $(thisForm).css('position', 'fixed');
+                    $(thisForm).css('top', ((windowHeight - dialogHeight) / 2));
+                    $(thisForm).css('left', ((windowWidth - dialogWidth) / 2));
+
+                    var col1 = $('#ProductType').jqGrid('getGridParam', 'selrow');
+
+                    var Statusfield = $('#ProductType').jqGrid('getCell', col1, 'Status');
+                    $('tr td.delmsg').html('Delete selected record(s)?');
+                    // alert(IsActive);
+                    if (Statusfield == "InActive") {
+                        $('tr td.delmsg').html('Record Already Deleted');
+                        $('#dData').hide();
+                    }
+                    else
+                        $('#dData').show();
+
+                },
+
+                onclickSubmit: function (params, posdata) {
+                    params.url = '@Url.Action("DeleteProductType")?TableName=' + $('#hdnTblName').val();
+                },
+
+                afterSubmit: function (response, postdata) {
+                    $('tr td.delmsg').html('');
+                    $("#ProductType").jqGrid('setGridParam', { datatype: 'json' }).trigger('reloadGrid');
+                    $('#DelTbl_ProductType td.ui-state-error').removeClass('ui-state-error').addClass('ui-state-highlight');
+                    $('#dData').hide();
+                    return [false, response.responseText];
+                }
+
+
+            },
+            {
+                //Search
+
+                closeOnEscape: true,
+                modal: true,
+                recreateForm: true,
+                width: 600,
+                caption: "Search",
+                searchOnEnter: true,
+                beforeShowSearch: function (form) {
+
+                    $('#jqg1').val('');
+                    $('#fbox_ProductType_reset').click();
+
+                    var dialogHeight = $("#searchmodfbox_ProductType").height();
+                    var dialogWidth = $("#searchmodfbox_ProductType").width();
+                    var windowHeight = $(window).height();
+                    var windowWidth = $(window).width();
+                    $("#searchmodfbox_ProductType").css('position', 'fixed');
+                    $("#searchmodfbox_ProductType").css('top', ((windowHeight - dialogHeight) / 2));
+                    $("#searchmodfbox_ProductType").css('left', ((windowWidth - dialogWidth) / 2));
+
+                    return [true, ""];
+                }
+            },
+            {
+                //View
+                width: 400,
+                modal: true,
+                beforeShowForm: function (form) {
+                    form.closest('div.ui-jqdialog').center();
+                }
+
+
+            }
+
+                    );
+            // setMethod('LocationMaster', 'LocationMasterPager', 'Customer Grid', 'ManageUsers', 'LocationMaster.cshtml');
+
+            setMethod('ProductType', 'ProductTypePager', 'Customer Grid');
+
+        }
+        //Center Popup
+        jQuery.fn.center = function () {
+            this.css("position", "absolute");
+            this.css("top", ($(window).height() - this.height()) / 2 + $(window).scrollTop() + "px");
+            this.css("left", ($(window).width() - this.width()) / 2 + $(window).scrollLeft() + "px");
+            return this;
+
+        }
+        function validSpecial(objElement) {
+
+            var re = /^[a-zA-Z0-9-/\s.:]*/gi;
+            if (objElement.value.match(re) != objElement.value) {
+                alert('Special Characters are Not Allowed');
+                objElement.value = '';
+
+                return false;
+            }
+
+        }
+        function setMethod(gid, id, pgTitle) {
+            // alert(1);
+            var btnTitle = 'Export to Excel';
+            $('#' + gid).jqGrid('navSeparatorAdd', '#' + id, { sepclass: "ui-separator" });
+            $('#' + gid).jqGrid('navButtonAdd', '#' + id, { caption: '', title: btnTitle, position: 'last', buttonicon: 'ui-icon-calculator', onClickButton: function () { ExcelExport(); } });
+
+            var btnTitle = 'Export to PDF';
+            $('#' + gid).jqGrid('navSeparatorAdd', '#' + id, { sepclass: "ui-separator" });
+            $('#' + gid).jqGrid('navButtonAdd', '#' + id, { caption: '', title: btnTitle, position: 'last', buttonicon: 'ui-icon-bookmark', onClickButton: function () { PDFExport(); } });
+
+            var btnTitle = 'Export to CSV';
+            $('#' + gid).jqGrid('navSeparatorAdd', '#' + id, { sepclass: "ui-separator" });
+            $('#' + gid).jqGrid('navButtonAdd', '#' + id, { caption: '', title: btnTitle, position: 'last', buttonicon: 'ui-icon-note', onClickButton: function () { CSVExport(); } });
+
+
+            var btnTitle = 'Print Grid';
+            $('#' + gid).jqGrid('navSeparatorAdd', '#' + id, { sepclass: "ui-separator" });
+            $('#' + gid).jqGrid('navButtonAdd', '#' + id, { caption: '', title: btnTitle, position: 'last', buttonicon: 'ui-icon-print', onClickButton: function () { PrintGrid(gid); } });
+        }
+        function ExcelExport() {
+            window.location = '@Url.Action("ExportProductTypeToExcel")';
+        }
+        function PDFExport() {
+            window.location = '@Url.Action("ExportProductTypeToPDF")';
+        }
+        function CSVExport() {
+
+             window.location = '@Url.Action("ExportProductTypeToCsv")';
+           // $('#FormMaster').table2CSV({ header: ['PKID', 'Form Name', 'Status'] });
+        }
+        //function PrintGrid(gid) {
+        //    //  alert(5);
+        //    // empty the print div container.
+        //    $('#prt-container').empty();
+        //    //alert(6);
+        //    // copy and append grid view to print div container.
+        //    $('#gview_' + gid).clone().appendTo('#prt-container').css({ 'page-break-after': 'auto' });
+        //    // alert(7);
+        //    // remove navigation div.
+        //    //  $('#prt-container div').remove('.ui-jqgrid-toppager,.ui-jqgrid-titlebar,.ui-jqgrid-pager');
+
+        //    // print the contents of the print container.
+        //    //$('#prt-container').printElement({ pageTitle: pgTitle, overrideElementCSS: [{ href: 'Content/css/print-grid.css', media: 'print' }], leaveOpen: true, printMode: 'popup' });
+        //    //    $("#prt-container").printElement(
+        //    //{
+        //    //    leaveOpen: true,
+        //    //    printMode: 'popup'
+        //    //    });
+        //    //   $("#prt-container").printElement({ leaveOpen: true, printMode: 'popup' });
+        //    //  $(function () { window.print(); });
+        //    $(function () { printChrome('prt-container') });
+        //    // alert(6);
+        //}
+        function PrintGrid(gid) {
+
+            // empty the print div container.
+            var rows = $('#ProductType').jqGrid('getRowData');
+            for (var i = 0; i < rows.length; i++) {
+                var row = rows[i];
+                $('#Table1').append("<tr><td>" + row.TableName + "</td><td>" + row.GenName + "</td><td>" + row.Status + "</td></tr>");
+
+            }
+            $(function () { printChrome('prt-container') });
+
+        }
+
+        function printChrome(divContainer) {
+
+            //  alert(9);
+            var printContent = document.getElementById(divContainer);
+            // alert(printContent.innerHTML);
+            window.document.body.innerHTML = printContent.innerHTML;
+            window.print();
+            window.location.reload();
+        }
+
+
+    </script>
+    @*<div id='prt-container' style="display:none">
+    </div>*@
+    <div id='prt-container' style="display:none">
+        <table id="Table1" border="1" width="100%">
+            <thead>
+                <tr>
+                    <td><b>TableName</b></td>
+                    <td><b>GenName</b></td>
+                    <td><b>Status</b></td>
+                </tr>
+
+            </thead>
+            <tbody></tbody>
+
+        </table>
+    </div>
+
+</body>
+

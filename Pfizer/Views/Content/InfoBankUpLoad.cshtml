@@ -1,0 +1,462 @@
+﻿@{
+    ViewBag.Title = "InfoBankUpLoad";
+    Layout = "~/Views/Shared/MasterLayout.cshtml";
+}
+<script src="~/Content/js/ajaxfileupload.js"></script> 
+<body>
+    @using (Html.BeginForm(FormMethod.Post))
+    {
+        <div>
+            <table border="0" style="width: 100%">
+             
+                <tr>
+                    <td>
+                        <!--JqGrid Starts-->
+                        <table style="margin-top: 7px; width :100%" border="0">
+                            <tr>
+                                <td>
+                                    <table id="ajaxGrid" style="width: 100%" border="0"></table>
+                                    <div id="ajaxGridPager">
+                                    </div>
+                                </td>
+                            </tr>
+                        </table>
+                        <!--Ends-->
+                    </td>
+                </tr>
+            </table>
+        </div>
+    }
+
+    <script type="text/javascript">
+
+    function validSpecial(objElement) {
+
+        var re = /^[a-zA-Z0-9-/\s.:]*/gi;
+        if (objElement.value.match(re) != objElement.value) {
+            alert('No Special Characters Allowed');
+            objElement.value = '';
+
+            return false;
+        }
+
+    }
+
+
+
+    function UploadImage(response, postdata) {
+
+        var data = $.parseJSON(response.responseText);
+
+        if (data.success == true) {
+            if ($("#fileToUpload").val() != "") {
+                ajaxFileUpload(data.id);
+            }
+        }
+
+        return [data.success, data.message, data.id];
+
+    }
+
+    function ajaxFileUpload(id) {
+        $("#loading")
+        .ajaxStart(function () {
+            $(this).show();
+        })
+        .ajaxComplete(function () {
+            $(this).hide();
+        });
+
+        $.ajaxFileUpload
+        (
+            {
+                url: '@Url.Action("UploadImage")',
+                secureuri: false,
+                fileElementId: 'fileToUpload',
+                dataType: 'json',
+                data: { id: id },
+                success: function (data, status) {
+
+                    if (typeof (data.success) != 'undefined') {
+                        if (data.success == true) {
+                            return;
+                        } else {
+                            alert(data.message);
+                        }
+                    }
+                    else {
+                        return alert('Failed to upload logo!');
+                    }
+                },
+                error: function (data, status, e) {
+                    return alert('Failed to upload logo!');
+                }
+            }
+        )
+    }
+
+
+    jQuery(document).ready(function () {
+
+        initGrid();
+    });
+    function initGrid() {
+        jQuery("#ajaxGrid").jqGrid({
+            url: '@Url.Action("GridDataInfoBankUpLoad")',
+
+            datatype: "json",
+            jsonReader: { repeatitems: false, id: "PKID" },
+            colNames: ['PKID', 'CategoryFKID', 'Category', 'Title', 'KeyWords', 'Status', 'Select File', '', 'Division', 'Node Type',''],
+            colModel: [
+                 { name: 'PKID', index: 'PKID', align: 'left', hidden: true, editable: true },
+                 { name: 'CategoryFKID', index: 'CategoryFKID', align: 'left', hidden: true, editable: true },
+
+                {
+                    name: 'Category', index: 'Category', align: 'left', editable: true, sortable: true, edittype: 'select', editoptions: {
+                        dataUrl: '@Url.Action("GetCategory")',
+                        dataInit: function (elem) {
+                            $(elem).width(180);
+                        }
+                    }, formoptions: {
+                        //rowpos: 2, colpos: 2,
+                        size: 35,
+                            elmprefix: "<span style='align:left;color:red'>*</span>&nbsp;"
+                    }, searchoptions: { sopt: ['eq', 'bw', 'ew', 'cn'] }, search: true, searchrules: { required: true }
+                    },
+                     {
+                         name: 'Title', index: 'Title', align: 'left', editable: true, editrules: { edithidden: true, required: true }, search: false, editoptions: {
+                             size: 35,
+                             maxlength: 50,
+                             dataEvents: [
+                                 {
+                                     type: 'keyup', // blur
+                                     fn: function (e) {
+                                         validSpecial(this);
+                                     }
+                                 }
+                             ]
+                         }, formoptions: {
+                             elmprefix: "<span style='align:left;color:red'>*</span>&nbsp;"
+                         },
+                     },
+                    {
+                        name: 'KeyWords', index: 'KeyWords', align: 'left', resizable: false, editable: true, search: false, editrules: { edithidden: true, required: true }, editoptions: {
+                            size: 35, maxlength: 50,
+                            dataEvents: [
+                                {
+
+                                    type: 'keyup', // blur
+                                    fn: function (e) {
+                                        validSpecial(this);
+                                    }
+
+                                }
+        
+                   ]
+                        }, formoptions: {
+                            rowpos: 6, colpos: 1,
+                            elmprefix: "<span style='align:left;color:red'>*</span>&nbsp;"
+                        },
+                    },
+                    {
+                        name: 'IsActive', index: 'IsActive', align: 'left', resizable: false, editable: false, edittype: 'checkbox',editoptions: { value: "Active:Passive", defaultValue: "Active" }, formoptions: {
+                            elmprefix: "&nbsp;&nbsp;&nbsp;"
+
+                        }, search: false
+                    },
+
+                      {
+                          name: 'fileToUpload', index: 'fileToUpload', align: 'left', hidden: false, editable: true, edittype: 'file', editrules: { edithidden: true, required: true }, editoptions: {
+                              enctype: "multipart/form-data"
+                          },  formoptions: { rowpos: 5, colpos: 1 }
+                      },
+
+                      { name: 'ViewFile', index: 'ViewFile', align: 'left', hidden: true, editable: true, edittype: 'text', editrules: { edithidden: true, required: true }, formoptions: { rowpos: 5, colpos: 2 } },
+                      { name: 'Division', index: 'Division', align: 'left', hidden: true, editable: true, edittype: 'select', editrules: { edithidden: true, required: true },editoptions: {
+                          multiple: true,
+                          dataUrl: function () {
+                              var row_id = $('#ajaxGrid').getGridParam('selrow');
+                              return 'LoadBankDivision?type=' + 'Division' + '&rowId=' + row_id;
+                          },
+                          dataInit: function (elem) {
+                              $(elem).width(180);
+                          }
+
+
+                      }, formoptions: { rowpos: 7, colpos: 1 } },
+                      { name: 'NodeType', index: 'NodeType', align: 'left', hidden: true, editable: true, edittype: 'select', editrules: { edithidden: true, required: true },editoptions: {
+                          multiple: true,
+                          dataUrl: function () {
+                              var row_id = $('#ajaxGrid').getGridParam('selrow');
+                              return 'LoadBankNode?type=' + 'NodeType' + '&rowId=' + row_id;
+                          },
+                          dataInit: function (elem) {
+                              $(elem).width(180);
+                          }
+
+
+                      }, formoptions: { rowpos: 7, colpos: 2 } },
+                           { name: 'FileName', index: 'FileName', align: 'left', hidden: true, editable: true,edittype:'hidden' },
+                ],
+                autowidth: true,
+                gridview: true,
+                caption: 'Info Bank UpLoad',
+                jqModal: true,
+                align: 'center',
+                sortable: true,
+                hidegrid: true,
+                altRows: true,
+                sortname: 'PKID',
+                sortorder: 'desc',
+                rowTotal: 10,
+                rowNum: 10,
+                
+                gridComplete: function () {
+
+                    if (jQuery("#ajaxGrid").getGridParam("records") == 0) {
+                        jQuery("#ajaxGrid").addRowData(
+                        "blankRow", { "Title": "No records to view" });
+                    }
+
+
+                    var ids = jQuery("#ajaxGrid").jqGrid('getDataIDs');
+
+                    for (var i = 0; i < ids.length; i++) {
+                       var c6 = jQuery('#AssignLeadsGrid').jqGrid('getCell', ids[i], 6);
+                        //var c1 = jQuery('#AssignLeadsGrid').jqGrid('getCell', ids[i], 1);
+                        //var c5 = jQuery('#AssignLeadsGrid').jqGrid('getCell', ids[i], 5);
+                       pop2 = "<input type='file' id='fileUpload"+i+"'/>";
+                       // pop3 = "<a onclick=\"javascript:Delete('" + c5 + "');\" style='cursor:pointer; text-decoration:underline;color: #778699'>Delete</a>";
+                        //jQuery("#AssignLeadsGrid").jqGrid('setRowData', ids[i], { Name: pop2 });
+                       jQuery("#ajaxGrid").jqGrid('setRowData', ids[i], { fileToUpload: pop2 });
+                    }
+
+
+                },
+
+                viewrecords: true,
+                pager: $('#ajaxGridPager'),
+                height: 'auto',
+                editable: true,
+                editurl: '@Url.Action("EditInfoBankUpLoad")?fileName=' + $('#SelectFile').val()
+    });
+
+
+    jQuery("#ajaxGrid").jqGrid('navGrid', '#ajaxGridPager', { edit: true, add: true, del: true, search: true, view: true },
+        {
+            // Edit Portion
+            closeOnEscape: true,
+            width: 600,
+            recreateForm: true,
+            checkOnSubmit: true,
+            afterShowForm: function (form_id) {
+                var thisForm = form_id.selector.replace('FrmGrid_', 'editmod')
+                var dialogHeight = $(thisForm).height();
+                var dialogWidth = $(thisForm).width();
+                var windowHeight = $(window).height();
+                var windowWidth = $(window).width();
+                $(thisForm).css('position', 'fixed');
+                $(thisForm).css('top', ((windowHeight - dialogHeight) / 2));
+                $(thisForm).css('left', ((windowWidth - dialogWidth) / 2));
+            },
+      
+            afterSubmit: function (response, postdata) {
+
+                alert($("#fileToUpload").val());
+               
+                $("#ajaxGrid").jqGrid('setGridParam', { datatype: 'json' }).trigger('reloadGrid');
+
+
+                return [false, response.responseText];
+            },
+
+        },
+
+    {
+        //Add Portion
+        closeOnEscape: true,
+        closeAfterAdd: true,
+        recreateForm: true,
+        width: 600,
+        afterShowForm: function (form_id) {
+            var thisForm = form_id.selector.replace('FrmGrid_', 'editmod');
+            var dialogHeight = $(thisForm).height();
+            var dialogWidth = $(thisForm).width();
+            var windowHeight = $(window).height();
+            var windowWidth = $(window).width();
+            $(thisForm).css('position', 'fixed');
+            $(thisForm).css('top', ((windowHeight - dialogHeight) / 2));
+            $(thisForm).css('left', ((windowWidth - dialogWidth) / 2));
+        },
+        beforeShowForm: function (form) {
+            $('#tr_IsActive', form).hide();
+        },
+
+
+        afterSubmit: function (response, postdata) {
+
+            alert($('#SelectFile').val());
+            if (response.responseText == "already Exists") {
+                return [false, response.responseText];
+            }
+
+            
+
+            else {
+                $("#ajaxGrid").jqGrid('setGridParam', { datatype: 'json' }).trigger('reloadGrid');
+                return [false, response.responseText];
+            }
+
+        }
+    },
+        {
+            //Delete
+            closeOnEscape: true,
+            recreateForm: true,
+            width: 450,
+            beforeShowForm: function (form) {
+
+                //POP UP Screen Fit Screen
+
+                var thisForm = $("#delmod" + jQuery("#ajaxGrid")[0].id);
+                var dialogHeight = $(thisForm).height();
+                var dialogWidth = $(thisForm).width();
+                var windowHeight = $(window).height();
+                var windowWidth = $(window).width();
+                $(thisForm).css('position', 'fixed');
+                $(thisForm).css('top', ((windowHeight - dialogHeight) / 2));
+                $(thisForm).css('left', ((windowWidth - dialogWidth) / 2));
+
+
+                var col1 = $('#ajaxGrid').jqGrid('getGridParam', 'selrow');
+                var Category = $('#ajaxGrid').jqGrid('getCell', col1, 'GenName');
+                var Question = $('#ajaxGrid').jqGrid('getCell', col1, 'Question');
+                var Answer = $('#ajaxGrid').jqGrid('getCell', col1, 'Answer');
+                var IsActive = $('#ajaxGrid').jqGrid('getCell', col1, 'IsActive');
+
+                var html = "<form><table><tr><td class='CaptionTD'>Category </td><td class=='DataTD'>&nbsp;&nbsp;<input type='text' class='FormElement ui-widget-content ui-corner-all' readonly='true'  value='" + Category + "'/></td> </tr>";
+                html += "<tr><td class='CaptionTD'>Question Type</td><td class=='DataTD'>&nbsp;&nbsp;<input type='text' class='FormElement ui-widget-content ui-corner-all' readonly='true'  value='" + Question + "'/></td></tr>";
+                html += "<tr><td class='CaptionTD'>Answer</td><td class=='DataTD'>&nbsp;&nbsp;<input type='text' class='FormElement ui-widget-content ui-corner-all' readonly='true'  value='" + Answer + "'/></td></tr>";
+                if (IsActive == "Active")
+                    html += "<tr><td class='CaptionTD'>Status</td><td class=='DataTD'>&nbsp;&nbsp;<input class='FormElement ui-widget-content ui-corner-all'   type='checkbox' checked  disabled/></td>";
+                if (IsActive == "Inactive")
+                    html += "<tr><td class='CaptionTD'>Status</td><td class=='DataTD'>&nbsp;&nbsp; <input class='FormElement ui-widget-content ui-corner-all'   type='checkbox' disabled /></td></tr>";
+                html += "</table></form>";
+                $("td.delmsg", form[0]).html(html);
+
+
+                //End POP UP Screen Fit Screen
+
+
+            },
+            afterSubmit: function (response, postdata) {
+
+                $("#ajaxGrid").jqGrid('setGridParam', { datatype: 'json' }).trigger('reloadGrid');
+                return [false, response.responseText];
+            }
+        },
+    {
+        //Search
+
+        closeOnEscape: true,
+        recreateForm: true,
+        width: 600,
+
+        beforeShowForm: function (form) {
+
+
+            var thisForm = $("#delmod" + jQuery("#ajaxGrid")[0].id);
+            var dialogHeight = $(thisForm).height();
+            var dialogWidth = $(thisForm).width();
+            var windowHeight = $(window).height();
+            var windowWidth = $(window).width();
+            $(thisForm).css('position', 'fixed');
+            $(thisForm).css('top', ((windowHeight - dialogHeight) / 2));
+            $(thisForm).css('left', ((windowWidth - dialogWidth) / 2));
+
+        }
+    },
+    {
+        //View :
+        closeOnEscape: true,
+        recreateForm: true,
+        width: 600,
+
+        beforeShowForm: function (form) {
+
+            var thisForm = $("#viewmod" + jQuery("#ajaxGrid")[0].id);
+            var dialogHeight = $(thisForm).height();
+            var dialogWidth = $(thisForm).width();
+            var windowHeight = $(window).height();
+            var windowWidth = $(window).width();
+            $(thisForm).css('position', 'fixed');
+            $(thisForm).css('top', ((windowHeight - dialogHeight) / 2));
+            $(thisForm).css('left', ((windowWidth - dialogWidth) / 2));
+        }
+
+    }
+
+
+            );
+
+    // setMethod('LocationMaster', 'LocationMasterPager', 'Customer Grid', 'ManageUsers', 'LocationMaster.cshtml');
+
+    // setMethod('gridId', 'gridPager', 'pageTitle');
+    setMethod('ajaxGrid', 'ajaxGridPager', 'Customer Grid');
+
+    }
+
+    function setMethod(gid, id, pgTitle) {
+        // alert(1);
+        var btnTitle = 'Export to Excel';
+        $('#' + gid).jqGrid('navSeparatorAdd', '#' + id, { sepclass: "ui-separator" });
+        $('#' + gid).jqGrid('navButtonAdd', '#' + id, { caption: '', title: btnTitle, position: 'last', buttonicon: 'ui-icon-calculator', onClickButton: function () { ExcelExport(); } });
+
+        var btnTitle = 'Export to PDF';
+        $('#' + gid).jqGrid('navSeparatorAdd', '#' + id, { sepclass: "ui-separator" });
+        $('#' + gid).jqGrid('navButtonAdd', '#' + id, { caption: '', title: btnTitle, position: 'last', buttonicon: 'ui-icon-bookmark', onClickButton: function () { PDFExport(); } });
+
+        var btnTitle = 'Export to CSV';
+        $('#' + gid).jqGrid('navSeparatorAdd', '#' + id, { sepclass: "ui-separator" });
+        $('#' + gid).jqGrid('navButtonAdd', '#' + id, { caption: '', title: btnTitle, position: 'last', buttonicon: 'ui-icon-note', onClickButton: function () { CSVExport(); } });
+
+
+        var btnTitle = 'Print Grid';
+        $('#' + gid).jqGrid('navSeparatorAdd', '#' + id, { sepclass: "ui-separator" });
+        $('#' + gid).jqGrid('navButtonAdd', '#' + id, { caption: '', title: btnTitle, position: 'last', buttonicon: 'ui-icon-print', onClickButton: function () { PrintGrid(gid); } });
+    }
+    function ExcelExport() {
+        window.location = '@Url.Action("ExportFormMasterToExcel")';
+    }
+    function PDFExport() {
+        window.location = '@Url.Action("ExportFormMasterToPDF")';
+    }
+    function CSVExport() {
+        window.location = '@Url.Action("ExportFormMasterToCsv")';
+    }
+    function PrintGrid(gid) {
+
+        // empty the print div container.
+        $('#prt-container').empty();
+        //alert(6);
+        // copy and append grid view to print div container.
+        $('#gview_' + gid).clone().appendTo('#prt-container').css({ 'page-break-after': 'auto' });
+        $(function () { printChrome('prt-container') });
+
+    }
+
+    function printChrome(divContainer) {
+
+        var printContent = document.getElementById(divContainer);
+        window.document.body.innerHTML = printContent.innerHTML;
+        window.print();
+        window.location.reload();
+    }
+
+
+    </script>
+    <div id='prt-container' style="display:none">
+    </div>
+
+
+</body>

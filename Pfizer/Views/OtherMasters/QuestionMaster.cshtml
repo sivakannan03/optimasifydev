@@ -1,0 +1,417 @@
+﻿@{
+    ViewBag.Title = "QuestionMaster";
+    Layout = "~/Views/Shared/MasterLayout.cshtml";
+}
+
+<body>
+
+    @using (Html.BeginForm(FormMethod.Post))
+    {
+        <div>
+            <table border="0" style="width: 100%">
+                <tr>
+                    <td>
+                        <!--JqGrid Starts-->
+                        <table style="margin-top: 7px; width :100%" border="0">
+                            <tr>
+                                <td>
+                                    <table id="QuestionGrid" style="width: 100%" border="0"></table>
+                                    <div id="Pager">
+                                    </div>
+                                </td>
+                            </tr>
+                        </table>
+                        <!--Ends-->
+                    </td>
+                </tr>
+            </table>
+
+        </div>
+    }
+
+    <script type="text/javascript">
+
+
+    function validSpecial(objElement) {
+
+        var re = /^[a-zA-Z0-9-/\s.:?]*/gi;
+        if (objElement.value.match(re) != objElement.value) {
+            alert('No Special Characters Allowed');
+            objElement.value = '';
+
+            return false;
+        }
+
+    }
+
+
+
+    jQuery(document).ready(function () {
+
+        initGrid();
+    });
+    function initGrid() {
+        jQuery("#QuestionGrid").jqGrid({
+            url: '@Url.Action("QuestionGridData")',
+
+            datatype: "json",
+            jsonReader: { repeatitems: false, id: "PKID" },
+            colNames: ['PKID','Question', 'Status'],
+            colModel: [
+                { name: 'PKID', index: 'PKID', align: 'left', hidden: true, editable: true },
+                {
+                    name: 'Question', index: 'Question', align: 'left', editable: true,  editrules: {  required: false },editoptions: {size:35,
+                        dataEvents: [
+                                   {
+                                       type: 'keyup', // blur
+                                       fn: function (e) {
+                                           SingleCharacterQustion(this);
+                                       }
+                                   }
+                        ]
+                    }, formoptions: {
+                        elmprefix: "<span style='align:left;color:red'>*</span>&nbsp;"
+                    }, searchoptions: { sopt: ['eq', 'bw', 'ew', 'cn'] }, searchrules: { required: true },
+                },
+                {
+                    name: 'IsActive', index: 'IsActive', align: 'left', hidden: false, search:false, editable: true, edittype: 'checkbox', editrules: { required: false }, formoptions: {
+                        elmprefix: "&nbsp;&nbsp;&nbsp;"
+
+                 }
+
+
+                },
+            ],
+
+            autowidth: true,
+            gridview: true,
+            caption: 'Question Master',
+            jqModal: true,
+            rownumbers: true,
+            rowTotal: 10,
+            rowNum: 10,
+            align: 'center',
+            sortable: true,
+            hidegrid: true,
+            altRows: true,
+            rowNum:10,
+            sortname: 'PKID',
+            sortorder: 'desc',
+            viewrecords: true,
+            pager: $('#Pager'),
+            height: 'auto',
+            editable: true,
+            gridComplete: function () {
+
+                if (jQuery("#QuestionGrid").getGridParam("records") == 0) {
+                    jQuery("#QuestionGrid").addRowData(
+                          "blankRow", { "Question": "No records to view" });
+                }
+
+
+            },
+            editurl: '@Url.Action("EditQuestionMaster")'
+            });
+
+            jQuery("#QuestionGrid").jqGrid('navGrid', '#Pager', { edit: true, add: true, del: true, search: true ,view:true},
+
+                {
+                    // Edit
+                    closeOnEscape: true,
+                    recreateForm: true,
+                    modal: true,
+                    width: 600,
+                    checkOnSubmit: true,
+                    beforeShowForm: function (form) {
+
+                    },
+                    afterShowForm: function (form_id) {
+                        var thisForm = form_id.selector.replace('FrmGrid_', 'editmod')
+                        var dialogHeight = $(thisForm).height();
+                        var dialogWidth = $(thisForm).width();
+                        var windowHeight = $(window).height();
+                        var windowWidth = $(window).width();
+                        $(thisForm).css('position', 'fixed');
+                        $(thisForm).css('top', ((windowHeight - dialogHeight) / 2));
+                        $(thisForm).css('left', ((windowWidth - dialogWidth) / 2));
+                    },
+
+                    beforeSubmit: function (response, postdata) {
+
+                        if ($("#Question").val().charAt(0) == ' ' || $("#Question").val().charAt($("#Question").val().length - 1) == ' ') {
+                            $('#TblGrid_QuestionGrid td.ui-state-highlight').removeClass('ui-state-highlight').addClass('ui-state-error');
+                            $("#Question").css("background-color", "#FFE8E8").css("border", "1px solid #FF6666");
+                            $('#Question').focus();
+                            return [false, 'Enter Valid Question'];
+                        }
+
+                        $('select').css("border", "1px solid #C0C0C0");
+                        $("input[type=text]").css("border", "1px solid #C0C0C0");
+
+                        var error = " ";
+                        if ($.trim($("#Question").val()) == "") {
+                            error += "Question";
+                            $('#FormError').html("<td class='ui-state-error' colspan='2'>" + error + ":Field is required</td>");
+                            $('#Question').val("").focus();
+                            $("#Question").css("background-color", "#FFE8E8").css("border", "1px solid #FF6666");
+                            return [false, response.responseText];
+                        }
+                       else {
+                            return [true, response.responseText];
+                        }
+
+                    },
+                 afterSubmit: function (response, postdata) {
+                        $("#QuestionGrid").jqGrid('setGridParam', { datatype: 'json' }).trigger('reloadGrid');
+                        $('#TblGrid_QuestionGrid td.ui-state-error').removeClass('ui-state-error').addClass('ui-state-highlight');
+                        $("#Question").val('');
+                        $("#IsActive").prop("checked", false);
+                        return [false, response.responseText];
+                    },
+                   // closeAfterEdit: true,
+                },
+
+            {
+
+                //Add
+                closeOnEscape: true,
+                recreateForm: true,
+                modal: true,
+                width: 600,
+                beforeShowForm: function (form) {
+                    $('#IsActive').attr('checked','true');
+                },
+
+
+                afterShowForm: function (form_id) {
+                    var thisForm = form_id.selector.replace('FrmGrid_', 'editmod')
+                    var dialogHeight = $(thisForm).height();
+                    var dialogWidth = $(thisForm).width();
+                    var windowHeight = $(window).height();
+                    var windowWidth = $(window).width();
+                    $(thisForm).css('position', 'fixed');
+                    $(thisForm).css('top', ((windowHeight - dialogHeight) / 2));
+                    $(thisForm).css('left', ((windowWidth - dialogWidth) / 2));
+                },
+
+                beforeSubmit: function (response, postdata) {
+
+                    if ($("#Question").val().charAt(0) == ' ' || $("#Question").val().charAt($("#Question").val().length - 1) == ' ') {
+                        $('#TblGrid_QuestionGrid td.ui-state-highlight').removeClass('ui-state-highlight').addClass('ui-state-error');
+                        $("#Question").css("background-color", "#FFE8E8").css("border", "1px solid #FF6666");
+                        $('#Question').focus();
+                        return [false, 'Enter Valid Question'];
+                    }
+
+                    $('select').css("border", "1px solid #C0C0C0");
+                    $("input[type=text]").css("border", "1px solid #C0C0C0");
+
+                    var error = " ";
+                    if ($.trim($("#Question").val()) == "") {
+                        error += "Question";
+                        $('#FormError').html("<td class='ui-state-error' colspan='2'>" + error + ":Field is required</td>");
+                        $('#Question').val("").focus();
+                        $("#Question").css("background-color", "#FFE8E8").css("border", "1px solid #FF6666");
+                        return [false, response.responseText];
+                    }
+                    else {
+                        return [true, response.responseText];
+                    }
+
+                },
+                afterSubmit: function (response, postdata) {
+                    $("#QuestionGrid").jqGrid('setGridParam', { datatype: 'json' }).trigger('reloadGrid');
+                    var errorId = " ";
+                    if (response.responseText == "\"QuestionMaster added successfully\"") {
+                        errorId += "QuestionMaster added successfully";
+                        $('#FormError').html("<td class='ui-state-error' colspan='2'>" + errorId + "</td>");
+                        $('#TblGrid_QuestionGrid td.ui-state-error').removeClass('ui-state-error').addClass('ui-state-highlight');
+                        $("#Question").val('');
+                        $("#IsActive").prop("checked", false);
+                        return [false, response.responseText];
+                    }
+                    else {
+                        errorId += "QuestionMaster already Exists";
+                        $('#FormError').html("<td class='ui-state-error' colspan='2'>" + errorId + "</td>");
+                        $('#TblGrid_QuestionGrid td.ui-state-error').removeClass('ui-state-highlight').addClass('ui-state-error');
+                        $("#Question").val('');
+                        $("#IsActive").prop("checked", false);
+                        return [false, response.responseText];
+
+                    }
+
+                }
+           },
+
+            //Delete
+            {
+                closeOnEscape: true,
+                recreateForm: true,
+                modal: true,
+                width: 600,
+
+                beforeShowForm: function (form) {
+
+                    var thisForm = $("#delmod" + jQuery("#QuestionGrid")[0].id);
+                    var dialogHeight = $(thisForm).height();
+                    var dialogWidth = $(thisForm).width();
+                    var windowHeight = $(window).height();
+                    var windowWidth = $(window).width();
+                    $(thisForm).css('position', 'fixed');
+                    $(thisForm).css('top', ((windowHeight - dialogHeight) / 2));
+                    $(thisForm).css('left', ((windowWidth - dialogWidth) / 2));
+
+
+                    var col1 = $('#QuestionGrid').jqGrid('getGridParam', 'selrow');
+                    $('tr td.delmsg').html('Delete selected record(s)?');
+
+                    $('#QuestionGrid').jqGrid('getGridParam', 'selrow');
+                    var IsActive = $('#QuestionGrid').jqGrid('getCell', col1, 'IsActive');
+                    if (IsActive == "In Active") {
+                        $('tr td.delmsg').html('Record Already Deleted');
+                        $('#dData').hide();
+                    }
+                    else
+                        $('#dData').show();
+
+
+                    //var Question = $('#QuestionGrid').jqGrid('getCell', col1, 'Question');
+                    //var IsActive = $('#QuestionGrid').jqGrid('getCell', col1, 'IsActive');
+
+
+                    //var html = "<form><table><tr><td class='CaptionTD'>Question </td><td class=='DataTD'>&nbsp;&nbsp;<input type='text' class='FormElement ui-widget-content ui-corner-all' readonly='true' id='Question' value='" + Question + "'/></td> </tr>";
+
+                    //if (IsActive == "Active")
+                    //    html += "<tr><td class='CaptionTD'>Status</td><td class=='DataTD'>&nbsp;&nbsp;<input class='FormElement ui-widget-content ui-corner-all' id='IsActive'  type='checkbox' checked /></td>";
+                    //if(IsActive == "In Active")
+                    //html += "<tr><td class='CaptionTD'>Status</td><td class=='DataTD'>&nbsp;&nbsp; <input class='FormElement ui-widget-content ui-corner-all'   type='checkbox' /></td></tr>";
+                    //html += "</table></form>";
+                    //$("td.delmsg", form[0]).html(html);
+
+                },
+                afterSubmit: function (response, postdata) {
+                    $('tr td.delmsg').html('');
+                    $('#dData').hide();
+                    $("#QuestionGrid").jqGrid('setGridParam', { datatype: 'json' }).trigger('reloadGrid');
+                    $('#DelTbl_QuestionGrid td.ui-state-error').removeClass('ui-state-error').addClass('ui-state-highlight');
+                    $("#Question").val('');
+                    $("#IsActive").prop("checked", false);
+                    return [false, response.responseText];
+                }
+            }, {
+                //Search
+
+                closeOnEscape: true,
+                modal: true,
+                recreateForm: true,
+                width: 600,
+                caption: "Search",
+                searchOnEnter: true,
+                beforeShowSearch: function (form) {
+
+                    $('#jqg1').val('');
+                    $('#fbox_QuestionGrid_reset').click();
+
+                    var dialogHeight = $("#searchmodfbox_QuestionGrid").height();
+                    var dialogWidth = $("#searchmodfbox_QuestionGrid").width();
+                    var windowHeight = $(window).height();
+                    var windowWidth = $(window).width();
+                    $("#searchmodfbox_QuestionGrid").css('position', 'fixed');
+                    $("#searchmodfbox_QuestionGrid").css('top', ((windowHeight - dialogHeight) / 2));
+                    $("#searchmodfbox_QuestionGrid").css('left', ((windowWidth - dialogWidth) / 2));
+
+                    return [true, ""];
+                }
+            },
+            {
+                //View :
+                closeOnEscape: true,
+                recreateForm: true,
+                modal: true,
+                width: 600,
+
+                beforeShowForm: function (form) {
+
+
+                    var thisForm = $("#viewmod" + jQuery("#QuestionGrid")[0].id);
+                    var dialogHeight = $(thisForm).height();
+                    var dialogWidth = $(thisForm).width();
+                    var windowHeight = $(window).height();
+                    var windowWidth = $(window).width();
+                    $(thisForm).css('position', 'fixed');
+                    $(thisForm).css('top', ((windowHeight - dialogHeight) / 2));
+                    $(thisForm).css('left', ((windowWidth - dialogWidth) / 2));
+
+                }
+
+            }
+
+                    );
+
+            setMethod('QuestionGrid', 'Pager', 'Question Master');
+        }
+        function setMethod(gid, id, pgTitle) {
+
+            var btnTitle = 'Export to Excel';
+            $('#' + gid).jqGrid('navSeparatorAdd', '#' + id, { sepclass: "ui-separator" });
+            $('#' + gid).jqGrid('navButtonAdd', '#' + id, { caption: '', title: btnTitle, position: 'last', buttonicon: 'ui-icon-calculator', onClickButton: function () { ExcelExport(); } });
+
+            var btnTitle = 'Export to PDF';
+            $('#' + gid).jqGrid('navSeparatorAdd', '#' + id, { sepclass: "ui-separator" });
+            $('#' + gid).jqGrid('navButtonAdd', '#' + id, { caption: '', title: btnTitle, position: 'last', buttonicon: 'ui-icon-bookmark', onClickButton: function () { PDFExport(); } });
+
+            var btnTitle = 'Export to CSV';
+            $('#' + gid).jqGrid('navSeparatorAdd', '#' + id, { sepclass: "ui-separator" });
+            $('#' + gid).jqGrid('navButtonAdd', '#' + id, { caption: '', title: btnTitle, position: 'last', buttonicon: 'ui-icon-note', onClickButton: function () { CSVExport(); } });
+
+
+            var btnTitle = 'Print Grid';
+            $('#' + gid).jqGrid('navSeparatorAdd', '#' + id, { sepclass: "ui-separator" });
+            $('#' + gid).jqGrid('navButtonAdd', '#' + id, { caption: '', title: btnTitle, position: 'last', buttonicon: 'ui-icon-print', onClickButton: function () { PrintGrid(gid); } });
+        }
+        function ExcelExport() {
+            window.location = '@Url.Action("ExportQuestionMasterToExcel")';
+        }
+        function PDFExport() {
+            window.location = '@Url.Action("ExportQuestionMasterToPDF")';
+        }
+        function CSVExport() {
+            window.location = '@Url.Action("ExportQuestionMasterToCsv")';
+        }
+        function PrintGrid(gid) {
+
+            // empty the print div container.
+            var rows = $('#QuestionGrid').jqGrid('getRowData');
+            for (var i = 0; i < rows.length; i++) {
+                var row = rows[i];
+                $('#Table1').append("<tr><td>" + row.Question + "</td><td>" + row.IsActive + "</td></tr>");
+
+            }
+            $(function () { printChrome('prt-container') });
+
+        }
+
+        function printChrome(divContainer) {
+
+            var printContent = document.getElementById(divContainer);
+            window.document.body.innerHTML = printContent.innerHTML;
+            window.print();
+            window.location.reload();
+        }
+
+
+    </script>
+    <div id='prt-container' style="display:none">
+        <table id="Table1" border="1" width="100%">
+            <thead>
+                <tr>
+                    <td><b>Question</b></td>
+                    <td><b>Status</b></td>
+                </tr>
+
+            </thead>
+            <tbody></tbody>
+
+        </table>
+    </div>
+</body>
