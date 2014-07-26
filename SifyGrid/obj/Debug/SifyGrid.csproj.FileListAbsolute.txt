@@ -20,3 +20,7 @@ E:\PfizerUpgrade\SifyGrid\bin\Debug\SifyGrid.dll
 E:\PfizerUpgrade\SifyGrid\bin\Debug\SifyGrid.pdb
 E:\PfizerUpgrade\SifyGrid\obj\Debug\SifyGrid.dll
 E:\PfizerUpgrade\SifyGrid\obj\Debug\SifyGrid.pdb
+E:\OptimaSifyDev\optimasifydev\SifyGrid\bin\Debug\SifyGrid.dll
+E:\OptimaSifyDev\optimasifydev\SifyGrid\bin\Debug\SifyGrid.pdb
+E:\OptimaSifyDev\optimasifydev\SifyGrid\obj\Debug\SifyGrid.dll
+E:\OptimaSifyDev\optimasifydev\SifyGrid\obj\Debug\SifyGrid.pdb

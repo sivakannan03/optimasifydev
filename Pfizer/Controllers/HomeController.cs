@@ -30,16 +30,23 @@ namespace Pfizer.Controllers
        [HttpGet]
         public ActionResult Login(UserMaster user)
         {
-           
-            Session.Abandon();
-            GetQuestions();
-            GetTimer();
-            ViewData["Questions"] = Session["Questions"].ToString();
-            ViewData["QuestId"] = Session["QuestId"].ToString();
-            ViewData["Timer"] = Session["Timer"].ToString();
-            ViewData["Error"] = (Session["Error"] != null) ? Session["Error"].ToString() : "";
-            ViewBag.HelpDesk = ConfigurationManager.AppSettings["HelpDesk"].ToString();
-            return View();
+
+            try
+            {
+
+                Session.Abandon();
+                GetQuestions();
+                GetTimer();
+                ViewData["Questions"] = Session["Questions"].ToString();
+                ViewData["QuestId"] = Session["QuestId"].ToString();
+                ViewData["Timer"] = Session["Timer"].ToString();
+                ViewData["Error"] = (Session["Error"] != null) ? Session["Error"].ToString() : "";
+                ViewBag.HelpDesk = ConfigurationManager.AppSettings["HelpDesk"].ToString();
+                return View();
+            }
+            catch {
+                return RedirectToAction("Error");
+            }
 
         }
 
