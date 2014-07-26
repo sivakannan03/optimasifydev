@@ -7,15 +7,16 @@ F:\30-04-14\Pfizer\SifyGrid\bin\Debug\SifyGrid.pdb
 F:\30-04-14\Pfizer\SifyGrid\obj\Debug\SifyGrid.dll
 F:\30-04-14\Pfizer\SifyGrid\obj\Debug\SifyGrid.pdb
 F:\30-04-14\Pfizer\SifyGrid\obj\Debug\SifyGrid.csprojResolveAssemblyReference.cache
-E:\Live\Pfizer26Jun2014\Pfizer\SifyGrid\bin\Debug\SifyGrid.dll
-E:\Live\Pfizer26Jun2014\Pfizer\SifyGrid\bin\Debug\SifyGrid.pdb
-E:\Live\Pfizer26Jun2014\Pfizer\SifyGrid\obj\Debug\SifyGrid.dll
-E:\Live\Pfizer26Jun2014\Pfizer\SifyGrid\obj\Debug\SifyGrid.pdb
-E:\OptimaUpgrade\Optima-Upgrade\OptimaIndia\SifyGrid\bin\Debug\SifyGrid.dll
-E:\OptimaUpgrade\Optima-Upgrade\OptimaIndia\SifyGrid\bin\Debug\SifyGrid.pdb
-E:\OptimaUpgrade\Optima-Upgrade\OptimaIndia\SifyGrid\obj\Debug\SifyGrid.dll
-E:\OptimaUpgrade\Optima-Upgrade\OptimaIndia\SifyGrid\obj\Debug\SifyGrid.pdb
-E:\OptimaSifyDev\optimasifydev\SifyGrid\bin\Debug\SifyGrid.dll
-E:\OptimaSifyDev\optimasifydev\SifyGrid\bin\Debug\SifyGrid.pdb
-E:\OptimaSifyDev\optimasifydev\SifyGrid\obj\Debug\SifyGrid.dll
-E:\OptimaSifyDev\optimasifydev\SifyGrid\obj\Debug\SifyGrid.pdb
+E:\Baskar\Pfizer_BK\Siva-Kannan -Pfizer_BK\Pfizer\SifyGrid\bin\Debug\SifyGrid.dll
+E:\Baskar\Pfizer_BK\Siva-Kannan -Pfizer_BK\Pfizer\SifyGrid\bin\Debug\SifyGrid.pdb
+E:\Baskar\Pfizer_BK\Siva-Kannan -Pfizer_BK\Pfizer\SifyGrid\obj\Debug\SifyGrid.csprojResolveAssemblyReference.cache
+E:\Baskar\Pfizer_BK\Siva-Kannan -Pfizer_BK\Pfizer\SifyGrid\obj\Debug\SifyGrid.dll
+E:\Baskar\Pfizer_BK\Siva-Kannan -Pfizer_BK\Pfizer\SifyGrid\obj\Debug\SifyGrid.pdb
+E:\Pfizer\SifyGrid\bin\Debug\SifyGrid.dll
+E:\Pfizer\SifyGrid\bin\Debug\SifyGrid.pdb
+E:\Pfizer\SifyGrid\obj\Debug\SifyGrid.dll
+E:\Pfizer\SifyGrid\obj\Debug\SifyGrid.pdb
+E:\PfizerUpgrade\SifyGrid\bin\Debug\SifyGrid.dll
+E:\PfizerUpgrade\SifyGrid\bin\Debug\SifyGrid.pdb
+E:\PfizerUpgrade\SifyGrid\obj\Debug\SifyGrid.dll
+E:\PfizerUpgrade\SifyGrid\obj\Debug\SifyGrid.pdb

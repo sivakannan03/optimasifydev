@@ -1,0 +1,192 @@
+﻿@{
+    ViewBag.Title = "CycleplanCoverageRptDM";
+    Layout = "~/Views/Shared/MasterLayout.cshtml";
+}
+
+@using (Html.BeginForm(FormMethod.Post))
+{
+
+    <div class="inner_tbldiv" style="margin-top:0px">
+        <div class="man_field">* Mandatory Field</div>
+        
+        <label id="lblHeading" name="lblHeading" style="color: #2F72C3;font-weight:bold "> </label> <br />
+        <label id="lblError" name="lblError" style=" color:red"> </label>
+        <table width="100%" border="0" cellspacing="0" cellpadding="0" align="left" class="inner_tb">
+            <tr>
+                <th colspan="7">Critiria </th>
+            </tr>
+
+            <tr>
+                <td class="tb-r1">Year <span style="align:left;color:red">*</span></td>
+                <td class="tb-r1">
+                    &nbsp;&nbsp;&nbsp;
+
+                    @Html.DropDownList("drpSelectYear", new[]{
+
+                                            new SelectListItem { Text="Select", Value="0"} })
+
+
+                </td>
+                <td class="tb-r1">Month <span style="align: left; color: red">*</span></td>
+                <td class="tb-r1">
+                    &nbsp;&nbsp;&nbsp;
+                    @Html.DropDownList("drpSelectMonth", new[]{
+
+                                            new SelectListItem { Text="Select", Value="0"} })
+
+
+                </td>
+
+                <td class="tb-r1">
+                    Pso's
+                </td>
+                <td class="tb-r1">
+                    &nbsp;&nbsp;&nbsp;
+                    @Html.ListBox("lstGetPSO", new[]{
+
+                                            new SelectListItem { Text="", Value=""} }, new { @class = "listboxRpt" })
+                </td>
+                <td width="15%" class="tb-r1"><input class="blue_button add_btn" type="button" width="5%" id="btnGo" value="GO"></td>
+            </tr>
+        </table>
+        <div style="display:none;" style="width:980px;padding-right:200px;" id="DivReport">
+
+        </div>
+
+    </div>
+    <script type="text/javascript">
+        $('#lstGetPSO').change(function () {
+
+            if ($('#lstGetPSO').val() == 0) {
+                $("#lstGetPSO option").prop("selected", true);
+                $("#lstGetPSO option:first").removeAttr('selected');
+
+            }
+        });
+        function LoadYear() {
+            var today = new Date(); // Initialize Date in raw form
+            var Currentyear = today.getFullYear(); // Get the year
+            var CurrentDate = today.getDate();
+            //Year binding into year ComboBox
+            var cPreviousYear = today.getFullYear() - 6;
+
+            var cNextYear = today.getFullYear() + 3;
+            var iSelected = 0;
+            for (var iCount = cPreviousYear; iCount < cNextYear; iCount++) {
+
+                document.getElementById("drpSelectYear").options.add(new Option(iCount, "0"))
+                if (document.getElementById("drpSelectYear").options[iSelected].innerText == Currentyear) {
+                    document.getElementById("drpSelectYear").selectedIndex = iSelected;
+                }
+                iSelected++;
+            }
+        }
+
+        function DownloadExcel() {          
+            var win = window.open('@Url.Action("ExcelDownload")?fileName=' + 'CyclePlanCoverageRptDM', 'showwin', 'width=550,height=400,top=0,left=0,toolbar=yes,location=no,directories=no,status=no,menubar=no,scrollbars=yes,resizeable=yes');
+
+            return false;
+        }
+
+        $('#btnGo').click(function () {
+
+            $('label[id*="lblError"]').text('');
+            $("#drpSelectYear").css("border", "1px solid #d5d5d5");
+            $("#drpSelectMonth").css("border", "1px solid #d5d5d5");
+
+            if ($('#drpSelectYear option:selected').text() == 'Select') {
+                $("#lblError").text('Please select Year');
+                $('#drpSelectYear').focus();
+                $("#drpSelectYear").css("background-color", "#FFE8E8").css("border", "1px solid #FF6666");
+
+                return false;
+            }
+            else if ($('#drpSelectMonth').val() == '0') {
+                $("#lblError").text('Please select Month');
+                $('#drpSelectMonth').focus();
+                $("#drpSelectMonth").css("background-color", "#FFE8E8").css("border", "1px solid #FF6666");
+                return false;
+            }
+
+           
+
+            var Year = $("#drpSelectYear :selected").text();
+            var Month = $('#drpSelectMonth').val();
+            var PSOId = $('#lstGetPSO').val();
+
+
+            if (PSOId == "0" || PSOId == null) {
+                //$('[id$=lblHeading]').empty();
+                $('[id$=lblHeading]').text("CyclePlan Coverage Report for DM");
+            }
+            else {
+                $('[id$=lblHeading]').text("CyclePlan Coverage Report for DM (With Pso Details)");
+            }
+
+
+            $.getJSON('@Url.Action("JsonPostCPRptDM")?PSOId=' + PSOId + "&Year=" + Year + "&Month=" + Month, function (data) {
+
+                $('#DivReport').html(data.rslt);
+
+
+                $('#DivReport').dialog({
+                    title: 'CyclePlan Coverage Report DM',
+                    width: 980,
+                    height: 'auto',
+                    show: { effect: 'drop', direction: "up" },
+                    modal: true,
+                    open: function (event, ui) {
+
+                    },
+
+                });
+
+            });
+
+
+        });
+
+
+        $(document).ready(function () {
+            $('[id$=lblHeading]').text("CyclePlan Coverage Report for DM");
+            LoadYear();
+
+            var d = new Date();
+            var GetMonth = (d.getMonth() + 1);
+
+
+
+
+            $("#lstGetPSO").empty();
+            $('#lstGetPSO').append("<option  value='0'>SelectAll</option>");
+
+            $.getJSON('@Url.Action("JsonLoadMonth")', function (data) {
+
+                for (var i = 0; i < data.countyCount; i++) {
+                    if (data.countyItems[i].Value == GetMonth) {
+                        $('#drpSelectMonth').append("<option selected='selected' value='" + data.countyItems[i].Value + "'>" + data.countyItems[i].Text + "</option>");
+                    }
+                    else {
+                        $('#drpSelectMonth').append("<option  value='" + data.countyItems[i].Value + "'>" + data.countyItems[i].Text + "</option>");
+                    }
+                }
+
+            });
+
+            $.getJSON('@Url.Action("JsonLoadPSO")', function (data) {
+
+                for (var i = 0; i < data.countyCount; i++) {
+                    $('#lstGetPSO').append("<option value='" + data.countyItems[i].Value + "'>" + data.countyItems[i].Text + "</option>");
+                }
+
+            });
+
+
+
+
+
+
+
+        });
+    </script>
+}

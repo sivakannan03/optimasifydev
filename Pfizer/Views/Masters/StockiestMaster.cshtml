@@ -11,6 +11,10 @@
     {
         <div>
             <table border="0" style="width: 100%">
+                <tr class="inner_tb">
+                    <th>Stockiest Master</th>
+                </tr>
+                <br />
                 <tr>
                     <td>
                         <!--JqGrid Starts-->
@@ -589,7 +593,6 @@
             afterSubmit: function (response, postdata) {
 
                 if (response.responseText == "\"Stokiest Master Added Successfully.\"") {
-                    alert(response.responseText);
                     $("#ajaxGrid").jqGrid('setGridParam', { datatype: 'json' }).trigger('reloadGrid');
                     $('#TblGrid_ajaxGrid td.ui-state-error').removeClass('ui-state-error').addClass('ui-state-highlight');
                     $("input[type=text]").val('');

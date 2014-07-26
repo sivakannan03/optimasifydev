@@ -1,0 +1,251 @@
+﻿@{
+    ViewBag.Title = "UsageReport";
+    Layout = "~/Views/Shared/MasterLayout.cshtml";
+}
+
+<body>
+    @using (Html.BeginForm(FormMethod.Post))
+    {
+
+        <div class="inner_tbldiv" style="margin-top:0px">
+            <label id="lblError" name="lblError" style=" color:red"> </label>
+            <table width="100%" border="0" cellspacing="0" cellpadding="0" align="left" class="inner_tb">
+                <tr>
+                    <th colspan="7">Usage Report</th>
+                </tr>
+
+                <tr>
+                    <td width="10%" class="tb-r2">User Name<span class="star">*</span></td>
+                    <td width="20%" class="tb-r2">
+                        @Html.DropDownList("ddlUserNameList", PfizerEntity.UsefulLink.GetUserNameList(), "Select")
+                    </td>
+                    <td class="tb-r2" width="10%">From Date<span class="star">*</span></td>
+                    <td class="tb-r2" width="25%">
+                        <input type="text" id="txtFrmdate" class="tboxlargedate" value="" onclick="$(function () { $('#txtFrmdate').datepicker(); });" />
+                        
+                    </td>
+                    <td class="tb-r2" width="10%">End Date<span class="star">*</span></td>
+                    <td class="tb-r2" width="25%">
+                        <input type="text" id="txttodate" class="tboxlargedate" value="" onclick="$(function () { $('#txttodate').datepicker(); });" />
+                        
+                    </td>
+                    <td width="15%" class="tb-r2"><input class="blue_button add_btn" type="button" width="5%" id="btnFetch" value="Go"></td>
+                </tr>
+                
+            </table>
+        </div>
+        
+        <div>
+            <table>
+           <tr><td>&nbsp;</td></tr>
+           <tr><td>&nbsp;</td></tr>
+           <tr><td>&nbsp;</td></tr>
+           </table>
+
+        </div>
+        <div>
+            <table border="0" style="width: 100%">
+                <tr>
+                    <td>
+                        <!--JqGrid Starts-->
+                        <table style="margin-top: 7px; width :100%" border="0">
+                            <tr><td align="center"><span style="font-weight:bold"><label id="lblmsg" style="color:black" /></span></td></tr>
+                            <tr><td>&nbsp;</td></tr>
+                            <tr>
+                                <td>
+                                    <table id="UsageReport" style="width: 100%" border="0"></table>
+                                    <div id="UsageReportPager">
+                                    </div>
+                                </td>
+                            </tr>
+                        </table>
+                        <!--Ends-->
+                    <input type="hidden" id="hdnPager" name="hdnPager" />
+                    
+                    </td>
+                </tr>
+            </table>
+
+        </div>
+    }
+
+    <script type="text/javascript">
+
+        $('#btnFetch').click(function () {
+            if ($('#ddlUserNameList').val() == '') {
+                $('[id$=lblError]').text("Please Select User Name");
+                $("#ddlUserNameList").css("background-color", "#FFE8E8").css("border", "1px solid #FF6666");
+                $('#ddlUserNameList').focus();
+                return false;
+            }
+            else {
+                $("#ddlUserNameList").css("background-color", "#FFE8E8").css("border", "1px solid #d5d5d5");
+                lblError.textContent = "";
+            }
+
+            if ($('#txtFrmdate').val() == '') {
+                $('[id$=lblError]').text("Please Select From date");
+                $("#txtFrmdate").css("background-color", "#FFE8E8").css("border", "1px solid #FF6666");
+                $('#txtFrmdate').focus();
+                return false;
+            }
+            else {
+                $("#txtFrmdate").css("background-color", "#FFE8E8").css("border", "1px solid #d5d5d5");
+                lblError.textContent = "";
+            }
+            if ($('#txttodate').val() == '') {
+                $('[id$=lblError]').text("Please Select To Date");
+                $("#txttodate").css("background-color", "#FFE8E8").css("border", "1px solid #FF6666");
+                $('#txttodate').focus();
+                return false;
+            }
+            else {
+
+                $("#txttodate").css("background-color", "#FFE8E8").css("border", "1px solid #d5d5d5");
+                lblError.textContent = "";
+            }
+
+            if ($('#txtFrmdate').val() != '' && $('#txtTodate').val() != '') {
+
+
+                var date1 = $('#txtFrmdate').val().split('/')[1] + '/' + $('#txtFrmdate').val().split('/')[0] + '/' + $('#txtFrmdate').val().split('/')[2];
+                var date2 = $('#txttodate').val().split('/')[1] + '/' + $('#txttodate').val().split('/')[0] + '/' + $('#txttodate').val().split('/')[2];
+                var startDate = new Date(date1);
+                var endDate = new Date(date2);
+
+                if (startDate > endDate) {
+                    $("#lblError").text('End date should be greater than Start date');
+                    $('#txttodate').focus();
+                    $("#txttodate").css("background-color", "#FFE8E8").css("border", "1px solid #FF6666");
+                    return false;
+                }
+            }
+
+            lblmsg.textContent = "Usage Report Of " + $("#ddlUserNameList option:selected").text() + " as on " + $("#txttodate").val();
+            initGrid();
+
+        });
+
+        function initGrid() {
+            $('#UsageReport').jqGrid('GridUnload');
+            jQuery("#UsageReport").jqGrid({
+                url: '@Url.Action("GetUsageReport")?PKID=' + $('#ddlUserNameList').val() + '&FDATE=' + $('#txtFrmdate').val() + '&TODATE=' + $('#txttodate').val(),
+                datatype: "json",
+                jsonReader: { repeatitems: false, id: "PKID" },
+                colNames: ['PKID', 'User Name', 'Designation Name', 'LoginDate', 'LogOutDate'],
+                colModel: [
+                    { name: 'PKID', index: 'PKID', align: 'left', hidden: true, editable: false },
+                     { name: 'UserName', index: 'UserName', align: 'left', hidden: false, editable: false },
+                     { name: 'DesignationName', index: 'DesignationName', align: 'left', hidden: false, editable: false },
+                     { name: 'LoginDate', index: 'LoginDate', align: 'left', hidden: false, editable: false },
+                     { name: 'LogOutDate', index: 'LogOutDate', align: 'left', hidden: false, editable: false },
+                ],
+
+                autowidth: true,
+                gridview: true,
+                caption: 'Usage Report',
+                jqModal: true,
+                rowTotal: 10,
+                rowNum: 10,
+                align: 'center',
+                sortable: true,
+                hidegrid: true,
+                altRows: true,
+                sortname: 'PKID',
+                sortorder: 'desc',
+                viewrecords: true,
+                pager: $('#UsageReportPager'),
+                height: 'auto',
+                editable: true,
+                gridComplete: function () {
+                    
+                    if (jQuery("#UsageReport").getGridParam("records") == 0) {
+                       
+                        jQuery("#UsageReport").addRowData(
+                            
+                        "blankRow", { "UserName": "No records to view" });
+                    }
+                },
+               
+
+            });
+            jQuery("#UsageReport").jqGrid('navGrid', '#UsageReportPager', { edit: false, add: false, del: false, search: false, view: false });
+           
+                
+                setMethod('UsageReport', 'UsageReportPager', 'Usage Report');
+                
+        }
+        function setMethod(gid, id, pgTitle) {
+           
+            var btnTitle = 'Export to Excel';
+            $('#' + gid).jqGrid('navSeparatorAdd', '#' + id, { sepclass: "ui-separator" });
+            $('#' + gid).jqGrid('navButtonAdd', '#' + id, { caption: '', title: btnTitle, position: 'last', buttonicon: 'ui-icon-calculator', onClickButton: function () { ExcelExport(); } });
+
+            var btnTitle = 'Export to PDF';
+            $('#' + gid).jqGrid('navSeparatorAdd', '#' + id, { sepclass: "ui-separator" });
+            $('#' + gid).jqGrid('navButtonAdd', '#' + id, { caption: '', title: btnTitle, position: 'last', buttonicon: 'ui-icon-bookmark', onClickButton: function () { PDFExport(); } });
+
+            var btnTitle = 'Export to CSV';
+            $('#' + gid).jqGrid('navSeparatorAdd', '#' + id, { sepclass: "ui-separator" });
+            $('#' + gid).jqGrid('navButtonAdd', '#' + id, { caption: '', title: btnTitle, position: 'last', buttonicon: 'ui-icon-note', onClickButton: function () { CSVExport(); } });
+
+
+            var btnTitle = 'Print Grid';
+            $('#' + gid).jqGrid('navSeparatorAdd', '#' + id, { sepclass: "ui-separator" });
+            $('#' + gid).jqGrid('navButtonAdd', '#' + id, { caption: '', title: btnTitle, position: 'last', buttonicon: 'ui-icon-print', onClickButton: function () { PrintGrid(gid); } });
+        }
+        function ExcelExport() {
+            window.location = '@Url.Action("ExportUsageReportToExcel")?PKID=' + $('#ddlUserNameList').val() + '&FDATE=' + $('#txtFrmdate').val() + '&TODATE=' + $('#txttodate').val();
+        }
+        function PDFExport() {
+            window.location = '@Url.Action("ExportUsageReportToPDF")?PKID=' + $('#ddlUserNameList').val() + '&FDATE=' + $('#txtFrmdate').val() + '&TODATE=' + $('#txttodate').val();
+        }
+        function CSVExport() {
+            window.location = '@Url.Action("ExportUsageReportToCsv")?PKID=' + $('#ddlUserNameList').val() + '&FDATE=' + $('#txtFrmdate').val() + '&TODATE=' + $('#txttodate').val();
+        }
+        function PrintGrid(gid) {
+            // empty the print div container.
+            var rows = $('#UsageReport').jqGrid('getRowData');
+            for (var i = 0; i < rows.length; i++) {
+                var row = rows[i];
+                $('#Table1').append("<tr><td>" + row.UserName + "</td><td>" + row.DesignationName + "</td><td>" + row.LoginDate + "</td><td>" + row.LogOutDate + "</td></tr>");
+
+            }
+            $(function () { printChrome('prt-container') });
+
+        }
+
+        function printChrome(divContainer) {
+
+            var printContent = document.getElementById(divContainer);
+            window.document.body.innerHTML = printContent.innerHTML;
+            window.print();
+            window.location.reload();
+        }
+        $(document).ready(function () {
+            $("#txtFrmdate").val($.datepicker.formatDate("dd/mm/yy", new Date()));
+            $("#txttodate").val($.datepicker.formatDate("dd/mm/yy", new Date()));
+            
+            $("#txtFrmdate").datepicker({ changeMonth: true, changeYear: true, yearRange: '1900:myDate', dateFormat: 'dd/mm/yy', maxDate: 0 });
+            $("#txttodate").datepicker({ changeMonth: true, changeYear: true, yearRange: '1900:myDate', dateFormat: 'dd/mm/yy', maxDate: 0 });
+         
+           
+        });
+
+      </script>
+    <div id='prt-container' style="display:none">
+        <table id="Table1" border="1" width="100%">
+            <thead>
+                <tr>
+                    <td><b>User Name</b></td>
+                    <td><b>Designation Name</b></td>
+                    <td><b>LoginDate</b></td>
+                    <td><b>LogOutDate</b></td>
+                </tr>
+
+            </thead>
+            <tbody></tbody>
+
+        </table>
+    </div>
+</body>

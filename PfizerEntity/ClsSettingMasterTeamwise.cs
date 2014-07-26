@@ -69,6 +69,11 @@ namespace PfizerEntity
         public string SS_MonthEnd { get; set; }
         public string SS_MonthBegin { get; set; }
 
-
+        public class CFSAMaster
+        {
+            public string UserFKID { get; set; }
+            public string chks { get; set; }
+            public string CFSAActive { get; set; }
+        }
     }
 }

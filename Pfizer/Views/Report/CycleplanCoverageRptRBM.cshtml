@@ -1,0 +1,219 @@
+﻿@{
+    ViewBag.Title = "CycleplanCoverageRptRBM";
+    Layout = "~/Views/Shared/MasterLayout.cshtml";
+}
+
+@using (Html.BeginForm(FormMethod.Post))
+{
+
+    <div class="inner_tbldiv" style="margin-top:0px">
+        <div class="man_field">* Mandatory Field</div>
+        <label id="lblHeading" name="lblHeading" style=" color: #2F72C3;font-weight: bold;"> </label><br />
+        <label id="lblError" name="lblError" style=" color:red"> </label>
+        <table width="100%" border="0" cellspacing="0" cellpadding="0" align="left" class="inner_tb">
+            <tr>
+                <th colspan="7">Critiria </th>
+            </tr>
+
+            <tr>
+                <td class="tb-r1">Year <span style="align:left;color:red">*</span></td>
+                <td class="tb-r1">
+                    &nbsp;&nbsp;&nbsp;
+
+                    @Html.DropDownList("drpSelectYear", new[]{
+
+                                            new SelectListItem { Text="Select", Value="0"} })
+
+
+                </td>
+                <td class="tb-r1">Month <span style="align: left; color: red">*</span></td>
+                <td class="tb-r1">
+                    &nbsp;&nbsp;&nbsp;
+                    @Html.DropDownList("drpSelectMonth", new[]{
+
+                                            new SelectListItem { Text="Select", Value="0"} })
+
+
+                </td>
+
+                <td class="tb-r1">
+                    DM's
+                </td>
+                <td class="tb-r1">
+                    &nbsp;&nbsp;&nbsp;
+                    @Html.ListBox("lstGetDM", new[]{
+
+                                            new SelectListItem { Text="", Value=""} }, new { @class = "listboxRpt" })
+                </td>
+                <td width="15%" class="tb-r1"><input class="blue_button add_btn" type="button" width="5%" id="btnGo" value="GO"></td>
+            </tr>
+        </table>
+        <div style="width:980px;padding-right:200px;" id="DivReport">
+
+        </div>
+
+        <div  style="width:980px;padding-right:200px;" id="DivPSOReport">
+
+        </div>
+
+    </div>
+    <script type="text/javascript">
+        $('#lstGetDM').change(function () {
+
+            if ($('#lstGetDM').val() == 0) {
+                $("#lstGetDM option").prop("selected", true);
+                $("#lstGetDM option:first").removeAttr('selected');
+
+            }
+        });
+        function showReportPSO(SampleFKID, EmpName) {
+          
+           // alert(SampleFKID);
+            var Year = $("#drpSelectYear :selected").text();
+            var Month = $("#drpSelectMonth").val();
+          
+
+            $.getJSON('@Url.Action("JsonCCRPSO")?SampleFKID=' + SampleFKID + '&Month=' + Month + '&Year=' + Year + '&EmpName=' + EmpName,
+              function (data) {
+
+                  $('#DivPSOReport').dialog({
+                      height: 350,
+                      width: 780,
+                      title: 'Received Details',
+                      show: { effect: 'drop', direction: "up" },
+                      modal: true,
+                      open: function (event, ui) {
+
+                          $('#DivPSOReport').html(data.rslt);
+                      },
+
+                  });
+
+              });
+        }
+
+
+        function LoadYear() {
+            var today = new Date(); // Initialize Date in raw form
+            var Currentyear = today.getFullYear(); // Get the year
+            var CurrentDate = today.getDate();
+            //Year binding into year ComboBox
+            var cPreviousYear = today.getFullYear() - 6;
+
+            var cNextYear = today.getFullYear() + 3;
+            var iSelected = 0;
+            for (var iCount = cPreviousYear; iCount < cNextYear; iCount++) {
+
+                document.getElementById("drpSelectYear").options.add(new Option(iCount, ""))
+                if (document.getElementById("drpSelectYear").options[iSelected].innerText == Currentyear) {
+                    document.getElementById("drpSelectYear").selectedIndex = iSelected;
+                }
+                iSelected++;
+            }
+        }
+
+        function DownloadExcel() {
+
+            var win = window.open('@Url.Action("ExcelDownload")?fileName=' + 'CyclePlanCoverageRptRBM', 'showwin', 'width=550,height=400,top=0,left=0,toolbar=yes,location=no,directories=no,status=no,menubar=no,scrollbars=yes,resizeable=yes');
+
+            return false;
+        }
+
+        $('#btnGo').click(function () {
+
+
+            $('label[id*="lblError"]').text('');
+            $("#drpSelectYear").css("border", "1px solid #d5d5d5");
+            $("#drpSelectMonth").css("border", "1px solid #d5d5d5");
+            $("#lstGetDM").css("border", "1px solid #d5d5d5");
+
+            if ($('#drpSelectYear option:selected').text() == 'Select') {
+                $("#lblError").text('Please select Year');
+                $('#drpSelectYear').focus();
+                $("#drpSelectYear").css("background-color", "#FFE8E8").css("border", "1px solid #FF6666");
+
+                return false;
+            }
+            else if ($('#drpSelectMonth').val() == '0') {
+                $("#lblError").text('Please select Month');
+                $('#drpSelectMonth').focus();
+                $("#drpSelectMonth").css("background-color", "#FFE8E8").css("border", "1px solid #FF6666");
+                return false;
+            }
+            else if ($('#lstGetDM').val() == '0') {
+                $('[id$=lblError]').text("Please Select Name");
+                $("#lstGetDM").css("background-color", "#FFE8E8").css("border", "1px solid #FF6666");
+                $('#lstGetDM').focus();
+                return false;
+            }
+
+
+            var Year = $("#drpSelectYear :selected").text();
+            var Month = $('#drpSelectMonth').val();
+            var DMId = $('#lstGetDM').val();
+
+            if (DMId == "0" || DMId == null) {
+                //$('[id$=lblHeading]').empty();
+                $('[id$=lblHeading]').text("CyclePlan Coverage Report for RBM");
+            }
+            else {
+                $('[id$=lblHeading]').text("CyclePlan Coverage Report for RBM (With DM Details)");
+            }
+
+            $.getJSON('@Url.Action("JsonPostCPRptRBM")?DMId=' + DMId + "&Year=" + Year + "&Month=" + Month, function (data) {
+
+                $('#DivReport').html(data.rslt);
+
+
+              
+
+            });
+
+
+        });
+
+
+        $(document).ready(function () {
+            $('[id$=lblHeading]').text("CyclePlan Coverage Report for RBM");
+            LoadYear();
+
+            var d = new Date();
+            var GetMonth = (d.getMonth() + 1);
+
+
+
+
+            $("#lstGetDM").empty();
+            $('#lstGetDM').append("<option  value='0'>SelectAll</option>");
+
+            $.getJSON('@Url.Action("JsonLoadMonth")', function (data) {
+
+                for (var i = 0; i < data.countyCount; i++) {
+                    if (data.countyItems[i].Value == GetMonth) {
+                        $('#drpSelectMonth').append("<option selected='selected' value='" + data.countyItems[i].Value + "'>" + data.countyItems[i].Text + "</option>");
+                    }
+                    else {
+                        $('#drpSelectMonth').append("<option  value='" + data.countyItems[i].Value + "'>" + data.countyItems[i].Text + "</option>");
+                    }
+                }
+
+            });
+
+            $.getJSON('@Url.Action("JsonLoadDM")', function (data) {
+
+                for (var i = 0; i < data.countyCount; i++) {
+                    $('#lstGetDM').append("<option value='" + data.countyItems[i].Value + "'>" + data.countyItems[i].Text + "</option>");
+                }
+
+            });
+
+
+
+
+
+
+
+        });
+    </script>
+}
+

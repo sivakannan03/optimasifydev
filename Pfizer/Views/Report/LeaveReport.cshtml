@@ -1,0 +1,391 @@
+﻿@{
+    ViewBag.Title = "LeaveReport";
+    Layout = "~/Views/Shared/MasterLayout.cshtml";
+}
+
+<body>
+
+    @using (Html.BeginForm(FormMethod.Post))
+    {
+        <div>
+            <label id="lblError" name="lblError" style=" color:red"> </label>
+            <table width="100%" border="1" cellspacing="0" cellpadding="0" align="left" class="inner_tb">
+                <tr>
+                    <th colspan="10">Leave Report</th>
+                </tr>
+                <tr>
+                    <td width="30%" valign="top" class="tb-r1">
+                        <table border="0" width="100%" class="inner_tb">
+                            <tbody>
+                                <tr>
+                                    <td class="tb-r1">Year <span class="star">*</span></td>
+                                    <td class="tb-r1">
+                                        &nbsp;  @Html.DropDownList("drpSelectYear", new[]{
+
+                                            new SelectListItem { Text="Select", Value="0"} })
+
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="tb-r1">From Date <span class="star">*</span></td>
+                                    <td class="tb-r1"><input type="text" class="tbox" id="txtFrmdate" name="txtFromdate" value="" readonly onclick="$(function () { $('#txtFrmdate').datepicker({ changeMonth: true, changeYear: true, yearRange: '1900:myDate', dateFormat: 'dd/mm/yy', maxDate: 0 ,});});" /></td>
+                                </tr>
+                                <tr>
+                                    <td class="tb-r1">To Date <span class="star">*</span></td>
+                                    <td class="tb-r1"><input type="text" class="tbox" id="txtTodate" name="txtTodate" value="" readonly onclick="$(function () { $('#txtTodate').datepicker({ changeMonth: true, changeYear: true, yearRange: '1900:myDate', dateFormat: 'dd/mm/yy', maxDate: 0 }); });" /></td>
+
+                                </tr>
+                            </tbody>
+                        </table>
+                    </td>
+                    <td valign="top" class="tb-r1">
+                        <table class="inner_tb">
+                            <tbody>
+                                <tr>
+                                    <td class="tb-r1">Node Type <span class="star">*</span></td>
+                                    <td class="tb-r1">
+                                        &nbsp;&nbsp;&nbsp;
+                                        @Html.ListBox("lstGetNodeType", new[]{
+                                            new SelectListItem { Text="", Value=""} }, new { @class = "listboxRpt" })
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </td>
+                    <td valign="top" class="tb-r1">
+
+                        <table class="inner_tb">
+                            <tbody>
+                                <tr>
+                                    <td class="tb-r1">Name <span class="star">*</span></td>
+                                    <td class="tb-r1">
+                                        &nbsp;&nbsp;&nbsp;
+                                        @Html.ListBox("lstGetName", new[]{
+
+                                            new SelectListItem { Text="", Value=""} }, new { @class = "listboxRpt" })
+
+
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </td>
+                </tr>
+
+                <tr>
+                    <td class="tb-r1">
+                        <table class="inner_tb">
+                            <tr>
+                                <td class="tb-r1">Leave Type <span class="star">*</span></td>
+                                <td class="tb-r1">
+                                    &nbsp;&nbsp;&nbsp;
+                                    @Html.ListBox("lstGetLeaveType", new[]{
+
+                                            new SelectListItem { Text="", Value=""} }, new { @class = "listboxRpt" })
+                                </td>
+                            </tr>
+                        </table>
+                    </td>
+                    <td class="tb-r1">
+                        <table class="inner_tb">
+                            <tr>
+                                <td class="tb-r1">Status</td>
+                                <td class="tb-r1">
+                                    &nbsp;&nbsp;&nbsp;
+                                    @*@Html.ListBox("lstGetStatus", new[]{
+
+                                        new SelectListItem { Text="", Value=""} }, new { @class = "listboxRpt" })*@
+
+                                    <select name="lstGetStatus" id="lstGetStatus" class="listboxRpt" multiple="multiple">
+                                        <option selected="selected" value="0">All</option>
+                                        <option selected="selected" value="A">Approved</option>
+                                        <option selected="selected" value="R">Rejected</option>
+                                        <option selected="selected" value="S">Pending</option>
+                                    </select>
+                                </td>
+                            </tr>
+                        </table>
+                    </td>
+                    <td class="tb-r1">
+                        <table class="inner_tb">
+                            <tr>
+                                <td class="tb-r1">Fetch Date</td>
+                            </tr>
+                            <tr><td class="tb-r1"><input type="radio" name="FetchDate" value="1" checked="checked"> Request Date</td></tr>
+                            <tr><td class="tb-r1"><input type="radio" name="FetchDate" value="0"> Leave Date</td></tr>
+                        </table>
+                    </td>
+                </tr>
+            </table>
+            <table align="right" style="margin-top:10px">
+                <tr>
+                    <td>
+                        <input class="blue_button add_btn" type="button" width="5%" id="btnSubmit" value="Show Report">
+                    </td>
+                </tr>
+            </table>
+            <div style="display:none;" id="reportsDiv">
+            </div>
+        </div>
+    }
+</body>
+<script type="text/javascript">
+
+    $("#lstGetNodeType").change(function () {
+
+        $("#lstGetName").empty();
+        $('#lstGetName').append("<option selected='selected' value='0'>All</option>");
+        $.getJSON('@Url.Action("JsonLoadSelectedName")?SelectedNodeType=' + $("#lstGetNodeType").val(), function (data) {
+
+            for (var i = 0; i < data.countyCount; i++) {
+                $('#lstGetName').append("<option selected='selected' value='" + data.countyItems[i].Value + "'>" + data.countyItems[i].Text + "</option>");
+            }
+
+        });
+
+    });
+
+
+
+    $('#btnSubmit').click(function () {
+
+        $('label[id*="lblError"]').text('');
+
+        $("#drpSelectYear").css("border", "1px solid #d5d5d5");
+        $("#txtFrmdate").css("border", "1px solid #d5d5d5");
+        $("#txtTodate").css("border", "1px solid #d5d5d5");
+        $("#lstGetNodeType").css("border", "1px solid #d5d5d5");
+        $("#lstGetName").css("border", "1px solid #d5d5d5");
+        $("#lstGetLeaveType").css("border", "1px solid #d5d5d5");
+
+        if ($('#drpSelectYear option:selected').text() == 'Select') {
+            $("#lblError").text('Please select Year');
+            $('#drpSelectYear').focus();
+            $("#drpSelectYear").css("background-color", "#FFE8E8").css("border", "1px solid #FF6666");
+
+            return false;
+        }
+        else if ($('#drpSelectMonth').val() == '0') {
+            $("#lblError").text('Please select Month');
+            $('#drpSelectMonth').focus();
+            $("#drpSelectMonth").css("background-color", "#FFE8E8").css("border", "1px solid #FF6666");
+            return false;
+        }
+        else if ($('#txtFrmdate').val() == '') {
+            $('[id$=lblError]').text("Please Enter From Date");
+            $("#txtFrmdate").css("background-color", "#FFE8E8").css("border", "1px solid #FF6666");
+            $('#txtFrmdate').focus();
+            return false;
+        }
+        else if ($('#txtTodate').val() == '') {
+            $('[id$=lblError]').text("Please Enter Todate");
+            $("#txtTodate").css("background-color", "#FFE8E8").css("border", "1px solid #FF6666");
+            $('#txtTodate').focus();
+            return false;
+        }
+        else if ($('#lstGetNodeType').val() == '0') {
+            $('[id$=lblError]').text("Please Select Node Type");
+            $("#lstGetNodeType").css("background-color", "#FFE8E8").css("border", "1px solid #FF6666");
+            $('#lstGetNodeType').focus();
+            return false;
+        }
+        else if ($('#lstGetName').val() == '0') {
+            $('[id$=lblError]').text("Please Select Name");
+            $("#lstGetName").css("background-color", "#FFE8E8").css("border", "1px solid #FF6666");
+            $('#lstGetName').focus();
+            return false;
+        }
+        else if ($('#lstGetLeaveType').val() == '0') {
+            $('[id$=lblError]').text("Please Select Leave Type");
+            $("#lstGetLeaveType").css("background-color", "#FFE8E8").css("border", "1px solid #FF6666");
+            $('#lstGetLeaveType').focus();
+            return false;
+        }
+
+
+        if ($('#txtFrmdate').val() != '' && $('#txtTodate').val() != '') {
+
+
+            var date1 = $('#txtFrmdate').val().split('/')[1] + '/' + $('#txtFrmdate').val().split('/')[0] + '/' + $('#txtFrmdate').val().split('/')[2];
+            var date2 = $('#txtTodate').val().split('/')[1] + '/' + $('#txtTodate').val().split('/')[0] + '/' + $('#txtTodate').val().split('/')[2];
+            var startDate = new Date(date1);
+            var endDate = new Date(date2);
+
+            if (startDate > endDate) {
+                $("#lblError").text('End date should be greater than Start date');
+                $('#txtTodate').focus();
+                $("#txtTodate").css("background-color", "#FFE8E8").css("border", "1px solid #FF6666");
+                return false;
+            }
+        }
+
+
+        var NodeType = "";
+
+        //$('#lstGetNodeType option').each(function () {
+
+
+        NodeType += $("#lstGetNodeType").val() + ",";
+
+
+
+        //});
+
+
+
+        var Name = "";
+        Name = $('#lstGetName').val() + ",";
+
+        //alert($('#lstGetName').val());
+
+        //$('#lstGetName option').each(function () {
+        //    if ($(this).not(':selected')) {
+
+        //        Name += $(this).val() + ",";
+
+        //    }
+        //});
+
+        var LeaveType = "";
+        LeaveType = $('#lstGetLeaveType').val() + ",";
+
+        //$('#lstGetLeaveType option').each(function () {
+        //    if ($(this).not(':selected')) {
+
+        //        LeaveType += $(this).val() + ",";
+
+        //    }
+        //});
+
+        var Status = "";
+        Status = $('#lstGetStatus').val();
+
+        //$('#lstGetStatus option').each(function () {
+        //    if ($(this).not(':selected')) {
+
+        //Status += $(this).val() + ",";
+
+
+        //    }
+        //});
+
+        var Fetchdate = $('input:radio[name=FetchDate]:checked').val();
+
+        var From = $("#txtFrmdate").val();
+        var strFrmdate = From.split("/");
+        var FromDate = strFrmdate[2] + "-" + strFrmdate[1] + "-" + strFrmdate[0];
+
+
+
+        var To = $("#txtTodate").val();
+        var strTodate = To.split("/");
+        var Todate = strTodate[2] + "-" + strTodate[1] + "-" + strTodate[0];
+
+
+        //alert("Hi");
+        //alert($("#drpSelectYear :selected").text());
+        var year = $("#drpSelectYear :selected").text();
+        //alert(Fetchdate);
+        //alert(NodeType);
+        //alert(Name);
+        //alert(LeaveType);
+        //alert(Status);
+
+        @*$.getJSON('@Url.Action("JsPostLeaveReport")');*@
+
+
+
+        $.getJSON('@Url.Action("JsPostLeaveReport")?LeaveTypeFKID=' + LeaveType + '&EmpNameFKID=' + Name + '&NodeTypeFKID=' + NodeType + '&Status=' + Status + '&FetchDate=' + Fetchdate + '&Fromdate=' + FromDate + '&Todate=' + Todate + '&Year=' + year, function (data) {
+
+            $('#reportsDiv').html(data.rslt);
+            $('#reportsDiv').dialog({
+                title: 'Leave Report',
+                width: 830,
+                height: 350,
+                show: { effect: 'drop', direction: "up" },
+                modal: true,
+                close: Reload
+
+            });
+        });
+
+
+
+
+    });
+
+    function Reload() {
+        window.location.reload();
+    }
+
+    function DownloadExcel() {
+        var win = window.open('@Url.Action("ExcelDownload")?fileName=' + 'LeaveReport', 'showwin', 'width=550,height=400,top=0,left=0,toolbar=yes,location=no,directories=no,status=no,menubar=no,scrollbars=yes,resizeable=yes');
+
+        return false;
+    }
+    $(document).ready(function () {
+
+        $("#txtFrmdate").datepicker({ changeMonth: true, changeYear: true, yearRange: '1900:myDate', dateFormat: 'dd/mm/yy', maxDate: 0 });
+        $("#txtTodate").datepicker({ changeMonth: true, changeYear: true, yearRange: '1900:myDate', dateFormat: 'dd/mm/yy', maxDate: 0 });
+        $("#txtFrmdate").val($.datepicker.formatDate("dd/mm/yy", new Date()));
+        $("#txtTodate").val($.datepicker.formatDate("dd/mm/yy", new Date()));
+
+
+        var today = new Date(); // Initialize Date in raw form
+        var Currentyear = today.getFullYear(); // Get the year
+        var CurrentDate = today.getDate();
+        //Year binding into year ComboBox
+        var cPreviousYear = today.getFullYear() - 5;
+
+        var cNextYear = today.getFullYear() + 5;
+        var iSelected = 0;
+        for (var iCount = cPreviousYear; iCount < cNextYear; iCount++) {
+
+            document.getElementById("drpSelectYear").options.add(new Option(iCount, "0"))
+            if (document.getElementById("drpSelectYear").options[iSelected].innerText == Currentyear) {
+                document.getElementById("drpSelectYear").selectedIndex = iSelected;
+            }
+            iSelected++;
+        }
+
+
+
+        $("#lstGetNodeType").empty();
+        $("#lstGetName").empty();
+        $("#lstGetLeaveType").empty();
+
+
+        $('#lstGetNodeType').append("<option selected='selected' value='0'>All</option>");
+        $('#lstGetName').append("<option selected='selected' value='0'>All</option>");
+        $('#lstGetLeaveType').append("<option selected='selected' value='0'>All</option>");
+
+
+        $.getJSON('@Url.Action("JsonLoadNodeType")', function (data) {
+
+            for (var i = 0; i < data.countyCount; i++) {
+                $('#lstGetNodeType').append("<option selected='selected' value='" + data.countyItems[i].Value + "'>" + data.countyItems[i].Text + "</option>");
+            }
+
+        });
+
+        $.getJSON('@Url.Action("JsonLoadName")', function (data) {
+
+            for (var i = 0; i < data.countyCount; i++) {
+                $('#lstGetName').append("<option selected='selected' value='" + data.countyItems[i].Value + "'>" + data.countyItems[i].Text + "</option>");
+            }
+
+        });
+
+
+        $.getJSON('@Url.Action("JsonLoadLeaveType")', function (data) {
+
+            for (var i = 0; i < data.countyCount; i++) {
+                $('#lstGetLeaveType').append("<option selected='selected' value='" + data.countyItems[i].Value + "'>" + data.countyItems[i].Text + "</option>");
+            }
+
+        });
+
+    });
+
+
+</script>

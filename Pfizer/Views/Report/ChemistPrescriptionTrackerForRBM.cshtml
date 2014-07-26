@@ -1,0 +1,261 @@
+﻿@{
+    ViewBag.Title = "ChemistPrescriptionTrackerForRBM";
+    Layout = "~/Views/Shared/MasterLayout.cshtml";
+}
+
+<body>
+    @using (Html.BeginForm(FormMethod.Post))
+{
+    <div class="inner_tbldiv" style="margin-top:0px">
+
+        <table width="100%" border="0" cellspacing="0" cellpadding="0" align="left" class="inner_tb">
+            <tr>
+                <th colspan="7">Chemist Prescription Tracker For RBM</th>
+            </tr>
+            <tr>
+                <td></td>
+            </tr>
+            <tr>
+<tr>
+                <th colspan="6">Filter On </th>
+            </tr>
+            <tr>
+                <td class="tb-r1" nowrap width="20%">PSO Name <font color="red">*</font>
+                <td class="tb-r1">
+                    &nbsp;&nbsp;&nbsp;
+                    @Html.ListBox("lstPSOName", new[]{
+                             new SelectListItem { Text="", Value=""} }, new { @class = "listboxRpt" })
+                </td>
+                <td class="tb-r1">Product</td>
+                <td class="tb-r1" colspan="2">
+                    @Html.DropDownList("drpProduct", new[]{
+                                  new SelectListItem { Text="", Value=""} })
+
+                </td>
+            </tr>
+            <tr>
+                <td class="tb-r1"> From Date<span style="color:red">*</span></td>
+                <td class="tb-r1">
+                    <input type="text" name="txtFrmDt" id="txtFrmDt"
+                           value="" onclick="$(function () { $('#txtFrmDt').datepicker({ changeMonth: true, changeYear: true, showButtonPanel: true, yearRange: '1900:2023', dateFormat: 'dd/mm/yy' }); });" size="20" />
+                </td>
+                <td class="tb-r1" nowrap> End Date<span style="color:red">*</span></td>
+                <td class="tb-r1">
+                    <input type="text" name="txtToDt" id="txtToDt"
+                           value="" onclick="$(function () { $('#txtToDt').datepicker({ changeMonth: true, changeYear: true, showButtonPanel: true, yearRange: '1900:2023', dateFormat: 'dd/mm/yy' }); });" size="20" />
+                </td>
+                <td class="tb-r1" align="left">
+                    <input type="button" id="btnGo" class="blue_button" style="height:30px; width:70px;border-radius:7px" value="Go" />
+                </td>
+            </tr>
+        </table>
+
+        <table border="0" style="width: 100%">
+            <tr>
+                <td>
+                    <!--JqGrid Starts-->
+                    <table style="margin-top: 40px; width :100%" border="0">
+                        <tr>
+                            <td>
+                                <table id="ajaxChemistPrescriptionTrackRep" style="width: 100%" border="0"></table>
+                                <div id="ajaxGridChemistPrescriptionTrackRepPage">
+                                </div>
+                            </td>
+                        </tr>
+                       </table>
+                    <!--Ends-->
+                </td>
+            </tr>
+        </table>
+    </div>
+}
+
+</body>
+<script type="text/javascript">
+    $(document).ready(function () 
+    {
+      
+        $("#drpProduct").empty();
+        $("#drpProduct").append("<option selected='selected' value='0'>Select</option>");
+        $('#lstPSOName').empty();
+        $('#lstPSOName').append("<option selected='selected' value='0'>All</option>");
+          $.getJSON('@Url.Action("JsonGetPSOName")', function (data) {
+              for (var i = 0; i < data.PSOCount; i++) {
+                 $('#lstPSOName').append("<option value='" + data.PSOIterm[i].Value + "'>" + data.PSOIterm[i].Text + "</option>");
+              }
+        });
+      
+
+        $.getJSON('@Url.Action("GetProductData")', function (data) {
+            for (var i = 0; i < data.ProductCount; i++) {
+                $('#drpProduct').append("<option value='" + data.ProductItems[i].Value + "'>" + data.ProductItems[i].Text + "</option>");
+            }
+        });
+         
+        
+        $("#txtFrmDt").datepicker({ changeMonth: true, changeYear: true, yearRange: '1900:2023', dateFormat: 'dd/mm/yy' });
+        $("#txtToDt").datepicker({ changeMonth: true, changeYear: true, yearRange: '1900:2023', dateFormat: 'dd/mm/yy' });
+            
+        $("#txtFrmDt").val($.datepicker.formatDate("dd/mm/yy", new Date()));
+        $("#txtToDt").val($.datepicker.formatDate("dd/mm/yy", new Date()));
+  
+       
+    });
+
+    $("#btnGo").click(function () {
+
+        $("#lstPSOName").css("border", "1px solid #C0C0C0").css("background-color", "white");
+        $("#txtFrmDt").css("border", "1px solid #C0C0C0").css("background-color", "white");
+        $("#txtToDt").css("border", "1px solid #C0C0C0").css("background-color", "white");
+
+        if ($("#lstPSOName").val() == 0) {
+            $("#lstPSOName").focus();
+            return false;
+        }
+       if ($("#txtFrmDt").val() == "") {
+            $("#txtFrmDt").css("background-color", "#FFE8E8").css("border", "1px solid #FF6666");
+            $("#txtFrmDt").focus();
+            return false;
+        }
+       if ($("#txtToDt").val() == "") {
+            $("#txtToDt").css("background-color", "#FFE8E8").css("border", "1px solid #FF6666");
+            $("#txtToDt").focus();
+            return false;
+        }
+       var PSOName = $("#lstPSOName").val();
+       var Product = $("#drpProduct").val();
+       var FrmDate = $("#txtFrmDt").val();
+       var ToDate = $("#txtToDt").val();
+       ChemistPrescriptionTracker(PSOName, Product, FrmDate, ToDate);
+       
+    });
+   //Grid Load
+   function ChemistPrescriptionTracker(PSOName, Product, FrmDate, ToDate) {
+        $('#ajaxChemistPrescriptionTrackRep').jqGrid('GridUnload');
+        jQuery("#ajaxChemistPrescriptionTrackRep").jqGrid({
+            url: '@Url.Action("ChemistPrescriptionTrackDataCount")?PSOName='+ PSOName +'&Product=' + Product + '&FrmDate=' + FrmDate + '&ToDate=' + ToDate,
+            datatype: "json",
+            jsonReader: { repeatitems: false, id: "DoctorName" },
+            colNames: ['Date', 'Pso Name', 'Region Code', 'Territory Code','Doctor Name', 'Specialization', 'Product Name', 'Productpack', 'Prescription','Hospital','Stockist','BVO Status'],
+            colModel: [
+                { name: 'date', index: 'date', align: 'left' },
+                { name: 'PsoName', index: 'PsoName', align: 'left' },
+                { name: 'RegionCode', index: 'RegionCode', align: 'left' },
+                { name: 'TerCode', index: 'TerCode', align: 'left' },
+                { name: 'DoctorName', index: 'DoctorName', align: 'left' },
+                { name: 'Specialization', index: 'Specialization', align: 'left' },
+                { name: 'ProductName', index: 'ProductName', align: 'left' },
+                { name: 'Productpack', index: 'Productpack', align: 'left' },
+                { name: 'Prescription', index: 'Prescription', align: 'left' },
+                { name: 'Hospital', index: 'Hospital', align: 'left' },
+                { name: 'Stockist', index: 'Stockist', align: 'left' },
+                { name: '', index: '', align: 'left' },
+            ],
+            caption: 'PSO Wise Chemist Prescription Tracker',
+            gridview: true,
+            jqModal: true,
+            rowTotal: 10,
+            rowNum: 10,
+            align: 'center',
+            sortname: 'PsoName',
+            sortorder: 'desc',
+            sortable: true,
+            hidegrid: true,
+            altRows: true,
+            viewrecords: true,
+            height: 'auto',
+            gridComplete: function ()
+            {
+
+                if (jQuery("#ajaxChemistPrescriptionTrackRep").getGridParam("records") == 0) {
+                    jQuery("#ajaxChemistPrescriptionTrackRep").addRowData(
+                    "blankRow", { "PsoName": "No records to view" });
+                }
+            },
+            pager: $('#ajaxGridChemistPrescriptionTrackRepPage'),
+            height: 'auto',
+            editable: true
+
+        });
+
+       jQuery("#ajaxChemistPrescriptionTrackRep").jqGrid('navGrid', '#ajaxGridChemistPrescriptionTrackRepPage', { edit: false, add: false, del: false, search: false, view: false },
+            {
+
+            }
+            );
+        //Excel,PDF file Download
+
+       SetChemistPrescriptionTracker('ajaxChemistPrescriptionTrackRep', 'ajaxGridChemistPrescriptionTrackRepPage', 'Prescription Tracker Report', PSOName, Product, FrmDate, ToDate);
+
+    }
+
+    function SetChemistPrescriptionTracker(gid, id, pgTitle, PSOName, Product, FrmDate, ToDate) {
+
+        var btnTitle = 'Download Excel';
+        $('#' + gid).jqGrid('navSeparatorAdd', '#' + id, { sepclass: "ui-separator" });
+        $('#' + gid).jqGrid('navButtonAdd', '#' + id, { caption: '', title: btnTitle, position: 'last', buttonicon: 'ui-icon-calculator', onClickButton: function () { ExcelChemistPrescriptionExport(PSOName, Product, FrmDate, ToDate); } });
+
+        var btnTitle = 'Download PDF';
+        $('#' + gid).jqGrid('navSeparatorAdd', '#' + id, { sepclass: "ui-separator" });
+        $('#' + gid).jqGrid('navButtonAdd', '#' + id, { caption: '', title: btnTitle, position: 'last', buttonicon: 'ui-icon-bookmark', onClickButton: function () { PDFChemistPrescriptionExport(PSOName, Product, FrmDate, ToDate); } });
+
+
+
+        var btnTitle = 'Print';
+        $('#' + gid).jqGrid('navSeparatorAdd', '#' + id, { sepclass: "ui-separator" });
+        $('#' + gid).jqGrid('navButtonAdd', '#' + id, { caption: '', title: btnTitle, position: 'last', buttonicon: 'ui-icon-print', onClickButton: function () { PrintGrid(gid); } });
+    }
+
+
+    function ExcelChemistPrescriptionExport(PSOName, Product, FrmDate, ToDate) {
+
+        window.location = '@Url.Action("ExportChemistPrescriptionTrackRepExcel")?PSOName='+ PSOName +'&Product=' + Product + '&FrmDate=' + FrmDate + '&ToDate=' + ToDate;
+    }
+
+    function PDFChemistPrescriptionExport(PSOName, Product, FrmDate, ToDate) {
+
+        window.location = '@Url.Action("ExportChemistPrescriptionTrackRepToPDF")?PSOName=' + PSOName + '&Product=' + Product + '&FrmDate=' + FrmDate + '&ToDate=' + ToDate;
+    }
+    function PrintGrid(gid) {
+
+        var rows = $('#ajaxPrescriptionTrackRep').jqGrid('getRowData');
+        for (var i = 0; i < rows.length; i++) {
+            var row = rows[i];
+            $('#Table1').append("<tr><td>" + row.date + "</td><td>" + row.PsoName + "</td><td>" + row.RegionCode + "</td><td>" + row.TerCode + "</td><td>" + row.DoctorName + "</td><td>" + row.Specialization + "</td><td>" + row.ProductName + "</td><td>" + row.Productpack + "</td><td>" + row.Prescription + "</td><td>" + row.Hospital + "</td><td>" + row.Stockist + "</td></tr>");
+        }
+        $(function () { printChrome('prt-container') });
+  }
+
+    function printChrome(divContainer) {
+
+        var printContent = document.getElementById(divContainer);
+        window.document.body.innerHTML = printContent.innerHTML;
+        window.print();
+        window.location.reload();
+    }
+
+
+</script>
+
+<div id='prt-container' style="display:none">
+    <table id="Table1" border="1" width="100%">
+        <thead>
+           <tr>
+                <td><b>Date</b></td>
+                <td><b>Pso Name</b></td>
+                <td><b>Region Code</b></td>
+                <td><b>Territory Code</b></td>
+                <td><b>Doctor Name</b></td>
+                <td><b>Specialization</b></td>
+                <td><b>Product Name</b></td>
+                <td><b>ProductPack</b></td>
+                <td><b>Prescription</b></td>
+                <td><b>Hospital</b></td>
+                <td><b>Stockist</b></td>
+
+            </tr>
+        </thead>
+        <tbody></tbody>
+
+    </table>
+</div>

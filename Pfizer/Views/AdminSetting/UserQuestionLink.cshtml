@@ -132,7 +132,7 @@
               var gridData = jQuery("#UserQLink").getRowData();
              // gridData = gridData.htmlDecode();
           var postData = JSON.stringify(gridData);
-          alert(postData);
+          
     $.ajax({
         url: '@Url.Action("UpdateGridData")',
         type: 'POST',

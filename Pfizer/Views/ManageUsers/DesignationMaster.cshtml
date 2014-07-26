@@ -131,12 +131,12 @@
                 $("#NodeName").css("background-color", "#FFE8E8").css("border", "1px solid #FF6666");
                 return [false, response.responseText];
             }
-            else if (!$("#Status").is(':checked'))
-            {
-                error += "Status";
-                $('#FormError').html("<td class='ui-state-error' colspan='2'>" + error + ":Field is required</td>");
-                return [false, response.responseText];
-            }
+            //else if (!$("#Status").is(':checked'))
+            //{
+            //    error += "Status";
+            //    $('#FormError').html("<td class='ui-state-error' colspan='2'>" + error + ":Field is required</td>");
+            //    return [false, response.responseText];
+            //}
 
             else {
                 return [true, response.responseText];
@@ -195,12 +195,12 @@
                     $("#NodeName").css("background-color", "#FFE8E8").css("border", "1px solid #FF6666");
                     return [false, response.responseText];
                 }
-                else if (!$("#Status").is(':checked'))
-                {
-                    error += "Status";
-                    $('#FormError').html("<td class='ui-state-error' colspan='2'>" + error + ":Field is required</td>");
-                    return [false, response.responseText];
-                }
+                //else if (!$("#Status").is(':checked'))
+                //{
+                //    error += "Status";
+                //    $('#FormError').html("<td class='ui-state-error' colspan='2'>" + error + ":Field is required</td>");
+                //    return [false, response.responseText];
+                //}
 
                 else {
                     return [true, response.responseText];

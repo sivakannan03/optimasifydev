@@ -61,9 +61,7 @@
                                name: 'Reminder', index: 'Reminder', align: 'left', editable: true,  edittype: 'select',
                                editoptions: { value: { '1': 'Active', '0': 'In Active' } }, classes: 'colCell',
                            },
-                         //{
-                         //    name: 'Reminder', index: 'Reminder', align: 'left', editable: true, formatter: 'checkbox', edittype: 'checkbox',
-                         //    editoptions:{value:"Active:Passive"}},
+                         
                         
                       ],
             caption: "Team Reminder Link Master ",
@@ -74,21 +72,7 @@
             altRows: true,
             viewrecords: true,
             height: 'auto',
-            //onCellSelect: function (rowid, iCol, cellContent, e) {
-            //    alert(cellContent);
-            //    grid.jqGrid('restoreRow', lastSelection);
-            //    grid.jqGrid('editRow', rowid, true, null, null, null, null, null);
-            //    lastSelection = rowid;
-            //}            //,            //onSelectRow: function (id) {
-            //    $("#FormMaster").jqGrid('viewGridRow', id);
-            //},            ////onSelectRow: function (id) {
-            ////        if (id && id !== lastsel) {
-            ////           // alert(2);
-            ////            jQuery('#TeamReminderLinkMaster').jqGrid('restoreRow', lastsel);
-            ////            jQuery('#TeamReminderLinkMaster').jqGrid('editRow', id, true);
-            ////            lastsel = id;
-            ////        }
-            ////    }            onSelectRow: function (id, selected) {
+                        onSelectRow: function (id, selected) {
                 if (id != lastsel) {
                     jQuery('#TeamReminderLinkMaster').saveRow(lastsel);
                     lastsel = id;
@@ -102,10 +86,7 @@
     }
 
         $("#Submit").click(function () {
-            /*
-          var gridData = jQuery("#TeamReminderLinkMaster").getRowData();
-          var postData = JSON.stringify(gridData);
-          */
+           
             jQuery('#TeamReminderLinkMaster').jqGrid('saveRow', lastsel);
             var gridData = jQuery("#TeamReminderLinkMaster").getRowData();
             var postData = JSON.stringify(gridData);

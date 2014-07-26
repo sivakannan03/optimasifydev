@@ -27,9 +27,9 @@
                         <h1>Member Login</h1>
                         <label>User ID</label>
                       
-                        @Html.TextBoxFor(Model => Model.Loginname, new { id = "Loginname",Value="admin" })
+                        @Html.TextBoxFor(Model => Model.Loginname, new { id = "Loginname" })
                         <label>Password</label>
-                        <input type="password" id="Password" name="Password" value="12345678" />
+                        <input type="password" id="Password" name="Password"/>
 
                     </div>
                     <div class="question_maindiv">
@@ -38,7 +38,7 @@
                         <div class="clear"></div>
                         <div class="answer">
                            
-                            <input type="password" id="txtAnswer" name="txtAnswer"  value="xyz" />
+                            <input type="password" id="txtAnswer" name="txtAnswer"  />
                             <input class="orange_button" id="btnLogin" type="submit" value="Login" />
                         </div>
                         <div class="timer">

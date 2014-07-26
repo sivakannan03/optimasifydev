@@ -36,6 +36,247 @@
         }
     </select>
 }
+@*MUNIPRATHAP*@
+    
+@if (ViewBag.Type == "NodeType1")
+{
+
+    <select>
+
+        <option value='0'>Select</option>
+
+        @foreach (KeyValuePair<int, string> value in Model)
+        {
+
+            if (@value.Key == ViewBag.Selected)
+            {
+
+                <option value='@value.Key.ToString()' selected="selected">@value.Value</option>
+            }
+            else
+            {
+                <option value='@value.Key.ToString()'>@value.Value</option>
+
+            }
+        }
+    </select>
+}
+@if (ViewBag.Type == "NodeDes")
+{
+
+    if (ViewBag.Selected != null && ViewBag.Selected != "")
+    {
+        <input type="text" id="NodeDescription" value=@ViewBag.Selected />
+    }
+
+}
+
+@if (ViewBag.Type == "Division1")
+{
+    <select>
+        <option value='0'>Select</option>
+        @foreach (KeyValuePair<int, string> value in Model)
+        {
+            if (@value.Key == ViewBag.Selected)
+            {
+
+                <option value='@value.Key.ToString()' selected="selected">@value.Value</option>
+            }
+            else
+            {
+                <option value='@value.Key.ToString()'>@value.Value</option>
+
+            }
+
+        }
+    </select>
+}
+
+
+@if (ViewBag.Type == "User1")
+{
+
+    <select>
+        <option value='0'>Select</option>
+        @foreach (KeyValuePair<int, string> value in Model)
+        {
+            if (@value.Key == ViewBag.Selected)
+            {
+
+                <option value='@value.Key.ToString()' selected="selected">@value.Value</option>
+            }
+            else
+            {
+                <option value='@value.Key.ToString()'>@value.Value</option>
+
+            }
+        }
+    </select>
+
+}
+
+@if (ViewBag.Type == "location")
+{
+
+    <select>
+        <option value='0'>Select</option>
+        @foreach (KeyValuePair<int, string> value in Model)
+        {
+            if (@value.Key == ViewBag.Selected)
+            {
+
+                <option value='@value.Key.ToString()' selected="selected">@value.Value</option>
+            }
+            else
+            {
+                <option value='@value.Key.ToString()'>@value.Value</option>
+
+            }
+        }
+    </select>
+}
+@if (ViewBag.Type == "HQ")
+{
+
+    <select>
+        <option value='0'>Select</option>
+        @foreach (KeyValuePair<int, string> value in Model)
+        {
+            if (@value.Key == ViewBag.Selected)
+            {
+
+                <option value='@value.Key.ToString()' selected="selected">@value.Value</option>
+            }
+            else
+            {
+                <option value='@value.Key.ToString()'>@value.Value</option>
+
+            }
+
+        }
+    </select>
+}
+
+@if (ViewBag.Type == "IsLower")
+{
+
+    <select>
+
+
+        @if (ViewBag.Selected == "True")
+        {
+            <option value='0'>No</option>
+            <option value='1' selected="selected">Yes</option>
+            <option value='2'>Select</option>
+        }
+        else if (ViewBag.Selected == "False")
+        {
+            <option value='0' selected="selected">No</option>
+            <option value='1'>Yes</option>
+            <option value='2'>Select</option>
+          
+        }
+        else
+        {
+            <option value='0'>No</option>
+            <option value='2' selected="selected">Select</option>
+            <option value='1'>Yes</option>
+
+
+
+        }
+        }
+    </select>
+}
+
+
+@if (ViewBag.Type == "NodeFunc")
+{
+
+    <select>
+
+
+        @if (ViewBag.Selected == "1")
+        {
+            <option value='0'>Staff</option>
+            <option value='1' selected="selected">Line</option>
+            <option value='2'>Select</option>
+        }
+        else if (ViewBag.Selected == "0")
+        {
+            <option value='0' selected="selected">Staff</option>
+            <option value='1'>Line</option>
+            <option value='2'>Select</option>
+
+        }
+        else
+        {
+            <option value='0'>Staff</option>
+            <option value='1'>Line</option>
+            <option value='2' selected="selected">Select</option>
+        }
+        }
+    </select>
+}
+@if (ViewBag.Type == "Forum")
+{
+
+    <select>
+
+
+        @if (ViewBag.Selected == "1")
+        {
+            <option value='0'>No</option>
+            <option value='1' selected="selected">Yes</option>
+            <option value='2'>Select</option>
+        }
+        else if (ViewBag.Selected == "0")
+        {
+            <option value='0' selected="selected">No</option>
+            <option value='1'>Yes</option>
+            <option value='2'>Select</option>
+
+        }
+        else
+        {
+            <option value='0'>No</option>
+            <option value='2' selected="selected">Select</option>
+            <option value='1'>Yes</option>
+
+
+
+        }
+        }
+    </select>
+}
+
+@if (ViewBag.Type == "Territory")
+{
+
+    <select>
+        <option value='0'>Select</option>
+        @foreach (KeyValuePair<int, string> value in Model)
+        {
+            if (@value.Key == ViewBag.Selected)
+            {
+
+                <option value='@value.Key.ToString()' selected="selected">@value.Value</option>
+            }
+            else
+            {
+                <option value='@value.Key.ToString()'>@value.Value</option>
+
+            }
+
+        }
+    </select>
+}
+
+
+
+
+
+
 
 
 

@@ -137,7 +137,7 @@ namespace Pfizer.Controllers
 
                 var rslt = (from a in OtherMasters.QuestionMasters where a.Question==Question select a).ToList();
                 if (rslt.Count() > 0)
-                    id = "Question already Exists";
+                    id = "QuestionMaster already Exists";
                 else
                 {
                     QuestionMaster qm = new PfizerEntity.QuestionMaster();
@@ -148,7 +148,7 @@ namespace Pfizer.Controllers
                     qm.CreatedBy = Convert.ToDecimal(Session["USER_FKID"] == null ? "0" : Session["USER_FKID"].ToString());
                     OtherMasters.QuestionMasters.Add(qm);
                     OtherMasters.SaveChanges();
-                    id = "Question added successfully";
+                    id = "QuestionMaster added successfully";
                 }
 
             }
@@ -390,8 +390,14 @@ namespace Pfizer.Controllers
 
                 if (oper == "edit")
                 {
+                    if (IsActive == "Active")  {
+                        IsActive = "true";
+                    }
+                    else { 
+                        IsActive = "false";
+                    }
                     xml = GetSpecialMasterTeam(TeamName);
-                    OtherMasters.EditSpecializationMaster2(Convert.ToDecimal(id), xml, Specialization, true, USERFKID);
+                    OtherMasters.EditSpecializationMaster2(Convert.ToDecimal(id), xml, Specialization, Convert.ToBoolean(IsActive), USERFKID);
                     id = "Specialization Master Edited Successfully";
                 }
                 if (oper == "add")
@@ -402,8 +408,16 @@ namespace Pfizer.Controllers
                         id = Specialization + " Name already Exists";
                     else
                     {
+                        if (IsActive == "Active")
+                        {
+                            IsActive = "true";
+                        }
+                        else
+                        {
+                            IsActive = "false";
+                        }
                         xml = GetSpecialMasterTeam(TeamName);
-                        OtherMasters.AddSpecializationTeamlinkMaster(Specialization, xml, true, USERFKID);
+                        OtherMasters.AddSpecializationTeamlinkMaster(Specialization, xml, Convert.ToBoolean(IsActive), USERFKID);
                         id = "Specialization Master Added Successfully";
                     }
 
@@ -2405,7 +2419,7 @@ namespace Pfizer.Controllers
             try
             {
                 List<clsInputProductLinkMaster> userList = new List<clsInputProductLinkMaster>();
-                var context = (from q in OtherMasters.GetInputProductLinkMaster() where q.InputName!=null && q.GenName!=null && q.ProductName!=null
+                var context = (from q in OtherMasters.GetInputProductLinkMaster() 
                                select q).OrderBy(x => x.ProductName).ToList();
 
                 foreach (var item in context)
@@ -2474,6 +2488,328 @@ namespace Pfizer.Controllers
         }
 
         #endregion
+
+
+        #region MuniPrathap
+        public ActionResult PrescriptionTracker()
+        {
+
+            return View();
+        }
+        //For loading Product Drop Down 
+        public ActionResult ProductLoad(string type, int Count)
+        {
+            ViewBag.Type = type;
+            dynamic query = "";
+            decimal psoFkid = 0;
+            //ViewBag.Row = Count;
+            ViewBag.Count = Convert.ToString("drpProduc_" + Count);
+            ViewBag.Id = Count;
+            psoFkid = Convert.ToInt32(Session["USER_FKID"] == null ? "0" : Session["USER_FKID"].ToString());
+
+            query = (from a in OtherMasters.GetProductByTeamByXML(psoFkid) select new { a.PKID, a.ProductName }).ToDictionary(f => Convert.ToInt32(f.PKID), f => f.ProductName.ToString());
+
+            return PartialView("PVFirstLoadspecial", query);
+
+
+        }
+
+        public ActionResult ProductPack(string type, int Count)
+        {
+            ViewBag.Type = type;
+            dynamic query = "";
+            decimal psoFkid = 0;
+            ViewBag.Count = Convert.ToString("drpPack_" + Count);
+            return PartialView("PVFirstLoadspecial");
+
+        }
+        //ProductPackByProduct
+        public ActionResult ProductPackByProduct(string type, string Product)
+        {
+            ViewBag.Type = type;
+            dynamic query = "";
+            decimal psoFkid = 0;
+            psoFkid = Convert.ToInt32(Session["USER_FKID"] == null ? "0" : Session["USER_FKID"].ToString());
+
+
+            query = (from a in OtherMasters.getProdPackSizeByXML(Convert.ToInt32(Product)) select new { a.PKID, a.ProductPack }).ToDictionary(f => Convert.ToInt32(f.PKID), f => f.ProductPack.ToString());
+
+            return PartialView("PVFirstLoadspecial", query);
+
+
+        }
+        public ActionResult ProductHospital(string type, int Count)
+        {
+            ViewBag.Type = type;
+            dynamic query = "";
+            decimal psoFkid = 0;
+            ViewBag.Count = Convert.ToString("drpHosp_" + Count);
+            psoFkid = Convert.ToInt32(Session["USER_FKID"] == null ? "0" : Session["USER_FKID"].ToString());
+
+            query = (from s in OtherMasters.PrescGetHospital(psoFkid) select new { s.Hospital, s.PKID }).ToDictionary(f => Convert.ToInt32(f.PKID), f => f.Hospital.ToString());
+
+            return PartialView("PVFirstLoadspecial", query);
+
+
+        }
+
+        public ActionResult ProductStokiest(string type, int Count)
+        {
+            ViewBag.Type = type;
+            dynamic query = "";
+            decimal psoFkid = 0;
+            ViewBag.Count = Convert.ToString("drpStok_" + Count);
+            psoFkid = Convert.ToInt32(Session["USER_FKID"] == null ? "0" : Session["USER_FKID"].ToString());
+
+            query = (from s in OtherMasters.PrescGetStockist(psoFkid) select new { s.Stockist, s.PKID }).ToDictionary(f => Convert.ToInt32(f.PKID), f => f.Stockist.ToString());
+
+            return PartialView("PVFirstLoadspecial", query);
+
+
+        }
+
+        public ActionResult PrescriptionTracker1(decimal DoctorFkid)
+        {
+
+            var item = (from a in OtherMasters.getDoctorPrescriptionTrackerDtls(DoctorFkid, 5) select new { a.Date, a.ProductName, a.Productpack, a.Prescription, a.Hospital, a.Stockist }).ToList();
+            return Json(item);
+
+        }
+
+
+        //PrescriptionAdd
+        public JsonResult PrescriptionAdd(string TblValue, string DoctorFkid, string SpecialityFKID)
+        {
+            dynamic msg = "";
+            string xml = "";
+            decimal territory = Convert.ToDecimal(Session["Territory_FKID"] == null ? "0" : Session["Territory_FKID"].ToString());
+            decimal psoFkid = Convert.ToDecimal(Session["USER_FKID"] == null ? "0" : Session["USER_FKID"].ToString());
+            xml = ProductPackXml(TblValue);
+            OtherMasters.AddPrescriptionTrackermaster(Convert.ToDecimal(DoctorFkid), Convert.ToDecimal(SpecialityFKID), psoFkid, territory, xml);
+            msg = "Successfully";
+            return Json(msg);
+
+
+
+        }
+        public string ProductPackXml(string TblValue)
+        {
+            string Xml = "";
+            string[] ProductpackDetails = TblValue.Split('|');
+            Xml = "<Root>";
+            for (int i = 0; i < ProductpackDetails.Length - 1; i++)
+            {
+                string[] temp = ProductpackDetails[i].Split(',');
+                Xml += "<Table ";
+                Xml += "  Dateid='" + Convert.ToDateTime(temp[0]) + "'";
+                Xml += "  Productid='" + temp[1] + "'";
+                Xml += "  Packsizeid='" + temp[2] + "'";
+                Xml += "  Prescriptionid='" + temp[3] + "'";
+                Xml += "  HoId='" + temp[4] + "'";
+                Xml += "  StId='" + temp[5] + "'";
+                Xml += "/>";
+
+
+            }
+            Xml += "</Root>";
+            return Xml;
+        }
+
+
+
+
+        public JsonResult GridPrecscriptionMaster(GridQueryModel gridQueryModel, string brick, string specialization)
+        {
+            try
+            {
+
+                var searchString = gridQueryModel.searchString == null ? "" : gridQueryModel.searchString.ToUpper();
+                var searchOper = gridQueryModel.searchOper;
+                var searchField = gridQueryModel.searchField;
+                //var  query="";
+
+                var query = (from a in OtherMasters.GetDoctorPSOLinkMaster(Convert.ToDecimal(Session["Territory_FKID"] == null ? "0" : Session["Territory_FKID"].ToString()), Convert.ToInt32(Session["USER_FKID"] == null ? "0" : Session["USER_FKID"].ToString())) where 1 == 2 orderby a.DoctorName select new { a.DoctorName, a.DoctorFKID, a.Specialization, a.SpecialityFKID, a.AreaName }).ToList();
+
+
+                if (brick == "" && specialization == "")
+                    query = (from a in OtherMasters.GetDoctorPSOLinkMaster(Convert.ToDecimal(Session["Territory_FKID"] == null ? "0" : Session["Territory_FKID"].ToString()), Convert.ToInt32(Session["USER_FKID"] == null ? "0" : Session["USER_FKID"].ToString())) orderby a.DoctorName select new { a.DoctorName, a.DoctorFKID, a.Specialization, a.SpecialityFKID, a.AreaName }).ToList();
+                else
+                {
+                    query = (from a in OtherMasters.AreaSearch(Convert.ToInt32(brick), Convert.ToInt32(specialization), Convert.ToInt32(Session["Territory_FKID"] == null ? "0" : Session["Territory_FKID"].ToString()), Convert.ToInt32(Session["USER_FKID"] == null ? "0" : Session["USER_FKID"].ToString())) orderby a.DoctorName select new { a.DoctorName, a.DoctorFKID, a.Specialization, a.SpecialityFKID, a.AreaName }).ToList();
+
+                }
+
+                var count = query.Count();
+                var pageData = query.OrderBy(x => x.DoctorName).Skip((gridQueryModel.page - 1) * gridQueryModel.rows).Take(gridQueryModel.rows);
+
+                if (gridQueryModel._search == true && searchString != "")
+                {
+                    if (searchField == "AreaName")
+                    {
+                        if (searchOper == "bw")//begins with
+                        {
+
+                            var q = (from sq in query where sq.AreaName != null && sq.AreaName.ToUpper().StartsWith(searchString, StringComparison.CurrentCultureIgnoreCase) select sq).ToList();
+                            count = q.Count();
+                            pageData = q.OrderBy(x => x.AreaName).Skip((gridQueryModel.page - 1) * gridQueryModel.rows).Take(gridQueryModel.rows);
+                        }
+                        else if (searchOper == "eq") //equal
+                        {
+                            var q = (from sq in query where sq.AreaName != null && sq.AreaName.ToUpper().Equals(searchString, StringComparison.CurrentCultureIgnoreCase) select sq).ToList();
+                            count = q.Count();
+                            pageData = q.OrderBy(x => x.AreaName).Skip((gridQueryModel.page - 1) * gridQueryModel.rows).Take(gridQueryModel.rows);
+                        }
+                        else if (searchOper == "ew") // ends with
+                        {
+                            var q = (from sq in query where sq.AreaName != null && sq.AreaName.ToUpper().EndsWith(searchString, StringComparison.CurrentCultureIgnoreCase) select sq).ToList();
+                            count = q.Count();
+                            pageData = q.OrderBy(x => x.AreaName).Skip((gridQueryModel.page - 1) * gridQueryModel.rows).Take(gridQueryModel.rows);
+                        }
+                        else if (searchOper == "cn")//contains
+                        {
+                            var q = (from sq in query where sq.AreaName != null && sq.AreaName.ToUpper().Contains(searchString) select sq).ToList();
+                            count = q.Count();
+                            pageData = q.OrderBy(x => x.AreaName).Skip((gridQueryModel.page - 1) * gridQueryModel.rows).Take(gridQueryModel.rows);
+                        }
+                    }
+                    else
+                    {
+                        if (searchOper == "bw")//begins with
+                        {
+
+                            var q = (from sq in query where sq.Specialization != null && sq.Specialization.ToUpper().StartsWith(searchString, StringComparison.CurrentCultureIgnoreCase) select sq).ToList();
+                            count = q.Count();
+                            pageData = q.OrderBy(x => x.Specialization).Skip((gridQueryModel.page - 1) * gridQueryModel.rows).Take(gridQueryModel.rows);
+                        }
+                        else if (searchOper == "eq") //equal
+                        {
+                            var q = (from sq in query where sq.Specialization != null && sq.Specialization.ToUpper().Equals(searchString, StringComparison.CurrentCultureIgnoreCase) select sq).ToList();
+                            count = q.Count();
+                            pageData = q.OrderBy(x => x.Specialization).Skip((gridQueryModel.page - 1) * gridQueryModel.rows).Take(gridQueryModel.rows);
+                        }
+                        else if (searchOper == "ew") // ends with
+                        {
+                            var q = (from sq in query where sq.Specialization != null && sq.Specialization.ToUpper().EndsWith(searchString, StringComparison.CurrentCultureIgnoreCase) select sq).ToList();
+                            count = q.Count();
+                            pageData = q.OrderBy(x => x.Specialization).Skip((gridQueryModel.page - 1) * gridQueryModel.rows).Take(gridQueryModel.rows);
+                        }
+                        else if (searchOper == "cn")//contains
+                        {
+                            var q = (from sq in query where sq.Specialization != null && sq.Specialization.ToUpper().Contains(searchString) select sq).ToList();
+                            count = q.Count();
+                            pageData = q.OrderBy(x => x.Specialization).Skip((gridQueryModel.page - 1) * gridQueryModel.rows).Take(gridQueryModel.rows);
+                        }
+                    }
+                }
+                else
+                {
+                    count = query.Count();
+                    if (gridQueryModel.sidx == "DoctorName" && gridQueryModel.sord == "asc")
+                        pageData = (from cust in query orderby cust.DoctorName ascending select cust).Skip((gridQueryModel.page - 1) * gridQueryModel.rows).Take(gridQueryModel.rows);
+                    else
+                        if (gridQueryModel.sidx == "Doctor" && gridQueryModel.sord == "desc")
+                            pageData = (from cust in query orderby cust.DoctorName descending select cust).Skip((gridQueryModel.page - 1) * gridQueryModel.rows).Take(gridQueryModel.rows);
+                    if (gridQueryModel.sidx == "Brick" && gridQueryModel.sord == "asc")
+                        pageData = (from cust in query orderby cust.AreaName ascending select cust).Skip((gridQueryModel.page - 1) * gridQueryModel.rows).Take(gridQueryModel.rows);
+                    else
+                        if (gridQueryModel.sidx == "AreaName" && gridQueryModel.sord == "desc")
+                            pageData = (from cust in query orderby cust.AreaName descending select cust).Skip((gridQueryModel.page - 1) * gridQueryModel.rows).Take(gridQueryModel.rows);
+
+                    if (gridQueryModel.sidx == "Specialization" && gridQueryModel.sord == "asc")
+                        pageData = (from cust in query orderby cust.Specialization ascending select cust).Skip((gridQueryModel.page - 1) * gridQueryModel.rows).Take(gridQueryModel.rows);
+                    else
+                        if (gridQueryModel.sidx == "Specialization" && gridQueryModel.sord == "desc")
+                            pageData = (from cust in query orderby cust.Specialization descending select cust).Skip((gridQueryModel.page - 1) * gridQueryModel.rows).Take(gridQueryModel.rows);
+
+                }
+
+
+                return Json(new
+                {
+                    page = gridQueryModel.page,
+                    records = count,
+                    rows = pageData,
+                    total = Math.Ceiling((decimal)count / gridQueryModel.rows)
+                }, JsonRequestBehavior.AllowGet);
+            }
+            catch
+            {
+                return Json(gridQueryModel);
+            }
+
+        }
+        public ActionResult ExportPrescriptionTrackerToExcel()
+        {
+            var context = (from a in OtherMasters.GetDoctorPSOLinkMaster(Convert.ToDecimal(Session["Territory_FKID"] == null ? "0" : Session["Territory_FKID"].ToString()), Convert.ToInt32(Session["USER_FKID"] == null ? "0" : Session["USER_FKID"].ToString())) orderby a.DoctorName select a).ToList();
+            if (context.Count == 0)
+                return new EmptyResult();
+            var data = new List<string[]>(context.Count);
+            data.AddRange(context.Select(item => new[] {
+                item.DoctorName== null ? "" : item.DoctorName.ToString(),                
+                item.Specialization== null ? "":item.Specialization.ToString(),
+                item.AreaName== null ? "":item.AreaName.ToString()
+               
+            }));
+            return new ExcelResult(HeadersActivityMaster, ColunmTypesActivityMaster, data, "PrescriptionTracker.xlsx", "PrescriptionTracker");
+        }
+        private static readonly string[] HeadersActivityMaster = {
+               "DoctorName","Specialization","AreaName"
+            };
+        private static readonly DataForExcel.DataType[] ColunmTypesActivityMaster = { 
+               
+                DataForExcel.DataType.String,
+                DataForExcel.DataType.String,
+                DataForExcel.DataType.String 
+                
+            };
+
+
+        public ActionResult ExportPrescriptionTrackerToPDF()
+        {
+            List<PrescriptionTrackerPDF> userList = new List<PrescriptionTrackerPDF>();
+            var context = (from a in OtherMasters.GetDoctorPSOLinkMaster(Convert.ToDecimal(Session["Territory_FKID"] == null ? "0" : Session["Territory_FKID"].ToString()), Convert.ToInt32(Session["USER_FKID"] == null ? "0" : Session["USER_FKID"].ToString())) orderby a.DoctorName select a).ToList();
+
+            foreach (var item in context)
+            {
+                PrescriptionTrackerPDF user = new PrescriptionTrackerPDF();
+
+                user.DoctorName = item.DoctorName == null ? "" : item.DoctorName.ToString();
+                user.Specialization = item.Specialization == null ? "" : item.Specialization.ToString();
+                user.AreaName = item.AreaName == null ? "" : item.AreaName.ToString();
+                userList.Add(user);
+            }
+            var customerList = userList;
+            pdf.ExportPDF(customerList, new string[] { "DoctorName", "Specialization", "AreaName" }, path);
+            return File(path, "application/pdf", "PrescriptionTracker.pdf");
+        }
+        public ActionResult ExportPrescriptionTrackerToCsv()
+        {
+            var model = (from a in OtherMasters.GetDoctorPSOLinkMaster(0, Convert.ToInt32(Session["USER_FKID"] == null ? "0" : Session["USER_FKID"].ToString())) orderby a.DoctorName select a).ToList();
+            var sb = new StringBuilder();
+            sb.AppendLine("DoctorName,Specialization,AreaName");
+            foreach (var record in model)
+            {
+                sb.AppendFormat("{0},{1},{2}", record.DoctorName == null ? "" : record.DoctorName.ToString(), record.Specialization == null ? "" : record.Specialization.ToString(),
+                    record.AreaName == null ? "" : record.AreaName.ToString()
+
+                 );
+                sb.AppendLine();
+            }
+            string data = sb.ToString();
+            var csvBytes = Encoding.ASCII.GetBytes(data);
+
+            return File(csvBytes, "text/csv", "PrescriptionTracker.txt");
+        }
+        public class PrescriptionTrackerPDF
+        {
+            public string DoctorName { get; set; }
+            public string Specialization { get; set; }
+            public string AreaName { get; set; }
+        }
+        
+        
+        #endregion
+
     }
     
 }

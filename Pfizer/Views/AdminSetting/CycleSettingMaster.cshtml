@@ -252,7 +252,7 @@
 
                 afterSubmit: function (response, postdata) {
                    
-                    alert(response.responseText);
+                   
                     if (response.responseText == "\"CycleSettingMaster modified Successfully.\"")
                         {
                     $("#ajaxGrid").jqGrid('setGridParam', { datatype: 'json' }).trigger('reloadGrid');

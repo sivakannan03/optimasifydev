@@ -81,10 +81,7 @@
                          }, search: false
                      },
                      {
-                         name: 'IsActive', index: 'IsActive', align: 'left', resizable: false, editable: true, edittype: 'checkbox', editoptions: { value: "Active:Passive", defaultValue: "Active" }, searchoptions: { sopt: ['eq', 'bw', 'ew', 'cn'] }, formoptions: {
-                             elmprefix: "<span style='align:left;color:red'>*</span>&nbsp;"
-
-                         }, search: false
+                         name: 'IsActive', index: 'IsActive', align: 'left', resizable: false, editable: true, edittype: 'checkbox', editoptions: { value: "Active:Passive", defaultValue: "Active" }, searchoptions: { sopt: ['eq', 'bw', 'ew', 'cn'] },  search: false
                      },
             ],
             caption: "Nodetypemaster",
@@ -158,11 +155,11 @@
                         $('#DAILYREPORTFLAG').focus();
                         return [false, 'Please Check Daily Report Flag'];
                     }
-                    else if (!($('#IsActive').is(":checked"))) {
-                        $("#IsActive").css("background-color", "#FFE8E8").css("border", "1px solid #FF6666");
-                        $('#IsActive').focus();
-                        return [false, 'Please Check Status'];
-                    }
+                    //else if (!($('#IsActive').is(":checked"))) {
+                    //    $("#IsActive").css("background-color", "#FFE8E8").css("border", "1px solid #FF6666");
+                    //    $('#IsActive').focus();
+                    //    return [false, 'Please Check Status'];
+                    //}
 
 
 
@@ -250,11 +247,11 @@
                     $('#DAILYREPORTFLAG').focus();
                     return [false, 'Please Check Daily Report Flag'];                   
                 }
-                else if (!($('#IsActive').is(":checked"))) {
-                    $("#IsActive").css("background-color", "#FFE8E8").css("border", "1px solid #FF6666");
-                    $('#IsActive').focus();
-                    return [false, 'Please Check Status'];
-                }
+                //else if (!($('#IsActive').is(":checked"))) {
+                //    $("#IsActive").css("background-color", "#FFE8E8").css("border", "1px solid #FF6666");
+                //    $('#IsActive').focus();
+                //    return [false, 'Please Check Status'];
+                //}
 
 
                 $('select').css("border", "1px solid #C0C0C0");

@@ -30,6 +30,7 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="Class1.cs" />
     <Compile Include="GridHelpers\Enum_WhereOperation.cs" />
     <Compile Include="GridHelpers\GridQueryModel.cs" />
     <Compile Include="GridHelpers\LinqExtensions.cs" />

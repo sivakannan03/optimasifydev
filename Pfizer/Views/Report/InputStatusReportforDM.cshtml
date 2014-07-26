@@ -1,0 +1,370 @@
+﻿@{
+    ViewBag.Title = "InputStatusReportforDM";
+    Layout = "~/Views/Shared/MasterLayout.cshtml";
+}
+<style type="text/css">
+    #lstProducts {
+        width: 220px;
+    }
+    #lstPSO {
+        width: 220px;
+    }
+</style>
+ <body>
+    @using (Html.BeginForm(FormMethod.Post))
+    {
+
+        <div class="inner_tbldiv" style=" margin-top:0">
+
+            <table style="width:85% !important;" border="1" cellspacing="0" cellpadding="0" align="center" class="inner_tb">
+                <tr>
+                    <th colspan="8">
+                        Input Status Report for DM
+                    </th>
+                </tr>
+                <tr>
+                    <td></td>
+                </tr>
+
+                <tr>
+                    <td colspan="8" align="center">
+                        <div style="text-align:center;"><label id="lblError" style=" color:red"></label></div>
+                    </td>
+
+                </tr>
+                <tr>
+
+                    <th colspan="8">Filter On </th>
+                </tr>
+
+                <tr> 
+                    <td valign="middle"  align="left" class="tb-r2"></td>
+
+                    <td valign="middle"  align="left" class="tb-r2">    &nbsp;&nbsp;Year<span class="star">*</span></td>
+                    <td class="tb-r2" width="10%">
+                        &nbsp;&nbsp;
+                        @Html.DropDownList("ddlYear", new[] { new SelectListItem { Text = "Select", Value = "" } })
+                        &nbsp;
+                    </td>
+                    <td valign="middle" align="left"  class="tb-r2">    &nbsp;&nbsp;Month<span class="star">*</span></td>
+                    <td class="tb-r2">
+                        &nbsp;&nbsp;
+                        @Html.DropDownList("ddlMonth", new[] { new SelectListItem { Text = "Select", Value = "" } })
+
+                        &nbsp;
+                    </td>
+                    <td class="tb-r2"> 
+                        <input type="checkbox" id="chkSummary" /> Show Summary &nbsp;&nbsp;
+                        <input type="checkbox" id="chkPSO" /> Show PSO wise Details
+                    </td>
+                      
+
+                </tr>
+
+                <tr>
+                    <td valign="middle" align="left" class="tb-r1"></td>
+
+                    <td valign="middle" align="left" class="tb-r1">    &nbsp;&nbsp;Products<span class="star">*</span></td>
+                    <td class="tb-r2" width="10%">
+                        &nbsp;&nbsp;
+                        @Html.ListBox("lstProducts", new[]{
+
+                                            new SelectListItem { Text="All", Value=""} }, new { @class = "listboxnew", @size = "5" })
+                        &nbsp;
+                    </td>
+                    <td colspan="2" class="tb-r1" width="310px">
+
+                        <table class="inner_tb" id="tblPSO">
+                            <tr>
+                                <td valign="middle" align="left" id="tdPsoTitle" class="tb-r1">    &nbsp;&nbsp;Pso's<span class="star">*</span>
+                                </td>
+                                <td class="tb-r2" id="tdPsoData" >
+
+                                    &nbsp;&nbsp;
+                                    @Html.ListBox("lstPSO", new[]{
+
+                                            new SelectListItem { Text="All", Value=""} }, new { @class = "listboxnew", @size = "5" })
+
+                                    &nbsp;
+
+                                </td>
+                            </tr>
+                        </table>
+
+                    </td>
+                   
+                    <td class="tb-r1">
+                        <input type="button" class="orange_button" id="btnGo" value="  Go  " /> &nbsp; &nbsp;
+                        <input type="button" class="orange_button" id="btnReset" value="Reset" />
+                    </td>
+
+                </tr>
+
+                <tr>
+                    <td colspan="8">
+                        <div id="divGrid">
+
+
+                        </div>
+                        <table width="100%" align="center">
+                            <tr>
+                                <td align="center">
+                                    <div id="divCtrls" style="display:none">
+                                        <input type="button" class="orange_button" id="btnPrint" value="Print" /> &nbsp; &nbsp;
+                                        <input type="button" class="orange_button" id="btnExcel" value="View as Excel" />
+                                    </div>
+                                </td>
+
+
+                            </tr>
+
+                        </table>
+
+                    </td>
+
+                </tr>
+ 
+
+         
+            </table>
+
+        </div>
+
+
+        <div id="divReport">
+        </div>
+    }
+
+     <script>
+         
+         $(document).ready(function () {
+             $("#lblError").text('');
+             $("#lblError").css("color", "red");
+             $('#tblPSO').hide();
+             LoadProduct();
+             LoadYear();
+             LoadMonth();
+
+         });
+         $("#chkSummary").click(function () {
+             if ($(this).is(":checked")) {
+                 $('#chkPSO').attr('checked', false);
+                 $('#tblPSO').hide();
+                
+             }
+            
+         });
+         $("#chkPSO").click(function () {
+             if ($(this).is(":checked")) {
+                 $('#chkSummary').attr('checked', false);
+                 $('#tblPSO').show();
+                 LoadPSO();
+               
+             }
+
+         });
+         function LoadProduct() {
+             $('#lstProducts').empty();
+             $('#lstProducts').append("<option value='All'>All</option>");
+             $.getJSON('@Url.Action("JsonLoadDMProducts")', function (data) {
+
+                 for (var i = 0; i < data.count; i++) {
+                     $('#lstProducts').append("<option value='" + data.productItems[i].Value + "'>" + data.productItems[i].Text + "</option>");
+                 }
+             });
+         }
+         function LoadPSO() {
+             $('#lstPSO').empty();
+             $('#lstPSO').append("<option value='All'>All</option>");
+             $.getJSON('@Url.Action("JsonLoadPSOName")', function (data) {
+
+                 for (var i = 0; i < data.count; i++) {
+                     $('#lstPSO').append("<option value='" + data.psoItems[i].Value + "'>" + data.psoItems[i].Text + "</option>");
+                 }
+             });
+         }
+
+         $('#btnGo').click(function () {
+
+             $('select').css("border", "1px solid #C0C0C0");
+             $("#lblError").text('');
+
+           
+             if ($('#ddlYear').val() == '') {
+                 $("#lblError").text('Please select Year');
+                 $('#ddlYear').focus();
+                 $("#ddlYear").css("background-color", "#FFE8E8").css("border", "1px solid #FF6666");
+
+                 return false;
+             }
+             if ($('#ddlMonth').val() == '') {
+                 $("#lblError").text('Please select Month');
+                 $('#ddlMonth').focus();
+                 $("#ddlMonth").css("background-color", "#FFE8E8").css("border", "1px solid #FF6666");
+                 return false;
+             }
+
+             if ($('#lstProducts').val() == '' || $('#lstProducts').val() == null) {
+                 $("#lblError").text('Please select atleast one Product');
+                 $('#lstProducts').focus();
+                 $("#lstProducts").css("background-color", "#FFE8E8").css("border", "1px solid #FF6666");
+                 return false;
+             }
+          
+             var lstPSO = $("#lstPSO").val();
+             if ($("#chkSummary").is(":checked")) {
+                 lstPSO = "";
+             }
+             if ($("#chkPSO").is(":checked")) {
+                 if ($('#lstPSO').val() == '' || $('#lstPSO').val() == null) {
+                     $("#lblError").text('Please select atleast one PSO');
+                     $('#lstPSO').focus();
+                     $("#lstPSO").css("background-color", "#FFE8E8").css("border", "1px solid #FF6666");
+                     return false;
+                 }
+             }
+               
+             $.getJSON('@Url.Action("JsonDMStatusRpt")?year=' + $('#ddlYear option:selected').text() + '&month=' + $("#ddlMonth").val() + '&products=' + $("#lstProducts").val() + '&psos=' + lstPSO, function (data) {
+
+                 var header = '<table width="100%"><tr><th align="center">Input Inventory Report of @Session["Emp_Name"] as on @ViewBag.Date</th></tr></table>';
+
+                 $('#divGrid').html(header+data.rslt);
+                 $("#divCtrls").css("display", "block");
+
+             });
+
+         });
+
+
+
+         $('#btnReset').click(function () {
+             $('#divGrid').html('');
+             $('#lstProducts').find("option").attr("selected", false);
+             $("#divCtrls").css("display", "none");
+             $('#tblPSO').hide();
+
+         });
+
+         function LoadYear() {
+             var today = new Date(); // Initialize Date in raw form
+             var Currentyear = today.getFullYear(); // Get the year
+             var CurrentDate = today.getDate();
+             //Year binding into year ComboBox
+             var cPreviousYear = today.getFullYear() - 5;
+
+             var cNextYear = today.getFullYear() + 3;
+             var iSelected = 0;
+             for (var iCount = cPreviousYear; iCount < cNextYear; iCount++) {
+
+                 document.getElementById("ddlYear").options.add(new Option(iCount, "0"))
+                 if (document.getElementById("ddlYear").options[iSelected].innerText == Currentyear) {
+                     document.getElementById("ddlYear").selectedIndex = iSelected;
+                 }
+                 iSelected++;
+             }
+         }
+
+         function LoadMonth() {
+             var today = new Date(); // Initialize Date in raw form
+             var currentMonth = today.getMonth() + 1; // Get the month
+
+             var months = ["", "January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
+             var option = '';
+             for (var i = 0; i < months.length; i++) {
+                 if (i == 0)
+                     continue;
+                 if (currentMonth != i) {
+                     option += '<option value="' + i + '">' + months[i] + '</option>';
+                     continue;
+                 }
+                 option += '<option value="' + i + '" selected="selected">' + months[i] + '</option>';
+             }
+             $('#ddlMonth').append(option);
+         }
+
+         $('#btnPrint').click(function () {
+             Print(tableContainer);
+         });
+
+         $('#btnExcel').click(function () {
+             DownloadExcel();
+         });
+         function DownloadExcel() {
+
+             var win = window.open('@Url.Action("ExcelDownload")?fileName=' + ' InputStatusReportforDM', 'showwin', 'width=550,height=400,top=0,left=0,toolbar=yes,location=no,directories=no,status=no,menubar=no,scrollbars=yes,resizeable=yes');
+             win.history.go(0);
+             return true;
+         }
+         function Reload() {
+              window.location.reload();
+         }
+         function showReport(SampleId, PsoId, TerId) {
+            
+             $.getJSON('@Url.Action("JsonInputDMDetailRpt")?year=' + $('#ddlYear option:selected').text() + '&month=' + $("#ddlMonth").val() + '&InputId=' + SampleId, function (data) {
+                 
+                 $('#divReport').html(data.rslt);
+                 $('#divReport').dialog({
+                     title: '',
+                     width: 850,
+                     height: 450,
+                     align: 'center',
+                     show: { effect: 'drop', direction: "up" },
+                     modal: true,
+                     //close: Reload
+                 });
+
+             });
+ 
+         }
+
+
+         function showReportDisbursed(SampleId, PsoId, TerId) {
+             $.getJSON('@Url.Action("JsonInputDMDisbursedRpt")?year=' + $('#ddlYear option:selected').text() + '&month=' + $("#ddlMonth").val() + '&Products=' + $("#lstProducts").val() + '&InputId=' + SampleId, function (data) {
+
+                 $('#divReport').html(data.rslt);
+                 $('#divReport').dialog({
+                     title: '',
+                     width: 850,
+                     height: 450,
+                     align: 'center',
+                     show: { effect: 'drop', direction: "up" },
+                     modal: true,
+                     //close: Reload
+                 });
+
+             });
+
+
+             ProductId();
+             //alert(getID("hdnproductId").value);			
+             var PSOID = PsoId;//getID("hdnUSERFKID").value;
+             var TerIds = TerId;//getID("hdnTerritoryFKID").value; 			
+             var Products = getID("drpInput").value;
+
+             var Months = getID("drMonth").value;
+             var Years = getID("drYear").value;
+             var InputID = SampleId;
+
+             var WinReceived = window.open('InputStatusRptPSODisbursed.aspx?PSOID=' + PSOID + '&Month=' + Months + '&Year=' + Years + '&TerId=' + TerIds + '&Input=' + InputID, "DisplayRequestSegment", "toolbars=no , width=800 , height=600, left=150, top=60,alwaysRaised=0 scrollbars=yes resizable=yes")
+             WinReceived.focus();
+             //alert(input);	
+         }
+
+         $('#lstProducts').change(function () {
+             if ($('#lstProducts').val() == 'All') {
+                 $("#lstProducts option").prop("selected", true);
+                 $("#lstProducts option:first").removeAttr('selected');
+
+             }
+         });
+
+         $('#lstPSO').change(function () {
+             if ($('#lstPSO').val() == 'All') {
+                 $("#lstPSO option").prop("selected", true);
+                 $("#lstPSO option:first").removeAttr('selected');
+
+             }
+         });
+
+    </script>
+</body>

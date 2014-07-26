@@ -27,87 +27,231 @@
             </table>
 
         </div>
+     <script type="text/javascript">
+
+         function cal(id) {
+            
+             var postData = $(id).val();
+ 
+             $.ajax({
+                 type: 'POST',
+                 url: '@Url.Action("LoadTerritoryByDistrict")?type=' + 'NTerritory',
+                 data: { PKID: postData },
+                 success: function (data) {
+
+                     $('#tr_Territory td:nth-child(2)').html(data);
+
+
+                 }
+             });
+
+         }
+
+
+    function CheckDistRgn() {
+
+        var TM = $('#NodeType option:selected').text();
+        if (TM == "Admin" || TM=="REA")
+        {
+            $("#RegionCode").attr("disabled", true);
+            $("#DistrictCode").attr("disabled", true);
+            $("#Territory").attr("disabled", true);
+         }
+        if (TM == "DM")
+        {
+            $("#RegionCode").attr("disabled", false);
+            //$("#RegionCode").html("<span style='align:left;color:red'>*</span>&nbsp;");
+            $("#DistrictCode").attr("disabled", false);
+            $("#Territory").attr("disabled", true);
+        }
+
+        if (TM == "FTM"|| TM=="RBM")
+        {
+            $("#RegionCode").attr("disabled", false);
+           // $("#RegionCode").html("<span style='align:left;color:red'>*</span>&nbsp;");
+            $("#DistrictCode").attr("disabled", true);
+            $("#Territory").attr("disabled", true);
+        }
+        if (TM == "MM" || TM == "PM") {
+
+            $("#RegionCode").attr("disabled", true);
+            $("#DistrictCode").attr("disabled", true);
+            $("#Territory").attr("disabled", true);
+        }
+       
+        if (TM == "PSO") {
+            $("#RegionCode").attr("disabled", false);
+            $("#DistrictCode").attr("disabled", false);
+            $("#Territory").attr("disabled", false);
+        }
+
     }
-    <script type="text/javascript">
 
-        jQuery(document).ready(function () {
 
-            initGrid();
+
+
+    jQuery(document).ready(function () {
+
+        initGrid();
+    });
+
+    function MoveSelected() {
+
+        $('#Teams :selected').each(function (i, selected) {
+            $('#SelTeams')
+                 .append($('<option selected="selected" value=' + $(selected).val() + '>')
+                 .text($(selected).text()));
+            $('#Teams :selected').remove();
         });
 
-        function MoveSelected() {
 
-            $('#Teams :selected').each(function (i, selected) {
-                $('#SelTeams')
-                     .append($('<option selected="selected" value=' + $(selected).val() + '>')
-                     .text($(selected).text()));
-                $('#Teams :selected').remove();
-            });
+    }
 
+    function ReverseSelected() {
 
-        }
+        $('#SelTeams :selected').each(function (i, selected) {
+            $('#Teams')
+                 .append($('<option>', { value: $(selected).val() })
+                 .text($(selected).text()));
+            $('#SelTeams :selected').remove();
 
-        function ReverseSelected() {
+        });
 
-            $('#SelTeams :selected').each(function (i, selected) {
-                $('#Teams')
-                     .append($('<option>', { value: $(selected).val() })
-                     .text($(selected).text()));
-                $('#SelTeams :selected').remove();
+        $("#SelTeams option").prop("selected", true);
+        $("#SelTeams option:first").removeAttr('selected');
 
-            });
+    }
+    function initGrid() {
+        jQuery("#GridSalesHierarchy").jqGrid({
+            url: '@Url.Action("GridSalesHierarchy")',
+            datatype: "json",
+            jsonReader: { repeatitems: false, id: "PKID" },
+            colNames: ['IsLower', 'Division', 'PKID', 'User Name', 'Node', 'Reporting To', 'Status', 'NodeDescription', 'LocationDescription', 'HQ', '', '', '', 'Teams', 'RegionCode', 'Territory', 'Node Type', 'User', 'Node Function', 'Location', 'ForumCreator', 'District Code'],
+            colModel: [
 
-            $("#SelTeams option").prop("selected", true);
-            $("#SelTeams option:first").removeAttr('selected');
-
-        }
-        function initGrid() {
-            jQuery("#GridSalesHierarchy").jqGrid({
-                url: '@Url.Action("GridSalesHierarchy")',
-                datatype: "json",
-                jsonReader: { repeatitems: false, id: "PKID" },
-                colNames: ['IsLower', 'Division', 'PKID', 'User Name', 'Node', 'Reporting To', 'Status', 'NodeDescription', 'LocationDescription', 'HQ','','','', 'Teams', 'RegionCode', 'Territory', 'Node Type', 'User', 'Node Function', 'Location', 'Forum Creator',  'District Code'],
-                colModel: [
-                    {
-                        name: 'IsLower', index: 'IsLower', align: 'center', hidden: true, editable: true, editrules: { edithidden: true }, edittype: 'select', editoptions: {
-                            value: { 2: 'Select', 1: 'Yes', 0: 'No'}
-                        }, formoptions: { rowpos: 2, colpos: 1 }
+                {
+                    name: 'IsLower', index: 'IsLower', align: 'center', hidden: true, viewable: false, editable: true, edittype: 'select', editrules: { edithidden: true, required: false },
+                    
+                    formoptions: {
+                        rowpos: 2, colpos: 1,
+                        size: 35,
+                        elmprefix: "<span style='align:left;color:red'>*</span>&nbsp;"
                     },
-
-                    {
-                        name: 'Division', index: 'Division', align: 'left', hidden: true, editable: true,edittype: 'select', editrules: { edithidden: true },editoptions: {
-                            
-                            dataUrl: function () {
-                                var row_id = $('#GridSalesHierarchy').getGridParam('selrow');
-                                return 'LoadSalesDivision?type=' + 'Division' + '&rowId=' + row_id;
-                            },
-                            dataInit: function (elem) {
-                                $(elem).width(135);
-                            }
-
-
-                        }, formoptions: { rowpos: 3, colpos: 1 } },
-                    { name: 'PKID', index: 'PKID', align: 'left', hidden: false, editable: false },
-                    { name: 'userName', index: 'userName', align: 'left', editable: false,  editrules: { edithidden: false } },
-                     { name: 'NodeName', index: 'NodeName', align: 'left', hidden: false, editable: false, editrules: { edithidden: false} },
-                    { name: 'reportingTo', index: 'reportingTo', align: 'left',hidden:false, resizable: false, editable: true, edittype: 'select' ,editoptions: {                        
+                    editoptions: {
+                        value: { 2: 'Select', 1: 'Yes', 0: 'No' },
                         dataUrl: function () {
                             var row_id = $('#GridSalesHierarchy').getGridParam('selrow');
-                            return 'LoadUserType?type=' + 'User' + '&rowId=' + row_id;
+                            return 'LoadIsLower?type=' + 'IsLower' + '&rowId=' + row_id;
+                        },
+                    },
+                    //formoptions: { rowpos: 2, colpos: 1 }
+                },
+
+                {
+                    name: 'Division', index: 'Division', align: 'left', hidden: true, resizable: false, editable: true, edittype: 'select', editrules: { edithidden: true, required: false },
+                    formoptions: {
+                        rowpos: 3, colpos: 1,
+                        size: 35,
+                        elmprefix: "<span style='align:left;color:red'>*</span>&nbsp;"
+                    },
+
+                     editoptions: {
+
+                        dataUrl: function () {
+                            var row_id = $('#GridSalesHierarchy').getGridParam('selrow');
+                            return 'LoadSalesDivision?type=' + 'Division1' + '&rowId=' + row_id;
+                        },
+
+                        dataEvents: [{
+                            type: 'change',
+                            fn: function (e) {
+                                var postData = e.currentTarget.value;
+                                $.ajax({
+                                    type: 'POST',
+                                    url: '@Url.Action("LoadTeam")?type=' + 'Team',
+                                    data: { DivFKID: postData },
+                                    success: function (data) {
+
+                                        $('#tr_forward  td:nth-child(2)').html("<td class='DataTD'>" + data + "<span style='align:left;color:red'>*</span></td>");
+
+
+                                    }
+                                });
+                            }
+                        }],
+                        dataInit: function (elem) {
+                            $(elem).width(135);
+                        }
+
+
+                    }
+                },
+                { name: 'PKID', index: 'PKID', align: 'left', hidden: true, editable: false,viewable: false, search: false },
+                { name: 'userName', index: 'userName', align: 'left', editable: false, editrules: { edithidden: true, required: false }, searchoptions: { sopt: ['eq', 'bw', 'ew', 'cn'] }, search: true, searchrules: { required: true } },
+                 { name: 'NodeName', index: 'NodeName', align: 'left', hidden: false, editable: false, editrules: { edithidden: true, required: false }, searchoptions: { sopt: ['eq', 'bw', 'ew', 'cn'] }, search: true, searchrules: { required: true } },
+                {
+                  name: 'reportingTo', index: 'reportingTo', align: 'left', hidden: false, resizable: false, editable: true, edittype: 'select', editrules: { edithidden: true, required: false },
+                   
+                   
+                    formoptions: {
+                        rowpos: 4, colpos: 1,
+                        size: 35,
+                        elmprefix: "<span style='align:left;color:red'>*</span>&nbsp;"
+                    },
+                    searchoptions: { sopt: ['eq', 'bw', 'ew', 'cn'] }, search: true, searchrules: { required: true },
+                    editoptions: {
+                        dataUrl: function () {
+                            var row_id = $('#GridSalesHierarchy').getGridParam('selrow');
+                            return 'LoadUserType?type=' + 'User1' + '&rowId=' + row_id;
                         },
                         dataInit: function (elem) {
                             $(elem).width(135);
                         }
 
 
-                    },formoptions: { rowpos: 4, colpos: 1 } },
+                    }, //formoptions: { rowpos: 4, colpos: 1 }
+                },
 
-                    { name: 'IsActive', index: 'IsActive', align: 'left', resizable: false, editable: false, edittype: 'checkbox', editoptions: { value: "True:False" }, searchoptions: { sopt: ['eq', 'bw', 'ew', 'cn'] }, view: false },
+                { name: 'IsActive', index: 'IsActive', align: 'left', resizable: false, editable: true, edittype: 'checkbox', formoptions: { rowpos: 11, colpos: 1},editoptions: { value: "true:false",defaultvalue:true}, search: false, searchoptions: { sopt: ['eq', 'bw', 'ew', 'cn'] }, view: false },
 
-                     { name: 'NodeDescription', index: 'NodeDescription', align: 'left', hidden: true, editable: true, editrules: { edithidden: true }, formoptions: { rowpos: 5, colpos: 1 } },
-                    { name: 'LocationDescription', index: 'LocationDescription', align: 'left', hidden: true, editable: true, editrules: { edithidden: true }, formoptions: { rowpos: 6, colpos: 1 } },
-                    { name: 'HQ', index: 'HQ', align: 'left', hidden: true, editable: true, editrules: { edithidden: true },edittype: 'select' ,editoptions: {
-                        
+                 {
+                     name: 'NodeDescription', index: 'NodeDescription', align: 'left', hidden: true, viewable: false, editable: true, editrules: { edithidden: true },
+                     editoptions: {
+                         size: 35, maxlength: 50,
+                         dataEvents: [
+                             {
+                                 type: 'keyup', // blur
+                                 fn: function (e) {
+                                     $('#FormError').hide();
+                                     SingleCharacter(this);
+                                 },
+                                       
+                             }
+                         ]
+                     },
+                     
+                     formoptions: { rowpos: 5, colpos: 1 }
+                 },
+                {
+                    name: 'LocationDescription', index: 'LocationDescription', align: 'left', viewable: false, hidden: true, editable: true, editrules: { edithidden: true },
+                    editoptions: {
+                        size: 35, maxlength: 50,
+                        dataEvents: [
+                            {
+                                type: 'keyup', // blur
+                                fn: function (e) {
+                                    $('#FormError').hide();
+                                    SingleCharacter(this);
+                                },
+
+                            }
+                        ]
+                    },
+                    formoptions: { rowpos: 6, colpos: 1 }
+                },
+                {
+                    name: 'HQ', index: 'HQ', align: 'left', hidden: true, editable: true, viewable: false, editrules: { edithidden: true }, edittype: 'select', editoptions: {
+
                         dataUrl: function () {
                             var row_id = $('#GridSalesHierarchy').getGridParam('selrow');
                             return 'LoadHQType?type=' + 'HQ' + '&rowId=' + row_id;
@@ -118,183 +262,297 @@
 
 
                     }, formoptions: { rowpos: 7, colpos: 1 }
-                    },
+                },
 
 
-                      {
-                          name: 'forward', index: 'forward', align: 'left', hidden: true, editrules: { edithidden: true }, edittype: 'button', editable: true, editoptions: {
-                              value: '>>',
-                              dataEvents:
-                                  [
-                                  {
-                                      type: 'click', fn: function (e) {
+                  {
+                      name: 'forward', index: 'forward', align: 'left', hidden: true, editrules: { edithidden: true }, edittype: 'button', editable: true, editoptions: {
+                          value: '>>',
+                          dataEvents:
+                              [
+                              {
+                                  type: 'click', fn: function (e) {
 
-                                          MoveSelected();
-                                      }
-                                  }]
+                                      MoveSelected();
+                                  }
+                              }]
 
-                          }, formoptions: { rowpos: 8, colpos: 2 }
-                      },
+                      }, formoptions: { rowpos: 8, colpos: 2 }
+                  },
 
+        {
+
+            name: 'backward', index: 'backward', align: 'right', hidden: true, edittype: 'button', editrules: { edithidden: true }, editable: true, editoptions: {
+                value: '<<',
+                dataEvents:
+                    [
+                    {
+                        type: 'click', fn: function (e) {
+
+                            ReverseSelected();
+                        }
+                    }]
+
+            }, formoptions: { rowpos: 8, colpos: 3 }
+
+
+        },
+
+        {
+            name: 'SelTeams', index: 'SelTeams', align: 'left', editable: true, hidden: true, viewable: false, editrules: { edithidden: true, required: false }, edittype: 'select', editoptions: {
+                multiple: true, dataUrl: function () {
+                    var row_id = $('#GridSalesHierarchy').getGridParam('selrow');
+                    return 'LoadSelectedTeam?type=' + 'SHDay' + '&rowId=' + row_id;
+                }
+                //SelTeams
+            }, formoptions: { rowpos: 8, colpos: 4 },
+        },
             {
+                name: 'Teams', index: 'Teams', align: 'left', hidden: true, editable: true, viewable: false, editrules: { edithidden: true, required: false },
+                formoptions: {
+                    rowpos: 8, colpos: 1,
+                   
+                    elmprefix: "<span style='align:left;color:red'>*</span>&nbsp;"
 
-                name: 'backward', index: 'backward', align: 'right', hidden: true, edittype: 'button', editrules: { edithidden: true }, editable: true, editoptions: {
-                    value: '<<',
-                    dataEvents:
-                        [
-                        {
-                            type: 'click', fn: function (e) {
-
-                                ReverseSelected();
-                            }
-                        }]
-
-                }, formoptions: { rowpos: 8, colpos: 3 }
-
-
-            },
-
-            {
-                name: 'SelTeams', index: 'SelHQ', align: 'left', editable: true, hidden: true, editrules: { edithidden: true }, edittype: 'select', editoptions: {
-                    multiple: true, dataUrl: function () {
+              },
+                viewable: false, edittype: 'select', editoptions: {
+                    multiple: true,
+                    dataUrl: function () {
                         var row_id = $('#GridSalesHierarchy').getGridParam('selrow');
-                        return 'LoadSubTerritory?type=' + 'SHDay' + '&rowId=' + row_id;
+                        return 'LoadTeamType?type=' + 'Team' + '&rowId=' + row_id;
+                    },
+                    dataInit: function (elem) {
+                        $(elem).width(135);
                     }
 
-                }, formoptions: { rowpos: 8, colpos: 4 },
-            },
-                { name: 'Teams', index: 'Teams', align: 'left', hidden: true, editable: true, editrules: { edithidden: true }, formoptions: { rowpos: 8, colpos: 1 },edittype: 'select' ,editoptions: {
-                multiple: true,
-                dataUrl: function () {
-                    var row_id = $('#GridSalesHierarchy').getGridParam('selrow');
-                    return 'LoadTeamType?type=' + 'Team' + '&rowId=' + row_id;
-                },
-                dataInit: function (elem) {
-                    $(elem).width(135);
+
                 }
+            },
 
-
-                } },
-
-        { name: 'RegionCode', index: 'RegionCode', align: 'left', hidden: true, editable: true, editrules: { edithidden: true }, formoptions: { rowpos: 9, colpos: 1 },edittype: 'select' ,editoptions: {
-            
+    {
+        name: 'RegionCode', index: 'RegionCode', align: 'left', hidden: true, editable: true, viewable: false, editrules: { edithidden: true }, formoptions: { rowpos: 9, colpos: 1 },
+        edittype: 'select',
+        editoptions: {
+            disabled: 'disabled',
             dataUrl: function () {
                 var row_id = $('#GridSalesHierarchy').getGridParam('selrow');
                 return 'LoadRegionType?type=' + 'Region' + '&rowId=' + row_id;
             },
+            
+            dataEvents: [{
+                type: 'change',
+                fn: function (e) {
+                    var postData = e.currentTarget.value;
+                    $.ajax({
+                        type: 'POST',
+                        url: '@Url.Action("LoadDistrictByRegion")?type=' + 'NDistrict',
+                        data: { PKID: postData },
+                        success: function (data) {
+
+                            //$('#tr_RegionCode  td:nth-child(4)').html(data);
+                            $('#tr_RegionCode  td:nth-child(4)').html("<td width=135px colspan='10'>" + data + "</td>");
+
+                        }
+                    });
+                }
+            }],
             dataInit: function (elem) {
                 $(elem).width(135);
             }
 
 
-        }  },
-        { name: 'Territory*', index: 'Territory*', align: 'left', hidden: true, editable: true, editrules: { edithidden: true }, formoptions: { rowpos: 10, colpos: 1 } ,edittype: 'select' ,editoptions: {
-            
-                dataUrl: function () {
-                    var row_id = $('#GridSalesHierarchy').getGridParam('selrow');
-                    return 'LoadTerritoryType?type=' + 'Territory' + '&rowId=' + row_id;
-                },
-                dataInit: function (elem) {
-                    $(elem).width(135);
-                }
+        }
+    },
+    {
+        name: 'Territory', index: 'Territory', align: 'left', hidden: true, resizable: false, viewable: false, editable: true, editrules: { edithidden: true }, formoptions: { rowpos: 10, colpos: 1 }, edittype: 'select',
 
 
-        } },
-
-
-
-        { name: 'NodeType', index: 'NodeType', align: 'left', hidden: true, editable: true, editrules: { edithidden: true }, edittype: 'select',editoptions: {
-            
+        editoptions: {
+            value: { 0: "Select"},
+            disabled: 'disabled',
             dataUrl: function () {
                 var row_id = $('#GridSalesHierarchy').getGridParam('selrow');
-                return 'LoadNodeType?type=' + 'NodeType' + '&rowId=' + row_id;
+                return 'LoadTerritoryType?type=' + 'Territory' + '&rowId=' + row_id;
             },
             dataInit: function (elem) {
                 $(elem).width(135);
             }
 
 
-        }, formoptions: { rowpos: 2, colpos: 2 } },
+        }
+    },
 
-        { name: 'User', index: 'User', align: 'left', hidden: true, editable: true, editrules: { edithidden: true }, edittype: 'select',editoptions: {
-                
+    {
+        name: 'NodeType', index: 'NodeType', align: 'left', hidden: true, editable: true, viewable: false, edittype: 'select', editrules: { edithidden: true, required: false }, formoptions: {
+            size: 35,
+            elmprefix: "<span style='align:left;color:red'>*</span>&nbsp;"
+        },
+        editoptions: {
+
+
+            dataUrl: function () {
+                var row_id = $('#GridSalesHierarchy').getGridParam('selrow');
+                return 'LoadNodeType?type=' + 'NodeType1' + '&rowId=' + row_id;
+            },
+           dataEvents: [{
+                type: 'change', // blur
+                fn: function (e) {
+                    CheckDistRgn(this);
+                }
+            }]
+        },
+        formoptions: { rowpos: 2, colpos: 2, elmprefix: "<span style='align:left;color:red'>*</span>&nbsp;" }, search: false
+       
+    },
+
+    {
+        name: 'User', index: 'User', align: 'left', hidden: true, editable: true, viewable: false, edittype: 'select', editrules: { edithidden: true, required: false },
+        formoptions: {
+            rowpos: 3, colpos: 2,
+            size: 35,
+
+            elmprefix: "<span style='align:left;color:red'>*</span>&nbsp;"
+        },
+
+        editoptions: {
+            
+            dataUrl: function () {
+                var row_id = $('#GridSalesHierarchy').getGridParam('selrow');
+                return 'LoadUserType?type=' + 'User1' + '&rowId=' + row_id;
+            },
+            dataInit: function (elem) {
+                $(elem).width(135);
+            }
+
+
+        }, //formoptions: { rowpos: 3, colpos: 2 }
+    },
+    {
+        name: 'NodeFunction', index: 'NodeFunction', align: 'left', hidden: true, viewable: false, editable: true,
+        formoptions: {
+            rowpos: 4, colpos: 2,
+            size: 35,
+            elmprefix: "<span style='align:left;color:red'>*</span>&nbsp;"
+        },
+        editrules: { edithidden: true, required: false }, edittype: 'select',
+        
+            editoptions: {
+                value: { 2: 'Select', 1: 'Line', 0: 'Staff' },
                 dataUrl: function () {
                     var row_id = $('#GridSalesHierarchy').getGridParam('selrow');
-                    return 'LoadUserType?type=' + 'User' + '&rowId=' + row_id;
+                    return 'LoadNodeFunc?type=' + 'NodeFunc' + '&rowId=' + row_id;
                 },
-                dataInit: function (elem) {
-                    $(elem).width(135);
-                }
+            },
+            
+        
+    },
+    {
+        name: 'Location', index: 'Location', align: 'left', hidden: true, editable: true, viewable: false, editrules: { edithidden: true, required: false }, edittype: 'select',
+        formoptions: {
+            rowpos: 5, colpos: 2,
+            size: 35,
+            elmprefix: "<span style='align:left;color:red'>*</span>&nbsp;"
+        },
+        editoptions: {
 
-
-        },formoptions: { rowpos: 3, colpos: 2 } },
-        { name: 'NodeFunction', index: 'NodeFunction', align: 'left', hidden: true, editable: true, editrules: { edithidden: true }, edittype: 'select', editoptions: {
-            value: { 0: 'Select', 1: 'Line', 2: 'Staff'}
-        },formoptions: { rowpos: 4, colpos: 2 } },
-        { name: 'Location', index: 'Location', align: 'left', hidden: true, editable: true, editrules: { edithidden: true }, edittype: 'select',editoptions: {
-                
-                dataUrl: function () {
-                    var row_id = $('#GridSalesHierarchy').getGridParam('selrow');
-                    return 'LoadLocation?type=' + 'location' + '&rowId=' + row_id;
-                },
-                dataInit: function (elem) {
-                    $(elem).width(135);
-                }
-
-
-        },formoptions: { rowpos: 5, colpos: 2 } },
-        { name: 'ForumCreator', index: 'ForumCreator', align: 'left', hidden: true, editable: true, editrules: { edithidden: true },edittype: 'select', editoptions: {
-            value: { 0: 'Select', 1: 'Yes', 2: 'No'}
-        }, formoptions: { rowpos: 6, colpos: 2 } },
-        {
-            name: 'DistrictCode', index: 'DistrictCode', align: 'left', hidden: true, editable: true, editrules: { edithidden: true }, formoptions: { rowpos: 9, colpos: 2 }, edittype: 'select', editoptions: {
-                
-                dataUrl: function () {
-                    var row_id = $('#GridSalesHierarchy').getGridParam('selrow');
-                    return 'LoadRegionType?type=' + 'Region' + '&rowId=' + row_id;
-                },
-                dataInit: function (elem) {
-                    $(elem).width(135);
-                }
-
-
-        } },
-
-
-        ],
-
-        autowidth: true,
-            gridview: true,
-        caption: 'Sales Hierarchy',
-        jqModal: true,
-        align: 'center',
-        sortable: true,
-        hidegrid: true,
-        altRows: true,
-        rowTotal: 10,
-        rowNum: 10,
-        viewrecords: true,
-        pager: $('#Pager'),
-        height: 'auto',
-        editable: true,
-        gridComplete: function () {
-
-            if (jQuery("#GridSalesHierarchy").getGridParam("records") == 0) {
-                jQuery("#GridSalesHierarchy").addRowData(
-                      "blankRow", { "NodeName": "No records to view" });
+            dataUrl: function () {
+                var row_id = $('#GridSalesHierarchy').getGridParam('selrow');
+                return 'LoadLocation?type=' + 'location' + '&rowId=' + row_id;
+            },
+            dataInit: function (elem) {
+                $(elem).width(135);
             }
 
 
         },
-        editurl: '@Url.Action("EditSalesHierarchy")'
+        //formoptions: { rowpos: 5, colpos: 2 }
+    },
+    {
+        name: 'ForumCreator', index: 'ForumCreator', align: 'left', hidden: true, editable: true, viewable: false, editrules: { edithidden: true }, edittype: 'select',
+        
+            editoptions: {
+                value: { 2: 'Select', 1: 'Yes', 0: 'No' },
+                dataUrl: function () {
+                    var row_id = $('#GridSalesHierarchy').getGridParam('selrow');
+                     return 'LoadForum?type=' + 'Forum' + '&rowId=' + row_id;
+                },
+            },
+            
+       formoptions: { rowpos: 6, colpos: 2 }
+    },
+    {
+        name: 'DistrictCode', index: 'DistrictCode', align: 'left', hidden: true, resizable: false, viewable: false, editable: true, editrules: { edithidden: true },
+        formoptions: { rowpos: 9, colpos: 2},
+        edittype: 'select',
+        editoptions: {
+            dataUrl: function () {
+                var row_id = $('#GridSalesHierarchy').getGridParam('selrow');
+                return 'LoadDistrictCodeType?type=' + 'District' + '&rowId=' + row_id;
+            },
+            disabled: 'disabled',
+            
+            dataEvents: [{
+                type: 'change',
+                fn: function (e) {
+                    
+                    var postData = e.currentTarget.value;
+                   
+                    $.ajax({
+                        type: 'POST',
+                        url: '@Url.Action("LoadTerritoryByDistrict")?type=' + 'NTerritory',
+                        data: { PKID: postData },
+                        success: function (data) {
+
+                            $('#tr_Territory td:nth-child(2)').html(data);
+
+
+                        }
+                    });
+                }
+            }],
+            dataInit: function (elem) {
+                $(elem).width(135);
+            }
+
+
+        }
+    },
+
+
+            ],
+
+            autowidth: true,
+            gridview: true,
+            caption: 'Sales Hierarchy',
+            jqModal: true,
+            align: 'center',
+            sortable: true,
+            hidegrid: true,
+            altRows: true,
+            rowTotal: 10,
+            rowNum: 10,
+            viewrecords: true,
+            pager: $('#Pager'),
+            height: 'auto',
+            editable: true,
+            gridComplete: function () {
+
+                if (jQuery("#GridSalesHierarchy").getGridParam("records") == 0) {
+                    jQuery("#GridSalesHierarchy").addRowData(
+                          "blankRow", { "NodeName": "No records to view" });
+                }
+
+
+            },
+            editurl: '@Url.Action("EditSalesHierarchy")'
         });
-        jQuery("#GridSalesHierarchy").jqGrid('navGrid', '#Pager', { edit: true, add: true, del: true, search: true,view:true },
+        jQuery("#GridSalesHierarchy").jqGrid('navGrid', '#Pager', { edit: true, add: true, del: true, search: true, view: true },
             {
                 // Edit
                 closeAfterEdit: true,
                 closeOnEscape: true,
                 recreateForm: true,
-                width: 700,              
+                width: 700,
                 checkOnSubmit: true,
                 afterShowForm: function (form_id) {
                     var thisForm = form_id.selector.replace('FrmGrid_', 'editmod')
@@ -306,28 +564,170 @@
                     $(thisForm).css('top', ((windowHeight - dialogHeight) / 2));
                     $(thisForm).css('left', ((windowWidth - dialogWidth) / 2));
                 },
+                beforeShowForm: function (form) {
+
+                    var row_id = $('#GridSalesHierarchy').getGridParam('selrow');
+
+                    $.getJSON('@Url.Action("JsonLoadNodeDesc")?id=' + row_id, function (data) {
+
+                        $('#NodeDescription').val(data.NodeDesc);
+                    });
+                    $.getJSON('@Url.Action("JsonLoadLocationDesc")?id=' + row_id, function (data) {
+
+                        $('#LocationDescription').val(data.LocDesc);
+                    });
+
+                },
+
+                beforeSubmit: function (response, postdata) {
+                    var TM = $('#NodeType option:selected').text();
+                    $('select').css("border", "1px solid #C0C0C0");
+                    $("input[type=text]").css("border", "1px solid #C0C0C0");
+                    var error = "";
+
+                    if ($('#IsLower').val() == 2) {
+
+                        error += "IsLower";
+                        $("#FormError").html("<td class='ui-state-error' colspan='10'>" + error + ":Field is required</td>");
+
+                        $("#IsLower").css("background-color", "#FFE8E8").css("border", "1px solid #FF6666");
+
+
+                        return [false, response.responseText];
+                    }
+                    else if (($("#NodeType").val() == 0) || ($("#NodeType").val() == null)) {
+                        error += "NodeType:";
+                        $('#FormError').html("<td class='ui-state-error' colspan='10'>" + error + ":Field is required</td>");
+
+                        $("#NodeType").css("background-color", "#FFE8E8").css("border", "1px solid #FF6666");
+                        return [false, response.responseText];
+                    }
+                    else if (($("#Division").val() == 0) || ($("#Division").val() == null)) {
+                        error += "Division:";
+                        $('#FormError').html("<td class='ui-state-error' colspan='10'>" + error + ":Field is required</td>");
+                        $("#Division").css("background-color", "#FFE8E8").css("border", "1px solid #FF6666");
+                        return [false, response.responseText];
+                    }
+                    else if (($("#User").val() == 0) || ($("#User").val() == null)) {
+                        error += "User:";
+                        $('#FormError').html("<td class='ui-state-error' colspan='10'>" + error + ":Field is required</td>");
+                        $("#User").css("background-color", "#FFE8E8").css("border", "1px solid #FF6666");
+                        return [false, response.responseText];
+                    }
+                    else if (($("#reportingTo").val() == 0) || ($("#reportingTo").val() == null)) {
+                        error += "reportingTo:";
+                        $('#FormError').html("<td class='ui-state-error' colspan='10'>" + error + ":Field is required</td>");
+                        $("#reportingTo").css("background-color", "#FFE8E8").css("border", "1px solid #FF6666");
+                        return [false, response.responseText];
+                    }
+                    else if (($("#NodeFunction").val() == 2) || ($("#NodeFunction").val() == null)) {
+                        error += "NodeFunction:";
+                        $('#FormError').html("<td class='ui-state-error' colspan='10'>" + error + ":Field is required</td>");
+                        $("#NodeFunction").css("background-color", "#FFE8E8").css("border", "1px solid #FF6666");
+                        return [false, response.responseText];
+                    }
+                    else if (($("#Location").val() == 0) || ($("#Location").val() == null)) {
+                        error += "Location:";
+                        $('#FormError').html("<td class='ui-state-error' colspan='10'>" + error + ":Field is required</td>");
+                        $("#Location").css("background-color", "#FFE8E8").css("border", "1px solid #FF6666");
+                        return [false, response.responseText];
+                    }
+                    else if (($("#SelTeams").val() == 0) || ($("#SelTeams").val() == null)) {
+                        error += "SelTeams:";
+                        $('#FormError').html("<td class='ui-state-error' colspan='10'>" + error + ":Field is required</td>");
+                        $("#SelTeams").css("background-color", "#FFE8E8").css("border", "1px solid #FF6666");
+                        return [false, response.responseText];
+                    }
+                    else if (TM == "DM" && (($("#RegionCode").val() == 0) || ($("#RegionCode").val() == null) || ($("#DistrictCode").val() == 0) || ($("#DistrictCode").val() == null))) {
+                        if (($("#RegionCode").val() == 0) || ($("#RegionCode").val() == null)) {
+                            error += "RegionCode";
+                            $('#FormError').html("<td class='ui-state-error' colspan='10'>" + error + ":Field is required</td>");
+                            $("#RegionCode").css("background-color", "#FFE8E8").css("border", "1px solid #FF6666");
+                            return [false, response.responseText];
+                        }
+                        if (($("#DistrictCode").val() == 0) || ($("#DistrictCode").val() == null)) {
+                            error += "DistrictCode:";
+                            $('#FormError').html("<td class='ui-state-error' colspan='10'>" + error + ":Field is required</td>");
+                            $("#DistrictCode").css("background-color", "#FFE8E8").css("border", "1px solid #FF6666");
+                            return [false, response.responseText];
+                        }
+                    }
+                    else if ((TM == "FTM" || TM == "RBM") && ($("#RegionCode").val() == 0) || ($("#RegionCode").val() == null)) {
+
+                        error += "RegionCode";
+                        $('#FormError').html("<td class='ui-state-error' colspan='10'>" + error + ":Field is required</td>");
+                        $("#RegionCode").css("background-color", "#FFE8E8").css("border", "1px solid #FF6666");
+                        return [false, response.responseText];
+
+
+                    }
+                    else if (TM == "PSO" && (($("#RegionCode").val() == 0) || ($("#RegionCode").val() == null) || ($("#DistrictCode").val() == 0) || ($("#DistrictCode").val() == null) || ($("#Territory").val() == 0) || ($("#Territory").val() == null))) {
+                        if (($("#RegionCode").val() == 0) || ($("#RegionCode").val() == null)) {
+                            error += "Region";
+                            $('#FormError').html("<td class='ui-state-error' colspan='10'>" + error + ":Field is required</td>");
+                            $("#RegionCode").css("background-color", "#FFE8E8").css("border", "1px solid #FF6666");
+                            return [false, response.responseText];
+                        }
+
+
+                        if (($("#DistrictCode").val() == 0) || ($("#DistrictCode").val() == null)) {
+                            error += "DistrictCode:";
+                            $('#FormError').html("<td class='ui-state-error' colspan='10'>" + error + ":Field is required</td>");
+                            $("#DistrictCode").css("background-color", "#FFE8E8").css("border", "1px solid #FF6666");
+                            return [false, response.responseText];
+                        }
+                        if (($("#Territory").val() == 0) || ($("#Territory").val() == null)) {
+                            error += "Territory:";
+                            $('#FormError').html("<td class='ui-state-error' colspan='10'>" + error + ":Field is required</td>");
+                            $("#Territory").css("background-color", "#FFE8E8").css("border", "1px solid #FF6666");
+                            return [false, response.responseText];
+                        }
+
+                    }
+                 
+
+                    else {
+                        return [true, response.responseText];
+                    }
+
+                },
+                onclickSubmit: function (params, posdata) {
+
+
+
+                    params.url = '@Url.Action("EditSalesHierarchy")?IsLower=' + $('#IsLower').val() + '&NodeType=' + $('#NodeType').val() + '&Division=' + $('#Division').val() + '&User=' + $('#User').val() + '&reportingTo=' + $('#reportingTo').val()
+                                                                  + '&NodeFunction=' + $('#NodeFunction').val() + '&NodeDescription=' + $('#NodeDescription').val() + '&Location=' + $('#Location').val()
+                                                                    + '&LocationDescription=' + $('#LocationDescription').val() + '&ForumCreator=' + $('#ForumCreator').val() + '&HQ=' + $('#HQ').val() + '&SelTeams=' + $('#SelTeams').val()
+                                                               + '&RegionCode=' + $('#RegionCode').val() + '&DistrictCode=' + $('#DistrictCode').val() + '&Territory=' + $('#Territory').val() + '&IsActive=' + $('#IsActive').val()
+
+                },
+
 
                 afterSubmit: function (response, postdata) {
 
-                    $("#RatingMaster").jqGrid('setGridParam', { datatype: 'json' }).trigger('reloadGrid');
+                    $("#GridSalesHierarchy").jqGrid('setGridParam', { datatype: 'json' }).trigger('reloadGrid');
+                    $('#TblGrid_GridSalesHierarchy td.ui-state-error').removeClass('ui-state-error').addClass('ui-state-highlight');
+                    $("input[type=text]").val('');
+                    $("select").val(0);
+                    $("#IsLower").val(2);
+                    $("#NodeFunction").val(2);
+                    $("#ForumCreator").val(2);
+
+                    $("#IsActive").prop('checked', false);
                     return [false, response.responseText];
                 }
 
             },
             {
-                //Add
+                //Add Portion
                 closeOnEscape: true,
                 closeAfterAdd: true,
+                modal: true,
                 recreateForm: true,
                 width: 700,
-
                 beforeShowForm: function (form) {
 
-
-
-
-
-
+                    $('#tr_Status', form).hide();
                 },
                 afterShowForm: function (form_id) {
                     var thisForm = form_id.selector.replace('FrmGrid_', 'editmod')
@@ -339,18 +739,314 @@
                     $(thisForm).css('top', ((windowHeight - dialogHeight) / 2));
                     $(thisForm).css('left', ((windowWidth - dialogWidth) / 2));
                 },
+               
+                
+                beforeSubmit: function (response, postdata) 
+                 {
+                    var TM = $('#NodeType option:selected').text();
+                   
+                    $('select').css("border", "1px solid #C0C0C0");
+                    $("input[type=text]").css("border", "1px solid #C0C0C0");
+                    var error = "";
+                    
+                  
+                    if ($('#IsLower').val()==2)
+                    {
+                        
+                        error += "IsLower";
+                        $("#FormError").html("<td class='ui-state-error' colspan='10'>" + error + ":Field is required</td>");
+                        
+                        $("#IsLower").css("background-color", "#FFE8E8").css("border", "1px solid #FF6666");
+                       
+                       
+                        return [false, response.responseText];
+                    }
+                    else if (($("#NodeType").val() == 0) || ($("#NodeType").val() == null)) {
+                              error += "NodeType:";
+                                $('#FormError').html("<td class='ui-state-error' colspan='10'>" + error + ":Field is required</td>");
+
+                                $("#NodeType").css("background-color", "#FFE8E8").css("border", "1px solid #FF6666");
+                                return [false, response.responseText];
+                    }
+                    else if (($("#Division").val() == 0) || ($("#Division").val() == null)) {
+                        error += "Division:";
+                                $('#FormError').html("<td class='ui-state-error' colspan='10'>" + error + ":Field is required</td>");
+                                $("#Division").css("background-color", "#FFE8E8").css("border", "1px solid #FF6666");
+                                return [false, response.responseText];
+                    }
+                    else if (($("#User").val() == 0) || ($("#User").val() == null)) {
+                        error += "User:";
+                                $('#FormError').html("<td class='ui-state-error' colspan='10'>" + error + ":Field is required</td>");
+                                $("#User").css("background-color", "#FFE8E8").css("border", "1px solid #FF6666");
+                                return [false, response.responseText];
+                    }
+                    else if (($("#reportingTo").val() == 0) || ($("#reportingTo").val() == null)) {
+                        error += "reportingTo:";
+                                $('#FormError').html("<td class='ui-state-error' colspan='10'>" + error + ":Field is required</td>");
+                                $("#reportingTo").css("background-color", "#FFE8E8").css("border", "1px solid #FF6666");
+                                return [false, response.responseText];
+                    }
+                    else if (($("#NodeFunction").val() == 2) || ($("#NodeFunction").val() == null)) {
+                        error += "NodeFunction:";
+                                $('#FormError').html("<td class='ui-state-error' colspan='10'>" + error + ":Field is required</td>");
+                                $("#NodeFunction").css("background-color", "#FFE8E8").css("border", "1px solid #FF6666");
+                                return [false, response.responseText];
+                    }
+                    else if (($("#Location").val() == 0) || ($("#Location").val() == null)) {
+                                error += "Location:";
+                                $('#FormError').html("<td class='ui-state-error' colspan='10'>" + error + ":Field is required</td>");
+                                $("#Location").css("background-color", "#FFE8E8").css("border", "1px solid #FF6666");
+                                return [false, response.responseText];
+                    }
+                    else if (($("#SelTeams").val() == 0) || ($("#SelTeams").val() == null)) {
+                        error += "SelTeams:";
+                                $('#FormError').html("<td class='ui-state-error' colspan='10'>" + error + ":Field is required</td>");
+                                $("#SelTeams").css("background-color", "#FFE8E8").css("border", "1px solid #FF6666");
+                                return [false, response.responseText];
+                    }
+                    else if (TM == "DM" && (($("#RegionCode").val() == 0) || ($("#RegionCode").val() == null)||($("#DistrictCode").val() == 0) || ($("#DistrictCode").val() == null)))
+                    {
+                        if (($("#RegionCode").val() == 0) || ($("#RegionCode").val() == null)) {
+                            error += "RegionCode";
+                            $('#FormError').html("<td class='ui-state-error' colspan='10'>" + error + ":Field is required</td>");
+                            $("#RegionCode").css("background-color", "#FFE8E8").css("border", "1px solid #FF6666");
+                            return [false, response.responseText];
+                        }
+                        if (($("#DistrictCode").val() == 0) || ($("#DistrictCode").val() == null)) {
+                            error += "DistrictCode:";
+                            $('#FormError').html("<td class='ui-state-error' colspan='10'>" + error + ":Field is required</td>");
+                            $("#DistrictCode").css("background-color", "#FFE8E8").css("border", "1px solid #FF6666");
+                            return [false, response.responseText];
+                        }
+                    }
+                    else if ((TM == "FTM" || TM == "RBM") && ($("#RegionCode").val() == 0) || ($("#RegionCode").val() == null)) 
+                    {
+                        
+                            error += "RegionCode";
+                            $('#FormError').html("<td class='ui-state-error' colspan='10'>" + error + ":Field is required</td>");
+                            $("#RegionCode").css("background-color", "#FFE8E8").css("border", "1px solid #FF6666");
+                            return [false, response.responseText];
+                      
+
+                    }
+                    else if (TM == "PSO" && (($("#RegionCode").val() == 0) || ($("#RegionCode").val() == null) || ($("#DistrictCode").val() == 0) || ($("#DistrictCode").val() == null) || ($("#Territory").val() == 0) || ($("#Territory").val() == null))) {
+                        if (($("#RegionCode").val() == 0) || ($("#RegionCode").val() == null)) {
+                            error += "Region";
+                            $('#FormError').html("<td class='ui-state-error' colspan='10'>" + error + ":Field is required</td>");
+                            $("#RegionCode").css("background-color", "#FFE8E8").css("border", "1px solid #FF6666");
+                            return [false, response.responseText];
+                        }
 
 
+                        if (($("#DistrictCode").val() == 0) || ($("#DistrictCode").val() == null)) {
+                            error += "DistrictCode:";
+                            $('#FormError').html("<td class='ui-state-error' colspan='10'>" + error + ":Field is required</td>");
+                            $("#DistrictCode").css("background-color", "#FFE8E8").css("border", "1px solid #FF6666");
+                            return [false, response.responseText];
+                        }
+                        if (($("#Territory").val() == 0) || ($("#Territory").val() == null)) {
+                            error += "Territory:";
+                            $('#FormError').html("<td class='ui-state-error' colspan='10'>" + error + ":Field is required</td>");
+                            $("#Territory").css("background-color", "#FFE8E8").css("border", "1px solid #FF6666");
+                            return [false, response.responseText];
+                        }
 
+                    }
+                    else {
+                        return [true, response.responseText];
+                    }
+
+                },
+          
+                
                 afterSubmit: function (response, postdata) {
-                    alert('Information Added Successfully');
-                    $("#ajaxGrid").jqGrid('setGridParam', { datatype: 'json' }).trigger('reloadGrid');
-                    return [true, "", ''];
-                }
-            }
+                    
+                    $("#GridSalesHierarchy").jqGrid('setGridParam', { datatype: 'json' }).trigger('reloadGrid');
+                    $('#TblGrid_GridSalesHierarchy td.ui-state-error').removeClass('ui-state-error').addClass('ui-state-highlight');
+                    $("input[type=text]").val('');
+                    $("select").val(0);
+                    $("#IsLower").val(2);
+                    $("#ForumCreator").val(2);
+                    $("#NodeFunction").val(2);
+                   
 
-            );
+                    return [false, response.responseText];
+                },           
+                onclickSubmit: function (params, posdata) {
+                 
+                    
+
+                    params.url = '@Url.Action("AddSalesHierarchy")?IsLower=' + $('#IsLower').val() + '&NodeType=' + $('#NodeType').val() + '&Division=' + $('#Division').val() + '&User=' + $('#User').val() + '&reportingTo=' + $('#reportingTo').val()
+                                                                  + '&NodeFunction=' + $('#NodeFunction').val()+ '&NodeDescription=' + $('#NodeDescription').val()+ '&Location=' + $('#Location').val()
+                                                                    + '&LocationDescription=' + $('#LocationDescription').val() + '&ForumCreator=' + $('#ForumCreator').val() + '&HQ=' + $('#HQ').val() + '&SelTeams=' + $('#SelTeams').val()
+                                                               + '&RegionCode=' + $('#RegionCode').val()+ '&DistrictCode=' + $('#DistrictCode').val()+ '&Territory=' + $('#Territory').val()+ '&IsActive=' + $('#IsActive').val()
+                  
+                    },
+            },
+
+             {
+                 //Delete
+                 closeOnEscape: true,
+                 recreateForm: true,
+                 modal: true,
+                 width: 600,
+
+                 beforeShowForm: function (form) {
+                     $('tr td.delmsg').html('Delete selected record(s)?');
+                     var col1 = $('#GridSalesHierarchy').jqGrid('getGridParam', 'selrow');
+                     var IsActive = $('#GridSalesHierarchy').jqGrid('getCell', col1, 'IsActive');
+                     if (IsActive == "false") {
+                         $('tr td.delmsg').html('Record Already Deleted');
+
+                         $('#dData').hide();
+                     }
+                     else
+                         $('#dData').show();
+                     var thisForm = $("#delmod" + jQuery("#GridSalesHierarchy")[0].id);
+                     var dialogHeight = $(thisForm).height();
+                     var dialogWidth = $(thisForm).width();
+                     var windowHeight = $(window).height();
+                     var windowWidth = $(window).width();
+                     $(thisForm).css('position', 'fixed');
+                     $(thisForm).css('top', ((windowHeight - dialogHeight) / 2));
+                     $(thisForm).css('left', ((windowWidth - dialogWidth) / 2));
+
+                 },
+
+
+
+                 afterSubmit: function (response, postdata) {
+                    
+                     $('tr td.delmsg').html('');
+                     $('#dData').hide();
+                     $("#GridSalesHierarchy").jqGrid('setGridParam', { datatype: 'json' }).trigger('reloadGrid');
+                     $('#DelTbl_GridSalesHierarchy td.ui-state-error').removeClass('ui-state-error').addClass('ui-state-highlight');
+
+                     return [false, response.responseText];
+                 }
+             },
+             {
+                 //Search
+                 closeOnEscape: true,
+                 modal: true,
+                 recreateForm: true,
+                 width: 600,
+                 caption: "Search",
+                 searchOnEnter: true,
+                 beforeShowSearch: function (form) {
+
+                     $('#jqg1').val('');
+                     $('#fbox_GridSalesHierarchy_reset').click();
+
+                     var dialogHeight = $("#searchmodfbox_GridSalesHierarchy").height();
+                     var dialogWidth = $("#searchmodfbox_GridSalesHierarchy").width();
+                     var windowHeight = $(window).height();
+                     var windowWidth = $(window).width();
+                     $("#searchmodfbox_GridSalesHierarchy").css('position', 'fixed');
+                     $("#searchmodfbox_GridSalesHierarchy").css('top', ((windowHeight - dialogHeight) / 2));
+                     $("#searchmodfbox_GridSalesHierarchy").css('left', ((windowWidth - dialogWidth) / 2));
+
+                     return [true, ""];
+                 }
+
+             },
+
+
+              
+               {
+                   //View :
+                   closeOnEscape: true,
+                   recreateForm: true,
+                   modal: true,
+                   width: 600,
+
+                   beforeShowForm: function (form) {
+
+                       var thisForm = $("#viewmod" + jQuery("#GridSalesHierarchy")[0].id);
+                       var dialogHeight = $(thisForm).height();
+                       var dialogWidth = $(thisForm).width();
+                       var windowHeight = $(window).height();
+                       var windowWidth = $(window).width();
+                       $(thisForm).css('position', 'fixed');
+                       $(thisForm).css('top', ((windowHeight - dialogHeight) / 2));
+                       $(thisForm).css('left', ((windowWidth - dialogWidth) / 2));
+                   }
+
+               }
+
+                    );
+        setMethod('GridSalesHierarchy', 'Pager', 'SalesHierarchy');
+    }
+    function setMethod(gid, id, pgTitle) {
+
+        var btnTitle = 'Export to Excel';
+        $('#' + gid).jqGrid('navSeparatorAdd', '#' + id, { sepclass: "ui-separator" });
+        $('#' + gid).jqGrid('navButtonAdd', '#' + id, { caption: '', title: btnTitle, position: 'last', buttonicon: 'ui-icon-calculator', onClickButton: function () { ExcelExport(); } });
+
+        var btnTitle = 'Export to PDF';
+        $('#' + gid).jqGrid('navSeparatorAdd', '#' + id, { sepclass: "ui-separator" });
+        $('#' + gid).jqGrid('navButtonAdd', '#' + id, { caption: '', title: btnTitle, position: 'last', buttonicon: 'ui-icon-bookmark', onClickButton: function () { PDFExport(); } });
+
+        var btnTitle = 'Export to CSV';
+        $('#' + gid).jqGrid('navSeparatorAdd', '#' + id, { sepclass: "ui-separator" });
+        $('#' + gid).jqGrid('navButtonAdd', '#' + id, { caption: '', title: btnTitle, position: 'last', buttonicon: 'ui-icon-note', onClickButton: function () { CSVExport(); } });
+
+
+        var btnTitle = 'Print Grid';
+        $('#' + gid).jqGrid('navSeparatorAdd', '#' + id, { sepclass: "ui-separator" });
+        $('#' + gid).jqGrid('navButtonAdd', '#' + id, { caption: '', title: btnTitle, position: 'last', buttonicon: 'ui-icon-print', onClickButton: function () { PrintGrid(gid); } });
+    }
+    function ExcelExport() {
+        window.location = '@Url.Action("ExportSalesHierarchyMasterToExcel")';
+    }
+    function PDFExport() {
+        window.location = '@Url.Action("ExportSalesHierarchyMasterToPDF")';
+    }
+    function CSVExport() {
+        window.location = '@Url.Action("ExportSalesHierarchyMasterPDFToCsv")';
+    }
+    function PrintGrid(gid) {
+
+        var rows = $('#GridSalesHierarchy').jqGrid('getRowData');
+
+        for (var i = 0; i < rows.length; i++) {
+            var row = rows[i];
+            $('#Table1').append("<tr><td>" + row.userName + "</td><td>" + row.NodeName + "</td><td>" + row.reportingTo + "</td><td>" + row.IsActive + "</td></tr>");
+            
+
         }
-    </script>
 
+        $(function () { printChrome('prt-container') });
+    }
+
+    function printChrome(divContainer) {
+
+        var printContent = document.getElementById(divContainer);
+        window.document.body.innerHTML = printContent.innerHTML;
+        window.print();
+        window.location.reload();
+    }
+
+
+</script>
+    <div id='prt-container' style="display:none">
+        <table id="Table1" border="1" width="100%">
+            <thead>
+                <tr>
+                    
+                    
+                    <td><b>userName</b></td>
+                    <td><b>NodeName</b></td>
+                    <td><b>reportingTo</b></td>
+                    <td><b>IsActive</b></td>
+                                      
+                </tr>
+
+            </thead>
+            <tbody></tbody>
+
+        </table>
+    </div>
+
+    }
 </body>

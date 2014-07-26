@@ -1,0 +1,11 @@
+﻿@model Dictionary<decimal, string>
+    <select id="SpecializationName">
+    <option value='0'>Select</option>
+    @foreach (KeyValuePair<decimal, string> value in Model)
+    {
+        <option value='@value.Key.ToString()'>@value.Value</option>
+    }
+</select>
+
+
+

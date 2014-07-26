@@ -397,6 +397,9 @@
 
                 if (response.responseText == "\"Territory Code already Exists\"") {
                     $('#TblGrid_ajaxGrid td.ui-state-highlight').removeClass('ui-state-highlight').addClass('ui-state-error');
+                    $("input[type=text]").val('');
+                    $('select').val(0);
+                    $("#IsActive").prop('checked', false);
                     return [false, response.responseText];
                 }
                 else {

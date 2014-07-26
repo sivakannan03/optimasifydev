@@ -819,22 +819,6 @@
         </ComplexTypeMapping>
       </ResultMapping>
     </FunctionImportMapping>
-    <FunctionImportMapping FunctionImportName="USP_GET_PRODUCTMASTER" FunctionName="pfizerModel.Store.USP_GET_PRODUCTMASTER">
-      <ResultMapping>
-        <ComplexTypeMapping TypeName="pfizerModel.USP_GET_PRODUCTMASTER_Result">
-          <ScalarProperty Name="PKID" ColumnName="PKID" />
-          <ScalarProperty Name="ProductName" ColumnName="ProductName" />
-          <ScalarProperty Name="IMSCode" ColumnName="IMSCode" />
-          <ScalarProperty Name="IsKDP" ColumnName="IsKDP" />
-          <ScalarProperty Name="ProdGroupFKID" ColumnName="ProdGroupFKID" />
-          <ScalarProperty Name="ProdTypeFKID" ColumnName="ProdTypeFKID" />
-          <ScalarProperty Name="IsActive" ColumnName="IsActive" />
-          <ScalarProperty Name="MetisProductID" ColumnName="MetisProductID" />
-          <ScalarProperty Name="GenName" ColumnName="GenName" />
-          <ScalarProperty Name="METISProductName" ColumnName="METISProductName" />
-        </ComplexTypeMapping>
-      </ResultMapping>
-    </FunctionImportMapping>
     <FunctionImportMapping FunctionImportName="USP_GET_ROLEMASTER" FunctionName="pfizerModel.Store.USP_GET_ROLEMASTER">
       <ResultMapping>
         <ComplexTypeMapping TypeName="pfizerModel.USP_GET_ROLEMASTER_Result">
@@ -1250,17 +1234,6 @@
         </ComplexTypeMapping>
       </ResultMapping>
     </FunctionImportMapping>
-    <FunctionImportMapping FunctionImportName="usp_ReconcileSettings" FunctionName="pfizerModel.Store.usp_ReconcileSettings">
-      <ResultMapping>
-        <ComplexTypeMapping TypeName="pfizerModel.usp_ReconcileSettings_Result">
-          <ScalarProperty Name="PKID" ColumnName="PKID" />
-          <ScalarProperty Name="DateofBegining" ColumnName="DateofBegining" />
-          <ScalarProperty Name="TeamFKID" ColumnName="TeamFKID" />
-          <ScalarProperty Name="IsActive" ColumnName="IsActive" />
-          <ScalarProperty Name="TeamName" ColumnName="TeamName" />
-        </ComplexTypeMapping>
-      </ResultMapping>
-    </FunctionImportMapping>
     <FunctionImportMapping FunctionImportName="GetTeamNameForReconcileByPKID" FunctionName="pfizerModel.Store.GetTeamNameForReconcileByPKID">
       <ResultMapping>
         <ComplexTypeMapping TypeName="pfizerModel.GetTeamNameForReconcileByPKID_Result1">
@@ -1281,7 +1254,6 @@
     </FunctionImportMapping>
     <FunctionImportMapping FunctionImportName="AddSampleInputReconcileSettings" FunctionName="pfizerModel.Store.AddSampleInputReconcileSettings" />
     <FunctionImportMapping FunctionImportName="DeleteSampleInputReconcileSettings" FunctionName="pfizerModel.Store.DeleteSampleInputReconcileSettings" />
-    <FunctionImportMapping FunctionImportName="Usp_GetPSOsForCyclePlanUnlock" FunctionName="pfizerModel.Store.Usp_GetPSOsForCyclePlanUnlock" />
     <FunctionImportMapping FunctionImportName="AddTeamRegionLinkMaster" FunctionName="pfizerModel.Store.AddTeamRegionLinkMaster" />
     <FunctionImportMapping FunctionImportName="AddTerritoryHQLinkMaster" FunctionName="pfizerModel.Store.AddTerritoryHQLinkMaster" />
     <FunctionImportMapping FunctionImportName="DeleteTeamRegionLinkMaster" FunctionName="pfizerModel.Store.DeleteTeamRegionLinkMaster" />
@@ -1765,20 +1737,6 @@
         </ComplexTypeMapping>
       </ResultMapping>
     </FunctionImportMapping>
-    <FunctionImportMapping FunctionImportName="AllPendingCustomer" FunctionName="pfizerModel.Store.AllPendingCustomer">
-      <ResultMapping>
-        <ComplexTypeMapping TypeName="pfizerModel.AllPendingCustomer_Result">
-          <ScalarProperty Name="Element" ColumnName="Element" />
-          <ScalarProperty Name="Type" ColumnName="Type" />
-          <ScalarProperty Name="MASPKID" ColumnName="MASPKID" />
-          <ScalarProperty Name="CustomerName" ColumnName="CustomerName" />
-          <ScalarProperty Name="Specialization" ColumnName="Specialization" />
-          <ScalarProperty Name="AreaName" ColumnName="AreaName" />
-          <ScalarProperty Name="CreatedDate" ColumnName="CreatedDate" />
-          <ScalarProperty Name="ReasonForRequest" ColumnName="ReasonForRequest" />
-        </ComplexTypeMapping>
-      </ResultMapping>
-    </FunctionImportMapping>
     <FunctionImportMapping FunctionImportName="GetReportingByXml" FunctionName="pfizerModel.Store.GetReportingByXml">
       <ResultMapping>
         <ComplexTypeMapping TypeName="pfizerModel.GetReportingByXml_Result">
@@ -1819,15 +1777,6 @@
           <ScalarProperty Name="TerritoryID" ColumnName="TerritoryID" />
           <ScalarProperty Name="TerritoryName" ColumnName="TerritoryName" />
           <ScalarProperty Name="TerritoryCode" ColumnName="TerritoryCode" />
-        </ComplexTypeMapping>
-      </ResultMapping>
-    </FunctionImportMapping>
-    <FunctionImportMapping FunctionImportName="getDistrictNameWSNew1" FunctionName="pfizerModel.Store.getDistrictNameWSNew">
-      <ResultMapping>
-        <ComplexTypeMapping TypeName="pfizerModel.getDistrictNameWSNew1_Result">
-          <ScalarProperty Name="PKID" ColumnName="PKID" />
-          <ScalarProperty Name="DistrictName" ColumnName="DistrictName" />
-          <ScalarProperty Name="DistrictCode" ColumnName="DistrictCode" />
         </ComplexTypeMapping>
       </ResultMapping>
     </FunctionImportMapping>
@@ -2292,6 +2241,1177 @@
           <ScalarProperty Name="Element" ColumnName="Element" />
           <ScalarProperty Name="UserFKID" ColumnName="UserFKID" />
           <ScalarProperty Name="EmpName" ColumnName="EmpName" />
+        </ComplexTypeMapping>
+      </ResultMapping>
+    </FunctionImportMapping>
+    <FunctionImportMapping FunctionImportName="GetPSONameforDrRepByXml" FunctionName="pfizerModel.Store.GetPSONameforDrRepByXml">
+      <ResultMapping>
+        <ComplexTypeMapping TypeName="pfizerModel.GetPSONameforDrRepByXml_Result">
+          <ScalarProperty Name="UserFKID" ColumnName="UserFKID" />
+          <ScalarProperty Name="PSOName" ColumnName="PSOName" />
+        </ComplexTypeMapping>
+      </ResultMapping>
+    </FunctionImportMapping>
+    <FunctionImportMapping FunctionImportName="usp_SELECT_CustList_COUNT_ForDashboard" FunctionName="pfizerModel.Store.usp_SELECT_CustList_COUNT_ForDashboard">
+      <ResultMapping>
+        <ComplexTypeMapping TypeName="pfizerModel.usp_SELECT_CustList_COUNT_ForDashboard_Result">
+          <ScalarProperty Name="Custtype" ColumnName="Custtype" />
+          <ScalarProperty Name="MCL" ColumnName="MCL" />
+          <ScalarProperty Name="PCL" ColumnName="PCL" />
+        </ComplexTypeMapping>
+      </ResultMapping>
+    </FunctionImportMapping>
+    <FunctionImportMapping FunctionImportName="usp_GetChemistRpt" FunctionName="pfizerModel.Store.usp_GetChemistRpt">
+      <ResultMapping>
+        <ComplexTypeMapping TypeName="pfizerModel.usp_GetChemistRpt_Result">
+          <ScalarProperty Name="ChemistName" ColumnName="ChemistName" />
+          <ScalarProperty Name="AreaName" ColumnName="AreaName" />
+          <ScalarProperty Name="isMCL" ColumnName="isMCL" />
+          <ScalarProperty Name="TerCode" ColumnName="TerCode" />
+          <ScalarProperty Name="email" ColumnName="email" />
+        </ComplexTypeMapping>
+      </ResultMapping>
+    </FunctionImportMapping>
+    <FunctionImportMapping FunctionImportName="usp_GetCustTerritory" FunctionName="pfizerModel.Store.usp_GetCustTerritory">
+      <ResultMapping>
+        <ComplexTypeMapping TypeName="pfizerModel.usp_GetCustTerritory_Result">
+          <ScalarProperty Name="TerCode" ColumnName="TerCode" />
+          <ScalarProperty Name="TerName" ColumnName="TerName" />
+          <ScalarProperty Name="flag" ColumnName="flag" />
+          <ScalarProperty Name="Input" ColumnName="Input" />
+        </ComplexTypeMapping>
+      </ResultMapping>
+    </FunctionImportMapping>
+    <FunctionImportMapping FunctionImportName="usp_GetDoctorRpt" FunctionName="pfizerModel.Store.usp_GetDoctorRpt">
+      <ResultMapping>
+        <ComplexTypeMapping TypeName="pfizerModel.usp_GetDoctorRpt_Result">
+          <ScalarProperty Name="DoctorName" ColumnName="DoctorName" />
+          <ScalarProperty Name="Specialization" ColumnName="Specialization" />
+          <ScalarProperty Name="DoctorCode" ColumnName="DoctorCode" />
+          <ScalarProperty Name="RegistrationNo" ColumnName="RegistrationNo" />
+          <ScalarProperty Name="MCLFlag" ColumnName="MCLFlag" />
+          <ScalarProperty Name="KOLFlag" ColumnName="KOLFlag" />
+          <ScalarProperty Name="AreaName" ColumnName="AreaName" />
+          <ScalarProperty Name="TerCode" ColumnName="TerCode" />
+          <ScalarProperty Name="email" ColumnName="email" />
+        </ComplexTypeMapping>
+      </ResultMapping>
+    </FunctionImportMapping>
+    <FunctionImportMapping FunctionImportName="usp_GetHospitalRpt" FunctionName="pfizerModel.Store.usp_GetHospitalRpt">
+      <ResultMapping>
+        <ComplexTypeMapping TypeName="pfizerModel.usp_GetHospitalRpt_Result">
+          <ScalarProperty Name="NameofHospital" ColumnName="NameofHospital" />
+          <ScalarProperty Name="CityName" ColumnName="CityName" />
+          <ScalarProperty Name="AreaName" ColumnName="AreaName" />
+          <ScalarProperty Name="TerCode" ColumnName="TerCode" />
+          <ScalarProperty Name="MCLflag" ColumnName="MCLflag" />
+          <ScalarProperty Name="email" ColumnName="email" />
+        </ComplexTypeMapping>
+      </ResultMapping>
+    </FunctionImportMapping>
+    <FunctionImportMapping FunctionImportName="usp_GetPSOName" FunctionName="pfizerModel.Store.usp_GetPSOName">
+      <ResultMapping>
+        <ComplexTypeMapping TypeName="pfizerModel.usp_GetPSOName_Result">
+          <ScalarProperty Name="Element" ColumnName="Element" />
+          <ScalarProperty Name="PSOName" ColumnName="PSOName" />
+        </ComplexTypeMapping>
+      </ResultMapping>
+    </FunctionImportMapping>
+    <FunctionImportMapping FunctionImportName="usp_GetStockistRpt" FunctionName="pfizerModel.Store.usp_GetStockistRpt">
+      <ResultMapping>
+        <ComplexTypeMapping TypeName="pfizerModel.usp_GetStockistRpt_Result">
+          <ScalarProperty Name="NameofStockist" ColumnName="NameofStockist" />
+          <ScalarProperty Name="CityName" ColumnName="CityName" />
+          <ScalarProperty Name="AreaName" ColumnName="AreaName" />
+          <ScalarProperty Name="TerCode" ColumnName="TerCode" />
+          <ScalarProperty Name="MCLflag" ColumnName="MCLflag" />
+          <ScalarProperty Name="email" ColumnName="email" />
+        </ComplexTypeMapping>
+      </ResultMapping>
+    </FunctionImportMapping>
+    <FunctionImportMapping FunctionImportName="GetNodeByPSOFKID" FunctionName="pfizerModel.Store.GetNodeByPSOFKID">
+      <ResultMapping>
+        <ComplexTypeMapping TypeName="pfizerModel.GetNodeByPSOFKID_Result">
+          <ScalarProperty Name="NodeFKID" ColumnName="NodeFKID" />
+          <ScalarProperty Name="NodeName" ColumnName="NodeName" />
+        </ComplexTypeMapping>
+      </ResultMapping>
+    </FunctionImportMapping>
+    <FunctionImportMapping FunctionImportName="GetPSONamebyRepID" FunctionName="pfizerModel.Store.GetPSONamebyRepID">
+      <ResultMapping>
+        <ComplexTypeMapping TypeName="pfizerModel.GetPSONamebyRepID_Result">
+          <ScalarProperty Name="UserFKID" ColumnName="UserFKID" />
+          <ScalarProperty Name="EmpName" ColumnName="EmpName" />
+        </ComplexTypeMapping>
+      </ResultMapping>
+    </FunctionImportMapping>
+    <FunctionImportMapping FunctionImportName="GetTerritoryName" FunctionName="pfizerModel.Store.GetTerritoryName">
+      <ResultMapping>
+        <ComplexTypeMapping TypeName="pfizerModel.GetTerritoryName_Result">
+          <ScalarProperty Name="TerPKID" ColumnName="TerPKID" />
+          <ScalarProperty Name="DivFKID" ColumnName="DivFKID" />
+          <ScalarProperty Name="TerCode" ColumnName="TerCode" />
+        </ComplexTypeMapping>
+      </ResultMapping>
+    </FunctionImportMapping>
+    <FunctionImportMapping FunctionImportName="GetDrAreaDetails" FunctionName="pfizerModel.Store.GetDrAreaDetails">
+      <ResultMapping>
+        <ComplexTypeMapping TypeName="pfizerModel.GetDrAreaDetails_Result">
+          <ScalarProperty Name="PKID" ColumnName="PKID" />
+          <ScalarProperty Name="AreaName" ColumnName="AreaName" />
+        </ComplexTypeMapping>
+      </ResultMapping>
+    </FunctionImportMapping>
+    <FunctionImportMapping FunctionImportName="GetDoctorNameBYPSO" FunctionName="pfizerModel.Store.GetDoctorNameBYPSO">
+      <ResultMapping>
+        <ComplexTypeMapping TypeName="pfizerModel.GetDoctorNameBYPSO_Result">
+          <ScalarProperty Name="UserName" ColumnName="UserName" />
+          <ScalarProperty Name="DMPKID" ColumnName="DMPKID" />
+        </ComplexTypeMapping>
+      </ResultMapping>
+    </FunctionImportMapping>
+    <FunctionImportMapping FunctionImportName="GetTerritoryByDest" FunctionName="pfizerModel.Store.GetTerritoryByDest">
+      <ResultMapping>
+        <ComplexTypeMapping TypeName="pfizerModel.GetTerritoryByDest_Result">
+          <ScalarProperty Name="TerPKID" ColumnName="TerPKID" />
+          <ScalarProperty Name="DivFKID" ColumnName="DivFKID" />
+          <ScalarProperty Name="TerCode" ColumnName="TerCode" />
+        </ComplexTypeMapping>
+      </ResultMapping>
+    </FunctionImportMapping>
+    <FunctionImportMapping FunctionImportName="addDoctorCopy" FunctionName="pfizerModel.Store.addDoctorCopy" />
+    <FunctionImportMapping FunctionImportName="addDoctorTranster" FunctionName="pfizerModel.Store.addDoctorTranster" />
+    <FunctionImportMapping FunctionImportName="GetSplDoctorName" FunctionName="pfizerModel.Store.GetSplDoctorName" />
+    <FunctionImportMapping FunctionImportName="GetSplDoctorName1" FunctionName="pfizerModel.Store.GetSplDoctorName">
+      <ResultMapping>
+        <ComplexTypeMapping TypeName="pfizerModel.GetSplDoctorName1_Result">
+          <ScalarProperty Name="DoctorName" ColumnName="DoctorName" />
+        </ComplexTypeMapping>
+      </ResultMapping>
+    </FunctionImportMapping>
+    <FunctionImportMapping FunctionImportName="GetChemistNameByTerritory" FunctionName="pfizerModel.Store.GetChemistNameByTerritory">
+      <ResultMapping>
+        <ComplexTypeMapping TypeName="pfizerModel.GetChemistNameByTerritory_Result">
+          <ScalarProperty Name="UserName" ColumnName="UserName" />
+          <ScalarProperty Name="DMPKID" ColumnName="DMPKID" />
+        </ComplexTypeMapping>
+      </ResultMapping>
+    </FunctionImportMapping>
+    <FunctionImportMapping FunctionImportName="AddChemistCopy" FunctionName="pfizerModel.Store.AddChemistCopy" />
+    <FunctionImportMapping FunctionImportName="AddChemistTransfer" FunctionName="pfizerModel.Store.AddChemistTransfer" />
+    <FunctionImportMapping FunctionImportName="GetDailyReportatGlanceAllNew" FunctionName="pfizerModel.Store.GetDailyReportatGlanceAllNew">
+      <ResultMapping>
+        <ComplexTypeMapping TypeName="pfizerModel.GetDailyReportatGlanceAllNew_Result">
+          <ScalarProperty Name="Element" ColumnName="Element" />
+          <ScalarProperty Name="PKID" ColumnName="PKID" />
+          <ScalarProperty Name="ActivityDate" ColumnName="ActivityDate" />
+          <ScalarProperty Name="ActivityName" ColumnName="ActivityName" />
+          <ScalarProperty Name="DayName" ColumnName="DayName" />
+          <ScalarProperty Name="CallDr" ColumnName="CallDr" />
+          <ScalarProperty Name="NonCallDr" ColumnName="NonCallDr" />
+          <ScalarProperty Name="TotalDr" ColumnName="TotalDr" />
+          <ScalarProperty Name="CallCh" ColumnName="CallCh" />
+          <ScalarProperty Name="NonCallCh" ColumnName="NonCallCh" />
+          <ScalarProperty Name="TotalCh" ColumnName="TotalCh" />
+          <ScalarProperty Name="V2Calls" ColumnName="V2Calls" />
+          <ScalarProperty Name="V3Calls" ColumnName="V3Calls" />
+        </ComplexTypeMapping>
+      </ResultMapping>
+    </FunctionImportMapping>
+    <FunctionImportMapping FunctionImportName="SubmitDoctor" FunctionName="pfizerModel.Store.SubmitDoctor" />
+    <FunctionImportMapping FunctionImportName="submitOtherCustomer" FunctionName="pfizerModel.Store.submitOtherCustomer" />
+    <FunctionImportMapping FunctionImportName="GetNodeByPSOFKIDForRegularVisit" FunctionName="pfizerModel.Store.GetNodeByPSOFKIDForRegularVisit">
+      <ResultMapping>
+        <ComplexTypeMapping TypeName="pfizerModel.GetNodeByPSOFKIDForRegularVisit_Result">
+          <ScalarProperty Name="NodeFKID" ColumnName="NodeFKID" />
+          <ScalarProperty Name="NodeName" ColumnName="NodeName" />
+        </ComplexTypeMapping>
+      </ResultMapping>
+    </FunctionImportMapping>
+    <FunctionImportMapping FunctionImportName="GetPSONameDRAtGforRG" FunctionName="pfizerModel.Store.GetPSONameDRAtGforRG">
+      <ResultMapping>
+        <ComplexTypeMapping TypeName="pfizerModel.GetPSONameDRAtGforRG_Result">
+          <ScalarProperty Name="PKID" ColumnName="PKID" />
+          <ScalarProperty Name="UserFKID" ColumnName="UserFKID" />
+          <ScalarProperty Name="EmpName" ColumnName="EmpName" />
+        </ComplexTypeMapping>
+      </ResultMapping>
+    </FunctionImportMapping>
+    <FunctionImportMapping FunctionImportName="TeamsForCallVolumeReport" FunctionName="pfizerModel.Store.TeamsForCallVolumeReport">
+      <ResultMapping>
+        <ComplexTypeMapping TypeName="pfizerModel.TeamsForCallVolumeReport_Result">
+          <ScalarProperty Name="PKID" ColumnName="PKID" />
+          <ScalarProperty Name="TeamName" ColumnName="TeamName" />
+        </ComplexTypeMapping>
+      </ResultMapping>
+    </FunctionImportMapping>
+    <FunctionImportMapping FunctionImportName="TeamPSOList" FunctionName="pfizerModel.Store.TeamPSOList">
+      <ResultMapping>
+        <ComplexTypeMapping TypeName="pfizerModel.TeamPSOList_Result">
+          <ScalarProperty Name="Name" ColumnName="Name" />
+          <ScalarProperty Name="PKID" ColumnName="PKID" />
+        </ComplexTypeMapping>
+      </ResultMapping>
+    </FunctionImportMapping>
+    <FunctionImportMapping FunctionImportName="GetInputNameforReport" FunctionName="pfizerModel.Store.GetInputNameforReport">
+      <ResultMapping>
+        <ComplexTypeMapping TypeName="pfizerModel.GetInputNameforReport_Result">
+          <ScalarProperty Name="PKID" ColumnName="PKID" />
+          <ScalarProperty Name="InputName" ColumnName="InputName" />
+        </ComplexTypeMapping>
+      </ResultMapping>
+    </FunctionImportMapping>
+    <FunctionImportMapping FunctionImportName="GetPsoNameBySampleReport" FunctionName="pfizerModel.Store.GetPsoNameBySampleReport">
+      <ResultMapping>
+        <ComplexTypeMapping TypeName="pfizerModel.GetPsoNameBySampleReport_Result">
+          <ScalarProperty Name="PKID" ColumnName="PKID" />
+          <ScalarProperty Name="EmpName" ColumnName="EmpName" />
+        </ComplexTypeMapping>
+      </ResultMapping>
+    </FunctionImportMapping>
+    <FunctionImportMapping FunctionImportName="GetInputNameforDMReport" FunctionName="pfizerModel.Store.GetInputNameforDMReport">
+      <ResultMapping>
+        <ComplexTypeMapping TypeName="pfizerModel.GetInputNameforDMReport_Result">
+          <ScalarProperty Name="PKID" ColumnName="PKID" />
+          <ScalarProperty Name="InputName" ColumnName="InputName" />
+        </ComplexTypeMapping>
+      </ResultMapping>
+    </FunctionImportMapping>
+    <FunctionImportMapping FunctionImportName="GetUsageRepbyXML" FunctionName="pfizerModel.Store.GetUsageRepbyXML">
+      <ResultMapping>
+        <ComplexTypeMapping TypeName="pfizerModel.GetUsageRepbyXML_Result">
+          <ScalarProperty Name="PKID" ColumnName="PKID" />
+          <ScalarProperty Name="UserName" ColumnName="UserName" />
+          <ScalarProperty Name="DesignationName" ColumnName="DesignationName" />
+          <ScalarProperty Name="LoginDate" ColumnName="LoginDate" />
+          <ScalarProperty Name="LogOutDate" ColumnName="LogOutDate" />
+        </ComplexTypeMapping>
+      </ResultMapping>
+    </FunctionImportMapping>
+    <FunctionImportMapping FunctionImportName="Searchaudittrial" FunctionName="pfizerModel.Store.Searchaudittrial">
+      <ResultMapping>
+        <ComplexTypeMapping TypeName="pfizerModel.Searchaudittrial_Result">
+          <ScalarProperty Name="USERName" ColumnName="USERName" />
+          <ScalarProperty Name="DateIn" ColumnName="DateIn" />
+          <ScalarProperty Name="TimeIn" ColumnName="TimeIn" />
+          <ScalarProperty Name="DateOut" ColumnName="DateOut" />
+          <ScalarProperty Name="TimeOut" ColumnName="TimeOut" />
+          <ScalarProperty Name="PageName" ColumnName="PageName" />
+          <ScalarProperty Name="IpAddress" ColumnName="IpAddress" />
+          <ScalarProperty Name="DateInOrg" ColumnName="DateInOrg" />
+        </ComplexTypeMapping>
+      </ResultMapping>
+    </FunctionImportMapping>
+    <FunctionImportMapping FunctionImportName="GetPsoNameByCFSAReport" FunctionName="pfizerModel.Store.GetPsoNameByCFSAReport">
+      <ResultMapping>
+        <ComplexTypeMapping TypeName="pfizerModel.GetPsoNameByCFSAReport_Result">
+          <ScalarProperty Name="PKID" ColumnName="PKID" />
+          <ScalarProperty Name="EmpName" ColumnName="EmpName" />
+        </ComplexTypeMapping>
+      </ResultMapping>
+    </FunctionImportMapping>
+    <FunctionImportMapping FunctionImportName="USP_sp_CFSAReportforPSO" FunctionName="pfizerModel.Store.USP_sp_CFSAReportforPSO">
+      <ResultMapping>
+        <ComplexTypeMapping TypeName="pfizerModel.USP_sp_CFSAReportforPSO_Result">
+          <ScalarProperty Name="PSOName" ColumnName="PSOName" />
+          <ScalarProperty Name="Date" ColumnName="Date" />
+          <ScalarProperty Name="DoctorName" ColumnName="DoctorName" />
+          <ScalarProperty Name="DrResponse" ColumnName="DrResponse" />
+          <ScalarProperty Name="PSOResponse" ColumnName="PSOResponse" />
+          <ScalarProperty Name="Strategic" ColumnName="Strategic" />
+          <ScalarProperty Name="Tailored" ColumnName="Tailored" />
+          <ScalarProperty Name="Evaluation" ColumnName="Evaluation" />
+        </ComplexTypeMapping>
+      </ResultMapping>
+    </FunctionImportMapping>
+    <EntitySetMapping Name="ChemistMasters">
+      <EntityTypeMapping TypeName="pfizerModel.ChemistMaster">
+        <MappingFragment StoreEntitySet="ChemistMaster">
+          <ScalarProperty Name="OTCSales" ColumnName="OTCSales" />
+          <ScalarProperty Name="NoCustomersMed" ColumnName="NoCustomersMed" />
+          <ScalarProperty Name="AvgCustomers" ColumnName="AvgCustomers" />
+          <ScalarProperty Name="PhoneNoSTDCode" ColumnName="PhoneNoSTDCode" />
+          <ScalarProperty Name="PhoneNoISDCode" ColumnName="PhoneNoISDCode" />
+          <ScalarProperty Name="IsDeletion" ColumnName="IsDeletion" />
+          <ScalarProperty Name="ReasonForPSODeletion" ColumnName="ReasonForPSODeletion" />
+          <ScalarProperty Name="ChemistCode" ColumnName="ChemistCode" />
+          <ScalarProperty Name="ModifiedBy" ColumnName="ModifiedBy" />
+          <ScalarProperty Name="ModifiedDate" ColumnName="ModifiedDate" />
+          <ScalarProperty Name="CreatedBy" ColumnName="CreatedBy" />
+          <ScalarProperty Name="CreatedDate" ColumnName="CreatedDate" />
+          <ScalarProperty Name="IsActive" ColumnName="IsActive" />
+          <ScalarProperty Name="PrescriptionPerMonth" ColumnName="PrescriptionPerMonth" />
+          <ScalarProperty Name="Email" ColumnName="Email" />
+          <ScalarProperty Name="Fax" ColumnName="Fax" />
+          <ScalarProperty Name="Mobile" ColumnName="Mobile" />
+          <ScalarProperty Name="PhoneNo" ColumnName="PhoneNo" />
+          <ScalarProperty Name="Zip" ColumnName="Zip" />
+          <ScalarProperty Name="AreaFKID" ColumnName="AreaFKID" />
+          <ScalarProperty Name="Street" ColumnName="Street" />
+          <ScalarProperty Name="Address" ColumnName="Address" />
+          <ScalarProperty Name="LastName" ColumnName="LastName" />
+          <ScalarProperty Name="MiddleName" ColumnName="MiddleName" />
+          <ScalarProperty Name="FirstName" ColumnName="FirstName" />
+          <ScalarProperty Name="ChemistName" ColumnName="ChemistName" />
+          <ScalarProperty Name="PKID" ColumnName="PKID" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <FunctionImportMapping FunctionImportName="AddChemistMaster" FunctionName="pfizerModel.Store.AddChemistMaster" />
+    <FunctionImportMapping FunctionImportName="DeleteChemistMaster" FunctionName="pfizerModel.Store.DeleteChemistMaster" />
+    <FunctionImportMapping FunctionImportName="EditChemistMaster" FunctionName="pfizerModel.Store.EditChemistMaster" />
+    <FunctionImportMapping FunctionImportName="Get_District_BasedOn_Region_ByXML" FunctionName="pfizerModel.Store.Get_District_BasedOn_Region_ByXML" />
+    <FunctionImportMapping FunctionImportName="Get_Region_BasedOn_Team_ByXML" FunctionName="pfizerModel.Store.Get_Region_BasedOn_Team_ByXML" />
+    <FunctionImportMapping FunctionImportName="Get_Region_ByXML" FunctionName="pfizerModel.Store.Get_Region_ByXML">
+      <ResultMapping>
+        <ComplexTypeMapping TypeName="pfizerModel.Get_Region_ByXML_Result">
+          <ScalarProperty Name="RID" ColumnName="RID" />
+          <ScalarProperty Name="RN" ColumnName="RN" />
+        </ComplexTypeMapping>
+      </ResultMapping>
+    </FunctionImportMapping>
+    <FunctionImportMapping FunctionImportName="Get_Team_ByXML" FunctionName="pfizerModel.Store.Get_Team_ByXML">
+      <ResultMapping>
+        <ComplexTypeMapping TypeName="pfizerModel.Get_Team_ByXML_Result">
+          <ScalarProperty Name="TID" ColumnName="TID" />
+          <ScalarProperty Name="TN" ColumnName="TN" />
+        </ComplexTypeMapping>
+      </ResultMapping>
+    </FunctionImportMapping>
+    <FunctionImportMapping FunctionImportName="Get_Territory_BasedOn_District_ByXML" FunctionName="pfizerModel.Store.Get_Territory_BasedOn_District_ByXML" />
+    <FunctionImportMapping FunctionImportName="Get_Territory_ByXML" FunctionName="pfizerModel.Store.Get_Territory_ByXML">
+      <ResultMapping>
+        <ComplexTypeMapping TypeName="pfizerModel.Get_Territory_ByXML_Result">
+          <ScalarProperty Name="TerID" ColumnName="TerID" />
+          <ScalarProperty Name="TerName" ColumnName="TerName" />
+        </ComplexTypeMapping>
+      </ResultMapping>
+    </FunctionImportMapping>
+    <FunctionImportMapping FunctionImportName="GetAreaByCityFKIDXML" FunctionName="pfizerModel.Store.GetAreaByCityFKIDXML">
+      <ResultMapping>
+        <ComplexTypeMapping TypeName="pfizerModel.GetAreaByCityFKIDXML_Result">
+          <ScalarProperty Name="AreaFKID" ColumnName="AreaFKID" />
+          <ScalarProperty Name="AreaName" ColumnName="AreaName" />
+        </ComplexTypeMapping>
+      </ResultMapping>
+    </FunctionImportMapping>
+    <FunctionImportMapping FunctionImportName="USP_GetAllDetailsFromDoctorMaster" FunctionName="pfizerModel.Store.USP_GetAllDetailsFromDoctorMaster">
+      <ResultMapping>
+        <ComplexTypeMapping TypeName="pfizerModel.USP_GetAllDetailsFromDoctorMaster_Result">
+          <ScalarProperty Name="PKID" ColumnName="PKID" />
+          <ScalarProperty Name="DoctorCode" ColumnName="DoctorCode" />
+          <ScalarProperty Name="DoctorName" ColumnName="DoctorName" />
+          <ScalarProperty Name="Brick" ColumnName="Brick" />
+          <ScalarProperty Name="Speciality" ColumnName="Speciality" />
+          <ScalarProperty Name="Status" ColumnName="Status" />
+          <ScalarProperty Name="TerriToryLinkStatus" ColumnName="TerriToryLinkStatus" />
+        </ComplexTypeMapping>
+      </ResultMapping>
+    </FunctionImportMapping>
+    <FunctionImportMapping FunctionImportName="CFSAActivateORInActivateByXML" FunctionName="pfizerModel.Store.CFSAActivateORInActivateByXML" />
+    <FunctionImportMapping FunctionImportName="DeleteChemistMaster1" FunctionName="pfizerModel.Store.DeleteChemistMaster1" />
+    <FunctionImportMapping FunctionImportName="Get_District_ByXML" FunctionName="pfizerModel.Store.Get_District_ByXML">
+      <ResultMapping>
+        <ComplexTypeMapping TypeName="pfizerModel.Get_District_ByXML_Result">
+          <ScalarProperty Name="DID" ColumnName="DID" />
+          <ScalarProperty Name="DN" ColumnName="DN" />
+        </ComplexTypeMapping>
+      </ResultMapping>
+    </FunctionImportMapping>
+    <FunctionImportMapping FunctionImportName="GetAllTerritoryCodeByXml" FunctionName="pfizerModel.Store.GetAllTerritoryCodeByXml">
+      <ResultMapping>
+        <ComplexTypeMapping TypeName="pfizerModel.GetAllTerritoryCodeByXml_Result">
+          <ScalarProperty Name="TerID" ColumnName="TerID" />
+          <ScalarProperty Name="TerName" ColumnName="TerName" />
+        </ComplexTypeMapping>
+      </ResultMapping>
+    </FunctionImportMapping>
+    <FunctionImportMapping FunctionImportName="GetUserNameByXML" FunctionName="pfizerModel.Store.GetUserNameByXML">
+      <ResultMapping>
+        <ComplexTypeMapping TypeName="pfizerModel.GetUserNameByXML_Result">
+          <ScalarProperty Name="PKID" ColumnName="PKID" />
+          <ScalarProperty Name="UserName" ColumnName="UserName" />
+        </ComplexTypeMapping>
+      </ResultMapping>
+    </FunctionImportMapping>
+    <FunctionImportMapping FunctionImportName="GetUserNameforUsageRepByXml" FunctionName="pfizerModel.Store.GetUserNameforUsageRepByXml">
+      <ResultMapping>
+        <ComplexTypeMapping TypeName="pfizerModel.GetUserNameforUsageRepByXml_Result">
+          <ScalarProperty Name="UserFKID" ColumnName="UserFKID" />
+          <ScalarProperty Name="PSOName" ColumnName="PSOName" />
+        </ComplexTypeMapping>
+      </ResultMapping>
+    </FunctionImportMapping>
+    <FunctionImportMapping FunctionImportName="USP_GetPSONameForCustomer" FunctionName="pfizerModel.Store.USP_GetPSONameForCustomer">
+      <ResultMapping>
+        <ComplexTypeMapping TypeName="pfizerModel.USP_GetPSONameForCustomer_Result">
+          <ScalarProperty Name="pkid" ColumnName="pkid" />
+          <ScalarProperty Name="PSOName" ColumnName="PSOName" />
+        </ComplexTypeMapping>
+      </ResultMapping>
+    </FunctionImportMapping>
+    <FunctionImportMapping FunctionImportName="GetNameBySelectedNodeType" FunctionName="pfizerModel.Store.GetNameBySelectedNodeType">
+      <ResultMapping>
+        <ComplexTypeMapping TypeName="pfizerModel.GetNameBySelectedNodeType_Result">
+          <ScalarProperty Name="PKID" ColumnName="PKID" />
+          <ScalarProperty Name="EmployeeName" ColumnName="EmployeeName" />
+        </ComplexTypeMapping>
+      </ResultMapping>
+    </FunctionImportMapping>
+    <FunctionImportMapping FunctionImportName="SummeryReportPSO" FunctionName="pfizerModel.Store.SummeryReportPSO" />
+    <FunctionImportMapping FunctionImportName="GetLeaveTypeByLeaveReport" FunctionName="pfizerModel.Store.GetLeaveTypeByLeaveReport">
+      <ResultMapping>
+        <ComplexTypeMapping TypeName="pfizerModel.GetLeaveTypeByLeaveReport_Result">
+          <ScalarProperty Name="PKID" ColumnName="PKID" />
+          <ScalarProperty Name="GenName" ColumnName="GenName" />
+        </ComplexTypeMapping>
+      </ResultMapping>
+    </FunctionImportMapping>
+    <FunctionImportMapping FunctionImportName="GetNodeTypeByLeaveReport" FunctionName="pfizerModel.Store.GetNodeTypeByLeaveReport">
+      <ResultMapping>
+        <ComplexTypeMapping TypeName="pfizerModel.GetNodeTypeByLeaveReport_Result1">
+          <ScalarProperty Name="PKID" ColumnName="PKID" />
+          <ScalarProperty Name="NodeCode" ColumnName="NodeCode" />
+          <ScalarProperty Name="NodeName" ColumnName="NodeName" />
+        </ComplexTypeMapping>
+      </ResultMapping>
+    </FunctionImportMapping>
+    <FunctionImportMapping FunctionImportName="SearchCycleByYear" FunctionName="pfizerModel.Store.SearchCycleByYear">
+      <ResultMapping>
+        <ComplexTypeMapping TypeName="pfizerModel.SearchCycleByYear_Result">
+          <ScalarProperty Name="PKID" ColumnName="PKID" />
+          <ScalarProperty Name="CycleName" ColumnName="CycleName" />
+        </ComplexTypeMapping>
+      </ResultMapping>
+    </FunctionImportMapping>
+    <FunctionImportMapping FunctionImportName="SampleAckRpt_Admin" FunctionName="pfizerModel.Store.SampleAckRpt_Admin">
+      <ResultMapping>
+        <ComplexTypeMapping TypeName="pfizerModel.SampleAckRpt_Admin_Result">
+          <ScalarProperty Name="Element" ColumnName="Element" />
+          <ScalarProperty Name="SBDate" ColumnName="SBDate" />
+          <ScalarProperty Name="UserFKIS" ColumnName="UserFKIS" />
+          <ScalarProperty Name="EmpName" ColumnName="EmpName" />
+          <ScalarProperty Name="TerName" ColumnName="TerName" />
+          <ScalarProperty Name="ProductSampleFKID" ColumnName="ProductSampleFKID" />
+          <ScalarProperty Name="Productpack" ColumnName="Productpack" />
+          <ScalarProperty Name="productname" ColumnName="productname" />
+          <ScalarProperty Name="AllocatedQty" ColumnName="AllocatedQty" />
+          <ScalarProperty Name="AcknowledgeQty" ColumnName="AcknowledgeQty" />
+          <ScalarProperty Name="ReasonForShortFall" ColumnName="ReasonForShortFall" />
+        </ComplexTypeMapping>
+      </ResultMapping>
+    </FunctionImportMapping>
+    <FunctionImportMapping FunctionImportName="SummeryReportReportingUsers" FunctionName="pfizerModel.Store.SummeryReportReportingUsers">
+      <ResultMapping>
+        <ComplexTypeMapping TypeName="pfizerModel.SummeryReportReportingUsers_Result">
+          <ScalarProperty Name="pkid" ColumnName="pkid" />
+          <ScalarProperty Name="EmpName" ColumnName="EmpName" />
+        </ComplexTypeMapping>
+      </ResultMapping>
+    </FunctionImportMapping>
+    <FunctionImportMapping FunctionImportName="GetPsoNameByReport" FunctionName="pfizerModel.Store.GetPsoNameByReport">
+      <ResultMapping>
+        <ComplexTypeMapping TypeName="pfizerModel.GetPsoNameByReport_Result">
+          <ScalarProperty Name="PKID" ColumnName="PKID" />
+          <ScalarProperty Name="EmpName" ColumnName="EmpName" />
+        </ComplexTypeMapping>
+      </ResultMapping>
+    </FunctionImportMapping>
+    <FunctionImportMapping FunctionImportName="AddUserMaster3" FunctionName="pfizerModel.Store.AddUserMaster3" />
+    <FunctionImportMapping FunctionImportName="GetDMNameByReport" FunctionName="pfizerModel.Store.GetDMNameByReport">
+      <ResultMapping>
+        <ComplexTypeMapping TypeName="pfizerModel.GetDMNameByReport_Result">
+          <ScalarProperty Name="PKID" ColumnName="PKID" />
+          <ScalarProperty Name="EmpName" ColumnName="EmpName" />
+        </ComplexTypeMapping>
+      </ResultMapping>
+    </FunctionImportMapping>
+    <FunctionImportMapping FunctionImportName="GetMonthDetails" FunctionName="pfizerModel.Store.GetMonthDetails">
+      <ResultMapping>
+        <ComplexTypeMapping TypeName="pfizerModel.GetMonthDetails_Result">
+          <ScalarProperty Name="MonthNo" ColumnName="MonthNo" />
+          <ScalarProperty Name="MonthName" ColumnName="MonthName" />
+        </ComplexTypeMapping>
+      </ResultMapping>
+    </FunctionImportMapping>
+    <FunctionImportMapping FunctionImportName="GetNamebyIDForFTMTrackSheet" FunctionName="pfizerModel.Store.GetNamebyIDForFTMTrackSheet">
+      <ResultMapping>
+        <ComplexTypeMapping TypeName="pfizerModel.GetNamebyIDForFTMTrackSheet_Result">
+          <ScalarProperty Name="PKID" ColumnName="PKID" />
+          <ScalarProperty Name="EmpName" ColumnName="EmpName" />
+        </ComplexTypeMapping>
+      </ResultMapping>
+    </FunctionImportMapping>
+    <FunctionImportMapping FunctionImportName="getPrescriptionByPSO" FunctionName="pfizerModel.Store.getPrescriptionByPSO">
+      <ResultMapping>
+        <ComplexTypeMapping TypeName="pfizerModel.getPrescriptionByPSO_Result">
+          <ScalarProperty Name="date" ColumnName="date" />
+          <ScalarProperty Name="PsoName" ColumnName="PsoName" />
+          <ScalarProperty Name="RegionCode" ColumnName="RegionCode" />
+          <ScalarProperty Name="TerCode" ColumnName="TerCode" />
+          <ScalarProperty Name="DoctorName" ColumnName="DoctorName" />
+          <ScalarProperty Name="Specialization" ColumnName="Specialization" />
+          <ScalarProperty Name="ProductName" ColumnName="ProductName" />
+          <ScalarProperty Name="Productpack" ColumnName="Productpack" />
+          <ScalarProperty Name="Prescription" ColumnName="Prescription" />
+          <ScalarProperty Name="Hospital" ColumnName="Hospital" />
+          <ScalarProperty Name="Stockist" ColumnName="Stockist" />
+        </ComplexTypeMapping>
+      </ResultMapping>
+    </FunctionImportMapping>
+    <FunctionImportMapping FunctionImportName="GetPrescriptionProductNamebyPSO" FunctionName="pfizerModel.Store.GetPrescriptionProductNamebyPSO">
+      <ResultMapping>
+        <ComplexTypeMapping TypeName="pfizerModel.GetPrescriptionProductNamebyPSO_Result">
+          <ScalarProperty Name="PKID" ColumnName="PKID" />
+          <ScalarProperty Name="ProductName" ColumnName="ProductName" />
+        </ComplexTypeMapping>
+      </ResultMapping>
+    </FunctionImportMapping>
+    <FunctionImportMapping FunctionImportName="GetProductNameforSampleReport" FunctionName="pfizerModel.Store.GetProductNameforSampleReport">
+      <ResultMapping>
+        <ComplexTypeMapping TypeName="pfizerModel.GetProductNameforSampleReport_Result">
+          <ScalarProperty Name="ProductFKID" ColumnName="ProductFKID" />
+          <ScalarProperty Name="ProductName" ColumnName="ProductName" />
+        </ComplexTypeMapping>
+      </ResultMapping>
+    </FunctionImportMapping>
+    <FunctionImportMapping FunctionImportName="GetPsoNameByReportmul" FunctionName="pfizerModel.Store.GetPsoNameByReportmul">
+      <ResultMapping>
+        <ComplexTypeMapping TypeName="pfizerModel.GetPsoNameByReportmul_Result">
+          <ScalarProperty Name="PKID" ColumnName="PKID" />
+          <ScalarProperty Name="EmpName" ColumnName="EmpName" />
+        </ComplexTypeMapping>
+      </ResultMapping>
+    </FunctionImportMapping>
+    <FunctionImportMapping FunctionImportName="GetPsoNameForAdmin" FunctionName="pfizerModel.Store.GetPsoNameForAdmin">
+      <ResultMapping>
+        <ComplexTypeMapping TypeName="pfizerModel.GetPsoNameForAdmin_Result">
+          <ScalarProperty Name="PKID" ColumnName="PKID" />
+          <ScalarProperty Name="EmpName" ColumnName="EmpName" />
+        </ComplexTypeMapping>
+      </ResultMapping>
+    </FunctionImportMapping>
+    <FunctionImportMapping FunctionImportName="SummeryReportReportingUsersData" FunctionName="pfizerModel.Store.SummeryReportReportingUsersData" />
+    <FunctionImportMapping FunctionImportName="TrackSheetReportFromJobs" FunctionName="pfizerModel.Store.TrackSheetReportFromJobs">
+      <ResultMapping>
+        <ComplexTypeMapping TypeName="pfizerModel.TrackSheetReportFromJobs_Result">
+          <ScalarProperty Name="PKID" ColumnName="PKID" />
+          <ScalarProperty Name="Parameters" ColumnName="Parameters" />
+          <ScalarProperty Name="Sequenceno" ColumnName="Sequenceno" />
+          <ScalarProperty Name="Dec" ColumnName="Dec" />
+          <ScalarProperty Name="Jan" ColumnName="Jan" />
+          <ScalarProperty Name="Feb" ColumnName="Feb" />
+          <ScalarProperty Name="Mar" ColumnName="Mar" />
+          <ScalarProperty Name="Apr" ColumnName="Apr" />
+          <ScalarProperty Name="May" ColumnName="May" />
+          <ScalarProperty Name="Jun" ColumnName="Jun" />
+          <ScalarProperty Name="Jul" ColumnName="Jul" />
+          <ScalarProperty Name="Aug" ColumnName="Aug" />
+          <ScalarProperty Name="Sep" ColumnName="Sep" />
+          <ScalarProperty Name="Oct" ColumnName="Oct" />
+          <ScalarProperty Name="Nov" ColumnName="Nov" />
+          <ScalarProperty Name="YTD" ColumnName="YTD" />
+          <ScalarProperty Name="FinancialYear" ColumnName="FinancialYear" />
+          <ScalarProperty Name="PSOFKID" ColumnName="PSOFKID" />
+        </ComplexTypeMapping>
+      </ResultMapping>
+    </FunctionImportMapping>
+    <FunctionImportMapping FunctionImportName="TrackSheetReportFromJobsForFTM" FunctionName="pfizerModel.Store.TrackSheetReportFromJobsForFTM">
+      <ResultMapping>
+        <ComplexTypeMapping TypeName="pfizerModel.TrackSheetReportFromJobsForFTM_Result">
+          <ScalarProperty Name="PKID" ColumnName="PKID" />
+          <ScalarProperty Name="Parameters" ColumnName="Parameters" />
+          <ScalarProperty Name="Sequenceno" ColumnName="Sequenceno" />
+          <ScalarProperty Name="Dec" ColumnName="Dec" />
+          <ScalarProperty Name="Jan" ColumnName="Jan" />
+          <ScalarProperty Name="Feb" ColumnName="Feb" />
+          <ScalarProperty Name="Mar" ColumnName="Mar" />
+          <ScalarProperty Name="Apr" ColumnName="Apr" />
+          <ScalarProperty Name="May" ColumnName="May" />
+          <ScalarProperty Name="Jun" ColumnName="Jun" />
+          <ScalarProperty Name="Jul" ColumnName="Jul" />
+          <ScalarProperty Name="Aug" ColumnName="Aug" />
+          <ScalarProperty Name="Sep" ColumnName="Sep" />
+          <ScalarProperty Name="Oct" ColumnName="Oct" />
+          <ScalarProperty Name="Nov" ColumnName="Nov" />
+          <ScalarProperty Name="YTD" ColumnName="YTD" />
+          <ScalarProperty Name="FinancialYear" ColumnName="FinancialYear" />
+          <ScalarProperty Name="FTMFKID" ColumnName="FTMFKID" />
+        </ComplexTypeMapping>
+      </ResultMapping>
+    </FunctionImportMapping>
+    <FunctionImportMapping FunctionImportName="AddPrescriptionTrackermaster" FunctionName="pfizerModel.Store.AddPrescriptionTrackermaster" />
+    <FunctionImportMapping FunctionImportName="AddSalesMaster2" FunctionName="pfizerModel.Store.AddSalesMaster2" />
+    <FunctionImportMapping FunctionImportName="AreaSearch" FunctionName="pfizerModel.Store.AreaSearch">
+      <ResultMapping>
+        <ComplexTypeMapping TypeName="pfizerModel.AreaSearch_Result">
+          <ScalarProperty Name="pkid" ColumnName="pkid" />
+          <ScalarProperty Name="DoctorFKID" ColumnName="DoctorFKID" />
+          <ScalarProperty Name="DoctorName" ColumnName="DoctorName" />
+          <ScalarProperty Name="SpecialityFKID" ColumnName="SpecialityFKID" />
+          <ScalarProperty Name="Specialization" ColumnName="Specialization" />
+          <ScalarProperty Name="AMPKID" ColumnName="AMPKID" />
+          <ScalarProperty Name="AreaName" ColumnName="AreaName" />
+        </ComplexTypeMapping>
+      </ResultMapping>
+    </FunctionImportMapping>
+    <FunctionImportMapping FunctionImportName="EditSalesMaster2" FunctionName="pfizerModel.Store.EditSalesMaster2" />
+    <FunctionImportMapping FunctionImportName="getDoctorPrescriptionTrackerDtls" FunctionName="pfizerModel.Store.getDoctorPrescriptionTrackerDtls">
+      <ResultMapping>
+        <ComplexTypeMapping TypeName="pfizerModel.getDoctorPrescriptionTrackerDtls_Result">
+          <ScalarProperty Name="Element" ColumnName="Element" />
+          <ScalarProperty Name="Date" ColumnName="Date" />
+          <ScalarProperty Name="DoctorFKID" ColumnName="DoctorFKID" />
+          <ScalarProperty Name="ProductFKID" ColumnName="ProductFKID" />
+          <ScalarProperty Name="PackSizeFKID" ColumnName="PackSizeFKID" />
+          <ScalarProperty Name="Prescription" ColumnName="Prescription" />
+          <ScalarProperty Name="IsActive" ColumnName="IsActive" />
+          <ScalarProperty Name="Hospital" ColumnName="Hospital" />
+          <ScalarProperty Name="Stockist" ColumnName="Stockist" />
+          <ScalarProperty Name="ProductName" ColumnName="ProductName" />
+          <ScalarProperty Name="Productpack" ColumnName="Productpack" />
+        </ComplexTypeMapping>
+      </ResultMapping>
+    </FunctionImportMapping>
+    <FunctionImportMapping FunctionImportName="GetDoctorPSOLinkMaster" FunctionName="pfizerModel.Store.GetDoctorPSOLinkMaster">
+      <ResultMapping>
+        <ComplexTypeMapping TypeName="pfizerModel.GetDoctorPSOLinkMaster_Result">
+          <ScalarProperty Name="pkid" ColumnName="pkid" />
+          <ScalarProperty Name="DoctorFKID" ColumnName="DoctorFKID" />
+          <ScalarProperty Name="DoctorName" ColumnName="DoctorName" />
+          <ScalarProperty Name="SpecialityFKID" ColumnName="SpecialityFKID" />
+          <ScalarProperty Name="Specialization" ColumnName="Specialization" />
+          <ScalarProperty Name="AMPKID" ColumnName="AMPKID" />
+          <ScalarProperty Name="AreaName" ColumnName="AreaName" />
+        </ComplexTypeMapping>
+      </ResultMapping>
+    </FunctionImportMapping>
+    <FunctionImportMapping FunctionImportName="getProdPackSizeByXML" FunctionName="pfizerModel.Store.getProdPackSizeByXML">
+      <ResultMapping>
+        <ComplexTypeMapping TypeName="pfizerModel.getProdPackSizeByXML_Result">
+          <ScalarProperty Name="PKID" ColumnName="PKID" />
+          <ScalarProperty Name="ProductPack" ColumnName="ProductPack" />
+        </ComplexTypeMapping>
+      </ResultMapping>
+    </FunctionImportMapping>
+    <FunctionImportMapping FunctionImportName="GetProductByTeamByXML" FunctionName="pfizerModel.Store.GetProductByTeamByXML">
+      <ResultMapping>
+        <ComplexTypeMapping TypeName="pfizerModel.GetProductByTeamByXML_Result">
+          <ScalarProperty Name="PKID" ColumnName="PKID" />
+          <ScalarProperty Name="ProductName" ColumnName="ProductName" />
+        </ComplexTypeMapping>
+      </ResultMapping>
+    </FunctionImportMapping>
+    <FunctionImportMapping FunctionImportName="PrescGetHospital" FunctionName="pfizerModel.Store.PrescGetHospital">
+      <ResultMapping>
+        <ComplexTypeMapping TypeName="pfizerModel.PrescGetHospital_Result">
+          <ScalarProperty Name="PKID" ColumnName="PKID" />
+          <ScalarProperty Name="Hospital" ColumnName="Hospital" />
+        </ComplexTypeMapping>
+      </ResultMapping>
+    </FunctionImportMapping>
+    <FunctionImportMapping FunctionImportName="PrescGetStockist" FunctionName="pfizerModel.Store.PrescGetStockist">
+      <ResultMapping>
+        <ComplexTypeMapping TypeName="pfizerModel.PrescGetStockist_Result">
+          <ScalarProperty Name="Approvalstatus" ColumnName="Approvalstatus" />
+          <ScalarProperty Name="PKID" ColumnName="PKID" />
+          <ScalarProperty Name="Stockist" ColumnName="Stockist" />
+        </ComplexTypeMapping>
+      </ResultMapping>
+    </FunctionImportMapping>
+    <FunctionImportMapping FunctionImportName="DeleteSalesHierarchy_New" FunctionName="pfizerModel.Store.DeleteSalesHierarchy_New" />
+    <FunctionImportMapping FunctionImportName="GetAllDistrictMasterXMLByRegionFKID" FunctionName="pfizerModel.Store.GetAllDistrictMasterXMLByRegionFKID">
+      <ResultMapping>
+        <ComplexTypeMapping TypeName="pfizerModel.GetAllDistrictMasterXMLByRegionFKID_Result">
+          <ScalarProperty Name="PKID" ColumnName="PKID" />
+          <ScalarProperty Name="RegionFKID" ColumnName="RegionFKID" />
+          <ScalarProperty Name="DistrictCode" ColumnName="DistrictCode" />
+          <ScalarProperty Name="DistrictName" ColumnName="DistrictName" />
+          <ScalarProperty Name="RegionName" ColumnName="RegionName" />
+        </ComplexTypeMapping>
+      </ResultMapping>
+    </FunctionImportMapping>
+    <FunctionImportMapping FunctionImportName="GetAllTerritoryCodeXmlByDistrictFKID" FunctionName="pfizerModel.Store.GetAllTerritoryCodeXmlByDistrictFKID">
+      <ResultMapping>
+        <ComplexTypeMapping TypeName="pfizerModel.GetAllTerritoryCodeXmlByDistrictFKID_Result">
+          <ScalarProperty Name="TerritoryId" ColumnName="TerritoryId" />
+          <ScalarProperty Name="TerritoryName" ColumnName="TerritoryName" />
+          <ScalarProperty Name="DistrictName" ColumnName="DistrictName" />
+        </ComplexTypeMapping>
+      </ResultMapping>
+    </FunctionImportMapping>
+    <FunctionImportMapping FunctionImportName="GetDistrictMasterByPKID" FunctionName="pfizerModel.Store.GetDistrictMasterByPKID">
+      <ResultMapping>
+        <ComplexTypeMapping TypeName="pfizerModel.GetDistrictMasterByPKID_Result">
+          <ScalarProperty Name="PKID" ColumnName="PKID" />
+          <ScalarProperty Name="DistrictCode" ColumnName="DistrictCode" />
+          <ScalarProperty Name="DistrictFKID" ColumnName="DistrictFKID" />
+          <ScalarProperty Name="DistrictName" ColumnName="DistrictName" />
+          <ScalarProperty Name="TerritoryFKID" ColumnName="TerritoryFKID" />
+          <ScalarProperty Name="IsActive" ColumnName="IsActive" />
+        </ComplexTypeMapping>
+      </ResultMapping>
+    </FunctionImportMapping>
+    <FunctionImportMapping FunctionImportName="GetSalesHierrachy" FunctionName="pfizerModel.Store.GetSalesHierrachy">
+      <ResultMapping>
+        <ComplexTypeMapping TypeName="pfizerModel.GetSalesHierrachy_Result">
+          <ScalarProperty Name="Islower" ColumnName="Islower" />
+          <ScalarProperty Name="NodeTypeFKID" ColumnName="NodeTypeFKID" />
+          <ScalarProperty Name="DivFKID" ColumnName="DivFKID" />
+          <ScalarProperty Name="UserFKID" ColumnName="UserFKID" />
+          <ScalarProperty Name="ReportingUserFKID" ColumnName="ReportingUserFKID" />
+          <ScalarProperty Name="NodeFunctionFKID" ColumnName="NodeFunctionFKID" />
+          <ScalarProperty Name="NodeDesc" ColumnName="NodeDesc" />
+          <ScalarProperty Name="LocationFKID" ColumnName="LocationFKID" />
+          <ScalarProperty Name="LocationDesc" ColumnName="LocationDesc" />
+          <ScalarProperty Name="ForumCreator" ColumnName="ForumCreator" />
+          <ScalarProperty Name="TerritoryFKID" ColumnName="TerritoryFKID" />
+          <ScalarProperty Name="HQFKID" ColumnName="HQFKID" />
+          <ScalarProperty Name="DistrictFKID" ColumnName="DistrictFKID" />
+          <ScalarProperty Name="RegionFKID" ColumnName="RegionFKID" />
+        </ComplexTypeMapping>
+      </ResultMapping>
+    </FunctionImportMapping>
+    <FunctionImportMapping FunctionImportName="GetSalesTeamByXml" FunctionName="pfizerModel.Store.GetSalesTeamByXml">
+      <ResultMapping>
+        <ComplexTypeMapping TypeName="pfizerModel.GetSalesTeamByXml_Result">
+          <ScalarProperty Name="TeamFKID" ColumnName="TeamFKID" />
+          <ScalarProperty Name="TeamName" ColumnName="TeamName" />
+        </ComplexTypeMapping>
+      </ResultMapping>
+    </FunctionImportMapping>
+    <FunctionImportMapping FunctionImportName="GetNamebyRepIDForTrackSheet" FunctionName="pfizerModel.Store.GetNamebyRepIDForTrackSheet">
+      <ResultMapping>
+        <ComplexTypeMapping TypeName="pfizerModel.GetNamebyRepIDForTrackSheet_Result">
+          <ScalarProperty Name="UserFKID" ColumnName="UserFKID" />
+          <ScalarProperty Name="EmpName" ColumnName="EmpName" />
+        </ComplexTypeMapping>
+      </ResultMapping>
+    </FunctionImportMapping>
+    <FunctionImportMapping FunctionImportName="GetNodeByFKID" FunctionName="pfizerModel.Store.GetNodeByFKID">
+      <ResultMapping>
+        <ComplexTypeMapping TypeName="pfizerModel.GetNodeByFKID_Result">
+          <ScalarProperty Name="NodeFKID" ColumnName="NodeFKID" />
+          <ScalarProperty Name="NodeName" ColumnName="NodeName" />
+        </ComplexTypeMapping>
+      </ResultMapping>
+    </FunctionImportMapping>
+    <FunctionImportMapping FunctionImportName="RR_GetSpecialization" FunctionName="pfizerModel.Store.RR_GetSpecialization">
+      <ResultMapping>
+        <ComplexTypeMapping TypeName="pfizerModel.RR_GetSpecialization_Result">
+          <ScalarProperty Name="PKID" ColumnName="PKID" />
+          <ScalarProperty Name="Specialization" ColumnName="Specialization" />
+        </ComplexTypeMapping>
+      </ResultMapping>
+    </FunctionImportMapping>
+    <FunctionImportMapping FunctionImportName="GetPrescriptionBrickDetails" FunctionName="pfizerModel.Store.GetPrescriptionBrickDetails">
+      <ResultMapping>
+        <ComplexTypeMapping TypeName="pfizerModel.GetPrescriptionBrickDetails_Result">
+          <ScalarProperty Name="PKID" ColumnName="PKID" />
+          <ScalarProperty Name="AreaName" ColumnName="AreaName" />
+        </ComplexTypeMapping>
+      </ResultMapping>
+    </FunctionImportMapping>
+    <FunctionImportMapping FunctionImportName="GetCyclePlanSpcialization" FunctionName="pfizerModel.Store.GetCyclePlanSpcialization">
+      <ResultMapping>
+        <ComplexTypeMapping TypeName="pfizerModel.GetCyclePlanSpcialization_Result">
+          <ScalarProperty Name="PKID" ColumnName="PKID" />
+          <ScalarProperty Name="Specialization" ColumnName="Specialization" />
+        </ComplexTypeMapping>
+      </ResultMapping>
+    </FunctionImportMapping>
+    <FunctionImportMapping FunctionImportName="GetAreaDetails" FunctionName="pfizerModel.Store.GetAreaDetails">
+      <ResultMapping>
+        <ComplexTypeMapping TypeName="pfizerModel.GetAreaDetails_Result">
+          <ScalarProperty Name="PKID" ColumnName="PKID" />
+          <ScalarProperty Name="AreaName" ColumnName="AreaName" />
+        </ComplexTypeMapping>
+      </ResultMapping>
+    </FunctionImportMapping>
+    <FunctionImportMapping FunctionImportName="AllNewCustomerRequest" FunctionName="pfizerModel.Store.AllNewCustomerRequest">
+      <ResultMapping>
+        <ComplexTypeMapping TypeName="pfizerModel.AllNewCustomerRequest_Result">
+          <ScalarProperty Name="Type" ColumnName="Type" />
+          <ScalarProperty Name="pkid" ColumnName="pkid" />
+          <ScalarProperty Name="CustomerName" ColumnName="CustomerName" />
+          <ScalarProperty Name="Specialization" ColumnName="Specialization" />
+          <ScalarProperty Name="KOL" ColumnName="KOL" />
+          <ScalarProperty Name="AMPKID" ColumnName="AMPKID" />
+          <ScalarProperty Name="AreaName" ColumnName="AreaName" />
+          <ScalarProperty Name="SMPKID" ColumnName="SMPKID" />
+        </ComplexTypeMapping>
+      </ResultMapping>
+    </FunctionImportMapping>
+    <FunctionImportMapping FunctionImportName="IncludeDoctor" FunctionName="pfizerModel.Store.IncludeDoctor" />
+    <FunctionImportMapping FunctionImportName="IncludeOtherCustomer" FunctionName="pfizerModel.Store.IncludeOtherCustomer" />
+    <FunctionImportMapping FunctionImportName="usp_getSpecialization" FunctionName="pfizerModel.Store.usp_getSpecialization">
+      <ResultMapping>
+        <ComplexTypeMapping TypeName="pfizerModel.usp_getSpecialization_Result">
+          <ScalarProperty Name="SpecializationID" ColumnName="SpecializationID" />
+          <ScalarProperty Name="SpecializationName" ColumnName="SpecializationName" />
+        </ComplexTypeMapping>
+      </ResultMapping>
+    </FunctionImportMapping>
+    <FunctionImportMapping FunctionImportName="USP_GetSpecializationCode" FunctionName="pfizerModel.Store.USP_GetSpecializationCode">
+      <ResultMapping>
+        <ComplexTypeMapping TypeName="pfizerModel.USP_GetSpecializationCode_Result">
+          <ScalarProperty Name="SpecializationID" ColumnName="SpecializationID" />
+          <ScalarProperty Name="SpecializationName" ColumnName="SpecializationName" />
+        </ComplexTypeMapping>
+      </ResultMapping>
+    </FunctionImportMapping>
+    <FunctionImportMapping FunctionImportName="GetBVOProductByXml" FunctionName="pfizerModel.Store.GetBVOProductByXml">
+      <ResultMapping>
+        <ComplexTypeMapping TypeName="pfizerModel.GetBVOProductByXml_Result1">
+          <ScalarProperty Name="PKID" ColumnName="PKID" />
+          <ScalarProperty Name="ProductName" ColumnName="ProductName" />
+        </ComplexTypeMapping>
+      </ResultMapping>
+    </FunctionImportMapping>
+    <FunctionImportMapping FunctionImportName="GetPsoNameByUserId" FunctionName="pfizerModel.Store.GetPsoNameByUserId">
+      <ResultMapping>
+        <ComplexTypeMapping TypeName="pfizerModel.GetPsoNameByUserId_Result">
+          <ScalarProperty Name="PKID" ColumnName="PKID" />
+          <ScalarProperty Name="EmpName" ColumnName="EmpName" />
+        </ComplexTypeMapping>
+      </ResultMapping>
+    </FunctionImportMapping>
+    <FunctionImportMapping FunctionImportName="usp_DMGetChemistRpt" FunctionName="pfizerModel.Store.usp_DMGetChemistRpt">
+      <ResultMapping>
+        <ComplexTypeMapping TypeName="pfizerModel.usp_DMGetChemistRpt_Result">
+          <ScalarProperty Name="ChemistName" ColumnName="ChemistName" />
+          <ScalarProperty Name="AreaName" ColumnName="AreaName" />
+          <ScalarProperty Name="isMCL" ColumnName="isMCL" />
+          <ScalarProperty Name="TerCode" ColumnName="TerCode" />
+          <ScalarProperty Name="email" ColumnName="email" />
+        </ComplexTypeMapping>
+      </ResultMapping>
+    </FunctionImportMapping>
+    <FunctionImportMapping FunctionImportName="usp_DMGetDoctorRpt" FunctionName="pfizerModel.Store.usp_DMGetDoctorRpt">
+      <ResultMapping>
+        <ComplexTypeMapping TypeName="pfizerModel.usp_DMGetDoctorRpt_Result">
+          <ScalarProperty Name="DoctorName" ColumnName="DoctorName" />
+          <ScalarProperty Name="Specialization" ColumnName="Specialization" />
+          <ScalarProperty Name="DoctorCode" ColumnName="DoctorCode" />
+          <ScalarProperty Name="RegistrationNo" ColumnName="RegistrationNo" />
+          <ScalarProperty Name="MCLFlag" ColumnName="MCLFlag" />
+          <ScalarProperty Name="KOLFlag" ColumnName="KOLFlag" />
+          <ScalarProperty Name="AreaName" ColumnName="AreaName" />
+          <ScalarProperty Name="TerCode" ColumnName="TerCode" />
+          <ScalarProperty Name="email" ColumnName="email" />
+        </ComplexTypeMapping>
+      </ResultMapping>
+    </FunctionImportMapping>
+    <FunctionImportMapping FunctionImportName="usp_DMGetHospitalRpt" FunctionName="pfizerModel.Store.usp_DMGetHospitalRpt">
+      <ResultMapping>
+        <ComplexTypeMapping TypeName="pfizerModel.usp_DMGetHospitalRpt_Result">
+          <ScalarProperty Name="NameofHospital" ColumnName="NameofHospital" />
+          <ScalarProperty Name="CityName" ColumnName="CityName" />
+          <ScalarProperty Name="AreaName" ColumnName="AreaName" />
+          <ScalarProperty Name="TerCode" ColumnName="TerCode" />
+          <ScalarProperty Name="MCLflag" ColumnName="MCLflag" />
+          <ScalarProperty Name="email" ColumnName="email" />
+        </ComplexTypeMapping>
+      </ResultMapping>
+    </FunctionImportMapping>
+    <FunctionImportMapping FunctionImportName="usp_DMGetStockistRpt" FunctionName="pfizerModel.Store.usp_DMGetStockistRpt">
+      <ResultMapping>
+        <ComplexTypeMapping TypeName="pfizerModel.usp_DMGetStockistRpt_Result">
+          <ScalarProperty Name="NameofStockist" ColumnName="NameofStockist" />
+          <ScalarProperty Name="CityName" ColumnName="CityName" />
+          <ScalarProperty Name="AreaName" ColumnName="AreaName" />
+          <ScalarProperty Name="TerCode" ColumnName="TerCode" />
+          <ScalarProperty Name="MCLflag" ColumnName="MCLflag" />
+          <ScalarProperty Name="email" ColumnName="email" />
+        </ComplexTypeMapping>
+      </ResultMapping>
+    </FunctionImportMapping>
+    <FunctionImportMapping FunctionImportName="usp_Get_CustomerTerritory" FunctionName="pfizerModel.Store.usp_Get_CustomerTerritory">
+      <ResultMapping>
+        <ComplexTypeMapping TypeName="pfizerModel.usp_Get_CustomerTerritory_Result">
+          <ScalarProperty Name="TerCode" ColumnName="TerCode" />
+          <ScalarProperty Name="TerName" ColumnName="TerName" />
+          <ScalarProperty Name="flag" ColumnName="flag" />
+          <ScalarProperty Name="Input" ColumnName="Input" />
+        </ComplexTypeMapping>
+      </ResultMapping>
+    </FunctionImportMapping>
+    <FunctionImportMapping FunctionImportName="usp_Get_UserName" FunctionName="pfizerModel.Store.usp_Get_UserName">
+      <ResultMapping>
+        <ComplexTypeMapping TypeName="pfizerModel.usp_Get_UserName_Result">
+          <ScalarProperty Name="Element" ColumnName="Element" />
+          <ScalarProperty Name="PSOName" ColumnName="PSOName" />
+        </ComplexTypeMapping>
+      </ResultMapping>
+    </FunctionImportMapping>
+    <FunctionImportMapping FunctionImportName="usp_SELECT_PSOList_COUNTBy_DM_ForDashboard" FunctionName="pfizerModel.Store.usp_SELECT_PSOList_COUNTBy_DM_ForDashboard">
+      <ResultMapping>
+        <ComplexTypeMapping TypeName="pfizerModel.usp_SELECT_PSOList_COUNTBy_DM_ForDashboard_Result">
+          <ScalarProperty Name="Custtype" ColumnName="Custtype" />
+          <ScalarProperty Name="MCL" ColumnName="MCL" />
+          <ScalarProperty Name="PCL" ColumnName="PCL" />
+        </ComplexTypeMapping>
+      </ResultMapping>
+    </FunctionImportMapping>
+    <FunctionImportMapping FunctionImportName="EditCustomDeletions" FunctionName="pfizerModel.Store.EditCustomDeletions" />
+    <FunctionImportMapping FunctionImportName="GetSampleDivisionByXML" FunctionName="pfizerModel.Store.GetSampleDivisionByXML">
+      <ResultMapping>
+        <ComplexTypeMapping TypeName="pfizerModel.GetSampleDivisionByXML_Result">
+          <ScalarProperty Name="DIVPKID" ColumnName="DIVPKID" />
+          <ScalarProperty Name="DivName" ColumnName="DivName" />
+        </ComplexTypeMapping>
+      </ResultMapping>
+    </FunctionImportMapping>
+    <FunctionImportMapping FunctionImportName="GetTeamNameByXml" FunctionName="pfizerModel.Store.GetTeamNameByXml">
+      <ResultMapping>
+        <ComplexTypeMapping TypeName="pfizerModel.GetTeamNameByXml_Result">
+          <ScalarProperty Name="TeamPKID" ColumnName="TeamPKID" />
+          <ScalarProperty Name="TeamName" ColumnName="TeamName" />
+        </ComplexTypeMapping>
+      </ResultMapping>
+    </FunctionImportMapping>
+    <FunctionImportMapping FunctionImportName="Usp_GetPSOsForCyclePlanRetailerUnlock" FunctionName="pfizerModel.Store.Usp_GetPSOsForCyclePlanRetailerUnlock">
+      <ResultMapping>
+        <ComplexTypeMapping TypeName="pfizerModel.Usp_GetPSOsForCyclePlanRetailerUnlock_Result">
+          <ScalarProperty Name="PSOFKID" ColumnName="PSOFKID" />
+          <ScalarProperty Name="PsoName" ColumnName="PsoName" />
+          <ScalarProperty Name="CPCreatedDate" ColumnName="CPCreatedDate" />
+          <ScalarProperty Name="ReportingUserFKID" ColumnName="ReportingUserFKID" />
+          <ScalarProperty Name="TERRITORYCODE" ColumnName="TERRITORYCODE" />
+          <ScalarProperty Name="ReptUserName" ColumnName="ReptUserName" />
+        </ComplexTypeMapping>
+      </ResultMapping>
+    </FunctionImportMapping>
+    <FunctionImportMapping FunctionImportName="Usp_UpdtForUnLockingCyclePlan" FunctionName="pfizerModel.Store.Usp_UpdtForUnLockingCyclePlan" />
+    <FunctionImportMapping FunctionImportName="Usp_UpdtForUnLockingCyclePlanRetailer" FunctionName="pfizerModel.Store.Usp_UpdtForUnLockingCyclePlanRetailer" />
+    <FunctionImportMapping FunctionImportName="Usp_GetPSOsForCyclePlanUnlock" FunctionName="pfizerModel.Store.Usp_GetPSOsForCyclePlanUnlock">
+      <ResultMapping>
+        <ComplexTypeMapping TypeName="pfizerModel.Usp_GetPSOsForCyclePlanUnlock_Result">
+          <ScalarProperty Name="PSOFKID" ColumnName="PSOFKID" />
+          <ScalarProperty Name="PsoName" ColumnName="PsoName" />
+          <ScalarProperty Name="CPCreatedDate" ColumnName="CPCreatedDate" />
+          <ScalarProperty Name="ReportingUserFKID" ColumnName="ReportingUserFKID" />
+          <ScalarProperty Name="TERRITORYCODE" ColumnName="TERRITORYCODE" />
+          <ScalarProperty Name="ReptUserName" ColumnName="ReptUserName" />
+        </ComplexTypeMapping>
+      </ResultMapping>
+    </FunctionImportMapping>
+    <FunctionImportMapping FunctionImportName="GetMenuForChile" FunctionName="pfizerModel.Store.GetMenuForChile">
+      <ResultMapping>
+        <ComplexTypeMapping TypeName="pfizerModel.GetMenuForChile_Result">
+          <ScalarProperty Name="MasterID" ColumnName="MasterID" />
+          <ScalarProperty Name="MenuHeading" ColumnName="MenuHeading" />
+          <ScalarProperty Name="ParentMenuID" ColumnName="ParentMenuID" />
+          <ScalarProperty Name="MenuSequence" ColumnName="MenuSequence" />
+          <ScalarProperty Name="Element" ColumnName="Element" />
+        </ComplexTypeMapping>
+      </ResultMapping>
+    </FunctionImportMapping>
+    <FunctionImportMapping FunctionImportName="GetMenuForRole" FunctionName="pfizerModel.Store.GetMenuForRole">
+      <ResultMapping>
+        <ComplexTypeMapping TypeName="pfizerModel.GetMenuForRole_Result">
+          <ScalarProperty Name="MenuID" ColumnName="MenuID" />
+          <ScalarProperty Name="MenuHeading" ColumnName="MenuHeading" />
+          <ScalarProperty Name="Element" ColumnName="Element" />
+          <ScalarProperty Name="MenuSequence" ColumnName="MenuSequence" />
+        </ComplexTypeMapping>
+      </ResultMapping>
+    </FunctionImportMapping>
+    <FunctionImportMapping FunctionImportName="GetTerNameByReport" FunctionName="pfizerModel.Store.GetTerNameByReport">
+      <ResultMapping>
+        <ComplexTypeMapping TypeName="pfizerModel.GetTerNameByReport_Result">
+          <ScalarProperty Name="PKID" ColumnName="PKID" />
+          <ScalarProperty Name="TerName" ColumnName="TerName" />
+        </ComplexTypeMapping>
+      </ResultMapping>
+    </FunctionImportMapping>
+    <FunctionImportMapping FunctionImportName="USP_GetAreaDetailsPCL" FunctionName="pfizerModel.Store.USP_GetAreaDetailsPCL">
+      <ResultMapping>
+        <ComplexTypeMapping TypeName="pfizerModel.USP_GetAreaDetailsPCL_Result">
+          <ScalarProperty Name="PKID" ColumnName="PKID" />
+          <ScalarProperty Name="AreaName" ColumnName="AreaName" />
+        </ComplexTypeMapping>
+      </ResultMapping>
+    </FunctionImportMapping>
+    <FunctionImportMapping FunctionImportName="getRoleBasedmenu" FunctionName="pfizerModel.Store.getRoleBasedmenu">
+      <ResultMapping>
+        <ComplexTypeMapping TypeName="pfizerModel.getRoleBasedmenu_Result">
+          <ScalarProperty Name="RoleID" ColumnName="RoleID" />
+          <ScalarProperty Name="MenuFKID" ColumnName="MenuFKID" />
+        </ComplexTypeMapping>
+      </ResultMapping>
+    </FunctionImportMapping>
+    <FunctionImportMapping FunctionImportName="DeleteProductMaster" FunctionName="pfizerModel.Store.DeleteProductMaster" />
+    <FunctionImportMapping FunctionImportName="EditProductmaster" FunctionName="pfizerModel.Store.EditProductmaster" />
+    <FunctionImportMapping FunctionImportName="GetMappedMetisProductName" FunctionName="pfizerModel.Store.GetMappedMetisProductName">
+      <ResultMapping>
+        <ComplexTypeMapping TypeName="pfizerModel.GetMappedMetisProductName_Result">
+          <ScalarProperty Name="PKID" ColumnName="PKID" />
+          <ScalarProperty Name="ProductName" ColumnName="ProductName" />
+        </ComplexTypeMapping>
+      </ResultMapping>
+    </FunctionImportMapping>
+    <FunctionImportMapping FunctionImportName="GetProductByPKIDXml" FunctionName="pfizerModel.Store.GetProductByPKIDXml">
+      <ResultMapping>
+        <ComplexTypeMapping TypeName="pfizerModel.GetProductByPKIDXml_Result">
+          <ScalarProperty Name="PKID" ColumnName="PKID" />
+          <ScalarProperty Name="ProductName" ColumnName="ProductName" />
+          <ScalarProperty Name="TeamFKID" ColumnName="TeamFKID" />
+          <ScalarProperty Name="ManagerFKID" ColumnName="ManagerFKID" />
+          <ScalarProperty Name="IsActive" ColumnName="IsActive" />
+          <ScalarProperty Name="ProdGroupFKID" ColumnName="ProdGroupFKID" />
+          <ScalarProperty Name="NodeTypeFKID" ColumnName="NodeTypeFKID" />
+          <ScalarProperty Name="IMSCode" ColumnName="IMSCode" />
+          <ScalarProperty Name="IsKDP" ColumnName="IsKDP" />
+          <ScalarProperty Name="ProductCode" ColumnName="ProductCode" />
+          <ScalarProperty Name="MetisProductID" ColumnName="MetisProductID" />
+        </ComplexTypeMapping>
+      </ResultMapping>
+    </FunctionImportMapping>
+    <FunctionImportMapping FunctionImportName="GetProductManagerByXml" FunctionName="pfizerModel.Store.GetProductManagerByXml">
+      <ResultMapping>
+        <ComplexTypeMapping TypeName="pfizerModel.GetProductManagerByXml_Result">
+          <ScalarProperty Name="PKID" ColumnName="PKID" />
+          <ScalarProperty Name="ProductManger" ColumnName="ProductManger" />
+        </ComplexTypeMapping>
+      </ResultMapping>
+    </FunctionImportMapping>
+    <FunctionImportMapping FunctionImportName="GetProductMgrByXml" FunctionName="pfizerModel.Store.GetProductMgrByXml">
+      <ResultMapping>
+        <ComplexTypeMapping TypeName="pfizerModel.GetProductMgrByXml_Result">
+          <ScalarProperty Name="PKID" ColumnName="PKID" />
+          <ScalarProperty Name="ProductManger" ColumnName="ProductManger" />
+        </ComplexTypeMapping>
+      </ResultMapping>
+    </FunctionImportMapping>
+    <FunctionImportMapping FunctionImportName="GetProductPackDetails" FunctionName="pfizerModel.Store.GetProductPackDetails">
+      <ResultMapping>
+        <ComplexTypeMapping TypeName="pfizerModel.GetProductPackDetails_Result">
+          <ScalarProperty Name="ROWID" ColumnName="ROWID" />
+          <ScalarProperty Name="PKID" ColumnName="PKID" />
+          <ScalarProperty Name="ProductFKID" ColumnName="ProductFKID" />
+          <ScalarProperty Name="Productpack" ColumnName="Productpack" />
+          <ScalarProperty Name="FormFKID" ColumnName="FormFKID" />
+          <ScalarProperty Name="FormName" ColumnName="FormName" />
+          <ScalarProperty Name="IBISCode" ColumnName="IBISCode" />
+          <ScalarProperty Name="SampleFlag" ColumnName="SampleFlag" />
+          <ScalarProperty Name="NonSampleFlag" ColumnName="NonSampleFlag" />
+        </ComplexTypeMapping>
+      </ResultMapping>
+    </FunctionImportMapping>
+    <FunctionImportMapping FunctionImportName="GetTeamByXML" FunctionName="pfizerModel.Store.GetTeamByXML">
+      <ResultMapping>
+        <ComplexTypeMapping TypeName="pfizerModel.GetTeamByXML_Result">
+          <ScalarProperty Name="TeamFKID" ColumnName="TeamFKID" />
+          <ScalarProperty Name="TeamName" ColumnName="TeamName" />
+        </ComplexTypeMapping>
+      </ResultMapping>
+    </FunctionImportMapping>
+    <FunctionImportMapping FunctionImportName="GetTeamforProductByXml" FunctionName="pfizerModel.Store.GetTeamforProductByXml">
+      <ResultMapping>
+        <ComplexTypeMapping TypeName="pfizerModel.GetTeamforProductByXml_Result">
+          <ScalarProperty Name="TeamFKID" ColumnName="TeamFKID" />
+          <ScalarProperty Name="TeamName" ColumnName="TeamName" />
+        </ComplexTypeMapping>
+      </ResultMapping>
+    </FunctionImportMapping>
+    <FunctionImportMapping FunctionImportName="getDistrictNameWSNew" FunctionName="pfizerModel.Store.getDistrictNameWSNew">
+      <ResultMapping>
+        <ComplexTypeMapping TypeName="pfizerModel.getDistrictNameWSNew_Result1">
+          <ScalarProperty Name="PKID" ColumnName="PKID" />
+          <ScalarProperty Name="DistrictName" ColumnName="DistrictName" />
+          <ScalarProperty Name="DistrictCode" ColumnName="DistrictCode" />
+        </ComplexTypeMapping>
+      </ResultMapping>
+    </FunctionImportMapping>
+    <FunctionImportMapping FunctionImportName="GetFormforProductByXML" FunctionName="pfizerModel.Store.GetFormforProductByXML">
+      <ResultMapping>
+        <ComplexTypeMapping TypeName="pfizerModel.GetFormforProductByXML_Result">
+          <ScalarProperty Name="formFKID" ColumnName="formFKID" />
+          <ScalarProperty Name="FormName" ColumnName="FormName" />
+        </ComplexTypeMapping>
+      </ResultMapping>
+    </FunctionImportMapping>
+    <FunctionImportMapping FunctionImportName="insertRoleBasedMenu" FunctionName="pfizerModel.Store.insertRoleBasedMenu" />
+    <FunctionImportMapping FunctionImportName="MVCAddSpecializationProductlinkMasterNew" FunctionName="pfizerModel.Store.MVCAddSpecializationProductlinkMasterNew" />
+    <FunctionImportMapping FunctionImportName="MVCGetSpecializationandProductByXml" FunctionName="pfizerModel.Store.MVCGetSpecializationandProductByXml" />
+    <FunctionImportMapping FunctionImportName="MVCGetSpecializationNameByXml" FunctionName="pfizerModel.Store.MVCGetSpecializationNameByXml">
+      <ResultMapping>
+        <ComplexTypeMapping TypeName="pfizerModel.MVCGetSpecializationNameByXml_Result">
+          <ScalarProperty Name="PKID" ColumnName="PKID" />
+          <ScalarProperty Name="Specialization" ColumnName="Specialization" />
+        </ComplexTypeMapping>
+      </ResultMapping>
+    </FunctionImportMapping>
+    <FunctionImportMapping FunctionImportName="MVCGetTeamsBySpecialityXML" FunctionName="pfizerModel.Store.MVCGetTeamsBySpecialityXML">
+      <ResultMapping>
+        <ComplexTypeMapping TypeName="pfizerModel.MVCGetTeamsBySpecialityXML_Result">
+          <ScalarProperty Name="PKID" ColumnName="PKID" />
+          <ScalarProperty Name="TeamName" ColumnName="TeamName" />
+        </ComplexTypeMapping>
+      </ResultMapping>
+    </FunctionImportMapping>
+    <FunctionImportMapping FunctionImportName="GetLeaveApprovalNew" FunctionName="pfizerModel.Store.GetLeaveApprovalNew">
+      <ResultMapping>
+        <ComplexTypeMapping TypeName="pfizerModel.GetLeaveApprovalNew_Result">
+          <ScalarProperty Name="PKID" ColumnName="PKID" />
+          <ScalarProperty Name="EmployeeFKID" ColumnName="EmployeeFKID" />
+          <ScalarProperty Name="UserFKID" ColumnName="UserFKID" />
+          <ScalarProperty Name="UserName" ColumnName="UserName" />
+          <ScalarProperty Name="CityName" ColumnName="CityName" />
+          <ScalarProperty Name="CreatedDate" ColumnName="CreatedDate" />
+          <ScalarProperty Name="LeaveTypeFKID" ColumnName="LeaveTypeFKID" />
+          <ScalarProperty Name="GenName" ColumnName="GenName" />
+          <ScalarProperty Name="FromDate" ColumnName="FromDate" />
+          <ScalarProperty Name="ToDate" ColumnName="ToDate" />
+          <ScalarProperty Name="LeaveBalance" ColumnName="LeaveBalance" />
+          <ScalarProperty Name="OnProcess" ColumnName="OnProcess" />
+          <ScalarProperty Name="Reason" ColumnName="Reason" />
+          <ScalarProperty Name="Status" ColumnName="Status" />
+          <ScalarProperty Name="LBYear" ColumnName="LBYear" />
+          <ScalarProperty Name="LMYear" ColumnName="LMYear" />
+          <ScalarProperty Name="DateDiffence" ColumnName="DateDiffence" />
+          <ScalarProperty Name="UMPKID" ColumnName="UMPKID" />
+          <ScalarProperty Name="Res" ColumnName="Res" />
+        </ComplexTypeMapping>
+      </ResultMapping>
+    </FunctionImportMapping>
+    <FunctionImportMapping FunctionImportName="GetLeaveMasterReason" FunctionName="pfizerModel.Store.GetLeaveMasterReason" />
+    <FunctionImportMapping FunctionImportName="usp_SELECT_CustPSO_COUNT_BYDM" FunctionName="pfizerModel.Store.usp_SELECT_CustPSO_COUNT_BYDM">
+      <ResultMapping>
+        <ComplexTypeMapping TypeName="pfizerModel.usp_SELECT_CustPSO_COUNT_BYDM_Result">
+          <ScalarProperty Name="Custtype" ColumnName="Custtype" />
+          <ScalarProperty Name="MCL" ColumnName="MCL" />
+          <ScalarProperty Name="PCL" ColumnName="PCL" />
+        </ComplexTypeMapping>
+      </ResultMapping>
+    </FunctionImportMapping>
+    <FunctionImportMapping FunctionImportName="USP_GET_PRODUCTMASTER" FunctionName="pfizerModel.Store.USP_GET_PRODUCTMASTER">
+      <ResultMapping>
+        <ComplexTypeMapping TypeName="pfizerModel.USP_GET_PRODUCTMASTER_Result1">
+          <ScalarProperty Name="PKID" ColumnName="PKID" />
+          <ScalarProperty Name="ProductCode" ColumnName="ProductCode" />
+          <ScalarProperty Name="ProductName" ColumnName="ProductName" />
+          <ScalarProperty Name="IMSCode" ColumnName="IMSCode" />
+          <ScalarProperty Name="IsKDP" ColumnName="IsKDP" />
+          <ScalarProperty Name="ProdGroupFKID" ColumnName="ProdGroupFKID" />
+          <ScalarProperty Name="ProdTypeFKID" ColumnName="ProdTypeFKID" />
+          <ScalarProperty Name="IsActive" ColumnName="IsActive" />
+          <ScalarProperty Name="MetisProductID" ColumnName="MetisProductID" />
+          <ScalarProperty Name="GenName" ColumnName="GenName" />
+          <ScalarProperty Name="METISProductName" ColumnName="METISProductName" />
+        </ComplexTypeMapping>
+      </ResultMapping>
+    </FunctionImportMapping>
+    <FunctionImportMapping FunctionImportName="AddProductmaster" FunctionName="pfizerModel.Store.AddProductmaster" />
+    <FunctionImportMapping FunctionImportName="usp_ReconcileSettings" FunctionName="pfizerModel.Store.usp_ReconcileSettings">
+      <ResultMapping>
+        <ComplexTypeMapping TypeName="pfizerModel.usp_ReconcileSettings_Result2">
+          <ScalarProperty Name="PKID" ColumnName="PKID" />
+          <ScalarProperty Name="DateofBegining" ColumnName="DateofBegining" />
+          <ScalarProperty Name="TeamFKID" ColumnName="TeamFKID" />
+          <ScalarProperty Name="IsActive" ColumnName="IsActive" />
+          <ScalarProperty Name="TeamName" ColumnName="TeamName" />
         </ComplexTypeMapping>
       </ResultMapping>
     </FunctionImportMapping>

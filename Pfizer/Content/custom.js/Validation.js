@@ -38,3 +38,28 @@ function SingleCharacterQustion(s) {
     s.value = (s.value.replace(/^\s*/, ''));
     return;
 }
+
+function Print(id) {
+  
+ 
+    var mywindow = window.open('about:blank', '_blank');
+    var myWindowContents = '<html>' +
+        '<head>' +
+        '<title>Results</title>' +
+
+        '</head>' +
+        '<body >' + $(id).html() +
+
+        '<script type="text/javascript">' +
+        '$(document).ready(function () {' +
+        '});' +
+        '<' + '/script>' +
+        '</body>' +
+        '</html>';
+    mywindow.document.write(myWindowContents);
+    mywindow.document.close();
+    mywindow.focus();
+    mywindow.print();
+    mywindow.close();
+
+}

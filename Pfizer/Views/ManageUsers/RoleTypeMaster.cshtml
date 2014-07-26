@@ -248,23 +248,34 @@
                     }
 
                 },
-                afterSubmit: function (response, postdata) {
 
-                    if (response.responseText == "already Exists") {
-                        $('#TblGrid_ajaxGrid td.ui-state-highlight').removeClass('ui-state-highlight').addClass('ui-state-error');
-                        return [false, response.responseText];
-                    }
-                    else {
-                        $("#ajaxGrid").jqGrid('setGridParam', { datatype: 'json' }).trigger('reloadGrid');
+                afterSubmit: function (response, postdata) {
+                    $("#ajaxGrid").jqGrid('setGridParam', { datatype: 'json' }).trigger('reloadGrid');
+                    var errorId = " ";
+                    if (response.responseText == "\"RoleTypeMaster added successfully.\"") {
+                        errorId += "RoleTypeMaster added successfully.";
+                        $('#FormError').html("<td class='ui-state-error' colspan='2'>" + errorId + "</td>");
                         $('#TblGrid_ajaxGrid td.ui-state-error').removeClass('ui-state-error').addClass('ui-state-highlight');
-                        //$("#TableName").val('');
+                       // $("#TableName").val('');
                         $("#GenCode").val('');
                         $("#GenName").val('');
                         $("#IsActive").prop('checked', false);
                         return [false, response.responseText];
                     }
+                    else {
+                        errorId += "RoleTypeMaster already Exists";
+                        $('#FormError').html("<td class='ui-state-error' colspan='2'>" + errorId + "</td>");
+                        $('#TblGrid_ajaxGrid td.ui-state-error').removeClass('ui-state-highlight').addClass('ui-state-error');
+                        //$("#TableName").val('');
+                        $("#GenCode").val('');
+                        $("#GenName").val('');
+                        $("#IsActive").prop('checked', false);
+                        return [false, response.responseText];
+
+                    }
 
                 },
+
                 onclickSubmit: function (params, posdata) {
                     params.url = '@Url.Action("AddRoleTypeMaster")?TableName=' + $('#TableName').val() + '&GenCode=' + $('#GenCode').val() + '&GenName=' + $('#GenName').val() + '&IsActive=' + $('#IsActive').val();
                 },
@@ -275,10 +286,9 @@
                     modal: true,
                     recreateForm: true,
                     width: 450,
-                    beforeShowForm: function (form) {
-
+                    beforeShowForm: function (form)
+                    {
                         //POP UP Screen Fit Screen
-
                         var thisForm = $("#delmod" + jQuery("#ajaxGrid")[0].id);
                         var dialogHeight = $(thisForm).height();
                         var dialogWidth = $(thisForm).width();
@@ -287,14 +297,14 @@
                         $(thisForm).css('position', 'fixed');
                         $(thisForm).css('top', ((windowHeight - dialogHeight) / 2));
                         $(thisForm).css('left', ((windowWidth - dialogWidth) / 2));
-
-
+                        
                         $('tr td.delmsg').html('Delete selected record(s)?');
 
                         var col1 = $('#ajaxGrid').jqGrid('getGridParam', 'selrow');
                         var IsActive = $('#ajaxGrid').jqGrid('getCell', col1, 'IsActive');
 
-                        if (IsActive == "Inactive") {
+                        if (IsActive == "Inactive")
+                        {
                             $('tr td.delmsg').html('Record Already Deleted');
                             $('#dData').hide();
                         }
@@ -302,40 +312,17 @@
                             $('#dData').show();
                         }
 
-                        //var col1 = $('#ajaxGrid').jqGrid('getGridParam', 'selrow');
-                        //var TableName = $('#ajaxGrid').jqGrid('getCell', col1, 'TableName');
-                        //var GenCode = $('#ajaxGrid').jqGrid('getCell', col1, 'GenCode');
-                        //var GenName = $('#ajaxGrid').jqGrid('getCell', col1, 'GenName');
-                        //var IsActive = $('#ajaxGrid').jqGrid('getCell', col1, 'IsActive');
+                       },
 
-                        //var html = "<form><table><tr><td class='CaptionTD'>Table Type </td><td class=='DataTD'>&nbsp;&nbsp;<input type='text' class='FormElement ui-widget-content ui-corner-all' id='TableName' readonly='true'  value='" + TableName + "'/></td> </tr>";
-                        //html += "<tr><td class='CaptionTD'>Code</td><td class=='DataTD'>&nbsp;&nbsp;<input type='text' class='FormElement ui-widget-content ui-corner-all' readonly='true' id='GenCode'  value='" + GenCode + "'/></td></tr>";
-                        //html += "<tr><td class='CaptionTD'>Name</td><td class=='DataTD'>&nbsp;&nbsp;<input type='text' class='FormElement ui-widget-content ui-corner-all' readonly='true' id='GenName'  value='" + GenName + "'/></td></tr>";
-                        //if (IsActive == "Active")
-                        //    html += "<tr><td class='CaptionTD'>Status</td><td class=='DataTD'>&nbsp;&nbsp;<input class='FormElement ui-widget-content ui-corner-all' id='IsActive'   type='checkbox' checked  disabled/></td>";
-                        //if (IsActive == "Inactive")
-                        //    html += "<tr><td class='CaptionTD'>Status</td><td class=='DataTD'>&nbsp;&nbsp; <input class='FormElement ui-widget-content ui-corner-all'   type='checkbox' disabled /></td></tr>";
-                        //html += "</table></form>";
-                        //$("td.delmsg", form[0]).html(html);
-
-
-                        //End POP UP Screen Fit Screen
-
-
-                    },
                     afterSubmit: function (response, postdata) {
-
                         $('tr td.delmsg').html('');
                         $("#ajaxGrid").jqGrid('setGridParam', { datatype: 'json' }).trigger('reloadGrid');
+                        $('#DelTbl_ajaxGrid td.ui-state-error').removeClass('ui-state-error').addClass('ui-state-highlight');
+                        $('#dData').hide();
                         return [false, response.responseText];
-                        //$("#ajaxGrid").jqGrid('setGridParam', { datatype: 'json' }).trigger('reloadGrid');
-                        //$('#DelTbl_ajaxGrid td.ui-state-error').removeClass('ui-state-error').addClass('ui-state-highlight');
-                        //$("#TableName").val('');
-                        //$("#GenCode").val('');
-                        //$("#GenName").val('');
-                        //$("#TableName").prop('checked', false);
-                        //return [false, response.responseText];
-                    }
+                    },
+
+                    
                 },
             {
                 //search

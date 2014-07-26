@@ -147,7 +147,13 @@
                 //    rowChecked=1;
                 //    currentrow=id;
                 //}
+                gridComplete: function () {
 
+                    if (jQuery("#ajaxGrid").getGridParam("records") == 0) {
+                        jQuery("#ajaxGrid").addRowData(
+                        "blankRow", { "EmployeeName": "No records to view" });
+                    }
+                },
 
             });
 

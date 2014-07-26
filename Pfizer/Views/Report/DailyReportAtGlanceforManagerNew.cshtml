@@ -1,0 +1,297 @@
+﻿@{
+    ViewBag.Title = "DailyReportAtGlanceforManager";
+    Layout = "~/Views/Shared/MasterLayout.cshtml";
+}
+<style type="text/css">
+    select {
+        width: 160px;
+    }
+</style>
+
+ <body>
+    @using (Html.BeginForm(FormMethod.Post))
+    {
+
+           <div class="inner_tbldiv" style=" margin-top:0">
+               <div style="text-align:center;"><label id="lblError" style=" color:red"></label></div>
+            <table style="width:85% !important;"  border="1" cellspacing="0" cellpadding="0" align="center" class="inner_tb">
+                <tr> 
+                    <th colspan="5">Filter On</th>
+                </tr>
+
+                <tr>
+                    <td width="10%" valign="middle" align="left" class="tb-r2"></td>
+                    <td width="10%" valign="middle" align="left" class="tb-r2">Start Date<span class="star">*</span></td>
+                    <td width="30%" class="tb-r2">
+                        &nbsp;&nbsp;
+                        <input type="text" id="txtFrmdate" class="tboxlargedate" value="" onclick="$(function () { $('#txtFrmdate').datepicker(); });"  />
+                    &nbsp;
+                    </td>
+                    <td width="10%" valign="middle" align="left" class="tb-r2">End Date<span class="star">*</span></td>
+                    <td width="40%" class="tb-r2">
+                        &nbsp;&nbsp;
+                        <input type="text" id="txttodate" class="tboxlargedate" value="" onclick="$(function () { $('#txttodate').datepicker(); });" />
+                        &nbsp;
+                    </td> 
+                </tr> 
+               
+
+
+                <tr>
+                    <td width="10%" valign="middle" align="left" class="tb-r2"></td>
+                    <td width="10%" valign="middle" align="left" class="tb-r2">Node Name<span class="star">*</span></td>
+                    <td width="30%" class="tb-r2">
+                        &nbsp;&nbsp;
+                        @Html.DropDownList("ddlNodeName", PfizerEntity.UsefulLink.GetNodeName(Convert.ToInt32(@Session["USER_FKID"].ToString())), "Select")
+                        &nbsp;
+                    </td>
+                    <td width="10%" valign="middle" align="left" class="tb-r2">User Name<span class="star">*</span></td>
+                    <td width="40%" class="tb-r2">
+                        &nbsp;&nbsp;
+                        @Html.DropDownList("ddlUsers", PfizerEntity.UsefulLink.GetUserName(Convert.ToInt32(@Session["USER_FKID"].ToString())), "Select")
+                        &nbsp;
+                    </td>
+                </tr>
+
+                <tr>
+                    
+                   
+                    <td class="tb-r2" align="center" colspan="5"> <input type="button" class="orange_button" value="  All  " id="btnAll" name="btnAll" />&nbsp;<input type="button" class="orange_button" value="RegularVisit" id="btnRegVisit" name="btnRegVisit" /></td>
+                </tr>
+                 
+
+            </table>
+
+           
+        </div>
+
+    <div id="divRpt">
+
+    </div>
+
+    }
+     <script>
+
+    $(document).ready(function () {
+
+        $("#txtFrmdate").datepicker({ changeMonth: true, changeYear: true, yearRange: '1900:myDate', dateFormat: 'dd/mm/yy', maxDate: 0 });
+        $("#txttodate").datepicker({ changeMonth: true, changeYear: true, yearRange: '1900:myDate', dateFormat: 'dd/mm/yy', maxDate: 0 });
+        var currentDate = new Date();
+        $("#txtFrmdate").datepicker("setDate", currentDate);
+        $("#txttodate").datepicker("setDate", currentDate);
+    });
+    function clearValues() {
+        $('select').css("border", "1px solid #C0C0C0");
+        $("#lblError").text('');
+    }
+
+    $('#ddlNodeName').change(function () {
+        clearValues();
+        if ($("#ddlNodeName").val() != '') {
+            $('#ddlUsers').empty();
+            $('#ddlUsers').append("<option value=''>Select</option>");
+            $.getJSON('@Url.Action("JsonLoadMgrUser")?NodeTypeFKID=' + $('#ddlNodeName').val(), function (data) {
+
+                for (var i = 0; i < data.count; i++) {
+                    $('#ddlUsers').append("<option value='" + data.userItems[i].Value + "'>" + data.userItems[i].Text + "</option>");
+                }
+            });
+        }
+    });
+         $('#ddlUsers').change(function () {
+             clearValues();
+         });
+
+
+         $('#btnAll').click(function () {
+
+             clearValues();
+
+             if ($('#txtFrmdate').val() == '') {
+                 $("#lblError").text('Please select Start Date');
+                 $('#txtFrmdate').focus();
+                 $("#txtFrmdate").css("background-color", "#FFE8E8").css("border", "1px solid #FF6666");
+                 return false;
+             }
+             if ($('#txttodate').val() == '') {
+                 $("#lblError").text('Please select End Date');
+                 $('#txttodate').focus();
+                 $("#txttodate").css("background-color", "#FFE8E8").css("border", "1px solid #FF6666");
+                 return false;
+             }
+             if ($('#ddlNodeName').val() == '') {
+
+                 $("#lblError").text('Please select Node Name');
+
+                 $('#ddlNodeName').focus();
+                 $("#ddlNodeName").css("background-color", "#FFE8E8").css("border", "1px solid #FF6666");
+
+                 return false;
+             }
+             if ($('#ddlUsers').val() == '') {
+                 $("#lblError").text('Please select User Name');
+                 $('#ddlUsers').focus();
+                 $("#ddlUsers").css("background-color", "#FFE8E8").css("border", "1px solid #FF6666");
+
+                 return false;
+             }
+             
+
+             if ($('#txtFrmdate').val() != '' && $('#txttodate').val() != '') {
+
+
+                 var date1 = $('#txtFrmdate').val().split('/')[1] + '/' + $('#txtFrmdate').val().split('/')[0] + '/' + $('#txtFrmdate').val().split('/')[2];
+                 var date2 = $('#txttodate').val().split('/')[1] + '/' + $('#txttodate').val().split('/')[0] + '/' + $('#txttodate').val().split('/')[2];
+                 var startDate = new Date(date1);
+                 var endDate = new Date(date2);
+
+                 if (startDate > endDate) {
+                     $("#lblError").text('End date should be greater than Start date');
+                     $('#txttodate').focus();
+                     $("#txttodate").css("background-color", "#FFE8E8").css("border", "1px solid #FF6666");
+                     return false;
+                 }
+             }
+             if ($('#ddlNodeName').val() != '15') {
+
+                 $.getJSON('@Url.Action("JsonAllRptMGRforDM")?frmDate=' + $('#txtFrmdate').val() + '&toDate=' + $("#txttodate").val() + '&nodeName=' + $('#ddlNodeName').val() + '&user=' + $('#ddlUsers').val().split('-')[0], function (data) {
+
+                     $('#divRpt').html(data.rslt);
+                     $('#divRpt').dialog({
+                         title:'Daily Report At a Glance For Manager Summary of '+$('#ddlUsers option:selected').text() +' as on '+  $("#txttodate").val()+'( '+$('#txtFrmdate').val()+' To '+$("#txttodate").val()+' )',
+                         width: 900,
+                         height: 450,
+                         align: 'center',
+                         show: { effect: 'drop', direction: "up" },
+                         modal: true,
+                         close: Reload
+                         
+                     });
+
+                 });
+             }
+             else {
+
+                 $.getJSON('@Url.Action("JsonAllRptMGRforPSO")?frmDate=' + $('#txtFrmdate').val() + '&toDate=' + $("#txttodate").val() + '&user=' + $('#ddlUsers').val().split('-')[0], function (data) {
+
+                     $('#divRpt').html(data.rslt);
+                     $('#divRpt').dialog({
+                         title: 'Daily Report At a Glance Summary of ' + $('#ddlUsers option:selected').text() + ' as on ' + $("#txttodate").val() + '( ' + $('#txtFrmdate').val() + ' To ' + $("#txttodate").val() + ' )',
+                         width: 900,
+                         height: 450,
+                         align: 'center',
+                         show: { effect: 'drop', direction: "up" },
+                         modal: true,
+                         close: Reload
+                         
+                     });
+
+                 });
+
+             }
+         });
+
+
+
+         $('#btnRegVisit').click(function () {
+             clearValues();
+
+             if ($('#txtFrmdate').val() == '') {
+                 $("#lblError").text('Please select Start Date');
+                 $('#txtFrmdate').focus();
+                 $("#txtFrmdate").css("background-color", "#FFE8E8").css("border", "1px solid #FF6666");
+                 return false;
+             }
+             if ($('#txttodate').val() == '') {
+                 $("#lblError").text('Please select End Date');
+                 $('#txttodate').focus();
+                 $("#txttodate").css("background-color", "#FFE8E8").css("border", "1px solid #FF6666");
+                 return false;
+             }
+             if ($('#ddlNodeName').val() == '') {
+
+                 $("#lblError").text('Please select Node Name');
+
+                 $('#ddlNodeName').focus();
+                 $("#ddlNodeName").css("background-color", "#FFE8E8").css("border", "1px solid #FF6666");
+
+                 return false;
+             }
+             if ($('#ddlUsers').val() == '') {
+                 $("#lblError").text('Please select User Name');
+                 $('#ddlUsers').focus();
+                 $("#ddlUsers").css("background-color", "#FFE8E8").css("border", "1px solid #FF6666");
+
+                 return false;
+             }
+
+
+             if ($('#txtFrmdate').val() != '' && $('#txttodate').val() != '') {
+
+
+                 var date1 = $('#txtFrmdate').val().split('/')[1] + '/' + $('#txtFrmdate').val().split('/')[0] + '/' + $('#txtFrmdate').val().split('/')[2];
+                 var date2 = $('#txttodate').val().split('/')[1] + '/' + $('#txttodate').val().split('/')[0] + '/' + $('#txttodate').val().split('/')[2];
+                 var startDate = new Date(date1);
+                 var endDate = new Date(date2);
+
+                 if (startDate > endDate) {
+                     $("#lblError").text('End date should be greater than Start date');
+                     $('#txttodate').focus();
+                     $("#txttodate").css("background-color", "#FFE8E8").css("border", "1px solid #FF6666");
+                     return false;
+                 }
+             }
+             if ($('#ddlNodeName').val() != '15') {
+
+                 $.getJSON('@Url.Action("JsonRegRptMGRforDM")?frmDate=' + $('#txtFrmdate').val() + '&toDate=' + $("#txttodate").val() + '&nodeName=' + $('#ddlNodeName').val() + '&user=' + $('#ddlUsers').val().split('-')[0], function (data) {
+
+                     $('#divRpt').html(data.rslt);
+                     $('#divRpt').dialog({
+                         title: 'Daily Report At a Glance For Manager Summary of ' + $('#ddlUsers option:selected').text() + ' as on ' + $("#txttodate").val() + '( ' + $('#txtFrmdate').val() + ' To ' + $("#txttodate").val() + ' )',
+                         width: 850,
+                         height: 450,
+                         align: 'center',
+                         show: { effect: 'drop', direction: "up" },
+                         modal: true,
+                         close: Reload
+                        
+                     });
+
+                 });
+             }
+             else {
+
+                 $.getJSON('@Url.Action("JsonRegRptMGRforPSO")?frmDate=' + $('#txtFrmdate').val() + '&toDate=' + $("#txttodate").val() + '&user=' + $('#ddlUsers').val().split('-')[0], function (data) {
+
+                     $('#divRpt').html(data.rslt);
+                     $('#divRpt').dialog({
+                         title: 'Daily Report At a Glance Summary of ' + $('#ddlUsers option:selected').text() + ' as on ' + $("#txttodate").val() + '( ' + $('#txtFrmdate').val() + ' To ' + $("#txttodate").val() + ' )',
+                         width: 850,
+                         height: 450,
+                         align: 'center',
+                         show: { effect: 'drop', direction: "up" },
+                         modal: true,
+                         close: Reload
+                        
+                     });
+
+                 });
+
+             }
+         });
+         
+        
+         function DownloadExcel() {
+
+             var win = window.open('@Url.Action("ExcelDownload")?fileName=' + ' DailyReportAtGlanceforManager', 'showwin', 'width=550,height=400,top=0,left=0,toolbar=yes,location=no,directories=no,status=no,menubar=no,scrollbars=yes,resizeable=yes');
+             win.history.go(0);
+             return true;
+         }
+         function Reload() {
+         
+            window.location.reload();
+         }
+
+</script>
+
+</body>

@@ -1,0 +1,460 @@
+﻿@{
+    ViewBag.Title = "CustomerMetNotMet";
+    Layout = "~/Views/Shared/MasterLayout.cshtml";
+}
+
+<body>
+    @using (Html.BeginForm(FormMethod.Post))
+    {
+
+        <div class="inner_tbldiv" style="margin-top:0px">
+            <div class="man_field">* Mandatory Field</div><label id="lblError" name="lblError" style=" color:red"> </label>
+            <table width="100%" border="0" cellspacing="0" cellpadding="0" align="left" class="inner_tb">
+                <tr>
+                    <th colspan="7">Customer Met / NotMet Status Report</th>
+                </tr>
+
+                <tr>
+                    <td width="20%" class="tb-r2">PSO Name<span class="star">*</span></td>
+                    <td width="20%" class="tb-r2">
+                        @Html.DropDownList("ddlPSONameList", PfizerEntity.UsefulLink.GetPSONameList(), "Select")
+                    </td>
+                    <td class="tb-r2" width="10%">Year<span class="star">*</span></td>
+                    <td class="tb-r2" width="25%">
+
+                        @Html.DropDownList("drpSelectYear", new[] { new SelectListItem { Text = "Select", Value = "0" } })
+
+                    </td>
+                    <td class="tb-r2" width="10%">Month<span class="star">*</span></td>
+                    <td class="tb-r2" width="25%">
+                        @*@Html.DropDownList("drpSelectMonth", new[] { new SelectListItem { Text = "Select", Value = "0" } })*@
+                        <select name="drpSelectMonth" id="drpSelectMonth">
+                            <option value="0">Select</option>
+                            <option value="1">January</option>
+                            <option value="2">February</option>
+                            <option value="3">March</option>
+                            <option value="4">April</option>
+                            <option value="5">May</option>
+                            <option value="6">June</option>
+                            <option value="7">July</option>
+                            <option value="8">August</option>
+                            <option value="9">September</option>
+                            <option value="10">October</option>
+                            <option value="11">November</option>
+                            <option value="12">December</option>
+                        </select>
+
+                    </td>
+                    <td width="15%">&nbsp;</td>
+                </tr>
+                <tr>
+                    <td width="20%" class="tb-r2">Doctor Type</td>
+                    <td width="20%" class="tb-r2">
+                        @*@Html.DropDownList("drpSelectDoctorType", new[] { new SelectListItem { Text = "Select", Value = "0" } })*@
+                        <select name="drpSelectDoctorType" id="drpSelectDoctorType">
+                            <option selected="selected" value="">Select</option>
+                            <option value="M">MCL</option>
+                            <option value="P">PCL</option>
+                        </select>
+                    </td>
+                    <td class="tb-r2" width="20%">Customer Type<span class="star">*</span></td>
+                    <td class="tb-r2" width="25%">
+                        <select name="lstGetCustomerType" id="lstGetCustomerType" class="listboxRpt" multiple="multiple">
+                            <option value="0">Select</option>
+                            <option selected="selected" value="2">Doctor</option>
+                            <option value="1">Chemist</option>
+                        </select>
+
+                    </td>
+                    <td class="tb-r2" width="20%">Bridge KOL</td>
+                    <td class="tb-r2" width="25%">
+                        @*@Html.DropDownList("drpSelectBridgeKOL", new[] { new SelectListItem { Text = "Select", Value = "0" } })*@
+                        <select name="drpSelectBridgeKOL" id="drpSelectBridgeKOL">
+                            <option selected="selected" value="">Select</option>
+                            <option value="1">Yes</option>
+                            <option value="0">No</option>
+                        </select>
+
+                    </td>
+                    <td width="15%"><input class="blue_button add_btn" type="button" width="5%" id="btnCustomerMetNotMet" value="CustomerMet/NotMet"></td>
+                </tr>
+
+            </table>
+        </div>
+
+        <div>
+            <table>
+                <tr><td>&nbsp;</td></tr>
+            </table>
+
+        </div>
+        <div>
+            <table border="0" style="width: 100%">
+                <tr>
+                    <td>
+                        <!--JqGrid Starts-->
+                        <table style="margin-top: 7px; width :100%" border="0">
+                            <tr><td align="center"><span style="font-weight:bold"><label id="lblmsg" style="color:black" /></span></td></tr>
+                            <tr><td>&nbsp;</td></tr>
+                            <tr>
+                                <td>
+                                    <table id="CustomerMetNotMet" style="width: 100%" border="0"></table>
+                                    <div id="CustomerMetNotMetPager">
+                                    </div>
+                                </td>
+                            </tr>
+                        </table>
+                        <!--Ends-->
+                        <input type="hidden" id="hdnPager" name="hdnPager" />
+
+                    </td>
+                </tr>
+            </table>
+
+        </div>
+    }
+
+    <script type="text/javascript">
+
+        $('#btnCustomerMetNotMet').click(function () {
+            if ($('#ddlPSONameList').val() == '') {
+                $('[id$=lblError]').text("Please Select PSO Name");
+                $("#ddlPSONameList").css("background-color", "#FFE8E8").css("border", "1px solid #FF6666");
+                $('#ddlPSONameList').focus();
+                return false;
+            }
+            else {
+                $("#ddlPSONameList").css("background-color", "#FFE8E8").css("border", "1px solid #d5d5d5");
+                lblError.textContent = "";
+            }
+
+
+            if ($('#drpSelectYear option:selected').text() == 'Select') {
+                $("#lblError").text('Please select Year');
+                $('#drpSelectYear').focus();
+                $("#drpSelectYear").css("background-color", "#FFE8E8").css("border", "1px solid #FF6666");
+
+                return false;
+            }
+
+            else {
+                $("#drpSelectYear").css("background-color", "#FFE8E8").css("border", "1px solid #d5d5d5");
+                lblError.textContent = "";
+            }
+            if ($('#drpSelectMonth').val() == '0') {
+                $('[id$=lblError]').text("Please Select Month");
+                $("#drpSelectMonth").css("background-color", "#FFE8E8").css("border", "1px solid #FF6666");
+                $('#drpSelectMonth').focus();
+                return false;
+            }
+            else {
+
+                $("#drpSelectMonth").css("background-color", "#FFE8E8").css("border", "1px solid #d5d5d5");
+                lblError.textContent = "";
+            }
+            if ($('#lstGetCustomerType').val() == '0') {
+                $('[id$=lblError]').text("Please Select Customer Type");
+                $("#lstGetCustomerType").css("background-color", "#FFE8E8").css("border", "1px solid #FF6666");
+                $('#lstGetCustomerType').focus();
+                return false;
+            }
+            else {
+
+                $("#lstGetCustomerType").css("background-color", "#FFE8E8").css("border", "1px solid #d5d5d5");
+                lblError.textContent = "";
+            }
+
+
+
+
+            lblmsg.textContent = "CustomerMet Not Met Of " + $("#ddlPSONameList option:selected").text() + " as on " + $("#drpSelectMonth option:selected").text() + " - " + $("#drpSelectYear option:selected").text();
+            if ($('#lstGetCustomerType').val() == 2) {
+                initGridDoctor();
+            }
+            else {
+                initGridChemist();
+            }
+
+        });
+
+        function initGridDoctor() {
+            $('#CustomerMetNotMet').jqGrid('GridUnload');
+            jQuery("#CustomerMetNotMet").jqGrid({
+                url: '@Url.Action("GetCustomerMetNotMet")?PKID=' + $('#ddlPSONameList').val() + '&FDATE=' + $('#drpSelectMonth').val() + '&TODATE=' + $('#drpSelectYear option:selected').text() + '&DOCTYPE=' + $('#drpSelectDoctorType').val() + '&CUSTYPE=' + $('#lstGetCustomerType').val() + '&BRIDGEKOL=' + $('#drpSelectBridgeKOL').val(),
+                datatype: "json",
+                jsonReader: { repeatitems: false, id: "PKID" },
+                colNames: ['PKID', 'Doctor Name', 'Brick', 'Specialization', 'PlannedVisits', 'VisitCount', 'BalanceVisits'],
+                colModel: [
+                    { name: 'PKID', index: 'PKID', align: 'left', hidden: true, editable: false },
+                     { name: 'CustomerName', index: 'CustomerName', align: 'left', hidden: false, editable: false },
+                     { name: 'AreaName', index: 'AreaName', align: 'left', hidden: false, editable: false },
+                     { name: 'Specialization', index: 'Specialization', align: 'left', hidden: false, editable: false },
+                     { name: 'PlannedVisits', index: 'PlannedVisits', align: 'left', hidden: false, editable: false },
+                     { name: 'VisitCount', index: 'VisitCount', align: 'left', hidden: false, editable: false },
+                     { name: 'BalanceVisits', index: 'BalanceVisits', align: 'left', hidden: false, editable: false },
+                ],
+
+                autowidth: true,
+                gridview: true,
+                caption: 'Customer Met Not Met',
+                jqModal: true,
+                rowTotal: 10,
+                rowNum: 10,
+                align: 'center',
+                sortable: true,
+                hidegrid: true,
+                altRows: true,
+                sortname: 'PKID',
+                sortorder: 'desc',
+                viewrecords: true,
+                pager: $('#CustomerMetNotMetPager'),
+                height: 'auto',
+                editable: true,
+                gridComplete: function () {
+
+                    if (jQuery("#CustomerMetNotMet").getGridParam("records") == 0) {
+                        jQuery("#CustomerMetNotMet").addRowData(
+                        "blankRow", { "CustomerName": "No records to view" });
+                    }
+                },
+
+            });
+
+            jQuery("#CustomerMetNotMet").jqGrid('navGrid', '#CustomerMetNotMetPager', { edit: false, add: false, del: false, search: false, view: false });
+
+
+            setMethod('CustomerMetNotMet', 'CustomerMetNotMetPager', 'Customer Met Not Met', 1);
+
+        }
+
+
+        @*function setMethod(gid, id, pgTitle) {
+
+            var btnTitle = 'Export to Excel';
+            $('#' + gid).jqGrid('navSeparatorAdd', '#' + id, { sepclass: "ui-separator" });
+            $('#' + gid).jqGrid('navButtonAdd', '#' + id, { caption: '', title: btnTitle, position: 'last', buttonicon: 'ui-icon-calculator', onClickButton: function () { ExcelExport(); } });
+
+            var btnTitle = 'Export to PDF';
+            $('#' + gid).jqGrid('navSeparatorAdd', '#' + id, { sepclass: "ui-separator" });
+            $('#' + gid).jqGrid('navButtonAdd', '#' + id, { caption: '', title: btnTitle, position: 'last', buttonicon: 'ui-icon-bookmark', onClickButton: function () { PDFExport(); } });
+
+            var btnTitle = 'Export to CSV';
+            $('#' + gid).jqGrid('navSeparatorAdd', '#' + id, { sepclass: "ui-separator" });
+            $('#' + gid).jqGrid('navButtonAdd', '#' + id, { caption: '', title: btnTitle, position: 'last', buttonicon: 'ui-icon-note', onClickButton: function () { CSVExport(); } });
+
+
+            var btnTitle = 'Print Grid';
+            $('#' + gid).jqGrid('navSeparatorAdd', '#' + id, { sepclass: "ui-separator" });
+            $('#' + gid).jqGrid('navButtonAdd', '#' + id, { caption: '', title: btnTitle, position: 'last', buttonicon: 'ui-icon-print', onClickButton: function () { PrintGrid(gid); } });
+        }
+        function ExcelExport() {
+            window.location = '@Url.Action("ExportCustomerMetNotMetToExcel")?PKID=' + $('#ddlPSONameList').val() + '&FDATE=' + $('#drpSelectMonth').val() + '&TODATE=' + $('#drpSelectYear option:selected').text() + '&DOCTYPE=' + $('#drpSelectDoctorType').val() + '&CUSTYPE=' + $('#lstGetCustomerType').val() + '&BRIDGEKOL=' + $('#drpSelectBridgeKOL').val();
+        }
+        function PDFExport() {
+            window.location = '@Url.Action("ExportCustomerMetNotMetToPDF")?PKID=' + $('#ddlPSONameList').val() + '&FDATE=' + $('#drpSelectMonth').val() + '&TODATE=' + $('#drpSelectYear option:selected').text() + '&DOCTYPE=' + $('#drpSelectDoctorType').val() + '&CUSTYPE=' + $('#lstGetCustomerType').val() + '&BRIDGEKOL=' + $('#drpSelectBridgeKOL').val();
+        }
+        function CSVExport() {
+            window.location = '@Url.Action("ExportCustomerMetNotMetToCsv")?PKID=' + $('#ddlPSONameList').val() + '&FDATE=' + $('#drpSelectMonth').val() + '&TODATE=' + $('#drpSelectYear option:selected').text() + '&DOCTYPE=' + $('#drpSelectDoctorType').val() + '&CUSTYPE=' + $('#lstGetCustomerType').val() + '&BRIDGEKOL=' + $('#drpSelectBridgeKOL').val();
+        }*@
+
+
+        function printChrome(divContainer) {
+
+            var printContent = document.getElementById(divContainer);
+            window.document.body.innerHTML = printContent.innerHTML;
+            window.print();
+            window.location.reload();
+        }
+        $(document).ready(function () {
+
+            var today = new Date(); // Initialize Date in raw form
+            var Currentyear = today.getFullYear(); // Get the year
+            var CurrentDate = today.getDate();
+            var nn = today.getMonth();
+            //Year binding into year ComboBox
+            var cPreviousYear = today.getFullYear() - 5;
+
+            var cNextYear = today.getFullYear() + 5;
+            var iSelected = 0;
+            for (var iCount = cPreviousYear; iCount < cNextYear; iCount++) {
+
+                document.getElementById("drpSelectYear").options.add(new Option(iCount, "0"))
+                if (document.getElementById("drpSelectYear").options[iSelected].innerText == Currentyear) {
+                    document.getElementById("drpSelectYear").selectedIndex = iSelected;
+                }
+                iSelected++;
+            }
+            document.getElementById("drpSelectMonth").selectedIndex = today.getMonth() + 1;
+
+
+
+        });
+
+
+        function initGridChemist() {
+            $('#CustomerMetNotMet').jqGrid('GridUnload');
+            jQuery("#CustomerMetNotMet").jqGrid({
+                url: '@Url.Action("GetCustomerChemistMetNotMet")?PKID=' + $('#ddlPSONameList').val() + '&FDATE=' + $('#drpSelectMonth').val() + '&TODATE=' + $('#drpSelectYear option:selected').text() + '&DOCTYPE=' + $('#drpSelectDoctorType').val() + '&CUSTYPE=' + $('#lstGetCustomerType').val() + '&BRIDGEKOL=' + $('#drpSelectBridgeKOL').val(),
+                datatype: "json",
+                jsonReader: { repeatitems: false, id: "PKID" },
+                colNames: ['PKID', 'Doctor Name', 'Brick', 'PlannedVisits', 'VisitCount', 'BalanceVisits', 'RBPlannedVisits', 'RBVisitCount', 'RBBalanceVisits'],
+                colModel: [
+                    { name: 'PKID', index: 'PKID', align: 'left', hidden: true, editable: false },
+                     { name: 'CustomerName', index: 'CustomerName', align: 'left', hidden: false, editable: false },
+                     { name: 'AreaName', index: 'AreaName', align: 'left', hidden: false, editable: false },
+                     { name: 'PlannedVisits', index: 'PlannedVisits', align: 'left', hidden: false, editable: false },
+                     { name: 'VisitCount', index: 'VisitCount', align: 'left', hidden: false, editable: false },
+                     { name: 'BalanceVisits', index: 'BalanceVisits', align: 'left', hidden: false, editable: false },
+                     { name: 'RBPlannedVisits', index: 'PlannedVisits', align: 'left', hidden: false, editable: false },
+                     { name: 'RBVisitCount', index: 'VisitCount', align: 'left', hidden: false, editable: false },
+                     { name: 'RBBalanceVisits', index: 'BalanceVisits', align: 'left', hidden: false, editable: false },
+                ],
+
+                autowidth: true,
+                gridview: true,
+                caption: 'Customer Met Not Met',
+                jqModal: true,
+                rowTotal: 10,
+                rowNum: 10,
+                align: 'center',
+                sortable: true,
+                hidegrid: true,
+                altRows: true,
+                sortname: 'PKID',
+                sortorder: 'desc',
+                viewrecords: true,
+                pager: $('#CustomerMetNotMetPager'),
+                height: 'auto',
+                editable: true,
+                gridComplete: function () {
+
+                    if (jQuery("#CustomerMetNotMet").getGridParam("records") == 0) {
+                        jQuery("#CustomerMetNotMet").addRowData(
+                        "blankRow", { "CustomerName": "No records to view" });
+                    }
+                },
+
+            });
+
+            jQuery("#CustomerMetNotMet").jqGrid('navGrid', '#CustomerMetNotMetPager', { edit: false, add: false, del: false, search: false, view: false });
+
+
+            setMethod('CustomerMetNotMet', 'CustomerMetNotMetPager', 'Customer Met Not Met', 2);
+
+        }
+
+        function setMethod(gid, id, pgTitle, val) {
+
+            var btnTitle = 'Export to Excel';
+            $('#' + gid).jqGrid('navSeparatorAdd', '#' + id, { sepclass: "ui-separator" });
+            $('#' + gid).jqGrid('navButtonAdd', '#' + id, { caption: '', title: btnTitle, position: 'last', buttonicon: 'ui-icon-calculator', onClickButton: function () { ExcelExport(val); } });
+
+            var btnTitle = 'Export to PDF';
+            $('#' + gid).jqGrid('navSeparatorAdd', '#' + id, { sepclass: "ui-separator" });
+            $('#' + gid).jqGrid('navButtonAdd', '#' + id, { caption: '', title: btnTitle, position: 'last', buttonicon: 'ui-icon-bookmark', onClickButton: function () { PDFExport(val); } });
+
+            var btnTitle = 'Export to CSV';
+            $('#' + gid).jqGrid('navSeparatorAdd', '#' + id, { sepclass: "ui-separator" });
+            $('#' + gid).jqGrid('navButtonAdd', '#' + id, { caption: '', title: btnTitle, position: 'last', buttonicon: 'ui-icon-note', onClickButton: function () { CSVExport(val); } });
+
+
+            var btnTitle = 'Print Grid';
+            $('#' + gid).jqGrid('navSeparatorAdd', '#' + id, { sepclass: "ui-separator" });
+            if (val == 1)
+                $('#' + gid).jqGrid('navButtonAdd', '#' + id, { caption: '', title: btnTitle, position: 'last', buttonicon: 'ui-icon-print', onClickButton: function () { PrintGrid(gid); } });
+            else {
+                $('#' + gid).jqGrid('navButtonAdd', '#' + id, { caption: '', title: btnTitle, position: 'last', buttonicon: 'ui-icon-print', onClickButton: function () { ChemistPrintGrid(gid); } });
+            }
+        }
+        function ExcelExport(rslt) {
+            if (rslt == "2")
+                window.location = '@Url.Action("ExportCustomerMetNotMetChemistToExcel")?PKID=' + $('#ddlPSONameList').val() + '&FDATE=' + $('#drpSelectMonth').val() + '&TODATE=' + $('#drpSelectYear option:selected').text() + '&DOCTYPE=' + $('#drpSelectDoctorType').val() + '&CUSTYPE=' + $('#lstGetCustomerType').val() + '&BRIDGEKOL=' + $('#drpSelectBridgeKOL').val();
+            else {
+
+                window.location = '@Url.Action("ExportCustomerMetNotMetToExcel")?PKID=' + $('#ddlPSONameList').val() + '&FDATE=' + $('#drpSelectMonth').val() + '&TODATE=' + $('#drpSelectYear option:selected').text() + '&DOCTYPE=' + $('#drpSelectDoctorType').val() + '&CUSTYPE=' + $('#lstGetCustomerType').val() + '&BRIDGEKOL=' + $('#drpSelectBridgeKOL').val();
+            }
+        }
+        function PDFExport(rslt) {
+            if (rslt == "2")
+                window.location = '@Url.Action("ExportCustomerMetNotMetChemistToPDF")?PKID=' + $('#ddlPSONameList').val() + '&FDATE=' + $('#drpSelectMonth').val() + '&TODATE=' + $('#drpSelectYear option:selected').text() + '&DOCTYPE=' + $('#drpSelectDoctorType').val() + '&CUSTYPE=' + $('#lstGetCustomerType').val() + '&BRIDGEKOL=' + $('#drpSelectBridgeKOL').val();
+            else {
+                window.location = '@Url.Action("ExportCustomerMetNotMetToPDF")?PKID=' + $('#ddlPSONameList').val() + '&FDATE=' + $('#drpSelectMonth').val() + '&TODATE=' + $('#drpSelectYear option:selected').text() + '&DOCTYPE=' + $('#drpSelectDoctorType').val() + '&CUSTYPE=' + $('#lstGetCustomerType').val() + '&BRIDGEKOL=' + $('#drpSelectBridgeKOL').val();
+            }
+        }
+        function CSVExport(rslt) {
+            if (rslt == "2")
+
+                window.location = '@Url.Action("ExportCustomerMetNotMetChemistToCsv")?PKID=' + $('#ddlPSONameList').val() + '&FDATE=' + $('#drpSelectMonth').val() + '&TODATE=' + $('#drpSelectYear option:selected').text() + '&DOCTYPE=' + $('#drpSelectDoctorType').val() + '&CUSTYPE=' + $('#lstGetCustomerType').val() + '&BRIDGEKOL=' + $('#drpSelectBridgeKOL').val();
+            else {
+                window.location = '@Url.Action("ExportCustomerMetNotMetToCsv")?PKID=' + $('#ddlPSONameList').val() + '&FDATE=' + $('#drpSelectMonth').val() + '&TODATE=' + $('#drpSelectYear option:selected').text() + '&DOCTYPE=' + $('#drpSelectDoctorType').val() + '&CUSTYPE=' + $('#lstGetCustomerType').val() + '&BRIDGEKOL=' + $('#drpSelectBridgeKOL').val();
+            }
+        }
+
+        function PrintGrid(gid) {
+
+            // empty the print div container.
+            var rows = $('#CustomerMetNotMet').jqGrid('getRowData');
+            for (var i = 0; i < rows.length; i++) {
+                var row = rows[i];
+                $('#Table1').append("<tr><td>" + row.CustomerName + "</td><td>" + row.AreaName + "</td><td>" + row.Specialization + "</td><td>" + row.PlannedVisits + "</td><td>" + row.VisitCount + "</td><td>" + row.BalanceVisits + "</td></tr>");
+
+            }
+            $(function () { printChrome('prt-container') });
+
+        }
+
+
+
+        function ChemistPrintGrid(gid) {
+            // empty the print div container.
+            var rows = $('#CustomerMetNotMet').jqGrid('getRowData');
+            for (var i = 0; i < rows.length; i++) {
+                var row = rows[i];
+                $('#Table2').append("<tr><td>" + row.CustomerName + "</td><td>" + row.AreaName + "</td><td>" + row.PlannedVisits + "</td><td>" + row.VisitCount + "</td><td>" + row.BalanceVisits + "</td><td>" + row.RBPlannedVisits + "</td><td>" + row.RBVisitCount + "</td><td>" + row.RBBalanceVisits + "</td></tr>");
+
+            }
+            $(function () { printChrome('prt-container1') });
+
+        }
+
+
+
+    </script>
+    <div id='prt-container' style="display:none">
+        <table id="Table1" border="1" width="100%">
+            <thead>
+                <tr>
+                    <td><b>Doctor Name</b></td>
+                    <td><b>Brick</b></td>
+                    <td><b>Specialization</b></td>
+                    <td><b>PlannedVisits</b></td>
+                    <td><b>VisitCount</b></td>
+                    <td><b>BalanceVisits</b></td>
+                </tr>
+
+            </thead>
+            <tbody></tbody>
+
+        </table>
+
+    </div>
+    <div id='prt-container1' style="display:none">
+        <table id="Table2" border="1" width="100%">
+            <thead>
+                <tr>
+                    <td><b>Doctor Name</b></td>
+                    <td><b>Brick</b></td>
+                    <td><b>PlannedVisits</b></td>
+                    <td><b>VisitCount</b></td>
+                    <td><b>BalanceVisits</b></td>
+                    <td><b>RBPlannedVisits</b></td>
+                    <td><b>RBVisitCount</b></td>
+                    <td><b>RBBalanceVisits</b></td>
+                </tr>
+
+            </thead>
+            <tbody></tbody>
+
+        </table>
+    </div>
+</body>

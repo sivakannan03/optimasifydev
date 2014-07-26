@@ -1,0 +1,229 @@
+﻿@{
+    ViewBag.Title = "SpecialtyMappingMaster";
+    Layout = "~/Views/Shared/MasterLayout.cshtml";
+}
+
+<h2>SpecialtyMappingMaster</h2>
+<body>
+    @using (Html.BeginForm(FormMethod.Post))
+    {
+        <div class="inner_tbldiv" style="margin-top:0px">
+            <div class="man_field">* Mandatory Field</div>
+           
+            
+            <table width="100%" border="0" cellspacing="0" cellpadding="0" align="left" class="inner_tb">
+                <tr>
+                    <td align="center" colspan="5">
+                        <label id="lblError"style=" color:red"></label>                        
+                    </td>
+
+                </tr>
+                <tr>
+                    <td width="10%" class="tb-r1">Specialization<span class="star">*</span></td>
+                    <td width="20%" class="tb-r1">
+                        @Html.DropDownList("drpSelectSpecialization", new[]{
+                                            new SelectListItem { Text="Select", Value="0"} })
+                    </td>
+                    <td width="10%" class="tb-r1">Team<span class="star">*</span></td>
+                    <td width="20%" class="tb-r1">
+                        @Html.DropDownList("drpSelectTeam", new[]{
+                                            new SelectListItem { Text="Select", Value="0"} })
+                    </td>
+                </tr>
+            </table>
+        </div>
+        <br>
+        <br>
+        <div id="reportsDiv">
+
+        </div>
+
+        <br>
+        <br>
+        <div id="btnDiv" style="display:none;">
+            <table id="tblbg" width="50%" border="0" align="left">
+                <tr>
+                    <td align="right">
+                        <input style="Z-INDEX: 0" id="Button1" class="blue_button add_btn" onclick="addMainRow('tblBrand')"
+                               value=" Add Row " type="button" name="btnAddNew">
+                        <input style="Z-INDEX: 0" id="btnReportDeleteRow" class="blue_button add_btn" onclick="dceDeleteRowsbyUser('tblBrand')"
+                               value="Delete Row" type="button" name="btnDelete">
+                        <input id="btnAdd" class="orange_button" value="Submit" type="submit" name="btnsubmint" onclick="return Add();">
+                    </td>
+                </tr>
+
+            </table><br>
+            <br><br>
+        </div>
+    }
+
+    <script type="text/javascript">
+
+
+        function Add() {
+            var tableElement = document.getElementById("tblBrand");	//	Get the table element
+            var finalString = "";
+            var DRflag = "";
+            for (var jCount = 1; jCount < tableElement.tBodies[0].rows.length; jCount++) {
+                var objTR = tableElement.tBodies[0].rows[jCount];
+                var Product = objTR.cells[0].childNodes[0].value;
+                var DRFlag = objTR.cells[1].childNodes[0].value;
+                if (Product == "" || DRFlag == "") {
+                    if (Product == "") {
+                        alert("Please Select  Product");
+                        objTR.cells[0].childNodes[0].focus();
+                        return false;
+                    }
+                    if (DRFlag == "") {
+                        alert("Please Select  DRFlag");
+                        objTR.cells[1].childNodes[0].focus();
+                        return false;
+                    }
+
+                }
+                else {
+
+                    // finalString += "<Doc1><Pro>" + objTR.cells[0].childNodes[0].value + "</Pro>" + "<DR>" + objTR.cells[1].childNodes[0].value + "</DR></Doc1>";
+                    //alert(finalString);
+
+                    finalString += objTR.cells[0].childNodes[0].value + "|" + objTR.cells[1].childNodes[0].value + ",";
+                    //DRflag += objTR.cells[1].childNodes[0].value + ",";
+                    // alert(finalString);
+                    //alert(DRflag);
+                }
+            }
+            if (finalString == "") {
+                alert("Please add atleast one Product");
+                return false;
+            }
+            else {
+                //finalString = "<Root>" + finalString + "</Root>";
+                // getID("hdnXML").value = finalString;
+
+                $.getJSON('@Url.Action("JsPostSpecialtyMaster")?ProductName=' + finalString + '&Specialization=' + $('#drpSelectSpecialization').val() + '&Team=' + $('#drpSelectTeam').val(),
+                    function (data) {                      
+                        $("#lblError").html(data.alertMsg);
+                    //$("#lblError").text('Please select Year');
+                });
+              
+            }
+        }
+
+
+        function addMainRow(tables) {
+            //alert($('#'+tables+' tr').length);
+            try {
+                var table1 = $('#' + tables + '');
+                var table1 = document.getElementById("tblBrand");
+                var row = table1.insertRow($('#' + tables + ' tr').length);
+                row.className = "tb-r1";
+                addMainCell(table1, row);
+
+            }
+            catch (e) {
+                alert(e);
+            }
+        }
+
+        function addMainCell(table, objrow) {
+
+            for (var i = 0; i < 3; i++) {
+                var cell = objrow.insertCell(i);
+                cell.innerHTML = table.rows[1].cells[i].innerHTML;
+                clearValues(cell);
+            }
+
+        }
+
+
+        function clearValues(obj) {
+
+            for (var i = 0; i < obj.childNodes.length ; i++) {
+                obj.align = "center";
+                var childNode = obj.childNodes[i];
+
+                if (childNode.type == 'text') {
+                    childNode.value = "";
+                }
+                else if (childNode.type == 'select-one') {
+
+                    if (childNode.innerHTML.substring(32, 67) != "<OPTION selected value=D>D</OPTION>")
+                        childNode.selectedIndex = 0;
+                }
+                else if (childNode.type == 'textbox') {
+                    childNode.value = "";
+                }
+                else if (childNode.type == 'hidden') {
+                    childNode.value = "";
+                }
+                else if (childNode.type == 'checkbox') {
+                    childNode.checked = false;
+                }
+
+                else if (childNode.id == 'InnerTable') {
+                    childNode.childNodes[0].rows[0].cells[0].childNodes[0].selectedIndex = 0;
+                    childNode.childNodes[0].rows[0].cells[1].childNodes[0].value = "";
+                }
+
+
+            }
+
+
+        }
+
+
+        function dceDeleteRowsbyUser(tableName) {
+            //debugger;
+            var tableElement = document.getElementById("tblBrand");	//	Get the table element
+
+            for (var jCount = 1; jCount < tableElement.tBodies[0].rows.length; jCount++) {
+                chk = tableElement.tBodies[0].rows[jCount].childNodes[2].childNodes[0].checked;
+
+                var RowPos = tableElement.tBodies[0].rows[jCount].rowIndex;
+
+                if (chk == true) {
+
+                    deleteRowInATable("tblBrand")
+                }
+
+            }
+        }
+
+
+
+        $("#drpSelectSpecialization").change(function () {
+            $("#drpSelectTeam").empty();
+            $('#drpSelectTeam').append("<option selected='selected' value='0'>Select</option>");
+            $.getJSON('@Url.Action("JsonLoadSelectedTeamName")?Specialization=' + $('#drpSelectSpecialization').val(), function (data) {
+                for (var i = 0; i < data.countyCount; i++) {
+                    $('#drpSelectTeam').append("<option  value='" + data.countyItems[i].Value + "'>" + data.countyItems[i].Text + "</option>");
+                }
+            });
+        });
+
+
+        $("#drpSelectTeam").change(function () {
+
+            $.getJSON('@Url.Action("JsonPostSpecializationDetails")?Specialization=' + $('#drpSelectSpecialization').val() + '&Team=' + $('#drpSelectTeam').val(), function (data) {
+                $('#reportsDiv').html(data.rslt);
+            });
+            $("#btnDiv").css("display", "block");
+
+        });
+
+
+        jQuery(document).ready(function () {
+
+            var Userid = "";
+
+            $("#drpSelectSpecialization").empty();
+            $('#drpSelectSpecialization').append("<option value='256'>All</option>");
+
+            $.getJSON('@Url.Action("JsonLoadSpecialization")', function (data) {
+                for (var i = 0; i < data.countyCount; i++) {
+                    $('#drpSelectSpecialization').append("<option  value='" + data.countyItems[i].Value + "'>" + data.countyItems[i].Text + "</option>");
+                }
+            });
+        });
+    </script>
+</body>

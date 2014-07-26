@@ -1,0 +1,290 @@
+﻿@{
+    ViewBag.Title = "ReportSubmission";
+    Layout = "~/Views/Shared/MasterLayout.cshtml";
+}
+
+
+
+<body>
+
+    @using (Html.BeginForm(FormMethod.Post))
+    {
+        <div>
+            <label id="lblError" name="lblError" style=" color:red"> </label>
+
+            <table width="100%" border="1" cellspacing="0" class="inner_tb" cellpadding="0" align="left">
+                <tr>
+                    <th colspan="10">Report Submission</th>
+                </tr>
+                <tr>
+                    <td width="30%" valign="top" class="tb-r1">
+                        <table border="0" width="100%" class="inner_tb">
+                            <tbody>
+                                <tr>
+                                    <td class="tb-r1">Node Name</td>
+                                    <td class="tb-r1">
+                                        @Html.DropDownList("drpSelectNodeName", new[]{
+
+                                            new SelectListItem { Text="Select", Value="0"} })
+
+                                    </td>
+                                </tr>
+
+
+                            </tbody>
+                        </table>
+                    </td>
+                    <td valign="top" class="tb-r1">
+                        <table class="inner_tb">
+                            <tbody>
+                                <tr>
+                                    <td class="tb-r1">Name</td>
+                                    <td class="tb-r1">
+                                        &nbsp;&nbsp;&nbsp;
+                                        @Html.ListBox("lstGetName", new[]{
+
+                                            new SelectListItem { Text="", Value=""} }, new { @class = "listboxRpt" })
+
+
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </td>
+                    <td valign="top" class="tb-r1">
+                        <table class="inner_tb">
+                            <tr>
+                                <td class="tb-r1">Status</td>
+                                <td class="tb-r1">
+                                    &nbsp;&nbsp;&nbsp;
+
+                                    <select name="lstGetStatus" id="lstGetStatus" class="listboxRpt">
+                                        <option selected="selected" value="0">All</option>
+                                        <option value="Not Initiated">Not Initiated</option>
+                                        <option value="Saved">Saved</option>
+                                        <option value="Submitted">Submitted</option>
+                                    </select>
+                                </td>
+                            </tr>
+                        </table>
+
+                    </td>
+                </tr>
+
+                <tr>
+                    <td class="tb-r1">
+                        <table class="inner_tb">
+                            <tr>
+                                <td class="tb-r1">From Date</td>
+                                <td class="tb-r1"> &nbsp;&nbsp;&nbsp;<input type="text" class="tbox" id="txtFrmdate" name="txtFromdate" value="" readonly onclick="$(function () { $('#txtFrmdate').datepicker({ changeMonth: true, changeYear: true, yearRange: '1900:myDate', dateFormat: 'dd/mm/yy', maxDate: 0 ,});});" /></td>
+                            </tr>
+                        </table>
+                    </td>
+                    <td class="tb-r1">
+                        <table class="inner_tb">
+                            <tr>
+                                <td class="tb-r1">End Date</td>
+                                <td class="tb-r1"> &nbsp;&nbsp;&nbsp;<input type="text" class="tbox" id="txtTodate" name="txtTodate" value="" readonly onclick="$(function () { $('#txtTodate').datepicker({ changeMonth: true, changeYear: true, yearRange: '1900:myDate', dateFormat: 'dd/mm/yy', maxDate: 0 }); });" /></td>
+
+                            </tr>
+                        </table>
+                    </td>
+                    <td align="center" class="tb-r1">
+                        <input class="blue_button add_btn" type="button" width="5%" id="btnSubmit" value="GO">
+                    </td>
+                </tr>
+            </table>
+
+            <div style="display:none;" id="reportsDiv">
+
+            </div>
+
+        </div>
+    }
+
+    <script type="text/javascript">
+
+
+        function RptPrint(Test) {
+            alert(Test);
+            //PrintGrid();
+        }
+
+        function PrintGrid() {
+
+            // empty the print div container.
+            var rows = $('#SampleAckAdminGrid').jqGrid('getRowData');
+            for (var i = 0; i < rows.length; i++) {
+                var row = rows[i];
+                $('#Table1').append("<tr><td>" + row.SBDate + "</td><td>" + row.EmpName + "</td><td>" + row.TerName + "</td><td>" + row.productname + "</td><td>" + row.Productpack + "</td><td>" + row.AllocatedQty + "</td><td>" + row.AcknowledgeQty + "</td><td>" + row.ReasonForShortFall + "</td></tr>");
+
+            }
+            $(function () { printChrome('prt-container') });
+
+        }
+
+        function printChrome(divContainer) {
+
+            var printContent = document.getElementById(divContainer);
+            window.document.body.innerHTML = printContent.innerHTML;
+            window.print();
+            window.location.reload();
+        }
+
+        $("#drpSelectNodeName").change(function () {
+
+            $("#lstGetName").empty();
+            $('#lstGetName').append("<option value='0'>Select</option>");
+            $.getJSON('@Url.Action("JsonLoadRSName")?NodeName=' + $("#drpSelectNodeName").val(), function (data) {
+
+                for (var i = 0; i < data.countyCount; i++) {
+                    $('#lstGetName').append("<option  value='" + data.countyItems[i].Value.split("-")[0] + "'>" + data.countyItems[i].Text + "</option>");
+                }
+
+            });
+
+        });
+
+
+        $('#btnSubmit').click(function () {
+
+
+            $('label[id*="lblError"]').text('');
+            $("#drpSelectNodeName").css("border", "1px solid #d5d5d5");
+            $("#lstGetName").css("border", "1px solid #d5d5d5");
+            $("#txtTodate").css("border", "1px solid #d5d5d5");
+
+            if ($('#drpSelectNodeName option:selected').text() == 'Select') {
+                $("#lblError").text('Please select PSO Name');
+                $('#drpSelectNodeName').focus();
+                $("#drpSelectNodeName").css("background-color", "#FFE8E8").css("border", "1px solid #FF6666");
+                return false;
+            }
+
+
+            else if ($('#lstGetName option:selected').text() == 'Select') {
+                $("#lblError").text('Please select  Name');
+                $('#lstGetName').focus();
+                $("#lstGetName").css("background-color", "#FFE8E8").css("border", "1px solid #FF6666");
+                return false;
+            }
+
+            if ($('#txtFrmdate').val() != '' && $('#txtTodate').val() != '') {
+
+
+                var date1 = $('#txtFrmdate').val().split('/')[1] + '/' + $('#txtFrmdate').val().split('/')[0] + '/' + $('#txtFrmdate').val().split('/')[2];
+                var date2 = $('#txtTodate').val().split('/')[1] + '/' + $('#txtTodate').val().split('/')[0] + '/' + $('#txtTodate').val().split('/')[2];
+                var startDate = new Date(date1);
+                var endDate = new Date(date2);
+
+                if (startDate > endDate) {
+                    $("#lblError").text('End date should be greater than Start date');
+                    $('#txtTodate').focus();
+                    $("#txtTodate").css("background-color", "#FFE8E8").css("border", "1px solid #FF6666");
+                    return false;
+                }
+            }
+
+
+            var Name = "";           
+
+            $('#lstGetName :selected').each(function (i, selected) {
+
+                if ($(selected).val() != "0") {
+                    if ($(this).not('selected')) {
+
+                        Name += +$(this).val() + ",";
+                    }
+
+
+                }
+            });
+
+
+            //alert(Name);
+            //alert($("#drpSelectNodeName").val());
+            //alert($("#lstGetStatus").val());
+            //alert($("#txtFrmdate").val());
+            //alert($("#txtTodate").val());
+
+            var From = $("#txtFrmdate").val();
+            var strFrmdate = From.split("/");
+            var FromDate = strFrmdate[1] + "/" + strFrmdate[0] + "/" + strFrmdate[2];
+
+            var To = $("#txtTodate").val();
+            var strTodate = To.split("/");
+            var Todate = strTodate[1] + "/" + strTodate[0] + "/" + strTodate[2];
+
+            $.getJSON('@Url.Action("JsPostRptSubmissionSubmit")?SelectNodeType=' + $("#drpSelectNodeName").val() + '&Status=' + $("#lstGetStatus").val() + '&Name=' + Name + '&Frmdate=' + FromDate + '&Todate=' + Todate, function (data) {
+
+                $('#reportsDiv').html(data.rslt);
+                $('#reportsDiv').dialog({
+                    title: 'Report Submission',
+                    width: 736,
+                    height: 411,
+                    show: { effect: 'drop', direction: "up" },
+                    modal: true,
+                    open: function (event, ui) {
+
+                    }
+                });
+
+
+            });
+
+        });
+
+        $(document).ready(function () {
+
+            $("#txtFrmdate").datepicker({ changeMonth: true, changeYear: true, yearRange: '1900:myDate', dateFormat: 'dd/mm/yy', maxDate: 0 });
+            $("#txtTodate").datepicker({ changeMonth: true, changeYear: true, yearRange: '1900:myDate', dateFormat: 'dd/mm/yy', maxDate: 0 });
+            $("#txtFrmdate").val($.datepicker.formatDate("dd/mm/yy", new Date()));
+            $("#txtTodate").val($.datepicker.formatDate("dd/mm/yy", new Date()));
+
+
+
+            $("#drpSelectNodeName").empty();
+            $("#lstGetName").empty();
+
+            $('#drpSelectNodeName').append("<option  value='0'>Select</option>");
+            $('#lstGetName').append("<option value='0'>Select</option>");
+
+
+            $.getJSON('@Url.Action("JsonLoadRSNodeName")', function (data) {
+
+                for (var i = 0; i < data.countyCount; i++) {
+
+                    if (data.countyItems[i].Value == '@Session["NodeType_FKID"]') {
+                        $('#drpSelectNodeName').append("<option selected='selected' value='" + data.countyItems[i].Value + "'>" + data.countyItems[i].Text + "</option>");
+                    }
+                    else {
+                        $('#drpSelectNodeName').append("<option  value='" + data.countyItems[i].Value + "'>" + data.countyItems[i].Text + "</option>");
+                    }
+                }
+
+
+                //Load Name in Listbox ..
+
+                $.getJSON('@Url.Action("JsonLoadRSName")?NodeName=' + $('#drpSelectNodeName').val(), function (data) {
+
+                    for (var i = 0; i < data.countyCount; i++) {
+                        $('#lstGetName').append("<option selected='selected' value='" + data.countyItems[i].Value.split("-")[0] + "'>" + data.countyItems[i].Text + "</option>");
+                    }
+
+                });
+
+
+            });
+
+
+
+
+        });
+
+        function DownloadExcel() {
+            var win = window.open('@Url.Action("ExcelDownload")?fileName=' + 'ReportSubmission', 'showwin', 'width=550,height=400,top=0,left=0,toolbar=yes,location=no,directories=no,status=no,menubar=no,scrollbars=yes,resizeable=yes');
+
+            return false;
+        }
+    </script>
+</body>

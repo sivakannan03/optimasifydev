@@ -1,0 +1,145 @@
+﻿@{
+    ViewBag.Title = "CycleplanCoverageRpt_PSO";
+    Layout = "~/Views/Shared/MasterLayout.cshtml";
+}
+
+ <h2>CycleplanCoverageReportPSO</h2>
+
+<style type="text/css">
+    select {
+        width: 160px;
+    }
+</style>
+
+<body>
+    @using (Html.BeginForm(FormMethod.Post))
+    {
+
+        <div class="inner_tbldiv" style=" margin-top:0">
+            <div style="text-align:center;"><label id="lblError" style=" color:red"></label></div>
+            <table style="width:85% !important;" border="1" cellspacing="0" cellpadding="0" align="center" class="inner_tb">
+                <tr>
+                    <th colspan="6">Search </th>
+                </tr>
+
+                <tr>
+                    <td width="10%" valign="middle" align="left" class="tb-r2"></td>
+                    <td width="10%" valign="middle" align="left" class="tb-r2">Year<span class="star">*</span></td>
+                    <td width="30%" class="tb-r2">&nbsp;&nbsp;
+                        @Html.DropDownList("ddlYear", new[]{new SelectListItem { Text="Select", Value=""} })
+
+                        &nbsp;
+                    </td>
+                    <td width="10%" valign="middle" align="left" class="tb-r2">Month<span class="star">*</span></td>
+                    <td width="20%" class="tb-r2">
+                        &nbsp;&nbsp;
+                        @Html.DropDownList("ddlMonth", new[] { new SelectListItem { Text = "Select", Value = "" } })
+                        &nbsp;
+                    </td>
+                    <td width="20%" class="tb-r2" align="center">
+                        <input type="button" class="blue_button" value="Go" id="btnGo" name="btnGo" />&nbsp;
+
+                    </td>
+                </tr>  
+
+            </table>
+             
+        </div> 
+        
+        
+        <div id="DivReport">
+                  </div> 
+    }
+    
+ 
+    <script>
+        $(document).ready(function () {
+            $("#lblError").text('');
+            $("#lblError").css("color", "red");
+            LoadYear();
+            LoadMonth();
+
+        });
+        function LoadYear() {
+            var today = new Date(); // Initialize Date in raw form
+            var Currentyear = today.getFullYear(); // Get the year
+            var CurrentDate = today.getDate();
+            //Year binding into year ComboBox
+            var cPreviousYear = today.getFullYear() - 5;
+
+            var cNextYear = today.getFullYear() + 3;
+            var iSelected = 0;
+            for (var iCount = cPreviousYear; iCount < cNextYear; iCount++) {
+
+                document.getElementById("ddlYear").options.add(new Option(iCount, "0"))
+                if (document.getElementById("ddlYear").options[iSelected].innerText == Currentyear) {
+                    document.getElementById("ddlYear").selectedIndex = iSelected;
+                }
+                iSelected++;
+            }
+        }
+
+        function LoadMonth() {
+            var today = new Date(); // Initialize Date in raw form
+            var currentMonth = today.getMonth() + 1; // Get the month
+
+            var months = ["", "January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
+            var option = '';
+            for (var i = 0; i < months.length; i++) {
+                if (i == 0)
+                    continue;
+                if (currentMonth != i) {
+                    option += '<option value="' + i + '">' + months[i] + '</option>';
+                    continue;
+                }
+                option += '<option value="' + i + '" selected="selected">' + months[i] + '</option>';
+            }
+            $('#ddlMonth').append(option);
+        }
+
+        $('#btnGo').click(function () {
+            $('select').css("border", "1px solid #C0C0C0");
+            $("#lblError").text('');
+            if ($('#ddlYear').val() == '') {
+                $("#lblError").text('Please select Year');
+                $('#ddlYear').focus();
+                $("#ddlYear").css("background-color", "#FFE8E8").css("border", "1px solid #FF6666");
+                 
+                return false;
+            }
+            if ($('#ddlMonth').val() == '') {
+                $("#lblError").text('Please select Month');
+                $('#ddlMonth').focus();
+                $("#ddlMonth").css("background-color", "#FFE8E8").css("border", "1px solid #FF6666");
+                return false;
+            } 
+          
+            $.getJSON('@Url.Action("JsonPrintPSORpt")?month=' + $('#ddlMonth').val() + '&year=' + $('#ddlYear option:selected').text(), function (data) {
+               
+                $('#DivReport').html(data.rslt); 
+                $('#DivReport').dialog({
+                    title: 'Cycle Plan Coverage Report PSO',
+                    width: 850,
+                    height:'auto',
+                    show: { effect: 'drop', direction: "up" },
+                    modal: true,
+                    close: Reload
+                });
+               
+            });
+           
+            
+        });
+        
+        function DownloadExcel() {
+            
+            var win = window.open('@Url.Action("ExcelDownload")?fileName=' + 'CycleplanCoverageRptPsoWise', 'showwin', 'width=550,height=400,top=0,left=0,toolbar=yes,location=no,directories=no,status=no,menubar=no,scrollbars=yes,resizeable=yes');
+          
+            return false;
+        }
+        function Reload() {
+            window.location.reload();
+        }
+    
+    </script>
+    </body>

@@ -1,0 +1,310 @@
+﻿@{
+    ViewBag.Title = "TrackSheetReportForFTM";
+    Layout = "~/Views/Shared/MasterLayout.cshtml";
+}
+
+<h2>TrackSheetReportForFTM</h2>
+
+
+<body>
+
+    @using (Html.BeginForm(FormMethod.Post))
+    {
+        <div>
+            <table width="100%" border="1" cellspacing="0" class="inner_tb" cellpadding="0" align="left">
+                <tr>
+                    <th colspan="8" style="margin-top: 10px; background-color: #00AADA; color: white;height:20px;">FilterOn</th>
+                </tr>
+                <tr>
+                    <td width="30%" valign="middle" class="tb-r2">
+                        <table border="1" width="100%" class="inner_tb">
+                            <tbody>
+                                <tr>
+                                    <td class="tb-r2">FTMNAME<span style="color:red">*</span></td>
+                                    <td class="tb-r2">
+                                        &nbsp;&nbsp;&nbsp;
+                                        @Html.DropDownList("drpSelectFTMName", new[]{
+
+                                            new SelectListItem { Text="Select", Value="0"} })
+
+                                    </td>
+                                    <td class="tb-r2">TrackSheetForTheYear<span style="color:red">*</span></td>
+                                    <td class="tb-r2">
+                                        &nbsp;&nbsp;&nbsp;
+                                        @Html.DropDownList("drpSelectFTMYear", new[]{
+
+                                            new SelectListItem { Text="Select", Value=""} })
+
+                                    </td>
+                                    <td class="tb-r2"><input class="blue_button add_btn" type="button" width="5%" id="btnSubmit" value="GO"></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </td>
+                </tr>
+            </table>
+        </div>
+        
+         <div id="testDiv">
+             &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+             <table id="tabStatus" style="margin-top: 30px; width :100%" border="0">
+                
+                 <tr>
+                     <td></td>
+                 </tr>
+             </table>
+            <table border="0" style="width: 100%">
+                <tr>
+                    <td>
+                        <!--JqGrid Starts-->
+                        <table style="margin-top: 40px; width :100%" border="0">
+                            <tr>
+                                <td>
+                                    <table id="ajaxGrid" style="width: 100%" border="0"></table>
+                                    <div id="ajaxGridPager">
+                                    </div>
+                                </td>
+                            </tr>
+                        </table>
+                        <!--Ends-->
+                    </td>
+                </tr>
+            </table>
+        </div>
+
+    }
+
+</body>
+    <script type="text/javascript">
+        function LoadYear() {
+           
+            var today = new Date(); // Initialize Date in raw form
+            var Currentyear = today.getFullYear(); // Get the year
+            var CurrentDate = today.getDate();
+            //Year binding into year ComboBox
+            var cPreviousYear = today.getFullYear() - 5;
+
+            var cNextYear = today.getFullYear() + 3;
+            var iSelected = 0;
+            for (var iCount = cPreviousYear; iCount < cNextYear; iCount++) {
+
+                document.getElementById("drpSelectFTMYear").options.add(new Option(iCount, "0"))
+                if (document.getElementById("drpSelectFTMYear").options[iSelected].innerText == Currentyear) {
+                    document.getElementById("drpSelectFTMYear").selectedIndex = iSelected;
+                }
+                iSelected++;
+            }
+        }
+        $(document).ready(function () {
+
+            LoadYear();
+            $.getJSON('@Url.Action("JsonLoadSelectFTMName")', function (data) {
+
+                for (var i = 0; i < data.countyCount; i++) {
+
+                    $('#drpSelectFTMName').append("<option value='" + data.countyItems[i].Value + "'>" + data.countyItems[i].Text + "</option>");
+                }
+
+
+            });
+
+            @*$.ajax({
+                type: 'POST',
+                url: '@Url.Action("JsonLoadSelectFTMYear")',
+                success: function (data) {
+
+                    $('#drpSelectFTMYear').html(data);
+
+                }
+            });*@
+
+        });
+        
+        $("#btnSubmit").click(function () {
+            $("#drpSelectFTMName").css("background-color", "white").css("border", "2px solid #C0C0C0");
+            $("#drpSelectFTMYear").css("background-color", "white").css("border", "2px solid #C0C0C0");
+            if ($("#drpSelectFTMName").val() == 0 || $("#drpSelectFTMYear").val() == '') {
+                
+                if ($("#drpSelectFTMName").val() == 0)
+                    $("#drpSelectFTMName").css("background-color", "#FFE8E8").css("border", "2px solid #FF6666");
+                else if ($("#drpSelectFTMYear").val() == '')
+                    $("#drpSelectFTMYear").css("background-color", "#FFE8E8").css("border", "2px solid #FF6666");
+
+
+            }
+            else {
+
+                var FTM = $("#drpSelectFTMName").val();
+                var YEAR = $("#drpSelectFTMYear").val();
+                
+                $("#drpSelectFTMName").css("background-color", "white").css("border", "2px solid #C0C0C0");
+                $("#drpSelectFTMYear").css("background-color", "white").css("border", "2px solid #C0C0C0");
+                initGrid(FTM, YEAR);
+                $('#drpSelectFTMName').val(0);
+                $('#drpSelectFTMYear').val('');
+                
+               
+
+            }
+         
+            
+
+        });
+        function Today() {
+
+            var today = new Date();
+            var dd = today.getDate();
+            var mm = today.getMonth() + 1; //January is 0!
+            var yyyy = today.getFullYear();
+
+            if (dd < 10) {
+                dd = '0' + dd
+            }
+
+            if (mm < 10) {
+                mm = '0' + mm
+            }
+
+            today = dd + '/' + mm + '/' + yyyy;
+
+            $("#tabStatus").html("<tr ><td><font size='4'>TracksheetReport For:  <b>" + $("#drpSelectFTMName option:selected").text() + "</b> As On <b>" + today + "</b>  For the Year: <b>" + $("#drpSelectFTMYear").val() + "</b>:</font></td></tr>")
+
+
+        }
+        function initGrid(FTM, YEAR) {
+
+            $('#ajaxGrid').jqGrid('GridUnload');
+            var test = "";
+            Today();
+            jQuery("#ajaxGrid").jqGrid({
+
+                url: '@Url.Action("GridTrackSheetReportForFTM")?FTM=' + FTM + '&YEAR=' + YEAR + '&Flag=' + 2,
+
+                datatype: "json",
+                jsonReader: { repeatitems: false, id: "PKID" },
+                colNames: ['PKID', 'Parameters', 'Last DEC', 'JAN', 'FEB', 'MAR', 'APR', 'MAY', 'JUN', 'JUL', 'AUG', 'SEP', 'OCT', 'NOV', 'YTD'],
+                colModel: [
+                     { name: 'PKID', index: 'PKID', align: 'left', hidden: true },
+                     { name: 'Parameters', index: 'Parameters', align: 'left',width:650, hidden: false },
+                     { name: 'Dec', index: 'Dec', width: 300, align: 'left', formatter: 'currency', hidden: false },
+                     { name: 'Jan', index: 'Jan', align: 'left',formatter: 'currency', hidden: false },
+                     { name: 'Feb', index: 'Feb', align: 'left', formatter: 'currency', hidden: false },
+                     { name: 'Mar', index: 'Mar', align: 'left', formatter: 'currency', hidden: false },
+                     { name: 'Apr', index: 'Apr', align: 'left', formatter: 'currency', hidden: false },
+                     { name: 'May', index: 'May', align: 'left', formatter: 'currency', hidden: false },
+                     { name: 'Jun', index: 'Jun', align: 'left', formatter: 'currency', hidden: false },
+                     { name: 'Jul', index: 'Jul', align: 'left', formatter: 'currency', hidden: false },
+                     { name: 'Aug', index: 'Aug', align: 'left', formatter: 'currency', hidden: false },
+                     { name: 'Sep', index: 'Sep', align: 'left', formatter: 'currency', hidden: false },
+                     { name: 'Oct', index: 'Oct', align: 'left', formatter: 'currency', hidden: false },
+                     { name: 'Nov', index: 'Nov', align: 'left', formatter: 'currency', hidden: false },
+                     { name: 'YTD', index: 'YTD', align: 'left', formatter: 'currency', hidden: false }
+                     
+                 ],
+                autowidth: true,
+                gridview: true,
+                caption: 'TrackSheetReportForFTM',
+                align: 'center',
+                sortable: true,
+                hidegrid: true,
+                altRows: true,
+                sortname: 'PKID',
+                sortorder: 'asc',
+                rowTotal: 10,
+                rowNum: 10,
+                
+                gridComplete: function () {
+               
+                    if (jQuery("#ajaxGrid").getGridParam("records") == 0) {
+                        jQuery("#ajaxGrid").addRowData(
+                        "blankRow", { "Parameters": "No records Found" });
+                    }
+                },
+                viewrecords: true,
+                pager: $('#ajaxGridPager'),
+                height: 'auto',
+
+
+
+            });
+            jQuery("#ajaxGrid").jqGrid('navGrid', '#ajaxGridPager', { edit: false, add: false, del: false, search: false,view:false },
+            {
+              
+            
+              });
+            setMethod('ajaxGrid', 'ajaxGridPager', 'Customer Grid',FTM,YEAR);
+        }
+       
+
+        
+        function setMethod(gid, id, pgTitle, FTM, YEAR) {
+            
+        var btnTitle = 'Export to Excel';
+        $('#' + gid).jqGrid('navSeparatorAdd', '#' + id, { sepclass: "ui-separator" });
+        $('#' + gid).jqGrid('navButtonAdd', '#' + id, { caption: '', title: btnTitle, position: 'last', buttonicon: 'ui-icon-calculator', onClickButton: function () { ExcelExport(FTM, YEAR); } });
+
+        var btnTitle = 'Export to PDF';
+        $('#' + gid).jqGrid('navSeparatorAdd', '#' + id, { sepclass: "ui-separator" });
+        $('#' + gid).jqGrid('navButtonAdd', '#' + id, { caption: '', title: btnTitle, position: 'last', buttonicon: 'ui-icon-bookmark', onClickButton: function () { PDFExport(FTM, YEAR); } });
+
+        var btnTitle = 'Print Grid';
+        $('#' + gid).jqGrid('navSeparatorAdd', '#' + id, { sepclass: "ui-separator" });
+        $('#' + gid).jqGrid('navButtonAdd', '#' + id, { caption: '', title: btnTitle, position: 'last', buttonicon: 'ui-icon-print', onClickButton: function () { PrintGrid(gid); } });
+    }
+        function ExcelExport(FTM, YEAR) {
+            window.location = '@Url.Action("ExportTrackSheetReportForFTMToExcel")?YEAR=' + YEAR +'&Flag='+2+'&FTM='+FTM ;
+        }
+        function PDFExport(FTM, YEAR) {
+            window.location = '@Url.Action("ExportTrackSheetReportForFTMToPDF")?YEAR=' + YEAR +'&Flag='+2+'&FTM='+FTM ;
+        }
+        
+        function PrintGrid(gid) {
+
+
+        var rows = $('#ajaxGrid').jqGrid('getRowData');
+        for (var i = 0; i < rows.length; i++) {
+        var row = rows[i];
+        $('#Table1').append("<tr><td>" + row.Parameters + "</td><td>" + row.Dec + "</td><td>" + row.Jan + "</td><td>" + row.Feb + "</td><td>" + row.Mar + "</td><td>" + row.Apr + "</td><td>" + row.May + "</td><td>" + row.Jun + "</td><td>" + row.Jul + "</td><td>" + row.Aug + "</td><td>" + row.Sep + "</td><td>" + row.Oct + "</td><td>" + row.Nov + "</td><td>" + row.YTD + "</td></tr>");
+
+        }
+        $(function () { printChrome('prt-container') });
+
+
+        }
+
+        function printChrome(divContainer) {
+
+        var printContent = document.getElementById(divContainer);
+        window.document.body.innerHTML = printContent.innerHTML;
+        window.print();
+        window.location.reload();
+        }
+
+
+        </script>
+        <div id='prt-container' style="display:none">
+            <table id="Table1" border="1" width="100%">
+                <thead>
+                    <tr>
+                        <td><b>Parameters</b></td>
+                        <td><b>Last DEC</b></td>
+                        <td><b>FEB</b></td>
+                        <td><b>MAR</b></td>
+                        <td><b>APR</b></td>
+                        <td><b>MAR</b></td>
+                        <td><b>MAY</b></td>
+                        <td><b>JUN</b></td>
+                        <td><b>JUL</b></td>
+                        <td><b>AUG</b></td>
+                        <td><b>SEP</b></td>
+                        <td><b>OCT</b></td>
+                        <td><b>NOV</b></td>
+                        <td><b>YTD</b></td>
+                    </tr>
+
+                </thead>
+                <tbody></tbody>
+
+            </table>
+        </div>
+

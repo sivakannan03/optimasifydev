@@ -58,10 +58,10 @@
             colModel: [
                      { name: 'PKID', index: 'PKID', align: 'left', hidden: true, editable: true },
                      {
-                         name: 'RegionCode', index: 'RegionCode', align: 'left', editable: true, formoptions: {
+                         name: 'RegionCode', index: 'RegionCode', align: 'left', editable: true,searchoptions: { sopt: ['eq', 'bw', 'ew', 'cn'] }, searchrules: { required: true }, search: true, formoptions: {
                              size: 35,
                              elmprefix: "<span style='align:left;color:red'>*</span>&nbsp;"
-                         }, searchoptions: { sopt: ['eq', 'bw', 'ew', 'cn'] }, search: true,searchrules:{required:true}, editoptions: {
+                         },  editoptions: {
                              size: 35,
                              maxlength: 30,
                              dataEvents: [

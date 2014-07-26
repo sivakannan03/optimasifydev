@@ -753,7 +753,7 @@ namespace Pfizer.Controllers
 
                     ModifiedBy = Convert.ToDecimal(Session["USER_FKID"] == null ? "0" : Session["USER_FKID"].ToString());
                     dcManageGeography.DeleteTerritoryMaster(Convert.ToDecimal(id), ModifiedBy);
-                    id = "City Master deleted Successfully.";
+                    id = "Territory Master Master deleted Successfully.";
                 }
 
                 return Json(id);
@@ -3282,7 +3282,7 @@ namespace Pfizer.Controllers
                 item.TerCode==null?"":item.TerCode,
                 item.TerName==null?"":item.TerName,
                 item.AreaName==null?"":item.AreaName,
-                item.IsActive==null?"":item.IsActive,
+                //item.IsActive==null?"":item.IsActive,
                
               
             }));
@@ -3292,13 +3292,14 @@ namespace Pfizer.Controllers
             { return Json(new { error = ex.Message }); }
         }
         private static readonly string[] HeadersTerritoryBricksLink = {
-                "TerritoryName, TerritoryCode, Brick"
+                "TerritoryName", "TerritoryCode", "Brick"
+                 
             };
         private static readonly DataForExcel.DataType[] ColunmTypesTerritoryBricksLink = {
                 DataForExcel.DataType.String,
                 DataForExcel.DataType.String,
                 DataForExcel.DataType.String,
-                DataForExcel.DataType.String
+               
                  };
 
         #endregion
@@ -3315,7 +3316,7 @@ namespace Pfizer.Controllers
                 foreach (var item in context)
                 {
                     TerritoryBricksLinkMaster user = new TerritoryBricksLinkMaster();
-                    user.PKID = (item.PKID.ToString()==null?"":item.PKID.ToString());
+                  //  user.PKID = (item.PKID.ToString()==null?"":item.PKID.ToString());
                     user.TerritoryCode = (item.TerCode == null ? "" : item.TerCode);
                     user.TerritoryName = (item.TerName==null?"" : item.TerName);
                     user.Brick = (item.AreaName==null?"" : item.AreaName);
@@ -3323,22 +3324,7 @@ namespace Pfizer.Controllers
                 }
                 var customerList = userList;
 
-                var result = new
-                {
-                    total = 1,
-                    page = 1,
-                    records = customerList.Count(),
-                    rows = (
-                        customerList.Select(e =>
-                            new
-                            {
-                                id = e.PKID,
-                                cell = new string[]{
-                          e.TerritoryName,e.TerritoryCode,e.Brick
-                        }
-                            })
-                    ).ToArray()
-                };
+             
                 pdf.ExportPDF(customerList, new string[] {"TerritoryCode", "TerritoryName", "Brick" }, path);
                 return File(path, "application/pdf", "TerritoryBricksLink.pdf");
             }
@@ -3352,7 +3338,7 @@ namespace Pfizer.Controllers
 
         public class TerritoryBricksLinkMaster
         {
-            public string PKID { get; set; }
+           // public string PKID { get; set; }
             public string TerritoryCode { get; set; }
             public string TerritoryName { get; set; }
             public string Brick { get; set; }

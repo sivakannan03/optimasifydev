@@ -1,0 +1,263 @@
+﻿@{
+    ViewBag.Title = "UnlockCyclePlanRetailer";
+    Layout = "~/Views/Shared/MasterLayout.cshtml";
+}
+
+<body>
+@using (Html.BeginForm(FormMethod.Post))
+    {
+     <div>
+        <table border="1" style="margin-top: 7px;width: 100%" class="inner_tb">
+            <tr style="margin-top: 10px;">
+                <th colspan="10">Unlock Cycle Plan Retailer</th>
+            </tr>
+            <tr style="margin-top: 10px;">
+                <td class="tb-r2" width="15%">Year</td>
+                <td class="tb-r2" width="20%">
+                    @*<input type="text" name="txtYear" id="txtYear" value="" readonly size="20" />*@
+                    @Html.DropDownList("drpSelectYear", new[]{
+                                  new SelectListItem { Text="Select", Value="0"} })
+                </td>
+                <td class="tb-r2" width="15%">Cycle</td>
+                <td class="tb-r2" width="20%">
+                    @*<input type="text" name="txtCycle" id="txtCycle" value="" readonly size="20" />*@
+                    @Html.DropDownList("drpSelectCycle", new[]{
+                                  new SelectListItem { Text="Select", Value="0"} })
+                </td>
+                <td class="tb-r2" width="20%"></td>
+            </tr>
+            <tr style="margin-top: 10px;">
+                <td class="tb-r2" width="20%">Division</td>
+                <td class="tb-r2" width="20%">
+                    @Html.DropDownList("drpDivision", new[]{
+                                  new SelectListItem { Text="", Value=""} })
+                </td>
+                <td class="tb-r2" width="20%">Team</td>
+                <td class="tb-r2" width="20%">
+                    @Html.DropDownList("drpTeam", new[]{
+                          new SelectListItem { Text="", Value=""} })
+                </td>
+                <td class="tb-r2" width="20%"><input type="button" id="btnFetch" class="blue_button" style="height:30px; width:70px;border-radius:7px" value="Fetch" /></td>
+            </tr>
+        </table>
+    </div>
+     <br />
+        <br />
+        <div>
+            <table border="0" style="width: 100%">
+                <tr>
+                    <td>
+                        <!--JqGrid Starts-->
+                        <table style="margin-top: 7px; width :100%" border="0">
+                            <tr>
+                                <td>
+                                    <table id="ajaxUnlockCyclePlanRetailer" style="width: 100%" border="0"></table>
+                                    <div id="ajaxGridUnlockCycleRetailerPage">
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td align="center" style="padding-top:20px; ">
+                                    <table>
+                                        <tr>
+                                            <td style="padding-right:10px;">
+                                                <input type="button" class="blue_button" id="bntSubmit" title="Submit" value="Submit" />
+                                            </td>
+                                            <td>
+                                                <input type="button" class="orange_button" id="bntReset" title="Reset" value="Reset" />
+                                            </td>
+
+                                        </tr>
+                                    </table>
+                                </td>
+
+                            </tr>
+                        </table>
+                        <!--Ends-->
+                    </td>
+                </tr>
+            </table>
+        </div>
+}
+    <script type="text/javascript">
+        //Fetch Data List
+        $("#btnFetch").click(function () {
+            var Cycles = $('#drpSelectCycle').val();
+            var Divisions = $('#drpDivision').val()
+            var Teams = $("#drpTeam").val();
+            UnlockCyclePlanRetailer(Cycles, Divisions, Teams);
+            $("#bntSubmit").show();
+            $("#bntReset").show();
+        });
+
+        //Submit Button Data
+        $("#bntSubmit").click(function () {
+            jQuery('#ajaxUnlockCyclePlanRetailer').jqGrid('saveRow', lastsel);
+            var gridData = jQuery("#ajaxUnlockCyclePlanRetailer").getRowData();
+            var postData = JSON.stringify(gridData);
+            alert(postData);
+            $.ajax({
+                url: '@Url.Action("UnlockCyclePlanRetailer")?SelectDivision=' + $("#drpDivision").val(),
+                type: 'POST',
+                dataType: 'json',
+                data: { gridData: postData },
+                success: function (result) {
+                    $('#FormError').html("<td class='ui-state-error' colspan='10'>" + result + ":Field is required</td>");
+                }
+            });
+            $("#ajaxUnlockCyclePlanRetailer").setGridParam({ datatype: 'json', page: 1 }).trigger('reloadGrid');
+            return true;
+        });
+
+        //Reset Field
+        $("#bntReset").click(function () {
+            $("#drpDivision").val(0);
+            $("#drpTeam").val(0);
+        });
+
+        //Division Change Team Member Load
+        $("#drpDivision").change(function () {
+            $("#drpTeam").empty();
+            $("#drpTeam").append("<option selected='selected' value='0'>Select</option>");
+            $.getJSON('@Url.Action("JsonLoadSelectTeam")?SelectDivision=' + $("#drpDivision").val(), function (data) {
+
+                for (var i = 0; i < data.TeamCount; i++) {
+                    $('#drpTeam').append("<option value='" + data.TeamNamke[i].Value + "'>" + data.TeamNamke[i].Text + "</option>");
+                }
+
+            });
+
+        });
+        $(document).ready(function () {
+            var todaysDate = new Date();
+            var date = todaysDate.getDate();
+            var monthNames = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+            var Month = monthNames[todaysDate.getMonth()]
+            var year = todaysDate.getFullYear();
+            $.ajax({
+                type: 'POST',
+                url: '@Url.Action("JsonGetYear")',
+                success: function (rec) {
+                    for (var i = 0; i <= rec.length; i++) {
+                        //if (rec[i].Year == year) {
+                        //    $("#drpSelectYear").prop("disabled", true);
+                        //    $('#drpSelectYear').append("<option selected='selected' value='" + rec[i].PKID + "'>" + rec[i].Year + "</option>");
+                        //}
+                        //if (rec[i].CyclesMonth == Month) {
+                        //    $("#drpSelectCycle").prop("disabled", true);
+                        //    $('#drpSelectCycle').append("<option selected='selected' value='" + rec[i].PKID + "'>" + rec[i].cycleName + "</option>");
+                        //}
+                        if ((rec[i].Year == year) && (rec[i].CyclesMonth == Month)) {
+                            $("#drpSelectYear").prop("disabled", true);
+                            $("#drpSelectCycle").prop("disabled", true);
+                            $('#drpSelectYear').append("<option selected='selected' value='" + rec[i].PKID + "'>" + rec[i].Year + "</option>");
+                            $('#drpSelectCycle').append("<option selected='selected' value='" + rec[i].PKID + "'>" + rec[i].cycleName + "</option>");
+                        }
+                        //if (rec[i].Year == year) {
+                                                     
+                        //    $("#txtYear").val("" + rec[i].Year + "");
+                        //}
+                        //if (rec[i].CyclesMonth == Month) {
+                        //    $("#txtCycle").val("" + rec[i].cycleName + "");
+                         
+                        //}
+                        //if ((rec[i].Year == year) && (rec[i].CyclesMonth == Month)) {
+                        //    $("#txtYear").val("" + rec[i].Year + "");
+                        //    $("#txtCycle").val("" + rec[i].cycleName + "");
+                           
+                        //}
+                    }
+                }
+            });
+
+
+
+            $("#drpDivision").empty();
+            $("#drpTeam").empty();
+            $("#drpTeam").append("<option selected='selected' value='0'>Select</option>");
+            $("#drpDivision").append("<option selected='selected' value='0'>Select</option>");
+            $.getJSON('@Url.Action("GetDivisionLoad")', function (data) {
+                for (var i = 0; i < data.DivisionCount; i++) {
+                    $('#drpDivision').append("<option value='" + data.DivisionName[i].Value + "'>" + data.DivisionName[i].Text + "</option>");
+                }
+            });
+            // UnlockCyclePlanRetailer();
+            $("#bntSubmit").hide();
+            $("#bntReset").hide();
+        });
+
+       
+        var lastsel;
+        function UnlockCyclePlanRetailer(Cycles, Divisions, Teams) {
+           $("#ajaxUnlockCyclePlanRetailer").jqGrid("GridUnload");
+            jQuery("#ajaxUnlockCyclePlanRetailer").jqGrid({
+                //url: '@Url.Action("GEtUnlockPlanRetailer")?Cycle=' + $('#drpSelectCycle').val() + '&Division=' + $('#drpDivision').val() + '&Team=' + $("#drpTeam").val(),
+                url: '@Url.Action("GEtUnlockPlanRetailer")?Cycle=' + Cycles + '&Division=' + Divisions + '&Team=' + Teams,
+                jsonReader: { repeatitems: false, id: "PSOFKID" },
+                datatype: "json",
+                colNames: ['PSOFKID', 'Select', 'PSO Name', 'Territory Code', 'Reporting User Name', 'Cycle Plan Retailer Submitted Date'],
+                colModel: [
+                             { name: 'PSOFKID', index: 'PKID', align: 'left', hidden: true },
+                             {
+                                 name: 'chks', index: 'chks', width: 50, align: "center", editable: true,
+                                 edittype: "checkbox", editoptions: { value: "Yes:No" }, formatter: "checkbox", formatoptions: { disabled: false }
+                             },
+                             { name: 'PsoName', index: 'PsoName', align: 'left', hidden: false },
+                             { name: 'TERRITORYCODE', index: 'TERRITORYCODE', align: 'left', formoptions: { size: 35 } },
+                             { name: 'ReptUserName', index: 'ReptUserName', align: 'left', formoptions: { size: 35 } },
+                             { name: 'CPCreatedDate', index: 'CPCreatedDate', align: 'left', formoptions: { size: 35 } },
+
+                ],
+                caption: "Unlock Cycle Plan",
+                autowidth: true,
+                gridview: true,
+                hidegrid: true,
+                altRows: true,
+                rowTotal: 10,
+                rowNum: 10,
+                autoencode: true,
+                viewrecords: true,
+                pager: $('#ajaxGridUnlockCycleRetailerPage'),
+                height: 'auto',
+                gridComplete: function () {
+                    if (jQuery("#ajaxUnlockCyclePlanRetailer").getGridParam("records") == 0) {
+                        jQuery("#ajaxUnlockCyclePlanRetailer").addRowData(
+                        "blankRow", { "PsoName": "No records to view" });
+                    }
+                },
+                onSelectRow: function (id, selected) {
+                    var ch = jQuery(this).find('#' + id + ' input[type=checkbox]').attr('checked');
+                    if (ch) {
+                        jQuery(this).find('#' + id + ' input[type=checkbox]').attr('checked', false);
+                    } else {
+                        jQuery(this).find('#' + id + ' input[type=checkbox]').attr('checked', true);
+                    }
+                    rowChecked = 1;
+                    currentrow = id;
+                    if (!$("input[type=checkbox]").is(':checked') && !$("#chks").is(':checked')) {
+                        jQuery('#ajaxUnlockCyclePlanRetailer').jqGrid('saveRow', id);
+
+                    }
+                    else {
+                        jQuery("#ajaxUnlockCyclePlanRetailer").jqGrid('editRow', id);
+
+                    }
+
+                    if (id != lastsel) {
+                        jQuery('#ajaxUnlockCyclePlanRetailer').saveRow(lastsel);
+                        lastsel = id;
+                    }
+                    jQuery('#ajaxUnlockCyclePlanRetailer').editRow(id, true);
+
+                },
+                'cellsubmit': 'clientArray',
+                'editurl': 'clientArray',
+                editable: true,
+
+
+            });
+        }
+
+
+    </script>
+</body>

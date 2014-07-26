@@ -1,0 +1,153 @@
+﻿@{
+    ViewBag.Title = "SummeryReportPSO";
+    Layout = "~/Views/Shared/MasterLayout.cshtml";
+}
+
+<body>
+    @using (Html.BeginForm(FormMethod.Post))
+    {
+        <div>
+            <table border="0" style="width: 100%">
+                <tr>
+                    <td>
+                        <!--JqGrid Starts-->
+                        <table style="margin-top: 7px; width :100%" border="0">
+                            <tr>
+                                <td>
+                                    <table id="SummeryReportPSOGrid" style="width: 100%" border="0"></table>
+                                    <div id="SummeryReportPSOGridPager">
+                                    </div>
+                                </td>
+                            </tr>
+                        </table>
+                        <!--Ends-->
+                    </td>
+                </tr>
+            </table>
+        </div>
+    }
+
+    <script type="text/javascript">
+        jQuery(document).ready(function () {
+
+            initGrid();
+        });
+
+
+
+        function initGrid() {
+
+            jQuery("#SummeryReportPSOGrid").jqGrid("GridUnload");
+
+            jQuery("#SummeryReportPSOGrid").jqGrid({
+
+                url: '@Url.Action("GridDataSummeryReportPSO")',
+                datatype: "json",
+                jsonReader: { repeatitems: false },
+                colNames: ['Designation','HQ', 'Name', 'SPL/Segment', 'A+', 'A', 'B', 'C', 'Total'],
+                colModel: [
+                     { name: 'NodeName', index: 'NodeName', align: 'left' },
+                     { name: 'CityName', index: 'Name', align: 'left' },
+                      { name: 'Name', index: 'Name', align: 'left' },                   
+                       { name: 'Specialization', index: 'Specialization', align: 'left' },
+                        { name: 'APlus', index: 'APlus', align: 'left' },
+                         { name: 'A', index: 'A', align: 'left' },
+                          { name: 'B', index: 'B', align: 'left' },
+                           { name: 'C', index: 'C', align: 'left' },
+                            { name: 'total', index: 'total', align: 'left' },
+
+
+                ],
+                autowidth: true,
+                gridview: true,
+                caption: 'SummeryReport for PSO',
+                jqModal: true,
+                align: 'center',
+                sortable: true,
+                hidegrid: true,
+                altRows: true,
+                rowTotal: 10,
+                rowNum: 10,
+                gridComplete: function () {
+
+                    if (jQuery("#SummeryReportPSOGrid").getGridParam("records") == 0) {
+                        jQuery("#SummeryReportPSOGrid").addRowData(
+                        "blankRow", { "NodeName": "No records to view" });
+                    }
+                },
+
+                viewrecords: true,
+                pager: $('#SummeryReportPSOGridPager'),
+                height: 'auto',
+                editable: true,
+            });
+
+            jQuery("#SummeryReportPSOGrid").jqGrid('navGrid', '#SummeryReportPSOGridPager', { edit: false, add: false, del: false, search: false, view: false }),
+
+
+            setMethod('SummeryReportPSOGrid', 'SummeryReportPSOGridPager', 'Summery Report - for PSO');
+        }
+
+        function setMethod(gid, id, pgTitle) {
+            // alert(1);
+            var btnTitle = 'Export to Excel';
+            $('#' + gid).jqGrid('navSeparatorAdd', '#' + id, { sepclass: "ui-separator" });
+            $('#' + gid).jqGrid('navButtonAdd', '#' + id, { caption: '', title: btnTitle, position: 'last', buttonicon: 'ui-icon-calculator', onClickButton: function () { ExcelExport(); } });
+
+            var btnTitle = 'Export to PDF';
+            $('#' + gid).jqGrid('navSeparatorAdd', '#' + id, { sepclass: "ui-separator" });
+            $('#' + gid).jqGrid('navButtonAdd', '#' + id, { caption: '', title: btnTitle, position: 'last', buttonicon: 'ui-icon-bookmark', onClickButton: function () { PDFExport(); } });
+
+            var btnTitle = 'Print Grid';
+            $('#' + gid).jqGrid('navSeparatorAdd', '#' + id, { sepclass: "ui-separator" });
+            $('#' + gid).jqGrid('navButtonAdd', '#' + id, { caption: '', title: btnTitle, position: 'last', buttonicon: 'ui-icon-print', onClickButton: function () { PrintGrid(gid); } });
+        }
+        function ExcelExport() {
+            window.location = '@Url.Action("ExportSummeryReportPSOToExcel")';
+        }
+        function PDFExport() {
+            window.location = '@Url.Action("ExportSummeryReportPSOToPDF")';
+        }
+       
+        function PrintGrid(gid) {
+            // empty the print div container.
+            var rows = $('#SummeryReportPSOGrid').jqGrid('getRowData');
+            for (var i = 0; i < rows.length; i++) {
+                var row = rows[i];
+                $('#Table1').append("<tr><td>" + row.NodeName + "</td><td>" + row.Name + "</td><td>" + row.Specialization + "</td><td>" + row.APlus + "</td><td>" + row.A + "</td><td>" + row.B + "</td><td>" + row.C + "</td><td>" + row.total + "</td></tr>");
+            }
+            $(function () { printChrome('prt-container') });
+        }
+
+
+        function printChrome(divContainer) {
+
+            var printContent = document.getElementById(divContainer);
+            window.document.body.innerHTML = printContent.innerHTML;
+            window.print();
+            window.location.reload();
+        }
+
+
+    </script>
+
+    <div id='prt-container' style="display:none">
+        <table id="Table1" border="1" width="100%">
+            <thead>
+                <tr>                    
+                    <td><b>Designation HQ</b></td>
+                    <td><b>Name</b></td>
+                    <td><b>SPL/Segment</b></td>
+                    <td><b>A+</b></td>
+                    <td><b>A</b></td>
+                    <td><b>B</b></td>
+                    <td><b>C</b></td>
+                    <td><b>Total</b></td>
+                </tr>
+
+            </thead>
+            <tbody></tbody>
+
+        </table>
+    </div>
+</body>

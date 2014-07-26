@@ -30,69 +30,20 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="DocumentFormat.OpenXml, Version=2.5.5631.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\packages\DocumentFormat.OpenXml.2.5\lib\DocumentFormat.OpenXml.dll</HintPath>
-    </Reference>
-    <Reference Include="EntityFramework, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\packages\EntityFramework.6.1.1\lib\net45\EntityFramework.dll</HintPath>
-    </Reference>
-    <Reference Include="EntityFramework.SqlServer, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\packages\EntityFramework.6.1.1\lib\net45\EntityFramework.SqlServer.dll</HintPath>
-    </Reference>
-    <Reference Include="itextsharp, Version=5.5.1.0, Culture=neutral, PublicKeyToken=8354ae6d2174ddca, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\packages\iTextSharp.5.5.1\lib\itextsharp.dll</HintPath>
-    </Reference>
-    <Reference Include="Microsoft.Web.Infrastructure, Version=1.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
-      <Private>True</Private>
-      <HintPath>..\packages\Microsoft.Web.Infrastructure.1.0.0.0\lib\net40\Microsoft.Web.Infrastructure.dll</HintPath>
-    </Reference>
-    <Reference Include="System" />
-    <Reference Include="System.Data" />
-    <Reference Include="System.Data.Linq" />
-    <Reference Include="System.Runtime.Serialization" />
-    <Reference Include="System.Web" />
-    <Reference Include="System.Web.Helpers, Version=2.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
-      <Private>True</Private>
-      <HintPath>..\packages\Microsoft.AspNet.WebPages.2.0.30506.0\lib\net40\System.Web.Helpers.dll</HintPath>
-    </Reference>
-    <Reference Include="System.Web.Mvc, Version=4.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
-      <Private>True</Private>
-      <HintPath>..\packages\Microsoft.AspNet.Mvc.4.0.30506.0\lib\net40\System.Web.Mvc.dll</HintPath>
-    </Reference>
-    <Reference Include="System.Web.Mvc.Extensions">
-      <HintPath>..\packages\System.Web.Mvc.Extensions.Mvc.4.1.0.9\lib\net40\System.Web.Mvc.Extensions.dll</HintPath>
-    </Reference>
-    <Reference Include="System.Web.Razor, Version=2.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
-      <Private>True</Private>
-      <HintPath>..\packages\Microsoft.AspNet.Razor.2.0.30506.0\lib\net40\System.Web.Razor.dll</HintPath>
-    </Reference>
-    <Reference Include="System.Web.WebPages, Version=2.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
-      <Private>True</Private>
-      <HintPath>..\packages\Microsoft.AspNet.WebPages.2.0.30506.0\lib\net40\System.Web.WebPages.dll</HintPath>
-    </Reference>
-    <Reference Include="System.Web.WebPages.Deployment, Version=2.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
-      <Private>True</Private>
-      <HintPath>..\packages\Microsoft.AspNet.WebPages.2.0.30506.0\lib\net40\System.Web.WebPages.Deployment.dll</HintPath>
-    </Reference>
-    <Reference Include="System.Web.WebPages.Razor, Version=2.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
-      <Private>True</Private>
-      <HintPath>..\packages\Microsoft.AspNet.WebPages.2.0.30506.0\lib\net40\System.Web.WebPages.Razor.dll</HintPath>
-    </Reference>
-    <Reference Include="WindowsBase" />
-  </ItemGroup>
-  <ItemGroup>
     <Compile Include="Acknowledgement.cs" />
     <Compile Include="ActivityMaster.cs">
+      <DependentUpon>PfizerEntity.tt</DependentUpon>
+    </Compile>
+    <Compile Include="AllNewCustomerRequest_Result.cs">
       <DependentUpon>PfizerEntity.tt</DependentUpon>
     </Compile>
     <Compile Include="AllPendingCustomer_Result.cs">
       <DependentUpon>PfizerEntity.tt</DependentUpon>
     </Compile>
     <Compile Include="AreaMaster.cs">
+      <DependentUpon>PfizerEntity.tt</DependentUpon>
+    </Compile>
+    <Compile Include="AreaSearch_Result.cs">
       <DependentUpon>PfizerEntity.tt</DependentUpon>
     </Compile>
     <Compile Include="AuthenticateUser2_Result.cs">
@@ -137,10 +88,14 @@
     <Compile Include="BuildMenu_Result1.cs">
       <DependentUpon>PfizerEntity.tt</DependentUpon>
     </Compile>
+    <Compile Include="ChemistMaster.cs">
+      <DependentUpon>PfizerEntity.tt</DependentUpon>
+    </Compile>
     <Compile Include="CityMaster.cs">
       <DependentUpon>PfizerEntity.tt</DependentUpon>
     </Compile>
     <Compile Include="ClsSettingMasterTeamwise.cs" />
+    <Compile Include="CustomerDeletion.cs" />
     <Compile Include="CycleDefinitionMaster.cs">
       <DependentUpon>PfizerEntity.tt</DependentUpon>
     </Compile>
@@ -189,6 +144,9 @@
     <Compile Include="GetAllCityByTerritory_Result.cs">
       <DependentUpon>PfizerEntity.tt</DependentUpon>
     </Compile>
+    <Compile Include="GetAllDistrictMasterXMLByRegionFKID_Result.cs">
+      <DependentUpon>PfizerEntity.tt</DependentUpon>
+    </Compile>
     <Compile Include="GetAllMetisProductName_Result.cs">
       <DependentUpon>PfizerEntity.tt</DependentUpon>
     </Compile>
@@ -198,7 +156,19 @@
     <Compile Include="GetAllTeamRegionLinkByXml_Result.cs">
       <DependentUpon>PfizerEntity.tt</DependentUpon>
     </Compile>
+    <Compile Include="GetAllTerritoryCodeByXml_Result.cs">
+      <DependentUpon>PfizerEntity.tt</DependentUpon>
+    </Compile>
+    <Compile Include="GetAllTerritoryCodeXmlByDistrictFKID_Result.cs">
+      <DependentUpon>PfizerEntity.tt</DependentUpon>
+    </Compile>
+    <Compile Include="GetAreaByCityFKIDXML_Result.cs">
+      <DependentUpon>PfizerEntity.tt</DependentUpon>
+    </Compile>
     <Compile Include="GetAreaDetailsPCL_Result.cs">
+      <DependentUpon>PfizerEntity.tt</DependentUpon>
+    </Compile>
+    <Compile Include="GetAreaDetails_Result.cs">
       <DependentUpon>PfizerEntity.tt</DependentUpon>
     </Compile>
     <Compile Include="GetBrickforTerritoryByXml_Result.cs">
@@ -207,7 +177,16 @@
     <Compile Include="GetBrickNameforCityByXml_Result.cs">
       <DependentUpon>PfizerEntity.tt</DependentUpon>
     </Compile>
+    <Compile Include="GetBVOProductByXml_Result.cs">
+      <DependentUpon>PfizerEntity.tt</DependentUpon>
+    </Compile>
+    <Compile Include="GetBVOProductByXml_Result1.cs">
+      <DependentUpon>PfizerEntity.tt</DependentUpon>
+    </Compile>
     <Compile Include="GetCategoryByID_Result.cs">
+      <DependentUpon>PfizerEntity.tt</DependentUpon>
+    </Compile>
+    <Compile Include="GetChemistNameByTerritory_Result.cs">
       <DependentUpon>PfizerEntity.tt</DependentUpon>
     </Compile>
     <Compile Include="GetCityByXML_Result.cs">
@@ -234,6 +213,12 @@
     <Compile Include="GetCreateUserByPKID_Result.cs">
       <DependentUpon>PfizerEntity.tt</DependentUpon>
     </Compile>
+    <Compile Include="GetCyclePlanSpcialization_Result.cs">
+      <DependentUpon>PfizerEntity.tt</DependentUpon>
+    </Compile>
+    <Compile Include="GetDailyReportatGlanceAllNew_Result.cs">
+      <DependentUpon>PfizerEntity.tt</DependentUpon>
+    </Compile>
     <Compile Include="GetDesignationByXML_Result.cs">
       <DependentUpon>PfizerEntity.tt</DependentUpon>
     </Compile>
@@ -241,6 +226,9 @@
       <DependentUpon>PfizerEntity.tt</DependentUpon>
     </Compile>
     <Compile Include="GetDistrictCodeByXml_Result.cs">
+      <DependentUpon>PfizerEntity.tt</DependentUpon>
+    </Compile>
+    <Compile Include="GetDistrictMasterByPKID_Result.cs">
       <DependentUpon>PfizerEntity.tt</DependentUpon>
     </Compile>
     <Compile Include="GetDistrictNameExcludeforTerittoryByXml_Result.cs">
@@ -255,6 +243,9 @@
     <Compile Include="getDistrictNameWSNew_Result.cs">
       <DependentUpon>PfizerEntity.tt</DependentUpon>
     </Compile>
+    <Compile Include="getDistrictNameWSNew_Result1.cs">
+      <DependentUpon>PfizerEntity.tt</DependentUpon>
+    </Compile>
     <Compile Include="GetDistrictTerritoryLink_Result.cs">
       <DependentUpon>PfizerEntity.tt</DependentUpon>
     </Compile>
@@ -267,6 +258,21 @@
     <Compile Include="GetDivUserByXml_Result.cs">
       <DependentUpon>PfizerEntity.tt</DependentUpon>
     </Compile>
+    <Compile Include="GetDMNameByReport_Result.cs">
+      <DependentUpon>PfizerEntity.tt</DependentUpon>
+    </Compile>
+    <Compile Include="GetDoctorNameBYPSO_Result.cs">
+      <DependentUpon>PfizerEntity.tt</DependentUpon>
+    </Compile>
+    <Compile Include="getDoctorPrescriptionTrackerDtls_Result.cs">
+      <DependentUpon>PfizerEntity.tt</DependentUpon>
+    </Compile>
+    <Compile Include="GetDoctorPSOLinkMaster_Result.cs">
+      <DependentUpon>PfizerEntity.tt</DependentUpon>
+    </Compile>
+    <Compile Include="GetDrAreaDetails_Result.cs">
+      <DependentUpon>PfizerEntity.tt</DependentUpon>
+    </Compile>
     <Compile Include="GetEmployeeCreateUserMasterByXml_Result.cs">
       <DependentUpon>PfizerEntity.tt</DependentUpon>
     </Compile>
@@ -277,6 +283,9 @@
       <DependentUpon>PfizerEntity.tt</DependentUpon>
     </Compile>
     <Compile Include="GetForgetPassword_Result.cs">
+      <DependentUpon>PfizerEntity.tt</DependentUpon>
+    </Compile>
+    <Compile Include="GetFormforProductByXML_Result.cs">
       <DependentUpon>PfizerEntity.tt</DependentUpon>
     </Compile>
     <Compile Include="GetFormMaster_Result.cs">
@@ -321,6 +330,12 @@
     <Compile Include="GetInputNamebyXML_Result.cs">
       <DependentUpon>PfizerEntity.tt</DependentUpon>
     </Compile>
+    <Compile Include="GetInputNameforDMReport_Result.cs">
+      <DependentUpon>PfizerEntity.tt</DependentUpon>
+    </Compile>
+    <Compile Include="GetInputNameforReport_Result.cs">
+      <DependentUpon>PfizerEntity.tt</DependentUpon>
+    </Compile>
     <Compile Include="GetInputProductLinkMaster1_Result.cs">
       <DependentUpon>PfizerEntity.tt</DependentUpon>
     </Compile>
@@ -336,6 +351,12 @@
     <Compile Include="getInputTypebyInputProdLinkMaster_Result.cs">
       <DependentUpon>PfizerEntity.tt</DependentUpon>
     </Compile>
+    <Compile Include="GetLeaveApprovalNew_Result.cs">
+      <DependentUpon>PfizerEntity.tt</DependentUpon>
+    </Compile>
+    <Compile Include="GetLeaveTypeByLeaveReport_Result.cs">
+      <DependentUpon>PfizerEntity.tt</DependentUpon>
+    </Compile>
     <Compile Include="GetLinkUserTeamMasterforDrpuserfillByXml_Result.cs">
       <DependentUpon>PfizerEntity.tt</DependentUpon>
     </Compile>
@@ -348,6 +369,15 @@
     <Compile Include="GetLocationMaster_Result.cs">
       <DependentUpon>PfizerEntity.tt</DependentUpon>
     </Compile>
+    <Compile Include="GetMappedMetisProductName_Result.cs">
+      <DependentUpon>PfizerEntity.tt</DependentUpon>
+    </Compile>
+    <Compile Include="GetMenuForChile_Result.cs">
+      <DependentUpon>PfizerEntity.tt</DependentUpon>
+    </Compile>
+    <Compile Include="GetMenuForRole_Result.cs">
+      <DependentUpon>PfizerEntity.tt</DependentUpon>
+    </Compile>
     <Compile Include="GetMoleculeforProductByXML_Result.cs">
       <DependentUpon>PfizerEntity.tt</DependentUpon>
     </Compile>
@@ -355,6 +385,33 @@
       <DependentUpon>PfizerEntity.tt</DependentUpon>
     </Compile>
     <Compile Include="GetMoleculeMaster_Result.cs">
+      <DependentUpon>PfizerEntity.tt</DependentUpon>
+    </Compile>
+    <Compile Include="GetMonthDetails_Result.cs">
+      <DependentUpon>PfizerEntity.tt</DependentUpon>
+    </Compile>
+    <Compile Include="GetNamebyIDForFTMTrackSheet_Result.cs">
+      <DependentUpon>PfizerEntity.tt</DependentUpon>
+    </Compile>
+    <Compile Include="GetNamebyRepIDForTrackSheet_Result.cs">
+      <DependentUpon>PfizerEntity.tt</DependentUpon>
+    </Compile>
+    <Compile Include="GetNameBySelectedNodeType_Result.cs">
+      <DependentUpon>PfizerEntity.tt</DependentUpon>
+    </Compile>
+    <Compile Include="GetNodeByFKID_Result.cs">
+      <DependentUpon>PfizerEntity.tt</DependentUpon>
+    </Compile>
+    <Compile Include="GetNodeByPSOFKIDForRegularVisit_Result.cs">
+      <DependentUpon>PfizerEntity.tt</DependentUpon>
+    </Compile>
+    <Compile Include="GetNodeByPSOFKID_Result.cs">
+      <DependentUpon>PfizerEntity.tt</DependentUpon>
+    </Compile>
+    <Compile Include="GetNodeTypeByLeaveReport_Result.cs">
+      <DependentUpon>PfizerEntity.tt</DependentUpon>
+    </Compile>
+    <Compile Include="GetNodeTypeByLeaveReport_Result1.cs">
       <DependentUpon>PfizerEntity.tt</DependentUpon>
     </Compile>
     <Compile Include="GetNodeTypeByXML_Result.cs">
@@ -378,10 +435,34 @@
     <Compile Include="GetPassword_Result.cs">
       <DependentUpon>PfizerEntity.tt</DependentUpon>
     </Compile>
+    <Compile Include="GetPrescriptionBrickDetails_Result.cs">
+      <DependentUpon>PfizerEntity.tt</DependentUpon>
+    </Compile>
+    <Compile Include="getPrescriptionByPSO_Result.cs">
+      <DependentUpon>PfizerEntity.tt</DependentUpon>
+    </Compile>
+    <Compile Include="GetPrescriptionProductNamebyPSO_Result.cs">
+      <DependentUpon>PfizerEntity.tt</DependentUpon>
+    </Compile>
+    <Compile Include="getProdPackSizeByXML_Result.cs">
+      <DependentUpon>PfizerEntity.tt</DependentUpon>
+    </Compile>
+    <Compile Include="GetProductByPKIDXml_Result.cs">
+      <DependentUpon>PfizerEntity.tt</DependentUpon>
+    </Compile>
+    <Compile Include="GetProductByTeamByXML_Result.cs">
+      <DependentUpon>PfizerEntity.tt</DependentUpon>
+    </Compile>
     <Compile Include="GetProductforProductMatrixByXml_Result.cs">
       <DependentUpon>PfizerEntity.tt</DependentUpon>
     </Compile>
     <Compile Include="GetProductforSpecialityByXML_Result.cs">
+      <DependentUpon>PfizerEntity.tt</DependentUpon>
+    </Compile>
+    <Compile Include="GetProductManagerByXml_Result.cs">
+      <DependentUpon>PfizerEntity.tt</DependentUpon>
+    </Compile>
+    <Compile Include="GetProductMgrByXml_Result.cs">
       <DependentUpon>PfizerEntity.tt</DependentUpon>
     </Compile>
     <Compile Include="GetProductMoleculeLink1_Result.cs">
@@ -393,13 +474,46 @@
     <Compile Include="GetProductNameByXml_Result.cs">
       <DependentUpon>PfizerEntity.tt</DependentUpon>
     </Compile>
+    <Compile Include="GetProductNameforSampleReport_Result.cs">
+      <DependentUpon>PfizerEntity.tt</DependentUpon>
+    </Compile>
     <Compile Include="GetProductNamefromInputMaster_Result.cs">
+      <DependentUpon>PfizerEntity.tt</DependentUpon>
+    </Compile>
+    <Compile Include="GetProductPackDetails_Result.cs">
       <DependentUpon>PfizerEntity.tt</DependentUpon>
     </Compile>
     <Compile Include="GetProductType_Result.cs">
       <DependentUpon>PfizerEntity.tt</DependentUpon>
     </Compile>
     <Compile Include="GetPSOInputSample_Result.cs">
+      <DependentUpon>PfizerEntity.tt</DependentUpon>
+    </Compile>
+    <Compile Include="GetPsoNameByCFSAReport_Result.cs">
+      <DependentUpon>PfizerEntity.tt</DependentUpon>
+    </Compile>
+    <Compile Include="GetPSONamebyRepID_Result.cs">
+      <DependentUpon>PfizerEntity.tt</DependentUpon>
+    </Compile>
+    <Compile Include="GetPsoNameByReportmul_Result.cs">
+      <DependentUpon>PfizerEntity.tt</DependentUpon>
+    </Compile>
+    <Compile Include="GetPsoNameByReport_Result.cs">
+      <DependentUpon>PfizerEntity.tt</DependentUpon>
+    </Compile>
+    <Compile Include="GetPsoNameBySampleReport_Result.cs">
+      <DependentUpon>PfizerEntity.tt</DependentUpon>
+    </Compile>
+    <Compile Include="GetPsoNameByUserId_Result.cs">
+      <DependentUpon>PfizerEntity.tt</DependentUpon>
+    </Compile>
+    <Compile Include="GetPSONameDRAtGforRG_Result.cs">
+      <DependentUpon>PfizerEntity.tt</DependentUpon>
+    </Compile>
+    <Compile Include="GetPsoNameForAdmin_Result.cs">
+      <DependentUpon>PfizerEntity.tt</DependentUpon>
+    </Compile>
+    <Compile Include="GetPSONameforDrRepByXml_Result.cs">
       <DependentUpon>PfizerEntity.tt</DependentUpon>
     </Compile>
     <Compile Include="GetPSOSample_Result.cs">
@@ -423,10 +537,22 @@
     <Compile Include="GetReportingByXml_Result.cs">
       <DependentUpon>PfizerEntity.tt</DependentUpon>
     </Compile>
+    <Compile Include="getRoleBasedmenu_Result.cs">
+      <DependentUpon>PfizerEntity.tt</DependentUpon>
+    </Compile>
     <Compile Include="GetRoles_Result.cs">
       <DependentUpon>PfizerEntity.tt</DependentUpon>
     </Compile>
     <Compile Include="GetRoles_Result1.cs">
+      <DependentUpon>PfizerEntity.tt</DependentUpon>
+    </Compile>
+    <Compile Include="GetSalesHierrachy_Result.cs">
+      <DependentUpon>PfizerEntity.tt</DependentUpon>
+    </Compile>
+    <Compile Include="GetSalesTeamByXml_Result.cs">
+      <DependentUpon>PfizerEntity.tt</DependentUpon>
+    </Compile>
+    <Compile Include="GetSampleDivisionByXML_Result.cs">
       <DependentUpon>PfizerEntity.tt</DependentUpon>
     </Compile>
     <Compile Include="GetSettingMasterTeamWise_Result.cs">
@@ -450,6 +576,9 @@
     <Compile Include="GetSpecializationMasterByPKID_Result.cs">
       <DependentUpon>PfizerEntity.tt</DependentUpon>
     </Compile>
+    <Compile Include="GetSplDoctorName1_Result.cs">
+      <DependentUpon>PfizerEntity.tt</DependentUpon>
+    </Compile>
     <Compile Include="GetSplSelectedTeamByXml_Result.cs">
       <DependentUpon>PfizerEntity.tt</DependentUpon>
     </Compile>
@@ -468,6 +597,12 @@
     <Compile Include="GetTCodeforTerritoryByXML_Result.cs">
       <DependentUpon>PfizerEntity.tt</DependentUpon>
     </Compile>
+    <Compile Include="GetTeamByXML_Result.cs">
+      <DependentUpon>PfizerEntity.tt</DependentUpon>
+    </Compile>
+    <Compile Include="GetTeamforProductByXml_Result.cs">
+      <DependentUpon>PfizerEntity.tt</DependentUpon>
+    </Compile>
     <Compile Include="GetTeamMasteByPKIDByXML_Result.cs">
       <DependentUpon>PfizerEntity.tt</DependentUpon>
     </Compile>
@@ -475,6 +610,9 @@
       <DependentUpon>PfizerEntity.tt</DependentUpon>
     </Compile>
     <Compile Include="GetTeamMasterByXML_Result.cs">
+      <DependentUpon>PfizerEntity.tt</DependentUpon>
+    </Compile>
+    <Compile Include="GetTeamNameByXml_Result.cs">
       <DependentUpon>PfizerEntity.tt</DependentUpon>
     </Compile>
     <Compile Include="GetTeamNameForReconcileByPKID_Result.cs">
@@ -487,6 +625,12 @@
       <DependentUpon>PfizerEntity.tt</DependentUpon>
     </Compile>
     <Compile Include="GetTeamsByXML_Result.cs">
+      <DependentUpon>PfizerEntity.tt</DependentUpon>
+    </Compile>
+    <Compile Include="GetTerNameByReport_Result.cs">
+      <DependentUpon>PfizerEntity.tt</DependentUpon>
+    </Compile>
+    <Compile Include="GetTerritoryByDest_Result.cs">
       <DependentUpon>PfizerEntity.tt</DependentUpon>
     </Compile>
     <Compile Include="GetTerritoryByXml_Result.cs">
@@ -510,10 +654,16 @@
     <Compile Include="GetTerritoryNameforHQTerByXml_Result.cs">
       <DependentUpon>PfizerEntity.tt</DependentUpon>
     </Compile>
+    <Compile Include="GetTerritoryName_Result.cs">
+      <DependentUpon>PfizerEntity.tt</DependentUpon>
+    </Compile>
     <Compile Include="GetTopAlertsByXML_Result.cs">
       <DependentUpon>PfizerEntity.tt</DependentUpon>
     </Compile>
     <Compile Include="GetTopOneOpinionByXML_Result.cs">
+      <DependentUpon>PfizerEntity.tt</DependentUpon>
+    </Compile>
+    <Compile Include="GetUsageRepbyXML_Result.cs">
       <DependentUpon>PfizerEntity.tt</DependentUpon>
     </Compile>
     <Compile Include="GetUsefulLinks_Result.cs">
@@ -523,6 +673,12 @@
       <DependentUpon>PfizerEntity.tt</DependentUpon>
     </Compile>
     <Compile Include="GetUserDefault_Result.cs">
+      <DependentUpon>PfizerEntity.tt</DependentUpon>
+    </Compile>
+    <Compile Include="GetUserNameByXML_Result.cs">
+      <DependentUpon>PfizerEntity.tt</DependentUpon>
+    </Compile>
+    <Compile Include="GetUserNameforUsageRepByXml_Result.cs">
       <DependentUpon>PfizerEntity.tt</DependentUpon>
     </Compile>
     <Compile Include="GetUserQuestionMaster_Result.cs">
@@ -535,6 +691,18 @@
       <DependentUpon>PfizerEntity.tt</DependentUpon>
     </Compile>
     <Compile Include="getUserTeamLink_Result.cs">
+      <DependentUpon>PfizerEntity.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Get_District_ByXML_Result.cs">
+      <DependentUpon>PfizerEntity.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Get_Region_ByXML_Result.cs">
+      <DependentUpon>PfizerEntity.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Get_Team_ByXML_Result.cs">
+      <DependentUpon>PfizerEntity.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Get_Territory_ByXML_Result.cs">
       <DependentUpon>PfizerEntity.tt</DependentUpon>
     </Compile>
     <Compile Include="HolidayGroupMaster.cs">
@@ -554,6 +722,12 @@
       <DependentUpon>PfizerEntity.tt</DependentUpon>
     </Compile>
     <Compile Include="MoleculeMaster.cs">
+      <DependentUpon>PfizerEntity.tt</DependentUpon>
+    </Compile>
+    <Compile Include="MVCGetSpecializationNameByXml_Result.cs">
+      <DependentUpon>PfizerEntity.tt</DependentUpon>
+    </Compile>
+    <Compile Include="MVCGetTeamsBySpecialityXML_Result.cs">
       <DependentUpon>PfizerEntity.tt</DependentUpon>
     </Compile>
     <Compile Include="NodeTypeMaster.cs">
@@ -580,6 +754,13 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>PfizerEntity.edmx</DependentUpon>
     </Compile>
+    <Compile Include="PotentialYieldForPSOE.cs" />
+    <Compile Include="PrescGetHospital_Result.cs">
+      <DependentUpon>PfizerEntity.tt</DependentUpon>
+    </Compile>
+    <Compile Include="PrescGetStockist_Result.cs">
+      <DependentUpon>PfizerEntity.tt</DependentUpon>
+    </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="QualificationMaster.cs">
       <DependentUpon>PfizerEntity.tt</DependentUpon>
@@ -593,13 +774,26 @@
     <Compile Include="RegionMaster.cs">
       <DependentUpon>PfizerEntity.tt</DependentUpon>
     </Compile>
+    <Compile Include="ReportSubmission.cs" />
     <Compile Include="RoleMaster.cs">
       <DependentUpon>PfizerEntity.tt</DependentUpon>
     </Compile>
     <Compile Include="RR_GetAllTeam_Result.cs">
       <DependentUpon>PfizerEntity.tt</DependentUpon>
     </Compile>
+    <Compile Include="RR_GetSpecialization_Result.cs">
+      <DependentUpon>PfizerEntity.tt</DependentUpon>
+    </Compile>
+    <Compile Include="SampleAckRpt_Admin_Result.cs">
+      <DependentUpon>PfizerEntity.tt</DependentUpon>
+    </Compile>
     <Compile Include="SampleAllocationAck_Result.cs">
+      <DependentUpon>PfizerEntity.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Searchaudittrial_Result.cs">
+      <DependentUpon>PfizerEntity.tt</DependentUpon>
+    </Compile>
+    <Compile Include="SearchCycleByYear_Result.cs">
       <DependentUpon>PfizerEntity.tt</DependentUpon>
     </Compile>
     <Compile Include="SettingMaster.cs">
@@ -617,10 +811,20 @@
     <Compile Include="StrategicPlanningMaster.cs">
       <DependentUpon>PfizerEntity.tt</DependentUpon>
     </Compile>
+    <Compile Include="SummeryReportPSO.cs" />
+    <Compile Include="SummeryReportReportingUsers_Result.cs">
+      <DependentUpon>PfizerEntity.tt</DependentUpon>
+    </Compile>
     <Compile Include="TailoredExecutionMaster.cs">
       <DependentUpon>PfizerEntity.tt</DependentUpon>
     </Compile>
     <Compile Include="TeamMaster.cs">
+      <DependentUpon>PfizerEntity.tt</DependentUpon>
+    </Compile>
+    <Compile Include="TeamPSOList_Result.cs">
+      <DependentUpon>PfizerEntity.tt</DependentUpon>
+    </Compile>
+    <Compile Include="TeamsForCallVolumeReport_Result.cs">
       <DependentUpon>PfizerEntity.tt</DependentUpon>
     </Compile>
     <Compile Include="TerritoryMaster.cs">
@@ -630,6 +834,12 @@
       <DependentUpon>PfizerEntity.tt</DependentUpon>
     </Compile>
     <Compile Include="TownClassMaster.cs">
+      <DependentUpon>PfizerEntity.tt</DependentUpon>
+    </Compile>
+    <Compile Include="TrackSheetReportFromJobsForFTM_Result.cs">
+      <DependentUpon>PfizerEntity.tt</DependentUpon>
+    </Compile>
+    <Compile Include="TrackSheetReportFromJobs_Result.cs">
       <DependentUpon>PfizerEntity.tt</DependentUpon>
     </Compile>
     <Compile Include="UsefulLink.cs" />
@@ -657,13 +867,64 @@
     <Compile Include="usp_AuthenticateUser_Result.cs">
       <DependentUpon>PfizerEntity.tt</DependentUpon>
     </Compile>
+    <Compile Include="usp_DMGetChemistRpt_Result.cs">
+      <DependentUpon>PfizerEntity.tt</DependentUpon>
+    </Compile>
+    <Compile Include="usp_DMGetDoctorRpt_Result.cs">
+      <DependentUpon>PfizerEntity.tt</DependentUpon>
+    </Compile>
+    <Compile Include="usp_DMGetHospitalRpt_Result.cs">
+      <DependentUpon>PfizerEntity.tt</DependentUpon>
+    </Compile>
+    <Compile Include="usp_DMGetStockistRpt_Result.cs">
+      <DependentUpon>PfizerEntity.tt</DependentUpon>
+    </Compile>
+    <Compile Include="USP_GetAllDetailsFromDoctorMaster_Result.cs">
+      <DependentUpon>PfizerEntity.tt</DependentUpon>
+    </Compile>
+    <Compile Include="USP_GetAreaDetailsPCL_Result.cs">
+      <DependentUpon>PfizerEntity.tt</DependentUpon>
+    </Compile>
+    <Compile Include="usp_GetChemistRpt_Result.cs">
+      <DependentUpon>PfizerEntity.tt</DependentUpon>
+    </Compile>
+    <Compile Include="usp_GetCustTerritory_Result.cs">
+      <DependentUpon>PfizerEntity.tt</DependentUpon>
+    </Compile>
+    <Compile Include="usp_GetDoctorRpt_Result.cs">
+      <DependentUpon>PfizerEntity.tt</DependentUpon>
+    </Compile>
+    <Compile Include="usp_GetHospitalRpt_Result.cs">
+      <DependentUpon>PfizerEntity.tt</DependentUpon>
+    </Compile>
     <Compile Include="USP_GETLOGDEAILS_Result.cs">
+      <DependentUpon>PfizerEntity.tt</DependentUpon>
+    </Compile>
+    <Compile Include="USP_GetPSONameForCustomer_Result.cs">
+      <DependentUpon>PfizerEntity.tt</DependentUpon>
+    </Compile>
+    <Compile Include="usp_GetPSOName_Result.cs">
+      <DependentUpon>PfizerEntity.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Usp_GetPSOsForCyclePlanRetailerUnlock_Result.cs">
+      <DependentUpon>PfizerEntity.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Usp_GetPSOsForCyclePlanUnlock_Result.cs">
       <DependentUpon>PfizerEntity.tt</DependentUpon>
     </Compile>
     <Compile Include="usp_GetRBMMaster_Result.cs">
       <DependentUpon>PfizerEntity.tt</DependentUpon>
     </Compile>
     <Compile Include="usp_GetSalesHierarchy_Result.cs">
+      <DependentUpon>PfizerEntity.tt</DependentUpon>
+    </Compile>
+    <Compile Include="USP_GetSpecializationCode_Result.cs">
+      <DependentUpon>PfizerEntity.tt</DependentUpon>
+    </Compile>
+    <Compile Include="usp_getSpecialization_Result.cs">
+      <DependentUpon>PfizerEntity.tt</DependentUpon>
+    </Compile>
+    <Compile Include="usp_GetStockistRpt_Result.cs">
       <DependentUpon>PfizerEntity.tt</DependentUpon>
     </Compile>
     <Compile Include="usp_GetTerritory_Result.cs">
@@ -682,6 +943,9 @@
       <DependentUpon>PfizerEntity.tt</DependentUpon>
     </Compile>
     <Compile Include="usp_Get_CampTypeMaster_Result2.cs">
+      <DependentUpon>PfizerEntity.tt</DependentUpon>
+    </Compile>
+    <Compile Include="usp_Get_CustomerTerritory_Result.cs">
       <DependentUpon>PfizerEntity.tt</DependentUpon>
     </Compile>
     <Compile Include="USP_GET_CYCLE_DEFINITION_MASTER_Result.cs">
@@ -726,6 +990,9 @@
     <Compile Include="USP_GET_PRODUCTMASTER_Result.cs">
       <DependentUpon>PfizerEntity.tt</DependentUpon>
     </Compile>
+    <Compile Include="USP_GET_PRODUCTMASTER_Result1.cs">
+      <DependentUpon>PfizerEntity.tt</DependentUpon>
+    </Compile>
     <Compile Include="USP_GET_PROD_NODETYPEMASTER_Result.cs">
       <DependentUpon>PfizerEntity.tt</DependentUpon>
     </Compile>
@@ -759,10 +1026,31 @@
     <Compile Include="USP_GET_TERRITORY_MASTER_Result.cs">
       <DependentUpon>PfizerEntity.tt</DependentUpon>
     </Compile>
+    <Compile Include="usp_Get_UserName_Result.cs">
+      <DependentUpon>PfizerEntity.tt</DependentUpon>
+    </Compile>
     <Compile Include="USP_MoleculeProductMasterGrid_Result.cs">
       <DependentUpon>PfizerEntity.tt</DependentUpon>
     </Compile>
     <Compile Include="usp_ReconcileSettings_Result.cs">
+      <DependentUpon>PfizerEntity.tt</DependentUpon>
+    </Compile>
+    <Compile Include="usp_ReconcileSettings_Result1.cs">
+      <DependentUpon>PfizerEntity.tt</DependentUpon>
+    </Compile>
+    <Compile Include="usp_ReconcileSettings_Result2.cs">
+      <DependentUpon>PfizerEntity.tt</DependentUpon>
+    </Compile>
+    <Compile Include="usp_SELECT_CustList_COUNT_ForDashboard_Result.cs">
+      <DependentUpon>PfizerEntity.tt</DependentUpon>
+    </Compile>
+    <Compile Include="usp_SELECT_CustPSO_COUNT_BYDM_Result.cs">
+      <DependentUpon>PfizerEntity.tt</DependentUpon>
+    </Compile>
+    <Compile Include="usp_SELECT_PSOList_COUNTBy_DM_ForDashboard_Result.cs">
+      <DependentUpon>PfizerEntity.tt</DependentUpon>
+    </Compile>
+    <Compile Include="USP_sp_CFSAReportforPSO_Result.cs">
       <DependentUpon>PfizerEntity.tt</DependentUpon>
     </Compile>
     <Compile Include="vw_MeetingReminderReadstatus.cs">
@@ -791,12 +1079,78 @@
       <DependentUpon>PfizerEntity.edmx</DependentUpon>
       <LastGenOutput>PfizerEntity.cs</LastGenOutput>
     </None>
+    <Content Include="Web.config" />
+    <Content Include="Web.Debug.config">
+      <DependentUpon>Web.config</DependentUpon>
+    </Content>
+    <Content Include="Web.Release.config">
+      <DependentUpon>Web.config</DependentUpon>
+    </Content>
   </ItemGroup>
   <ItemGroup>
     <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="DocumentFormat.OpenXml.xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Reference Include="DocumentFormat.OpenXml, Version=2.5.5631.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\DocumentFormat.OpenXml.2.5\lib\DocumentFormat.OpenXml.dll</HintPath>
+    </Reference>
+    <Reference Include="EntityFramework, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\EntityFramework.6.1.1\lib\net45\EntityFramework.dll</HintPath>
+    </Reference>
+    <Reference Include="EntityFramework.SqlServer, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\EntityFramework.6.1.1\lib\net45\EntityFramework.SqlServer.dll</HintPath>
+    </Reference>
+    <Reference Include="itextsharp, Version=5.5.1.0, Culture=neutral, PublicKeyToken=8354ae6d2174ddca, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\iTextSharp.5.5.1\lib\itextsharp.dll</HintPath>
+    </Reference>
+    <Reference Include="JamesDibble.Extensions.System.Data">
+      <HintPath>..\packages\JamesDibble.Extensions.System.Data.1.1.0.66\lib\net45\JamesDibble.Extensions.System.Data.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Web.Infrastructure, Version=1.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <Private>True</Private>
+      <HintPath>..\packages\Microsoft.Web.Infrastructure.1.0.0.0\lib\net40\Microsoft.Web.Infrastructure.dll</HintPath>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.ComponentModel.DataAnnotations" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Data.Linq" />
+    <Reference Include="System.Runtime.Serialization" />
+    <Reference Include="System.Web" />
+    <Reference Include="System.Web.Helpers, Version=2.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <Private>True</Private>
+      <HintPath>..\packages\Microsoft.AspNet.WebPages.2.0.30506.0\lib\net40\System.Web.Helpers.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Web.Mvc, Version=4.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <Private>True</Private>
+      <HintPath>..\packages\Microsoft.AspNet.Mvc.4.0.30506.0\lib\net40\System.Web.Mvc.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Web.Mvc.Extensions">
+      <HintPath>..\packages\System.Web.Mvc.Extensions.Mvc.4.1.0.9\lib\net40\System.Web.Mvc.Extensions.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Web.Razor, Version=2.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <Private>True</Private>
+      <HintPath>..\packages\Microsoft.AspNet.Razor.2.0.30506.0\lib\net40\System.Web.Razor.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Web.WebPages, Version=2.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <Private>True</Private>
+      <HintPath>..\packages\Microsoft.AspNet.WebPages.2.0.30506.0\lib\net40\System.Web.WebPages.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Web.WebPages.Deployment, Version=2.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <Private>True</Private>
+      <HintPath>..\packages\Microsoft.AspNet.WebPages.2.0.30506.0\lib\net40\System.Web.WebPages.Deployment.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Web.WebPages.Razor, Version=2.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <Private>True</Private>
+      <HintPath>..\packages\Microsoft.AspNet.WebPages.2.0.30506.0\lib\net40\System.Web.WebPages.Razor.dll</HintPath>
+    </Reference>
+    <Reference Include="WindowsBase" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

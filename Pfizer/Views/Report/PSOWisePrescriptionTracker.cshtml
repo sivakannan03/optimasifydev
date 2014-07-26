@@ -1,0 +1,199 @@
+﻿@{
+    ViewBag.Title = "PSOWisePrescriptionTracker";
+    Layout = "~/Views/Shared/MasterLayout.cshtml";
+}
+
+<h2>PSOWisePrescriptionTracker</h2>
+@using (Html.BeginForm(FormMethod.Post))
+{
+    <div>
+        <table width="100%" border="1" cellspacing="0" class="inner_tb" cellpadding="0" align="left">
+            <tr>
+                <th colspan="8" style="margin-top: 10px; background-color: #00AADA; color: white;height:20px;">FilterOn</th>
+            </tr>
+            <tr>
+                <td width="100%" valign="top" class="tb-r2">
+                    <table border="0" width="100%" class="inner_tb">
+
+                        <tr>
+                            <td class="tb-r2">PSOName<span style="color:red">*</span></td>
+                            <td class="tb-r2">
+                                &nbsp;&nbsp;&nbsp;
+                                @Html.ListBox("lstPSOName", new[]{
+
+                                            new SelectListItem { Text="", Value=""} }, new { @class = "listboxRpt" })
+
+                            </td>
+                            <td class="tb-r2">Products</td>
+                            <td class="tb-r2">
+                                &nbsp;&nbsp;&nbsp;
+                                @Html.DropDownList("drpSelectProductName", new[]{
+
+                                            new SelectListItem { Text="", Value="0"} })
+
+                            </td>
+
+                        </tr>
+
+                    </table>
+                </td>
+            </tr>
+            <tr>
+                <td class="tb-r2">
+                    <table border="0" width="100%" class="inner_tb">
+                        <tr>
+                            <td class="tb-r2">From Date<span style="color:red">*</span></td>
+                            <td class="tb-r2"> &nbsp;&nbsp;&nbsp;<input type="text" class="tbox" id="txtFrmdate" name="txtFromdate" value="" onclick="$(function () { $('#txtFrmdate').datepicker({ changeMonth: true, changeYear: true, yearRange: '1900:myDate', dateFormat: 'dd/mm/yy', maxDate: 0 ,});});" /></td>
+                            <td class="tb-r2">End Date<span style="color:red">*</span></td>
+                            <td class="tb-r2"> &nbsp;&nbsp;&nbsp;<input type="text" class="tbox" id="txtTodate" name="txtTodate" value="" onclick="$(function () { $('#txtTodate').datepicker({ changeMonth: true, changeYear: true, yearRange: '1900:myDate', dateFormat: 'dd/mm/yy', maxDate: 0 }); });" /></td>
+                            <td class="tb-r2"><input class="blue_button add_btn" type="button" width="5%" id="btnSubmit" value="GO"></td>
+
+                        </tr>
+
+                    </table>
+                </td>
+
+            </tr>
+
+        </table>
+    </div>
+    <div id="DivReport"></div>
+
+}
+
+<script type="text/javascript">
+    function DownloadExcel() {
+        var win = window.open('@Url.Action("ExcelDownload")?fileName=' + 'PSOWisePrescriptionTracker', 'showwin', 'width=550,height=400,top=0,left=0,toolbar=yes,location=no,directories=no,status=no,menubar=no,scrollbars=yes,resizeable=yes');
+
+        return false;
+    }
+    $('#lstPSOName').change(function () {
+
+        if ($('#lstPSOName').val() == 0) {
+            $("#lstPSOName option").prop("selected", true);
+            $("#lstPSOName option:first").removeAttr('selected');
+
+        }
+    });
+    $(document).ready(function () {
+
+        $("#txtFrmdate").datepicker({ changeMonth: true, changeYear: true, yearRange: '1900:myDate', dateFormat: 'dd/mm/yy', maxDate: 0 });
+        $("#txtTodate").datepicker({ changeMonth: true, changeYear: true, yearRange: '1900:myDate', dateFormat: 'dd/mm/yy', maxDate: 0 });
+        $("#txtFrmdate").val($.datepicker.formatDate("dd/mm/yy", new Date()));
+        $("#txtTodate").val($.datepicker.formatDate("dd/mm/yy", new Date()));
+        $("#drpSelectProductName").empty();
+        $('#drpSelectProductName').append("<option value='0'>Select</option>");
+        $("#lstPSOName").empty();
+        $.getJSON('@Url.Action("JsonLoadlstProducts")', function (data) {
+
+            for (var i = 0; i < data.countyCount; i++) {
+
+                $('#drpSelectProductName').append("<option value='" + data.countyItems[i].Value + "'>" + data.countyItems[i].Text + "</option>");
+            }
+
+
+        });
+        $.getJSON('@Url.Action("JsonLoadlstPSO")', function (data) {
+            $('#lstPSOName').append("<option value='0'>SelectAll</option>")
+            for (var i = 0; i < data.countyCount; i++) {
+
+                $('#lstPSOName').append("<option  value='" + data.countyItems[i].Value.split("-")[0] + "'>" + data.countyItems[i].Text + "</option>");
+            }
+
+        });
+
+
+
+    });
+
+    $("#btnSubmit").click(function () {
+
+        $("#txtFrmdate").css("background-color", "white").css("border", "1px solid #d5d5d5");
+        $("#txtTodate").css("background-color", "white").css("border", "1px solid #d5d5d5");
+        $("#drpSelectProductName").css("background-color", "white").css("border", "1px solid #d5d5d5");
+        $("#lstPSOName").css("background-color", "white").css("border", "1px solid #d5d5d5");
+
+        if ($('#lstPSOName').val() == null) {
+
+            $("#lstPSOName").css("background-color", "#FFE8E8").css("border", "1px solid #FF6666");
+            $('#lstPSOName').focus();
+            return false;
+        }
+        else if ($('#drpSelectProductName').val() == 0 || $('#drpSelectProductName').val() == null) {
+
+            $("#drpSelectProductName").css("background-color", "#FFE8E8").css("border", "1px solid #FF6666");
+            $('#drpSelectProductName').focus();
+            return false;
+        }
+        else if ($('#txtFrmdate').val() == '') {
+
+            $("#txtFrmdate").css("background-color", "#FFE8E8").css("border", "1px solid #FF6666");
+            $('#txtFrmdate').focus();
+            return false;
+        }
+        else if ($('#txtTodate').val() == '') {
+
+            $("#txtTodate").css("background-color", "#FFE8E8").css("border", "1px solid #FF6666");
+            $('#txtTodate').focus();
+            return false;
+        }
+       else if ($('#txtFrmdate').val() != '' && $('#txtTodate').val() != '') {
+
+
+            var date1 = $('#txtFrmdate').val().split('/')[1] + '/' + $('#txtFrmdate').val().split('/')[0] + '/' + $('#txtFrmdate').val().split('/')[2];
+            var date2 = $('#txtTodate').val().split('/')[1] + '/' + $('#txtTodate').val().split('/')[0] + '/' + $('#txtTodate').val().split('/')[2];
+            var startDate = new Date(date1);
+            var endDate = new Date(date2);
+
+            if (startDate > endDate) {
+               
+                alert('End date should be greater than Start date');
+                $('#txtTodate').focus();
+                $("#txtTodate").css("background-color", "#FFE8E8").css("border", "1px solid #FF6666");
+                return false;
+            }
+        }
+       
+            var PSOName = "";
+            $('#lstPSOName :selected').each(function (i, selected) {
+
+                if ($(selected).val() != "0") {
+                    if ($(this).not('selected')) {
+
+                        PSOName += +$(this).val() + ",";
+                    }
+
+
+                }
+            });
+            var productsFKID = $("#drpSelectProductName").val();
+            var From = $("#txtFrmdate").val();
+            var strFrmdate = From.split("/");
+            var txtFrmdate = strFrmdate[1] + "/" + strFrmdate[0] + "/" + strFrmdate[2];
+
+            var To = $("#txtTodate").val();
+            var strTodate = To.split("/");
+            var txtTodate = strTodate[1] + "/" + strTodate[0] + "/" + strTodate[2];
+            $.getJSON('@Url.Action("JsontestForPSOPRescription")?Products=' + productsFKID + '&FrmDate=' + txtFrmdate + '&ToDate=' + txtTodate + '&PSOName=' + PSOName,
+          function (data) {
+
+              
+              $('#DivReport').dialog({
+                  height: 350,
+                  width: 780,
+                  title: 'PSOWisePrescriptionDetails',
+                  show: { effect: 'drop', direction: "up" },
+                  modal: true,
+                  open: function (event, ui) {
+                      $('#DivReport').html(data.rslt);
+                  },
+
+              });
+          });
+
+        
+    });
+
+
+
+</script>

@@ -67,6 +67,66 @@ F:\30-04-14\Pfizer\Pfizer\bin\System.Web.WebPages.Razor.xml
 F:\30-04-14\Pfizer\Pfizer\obj\Debug\Pfizer.dll
 F:\30-04-14\Pfizer\Pfizer\obj\Debug\Pfizer.pdb
 F:\30-04-14\Pfizer\Pfizer\obj\Debug\Pfizer.csprojResolveAssemblyReference.cache
+D:\Share\Siva-Kannan -Pfizer_BK\Pfizer\Pfizer\bin\Pfizer.dll.config
+D:\Share\Siva-Kannan -Pfizer_BK\Pfizer\Pfizer\bin\Pfizer.dll
+D:\Share\Siva-Kannan -Pfizer_BK\Pfizer\Pfizer\bin\Pfizer.pdb
+D:\Share\Siva-Kannan -Pfizer_BK\Pfizer\Pfizer\bin\Microsoft.Web.Infrastructure.dll
+D:\Share\Siva-Kannan -Pfizer_BK\Pfizer\Pfizer\bin\Microsoft.Web.Mvc.FixedDisplayModes.dll
+D:\Share\Siva-Kannan -Pfizer_BK\Pfizer\Pfizer\bin\Newtonsoft.Json.dll
+D:\Share\Siva-Kannan -Pfizer_BK\Pfizer\Pfizer\bin\PfizerEntity.dll
+D:\Share\Siva-Kannan -Pfizer_BK\Pfizer\Pfizer\bin\SifyGrid.dll
+D:\Share\Siva-Kannan -Pfizer_BK\Pfizer\Pfizer\bin\System.Net.Http.Formatting.dll
+D:\Share\Siva-Kannan -Pfizer_BK\Pfizer\Pfizer\bin\System.Web.Helpers.dll
+D:\Share\Siva-Kannan -Pfizer_BK\Pfizer\Pfizer\bin\System.Web.Http.dll
+D:\Share\Siva-Kannan -Pfizer_BK\Pfizer\Pfizer\bin\System.Web.Http.WebHost.dll
+D:\Share\Siva-Kannan -Pfizer_BK\Pfizer\Pfizer\bin\System.Web.Razor.dll
+D:\Share\Siva-Kannan -Pfizer_BK\Pfizer\Pfizer\bin\System.Web.WebPages.Deployment.dll
+D:\Share\Siva-Kannan -Pfizer_BK\Pfizer\Pfizer\bin\System.Web.WebPages.dll
+D:\Share\Siva-Kannan -Pfizer_BK\Pfizer\Pfizer\bin\System.Web.WebPages.Razor.dll
+D:\Share\Siva-Kannan -Pfizer_BK\Pfizer\Pfizer\bin\PfizerEntity.pdb
+D:\Share\Siva-Kannan -Pfizer_BK\Pfizer\Pfizer\bin\SifyGrid.pdb
+D:\Share\Siva-Kannan -Pfizer_BK\Pfizer\Pfizer\bin\Newtonsoft.Json.xml
+D:\Share\Siva-Kannan -Pfizer_BK\Pfizer\Pfizer\bin\System.Net.Http.Formatting.xml
+D:\Share\Siva-Kannan -Pfizer_BK\Pfizer\Pfizer\bin\System.Web.Helpers.xml
+D:\Share\Siva-Kannan -Pfizer_BK\Pfizer\Pfizer\bin\System.Web.Http.xml
+D:\Share\Siva-Kannan -Pfizer_BK\Pfizer\Pfizer\bin\System.Web.Http.WebHost.xml
+D:\Share\Siva-Kannan -Pfizer_BK\Pfizer\Pfizer\bin\System.Web.Razor.xml
+D:\Share\Siva-Kannan -Pfizer_BK\Pfizer\Pfizer\bin\System.Web.WebPages.xml
+D:\Share\Siva-Kannan -Pfizer_BK\Pfizer\Pfizer\bin\System.Web.WebPages.Deployment.xml
+D:\Share\Siva-Kannan -Pfizer_BK\Pfizer\Pfizer\bin\System.Web.WebPages.Razor.xml
+D:\Share\Siva-Kannan -Pfizer_BK\Pfizer\Pfizer\obj\Debug\Pfizer.csprojResolveAssemblyReference.cache
+D:\Share\Siva-Kannan -Pfizer_BK\Pfizer\Pfizer\obj\Debug\Pfizer.dll
+D:\Share\Siva-Kannan -Pfizer_BK\Pfizer\Pfizer\obj\Debug\Pfizer.pdb
+E:\Baskar\Pfizer_BK\Siva-Kannan -Pfizer_BK\Pfizer\Pfizer\bin\Pfizer.dll.config
+E:\Baskar\Pfizer_BK\Siva-Kannan -Pfizer_BK\Pfizer\Pfizer\bin\Pfizer.dll
+E:\Baskar\Pfizer_BK\Siva-Kannan -Pfizer_BK\Pfizer\Pfizer\bin\Pfizer.pdb
+E:\Baskar\Pfizer_BK\Siva-Kannan -Pfizer_BK\Pfizer\Pfizer\bin\Microsoft.Web.Infrastructure.dll
+E:\Baskar\Pfizer_BK\Siva-Kannan -Pfizer_BK\Pfizer\Pfizer\bin\Microsoft.Web.Mvc.FixedDisplayModes.dll
+E:\Baskar\Pfizer_BK\Siva-Kannan -Pfizer_BK\Pfizer\Pfizer\bin\Newtonsoft.Json.dll
+E:\Baskar\Pfizer_BK\Siva-Kannan -Pfizer_BK\Pfizer\Pfizer\bin\PfizerEntity.dll
+E:\Baskar\Pfizer_BK\Siva-Kannan -Pfizer_BK\Pfizer\Pfizer\bin\SifyGrid.dll
+E:\Baskar\Pfizer_BK\Siva-Kannan -Pfizer_BK\Pfizer\Pfizer\bin\System.Net.Http.Formatting.dll
+E:\Baskar\Pfizer_BK\Siva-Kannan -Pfizer_BK\Pfizer\Pfizer\bin\System.Web.Helpers.dll
+E:\Baskar\Pfizer_BK\Siva-Kannan -Pfizer_BK\Pfizer\Pfizer\bin\System.Web.Http.dll
+E:\Baskar\Pfizer_BK\Siva-Kannan -Pfizer_BK\Pfizer\Pfizer\bin\System.Web.Http.WebHost.dll
+E:\Baskar\Pfizer_BK\Siva-Kannan -Pfizer_BK\Pfizer\Pfizer\bin\System.Web.Razor.dll
+E:\Baskar\Pfizer_BK\Siva-Kannan -Pfizer_BK\Pfizer\Pfizer\bin\System.Web.WebPages.Deployment.dll
+E:\Baskar\Pfizer_BK\Siva-Kannan -Pfizer_BK\Pfizer\Pfizer\bin\System.Web.WebPages.dll
+E:\Baskar\Pfizer_BK\Siva-Kannan -Pfizer_BK\Pfizer\Pfizer\bin\System.Web.WebPages.Razor.dll
+E:\Baskar\Pfizer_BK\Siva-Kannan -Pfizer_BK\Pfizer\Pfizer\bin\PfizerEntity.pdb
+E:\Baskar\Pfizer_BK\Siva-Kannan -Pfizer_BK\Pfizer\Pfizer\bin\SifyGrid.pdb
+E:\Baskar\Pfizer_BK\Siva-Kannan -Pfizer_BK\Pfizer\Pfizer\bin\Newtonsoft.Json.xml
+E:\Baskar\Pfizer_BK\Siva-Kannan -Pfizer_BK\Pfizer\Pfizer\bin\System.Net.Http.Formatting.xml
+E:\Baskar\Pfizer_BK\Siva-Kannan -Pfizer_BK\Pfizer\Pfizer\bin\System.Web.Helpers.xml
+E:\Baskar\Pfizer_BK\Siva-Kannan -Pfizer_BK\Pfizer\Pfizer\bin\System.Web.Http.xml
+E:\Baskar\Pfizer_BK\Siva-Kannan -Pfizer_BK\Pfizer\Pfizer\bin\System.Web.Http.WebHost.xml
+E:\Baskar\Pfizer_BK\Siva-Kannan -Pfizer_BK\Pfizer\Pfizer\bin\System.Web.Razor.xml
+E:\Baskar\Pfizer_BK\Siva-Kannan -Pfizer_BK\Pfizer\Pfizer\bin\System.Web.WebPages.xml
+E:\Baskar\Pfizer_BK\Siva-Kannan -Pfizer_BK\Pfizer\Pfizer\bin\System.Web.WebPages.Deployment.xml
+E:\Baskar\Pfizer_BK\Siva-Kannan -Pfizer_BK\Pfizer\Pfizer\bin\System.Web.WebPages.Razor.xml
+E:\Baskar\Pfizer_BK\Siva-Kannan -Pfizer_BK\Pfizer\Pfizer\obj\Debug\Pfizer.csprojResolveAssemblyReference.cache
+E:\Baskar\Pfizer_BK\Siva-Kannan -Pfizer_BK\Pfizer\Pfizer\obj\Debug\Pfizer.dll
+E:\Baskar\Pfizer_BK\Siva-Kannan -Pfizer_BK\Pfizer\Pfizer\obj\Debug\Pfizer.pdb
 E:\Pfizer\Pfizer\bin\Pfizer.dll.config
 E:\Pfizer\Pfizer\bin\Pfizer.dll
 E:\Pfizer\Pfizer\bin\Pfizer.pdb
@@ -96,161 +156,176 @@ E:\Pfizer\Pfizer\bin\System.Web.WebPages.Deployment.xml
 E:\Pfizer\Pfizer\bin\System.Web.WebPages.Razor.xml
 E:\Pfizer\Pfizer\obj\Debug\Pfizer.dll
 E:\Pfizer\Pfizer\obj\Debug\Pfizer.pdb
-E:\Live\Pfizer26Jun2014\Pfizer\Pfizer\obj\Debug\Pfizer.csprojResolveAssemblyReference.cache
-E:\Live\Pfizer26Jun2014\Pfizer\Pfizer\obj\Debug\Pfizer.dll
-E:\Live\Pfizer26Jun2014\Pfizer\Pfizer\obj\Debug\Pfizer.pdb
-E:\Live\Pfizer26Jun2014\Pfizer\Pfizer\bin\Pfizer.dll.config
-E:\Live\Pfizer26Jun2014\Pfizer\Pfizer\bin\Pfizer.dll
-E:\Live\Pfizer26Jun2014\Pfizer\Pfizer\bin\Pfizer.pdb
-E:\Live\Pfizer26Jun2014\Pfizer\Pfizer\bin\x86\sqlcese40.dll
-E:\Live\Pfizer26Jun2014\Pfizer\Pfizer\bin\x86\sqlceqp40.dll
-E:\Live\Pfizer26Jun2014\Pfizer\Pfizer\bin\x86\sqlceme40.dll
-E:\Live\Pfizer26Jun2014\Pfizer\Pfizer\bin\x86\sqlceer40EN.dll
-E:\Live\Pfizer26Jun2014\Pfizer\Pfizer\bin\x86\sqlcecompact40.dll
-E:\Live\Pfizer26Jun2014\Pfizer\Pfizer\bin\x86\sqlceca40.dll
-E:\Live\Pfizer26Jun2014\Pfizer\Pfizer\bin\x86\Microsoft.VC90.CRT\README_ENU.txt
-E:\Live\Pfizer26Jun2014\Pfizer\Pfizer\bin\x86\Microsoft.VC90.CRT\msvcr90.dll
-E:\Live\Pfizer26Jun2014\Pfizer\Pfizer\bin\amd64\sqlcese40.dll
-E:\Live\Pfizer26Jun2014\Pfizer\Pfizer\bin\amd64\sqlceqp40.dll
-E:\Live\Pfizer26Jun2014\Pfizer\Pfizer\bin\amd64\sqlceme40.dll
-E:\Live\Pfizer26Jun2014\Pfizer\Pfizer\bin\amd64\sqlceer40EN.dll
-E:\Live\Pfizer26Jun2014\Pfizer\Pfizer\bin\amd64\sqlcecompact40.dll
-E:\Live\Pfizer26Jun2014\Pfizer\Pfizer\bin\amd64\sqlceca40.dll
-E:\Live\Pfizer26Jun2014\Pfizer\Pfizer\bin\amd64\Microsoft.VC90.CRT\README_ENU.txt
-E:\Live\Pfizer26Jun2014\Pfizer\Pfizer\bin\amd64\Microsoft.VC90.CRT\msvcr90.dll
-E:\Live\Pfizer26Jun2014\Pfizer\Pfizer\bin\x86\Microsoft.VC90.CRT\Microsoft.VC90.CRT.manifest
-E:\Live\Pfizer26Jun2014\Pfizer\Pfizer\bin\amd64\Microsoft.VC90.CRT\Microsoft.VC90.CRT.manifest
-E:\Live\Pfizer26Jun2014\Pfizer\Pfizer\bin\EntityFramework.dll
-E:\Live\Pfizer26Jun2014\Pfizer\Pfizer\bin\EntityFramework.SqlServerCompact.dll
-E:\Live\Pfizer26Jun2014\Pfizer\Pfizer\bin\itextsharp.dll
-E:\Live\Pfizer26Jun2014\Pfizer\Pfizer\bin\Microsoft.Web.Infrastructure.dll
-E:\Live\Pfizer26Jun2014\Pfizer\Pfizer\bin\Microsoft.Web.Mvc.FixedDisplayModes.dll
-E:\Live\Pfizer26Jun2014\Pfizer\Pfizer\bin\Newtonsoft.Json.dll
-E:\Live\Pfizer26Jun2014\Pfizer\Pfizer\bin\PfizerEntity.dll
-E:\Live\Pfizer26Jun2014\Pfizer\Pfizer\bin\Sify.dll
-E:\Live\Pfizer26Jun2014\Pfizer\Pfizer\bin\Sify.UserControls.dll
-E:\Live\Pfizer26Jun2014\Pfizer\Pfizer\bin\SifyGrid.dll
-E:\Live\Pfizer26Jun2014\Pfizer\Pfizer\bin\System.Data.SqlServerCe.dll
-E:\Live\Pfizer26Jun2014\Pfizer\Pfizer\bin\System.Net.Http.Formatting.dll
-E:\Live\Pfizer26Jun2014\Pfizer\Pfizer\bin\System.Web.Helpers.dll
-E:\Live\Pfizer26Jun2014\Pfizer\Pfizer\bin\System.Web.Http.dll
-E:\Live\Pfizer26Jun2014\Pfizer\Pfizer\bin\System.Web.Http.WebHost.dll
-E:\Live\Pfizer26Jun2014\Pfizer\Pfizer\bin\System.Web.Razor.dll
-E:\Live\Pfizer26Jun2014\Pfizer\Pfizer\bin\System.Web.WebPages.Deployment.dll
-E:\Live\Pfizer26Jun2014\Pfizer\Pfizer\bin\System.Web.WebPages.dll
-E:\Live\Pfizer26Jun2014\Pfizer\Pfizer\bin\System.Web.WebPages.Razor.dll
-E:\Live\Pfizer26Jun2014\Pfizer\Pfizer\bin\DocumentFormat.OpenXml.dll
-E:\Live\Pfizer26Jun2014\Pfizer\Pfizer\bin\PfizerEntity.pdb
-E:\Live\Pfizer26Jun2014\Pfizer\Pfizer\bin\SifyGrid.pdb
-E:\Live\Pfizer26Jun2014\Pfizer\Pfizer\bin\EntityFramework.xml
-E:\Live\Pfizer26Jun2014\Pfizer\Pfizer\bin\EntityFramework.SqlServerCompact.xml
-E:\Live\Pfizer26Jun2014\Pfizer\Pfizer\bin\Newtonsoft.Json.xml
-E:\Live\Pfizer26Jun2014\Pfizer\Pfizer\bin\System.Net.Http.Formatting.xml
-E:\Live\Pfizer26Jun2014\Pfizer\Pfizer\bin\System.Web.Helpers.xml
-E:\Live\Pfizer26Jun2014\Pfizer\Pfizer\bin\System.Web.Http.xml
-E:\Live\Pfizer26Jun2014\Pfizer\Pfizer\bin\System.Web.Http.WebHost.xml
-E:\Live\Pfizer26Jun2014\Pfizer\Pfizer\bin\System.Web.Razor.xml
-E:\Live\Pfizer26Jun2014\Pfizer\Pfizer\bin\System.Web.WebPages.xml
-E:\Live\Pfizer26Jun2014\Pfizer\Pfizer\bin\System.Web.WebPages.Deployment.xml
-E:\Live\Pfizer26Jun2014\Pfizer\Pfizer\bin\System.Web.WebPages.Razor.xml
-E:\OptimaUpgrade\Optima-Upgrade\OptimaIndia\Pfizer\bin\Pfizer.dll.config
-E:\OptimaUpgrade\Optima-Upgrade\OptimaIndia\Pfizer\bin\Pfizer.dll
-E:\OptimaUpgrade\Optima-Upgrade\OptimaIndia\Pfizer\bin\Pfizer.pdb
-E:\OptimaUpgrade\Optima-Upgrade\OptimaIndia\Pfizer\bin\EntityFramework.dll
-E:\OptimaUpgrade\Optima-Upgrade\OptimaIndia\Pfizer\bin\EntityFramework.SqlServer.dll
-E:\OptimaUpgrade\Optima-Upgrade\OptimaIndia\Pfizer\bin\Newtonsoft.Json.dll
-E:\OptimaUpgrade\Optima-Upgrade\OptimaIndia\Pfizer\bin\PfizerEntity.dll
-E:\OptimaUpgrade\Optima-Upgrade\OptimaIndia\Pfizer\bin\Sify.dll
-E:\OptimaUpgrade\Optima-Upgrade\OptimaIndia\Pfizer\bin\SifyGrid.dll
-E:\OptimaUpgrade\Optima-Upgrade\OptimaIndia\Pfizer\bin\System.Net.Http.Formatting.dll
-E:\OptimaUpgrade\Optima-Upgrade\OptimaIndia\Pfizer\bin\System.Web.Helpers.dll
-E:\OptimaUpgrade\Optima-Upgrade\OptimaIndia\Pfizer\bin\System.Web.Http.dll
-E:\OptimaUpgrade\Optima-Upgrade\OptimaIndia\Pfizer\bin\System.Web.Http.WebHost.dll
-E:\OptimaUpgrade\Optima-Upgrade\OptimaIndia\Pfizer\bin\System.Web.Mvc.dll
-E:\OptimaUpgrade\Optima-Upgrade\OptimaIndia\Pfizer\bin\System.Web.Mvc.Extensions.dll
-E:\OptimaUpgrade\Optima-Upgrade\OptimaIndia\Pfizer\bin\System.Web.Razor.dll
-E:\OptimaUpgrade\Optima-Upgrade\OptimaIndia\Pfizer\bin\System.Web.WebPages.Deployment.dll
-E:\OptimaUpgrade\Optima-Upgrade\OptimaIndia\Pfizer\bin\System.Web.WebPages.dll
-E:\OptimaUpgrade\Optima-Upgrade\OptimaIndia\Pfizer\bin\System.Web.WebPages.Razor.dll
-E:\OptimaUpgrade\Optima-Upgrade\OptimaIndia\Pfizer\bin\DocumentFormat.OpenXml.dll
-E:\OptimaUpgrade\Optima-Upgrade\OptimaIndia\Pfizer\bin\itextsharp.dll
-E:\OptimaUpgrade\Optima-Upgrade\OptimaIndia\Pfizer\bin\PfizerEntity.pdb
-E:\OptimaUpgrade\Optima-Upgrade\OptimaIndia\Pfizer\bin\SifyGrid.pdb
-E:\OptimaUpgrade\Optima-Upgrade\OptimaIndia\Pfizer\bin\EntityFramework.xml
-E:\OptimaUpgrade\Optima-Upgrade\OptimaIndia\Pfizer\bin\EntityFramework.SqlServer.xml
-E:\OptimaUpgrade\Optima-Upgrade\OptimaIndia\Pfizer\bin\Newtonsoft.Json.xml
-E:\OptimaUpgrade\Optima-Upgrade\OptimaIndia\Pfizer\bin\System.Net.Http.Formatting.xml
-E:\OptimaUpgrade\Optima-Upgrade\OptimaIndia\Pfizer\bin\System.Web.Helpers.xml
-E:\OptimaUpgrade\Optima-Upgrade\OptimaIndia\Pfizer\bin\System.Web.Http.xml
-E:\OptimaUpgrade\Optima-Upgrade\OptimaIndia\Pfizer\bin\System.Web.Http.WebHost.xml
-E:\OptimaUpgrade\Optima-Upgrade\OptimaIndia\Pfizer\bin\System.Web.Mvc.xml
-E:\OptimaUpgrade\Optima-Upgrade\OptimaIndia\Pfizer\bin\System.Web.Mvc.Extensions.xml
-E:\OptimaUpgrade\Optima-Upgrade\OptimaIndia\Pfizer\bin\System.Web.Razor.xml
-E:\OptimaUpgrade\Optima-Upgrade\OptimaIndia\Pfizer\bin\System.Web.WebPages.xml
-E:\OptimaUpgrade\Optima-Upgrade\OptimaIndia\Pfizer\bin\System.Web.WebPages.Deployment.xml
-E:\OptimaUpgrade\Optima-Upgrade\OptimaIndia\Pfizer\bin\System.Web.WebPages.Razor.xml
-E:\OptimaUpgrade\Optima-Upgrade\OptimaIndia\Pfizer\bin\itextsharp.xml
-E:\OptimaUpgrade\Optima-Upgrade\OptimaIndia\Pfizer\obj\Debug\Pfizer.csprojResolveAssemblyReference.cache
-E:\OptimaUpgrade\Optima-Upgrade\OptimaIndia\Pfizer\obj\Debug\Pfizer.dll
-E:\OptimaUpgrade\Optima-Upgrade\OptimaIndia\Pfizer\obj\Debug\Pfizer.pdb
-E:\OptimaSifyDev\optimasifydev\Pfizer\bin\Pfizer.dll.config
-E:\OptimaSifyDev\optimasifydev\Pfizer\bin\Pfizer.dll
-E:\OptimaSifyDev\optimasifydev\Pfizer\bin\Pfizer.pdb
-E:\OptimaSifyDev\optimasifydev\Pfizer\bin\x86\sqlcese40.dll
-E:\OptimaSifyDev\optimasifydev\Pfizer\bin\x86\sqlceqp40.dll
-E:\OptimaSifyDev\optimasifydev\Pfizer\bin\x86\sqlceme40.dll
-E:\OptimaSifyDev\optimasifydev\Pfizer\bin\x86\sqlceer40EN.dll
-E:\OptimaSifyDev\optimasifydev\Pfizer\bin\x86\sqlcecompact40.dll
-E:\OptimaSifyDev\optimasifydev\Pfizer\bin\x86\sqlceca40.dll
-E:\OptimaSifyDev\optimasifydev\Pfizer\bin\x86\Microsoft.VC90.CRT\README_ENU.txt
-E:\OptimaSifyDev\optimasifydev\Pfizer\bin\x86\Microsoft.VC90.CRT\msvcr90.dll
-E:\OptimaSifyDev\optimasifydev\Pfizer\bin\amd64\sqlcese40.dll
-E:\OptimaSifyDev\optimasifydev\Pfizer\bin\amd64\sqlceqp40.dll
-E:\OptimaSifyDev\optimasifydev\Pfizer\bin\amd64\sqlceme40.dll
-E:\OptimaSifyDev\optimasifydev\Pfizer\bin\amd64\sqlceer40EN.dll
-E:\OptimaSifyDev\optimasifydev\Pfizer\bin\amd64\sqlcecompact40.dll
-E:\OptimaSifyDev\optimasifydev\Pfizer\bin\amd64\sqlceca40.dll
-E:\OptimaSifyDev\optimasifydev\Pfizer\bin\amd64\Microsoft.VC90.CRT\README_ENU.txt
-E:\OptimaSifyDev\optimasifydev\Pfizer\bin\amd64\Microsoft.VC90.CRT\msvcr90.dll
-E:\OptimaSifyDev\optimasifydev\Pfizer\bin\x86\Microsoft.VC90.CRT\Microsoft.VC90.CRT.manifest
-E:\OptimaSifyDev\optimasifydev\Pfizer\bin\amd64\Microsoft.VC90.CRT\Microsoft.VC90.CRT.manifest
-E:\OptimaSifyDev\optimasifydev\Pfizer\bin\EntityFramework.dll
-E:\OptimaSifyDev\optimasifydev\Pfizer\bin\EntityFramework.SqlServer.dll
-E:\OptimaSifyDev\optimasifydev\Pfizer\bin\EntityFramework.SqlServerCompact.dll
-E:\OptimaSifyDev\optimasifydev\Pfizer\bin\Newtonsoft.Json.dll
-E:\OptimaSifyDev\optimasifydev\Pfizer\bin\PfizerEntity.dll
-E:\OptimaSifyDev\optimasifydev\Pfizer\bin\Sify.dll
-E:\OptimaSifyDev\optimasifydev\Pfizer\bin\SifyGrid.dll
-E:\OptimaSifyDev\optimasifydev\Pfizer\bin\System.Data.SqlServerCe.dll
-E:\OptimaSifyDev\optimasifydev\Pfizer\bin\System.Net.Http.Formatting.dll
-E:\OptimaSifyDev\optimasifydev\Pfizer\bin\System.Web.Helpers.dll
-E:\OptimaSifyDev\optimasifydev\Pfizer\bin\System.Web.Http.dll
-E:\OptimaSifyDev\optimasifydev\Pfizer\bin\System.Web.Http.WebHost.dll
-E:\OptimaSifyDev\optimasifydev\Pfizer\bin\System.Web.Mvc.dll
-E:\OptimaSifyDev\optimasifydev\Pfizer\bin\System.Web.Mvc.Extensions.dll
-E:\OptimaSifyDev\optimasifydev\Pfizer\bin\System.Web.Razor.dll
-E:\OptimaSifyDev\optimasifydev\Pfizer\bin\System.Web.WebPages.Deployment.dll
-E:\OptimaSifyDev\optimasifydev\Pfizer\bin\System.Web.WebPages.dll
-E:\OptimaSifyDev\optimasifydev\Pfizer\bin\System.Web.WebPages.Razor.dll
-E:\OptimaSifyDev\optimasifydev\Pfizer\bin\DocumentFormat.OpenXml.dll
-E:\OptimaSifyDev\optimasifydev\Pfizer\bin\itextsharp.dll
-E:\OptimaSifyDev\optimasifydev\Pfizer\bin\PfizerEntity.pdb
-E:\OptimaSifyDev\optimasifydev\Pfizer\bin\SifyGrid.pdb
-E:\OptimaSifyDev\optimasifydev\Pfizer\bin\EntityFramework.xml
-E:\OptimaSifyDev\optimasifydev\Pfizer\bin\EntityFramework.SqlServer.xml
-E:\OptimaSifyDev\optimasifydev\Pfizer\bin\EntityFramework.SqlServerCompact.xml
-E:\OptimaSifyDev\optimasifydev\Pfizer\bin\Newtonsoft.Json.xml
-E:\OptimaSifyDev\optimasifydev\Pfizer\bin\System.Net.Http.Formatting.xml
-E:\OptimaSifyDev\optimasifydev\Pfizer\bin\System.Web.Helpers.xml
-E:\OptimaSifyDev\optimasifydev\Pfizer\bin\System.Web.Http.xml
-E:\OptimaSifyDev\optimasifydev\Pfizer\bin\System.Web.Http.WebHost.xml
-E:\OptimaSifyDev\optimasifydev\Pfizer\bin\System.Web.Mvc.xml
-E:\OptimaSifyDev\optimasifydev\Pfizer\bin\System.Web.Mvc.Extensions.xml
-E:\OptimaSifyDev\optimasifydev\Pfizer\bin\System.Web.Razor.xml
-E:\OptimaSifyDev\optimasifydev\Pfizer\bin\System.Web.WebPages.xml
-E:\OptimaSifyDev\optimasifydev\Pfizer\bin\System.Web.WebPages.Deployment.xml
-E:\OptimaSifyDev\optimasifydev\Pfizer\bin\System.Web.WebPages.Razor.xml
-E:\OptimaSifyDev\optimasifydev\Pfizer\bin\itextsharp.xml
-E:\OptimaSifyDev\optimasifydev\Pfizer\obj\Debug\Pfizer.csprojResolveAssemblyReference.cache
-E:\OptimaSifyDev\optimasifydev\Pfizer\obj\Debug\Pfizer.dll
-E:\OptimaSifyDev\optimasifydev\Pfizer\obj\Debug\Pfizer.pdb
+E:\Pfizer\Pfizer\obj\Debug\Pfizer.csprojResolveAssemblyReference.cache
+F:\22-07-2014\Pfizer\Pfizer\obj\Debug\Pfizer.csprojResolveAssemblyReference.cache
+F:\22-07-2014\Pfizer\Pfizer\obj\Debug\Pfizer.dll
+F:\22-07-2014\Pfizer\Pfizer\bin\Pfizer.dll.config
+F:\22-07-2014\Pfizer\Pfizer\bin\Pfizer.dll
+F:\22-07-2014\Pfizer\Pfizer\bin\Pfizer.pdb
+F:\22-07-2014\Pfizer\Pfizer\bin\EntityFramework.dll
+F:\22-07-2014\Pfizer\Pfizer\bin\EntityFramework.SqlServer.dll
+F:\22-07-2014\Pfizer\Pfizer\bin\Microsoft.Web.Infrastructure.dll
+F:\22-07-2014\Pfizer\Pfizer\bin\Microsoft.Web.Mvc.FixedDisplayModes.dll
+F:\22-07-2014\Pfizer\Pfizer\bin\Newtonsoft.Json.dll
+F:\22-07-2014\Pfizer\Pfizer\bin\PfizerEntity.dll
+F:\22-07-2014\Pfizer\Pfizer\bin\SifyGrid.dll
+F:\22-07-2014\Pfizer\Pfizer\bin\System.Net.Http.Formatting.dll
+F:\22-07-2014\Pfizer\Pfizer\bin\System.Web.Helpers.dll
+F:\22-07-2014\Pfizer\Pfizer\bin\System.Web.Http.dll
+F:\22-07-2014\Pfizer\Pfizer\bin\System.Web.Http.WebHost.dll
+F:\22-07-2014\Pfizer\Pfizer\bin\System.Web.Razor.dll
+F:\22-07-2014\Pfizer\Pfizer\bin\System.Web.WebPages.Deployment.dll
+F:\22-07-2014\Pfizer\Pfizer\bin\System.Web.WebPages.dll
+F:\22-07-2014\Pfizer\Pfizer\bin\System.Web.WebPages.Razor.dll
+F:\22-07-2014\Pfizer\Pfizer\bin\EntityFramework.xml
+F:\22-07-2014\Pfizer\Pfizer\bin\EntityFramework.SqlServer.xml
+F:\22-07-2014\Pfizer\Pfizer\bin\PfizerEntity.pdb
+F:\22-07-2014\Pfizer\Pfizer\bin\SifyGrid.pdb
+F:\22-07-2014\Pfizer\Pfizer\bin\Newtonsoft.Json.xml
+F:\22-07-2014\Pfizer\Pfizer\bin\System.Net.Http.Formatting.xml
+F:\22-07-2014\Pfizer\Pfizer\bin\System.Web.Helpers.xml
+F:\22-07-2014\Pfizer\Pfizer\bin\System.Web.Http.xml
+F:\22-07-2014\Pfizer\Pfizer\bin\System.Web.Http.WebHost.xml
+F:\22-07-2014\Pfizer\Pfizer\bin\System.Web.Razor.xml
+F:\22-07-2014\Pfizer\Pfizer\bin\System.Web.WebPages.xml
+F:\22-07-2014\Pfizer\Pfizer\bin\System.Web.WebPages.Deployment.xml
+F:\22-07-2014\Pfizer\Pfizer\bin\System.Web.WebPages.Razor.xml
+F:\22-07-2014\Pfizer\Pfizer\obj\Debug\Pfizer.pdb
+C:\Users\Sify\Desktop\Pfizer\Pfizer\bin\Pfizer.dll.config
+C:\Users\Sify\Desktop\Pfizer\Pfizer\bin\Pfizer.dll
+C:\Users\Sify\Desktop\Pfizer\Pfizer\bin\Pfizer.pdb
+C:\Users\Sify\Desktop\Pfizer\Pfizer\bin\Microsoft.Web.Infrastructure.dll
+C:\Users\Sify\Desktop\Pfizer\Pfizer\bin\Microsoft.Web.Mvc.FixedDisplayModes.dll
+C:\Users\Sify\Desktop\Pfizer\Pfizer\bin\Newtonsoft.Json.dll
+C:\Users\Sify\Desktop\Pfizer\Pfizer\bin\PfizerEntity.dll
+C:\Users\Sify\Desktop\Pfizer\Pfizer\bin\SifyGrid.dll
+C:\Users\Sify\Desktop\Pfizer\Pfizer\bin\System.Net.Http.Formatting.dll
+C:\Users\Sify\Desktop\Pfizer\Pfizer\bin\System.Web.Helpers.dll
+C:\Users\Sify\Desktop\Pfizer\Pfizer\bin\System.Web.Http.dll
+C:\Users\Sify\Desktop\Pfizer\Pfizer\bin\System.Web.Http.WebHost.dll
+C:\Users\Sify\Desktop\Pfizer\Pfizer\bin\System.Web.Razor.dll
+C:\Users\Sify\Desktop\Pfizer\Pfizer\bin\System.Web.WebPages.Deployment.dll
+C:\Users\Sify\Desktop\Pfizer\Pfizer\bin\System.Web.WebPages.dll
+C:\Users\Sify\Desktop\Pfizer\Pfizer\bin\System.Web.WebPages.Razor.dll
+C:\Users\Sify\Desktop\Pfizer\Pfizer\bin\EntityFramework.xml
+C:\Users\Sify\Desktop\Pfizer\Pfizer\bin\EntityFramework.SqlServer.xml
+C:\Users\Sify\Desktop\Pfizer\Pfizer\bin\PfizerEntity.pdb
+C:\Users\Sify\Desktop\Pfizer\Pfizer\bin\SifyGrid.pdb
+C:\Users\Sify\Desktop\Pfizer\Pfizer\bin\Newtonsoft.Json.xml
+C:\Users\Sify\Desktop\Pfizer\Pfizer\bin\System.Net.Http.Formatting.xml
+C:\Users\Sify\Desktop\Pfizer\Pfizer\bin\System.Web.Helpers.xml
+C:\Users\Sify\Desktop\Pfizer\Pfizer\bin\System.Web.Http.xml
+C:\Users\Sify\Desktop\Pfizer\Pfizer\bin\System.Web.Http.WebHost.xml
+C:\Users\Sify\Desktop\Pfizer\Pfizer\bin\System.Web.Razor.xml
+C:\Users\Sify\Desktop\Pfizer\Pfizer\bin\System.Web.WebPages.xml
+C:\Users\Sify\Desktop\Pfizer\Pfizer\bin\System.Web.WebPages.Deployment.xml
+C:\Users\Sify\Desktop\Pfizer\Pfizer\bin\System.Web.WebPages.Razor.xml
+C:\Users\Sify\Desktop\Pfizer\Pfizer\obj\Debug\Pfizer.csprojResolveAssemblyReference.cache
+C:\Users\Sify\Desktop\Pfizer\Pfizer\obj\Debug\Pfizer.dll
+C:\Users\Sify\Desktop\Pfizer\Pfizer\obj\Debug\Pfizer.pdb
+C:\Users\SS253\Desktop\22.07.2014\Pfizer\bin\Pfizer.dll.config
+C:\Users\SS253\Desktop\22.07.2014\Pfizer\bin\Pfizer.dll
+C:\Users\SS253\Desktop\22.07.2014\Pfizer\bin\Pfizer.pdb
+C:\Users\SS253\Desktop\22.07.2014\Pfizer\bin\Microsoft.Web.Infrastructure.dll
+C:\Users\SS253\Desktop\22.07.2014\Pfizer\bin\Microsoft.Web.Mvc.FixedDisplayModes.dll
+C:\Users\SS253\Desktop\22.07.2014\Pfizer\bin\Newtonsoft.Json.dll
+C:\Users\SS253\Desktop\22.07.2014\Pfizer\bin\PfizerEntity.dll
+C:\Users\SS253\Desktop\22.07.2014\Pfizer\bin\SifyGrid.dll
+C:\Users\SS253\Desktop\22.07.2014\Pfizer\bin\System.Net.Http.Formatting.dll
+C:\Users\SS253\Desktop\22.07.2014\Pfizer\bin\System.Web.Helpers.dll
+C:\Users\SS253\Desktop\22.07.2014\Pfizer\bin\System.Web.Http.dll
+C:\Users\SS253\Desktop\22.07.2014\Pfizer\bin\System.Web.Http.WebHost.dll
+C:\Users\SS253\Desktop\22.07.2014\Pfizer\bin\System.Web.Razor.dll
+C:\Users\SS253\Desktop\22.07.2014\Pfizer\bin\System.Web.WebPages.Deployment.dll
+C:\Users\SS253\Desktop\22.07.2014\Pfizer\bin\System.Web.WebPages.dll
+C:\Users\SS253\Desktop\22.07.2014\Pfizer\bin\System.Web.WebPages.Razor.dll
+C:\Users\SS253\Desktop\22.07.2014\Pfizer\bin\PfizerEntity.pdb
+C:\Users\SS253\Desktop\22.07.2014\Pfizer\bin\SifyGrid.pdb
+C:\Users\SS253\Desktop\22.07.2014\Pfizer\bin\Newtonsoft.Json.xml
+C:\Users\SS253\Desktop\22.07.2014\Pfizer\bin\System.Net.Http.Formatting.xml
+C:\Users\SS253\Desktop\22.07.2014\Pfizer\bin\System.Web.Helpers.xml
+C:\Users\SS253\Desktop\22.07.2014\Pfizer\bin\System.Web.Http.xml
+C:\Users\SS253\Desktop\22.07.2014\Pfizer\bin\System.Web.Http.WebHost.xml
+C:\Users\SS253\Desktop\22.07.2014\Pfizer\bin\System.Web.Razor.xml
+C:\Users\SS253\Desktop\22.07.2014\Pfizer\bin\System.Web.WebPages.xml
+C:\Users\SS253\Desktop\22.07.2014\Pfizer\bin\System.Web.WebPages.Deployment.xml
+C:\Users\SS253\Desktop\22.07.2014\Pfizer\bin\System.Web.WebPages.Razor.xml
+C:\Users\SS253\Desktop\22.07.2014\Pfizer\obj\Debug\Pfizer.dll
+C:\Users\SS253\Desktop\22.07.2014\Pfizer\obj\Debug\Pfizer.pdb
+F:\PfizerUpgradeSVN\Pfizer\obj\Debug\Pfizer.csprojResolveAssemblyReference.cache
+F:\PfizerUpgradeSVN\Pfizer\obj\Debug\Pfizer.dll
+F:\PfizerUpgradeSVN\Pfizer\bin\Pfizer.dll.config
+F:\PfizerUpgradeSVN\Pfizer\bin\Pfizer.dll
+F:\PfizerUpgradeSVN\Pfizer\bin\Pfizer.pdb
+F:\PfizerUpgradeSVN\Pfizer\bin\EntityFramework.dll
+F:\PfizerUpgradeSVN\Pfizer\bin\EntityFramework.SqlServer.dll
+F:\PfizerUpgradeSVN\Pfizer\bin\Microsoft.Web.Infrastructure.dll
+F:\PfizerUpgradeSVN\Pfizer\bin\Microsoft.Web.Mvc.FixedDisplayModes.dll
+F:\PfizerUpgradeSVN\Pfizer\bin\Newtonsoft.Json.dll
+F:\PfizerUpgradeSVN\Pfizer\bin\PfizerEntity.dll
+F:\PfizerUpgradeSVN\Pfizer\bin\SifyGrid.dll
+F:\PfizerUpgradeSVN\Pfizer\bin\System.Net.Http.Formatting.dll
+F:\PfizerUpgradeSVN\Pfizer\bin\System.Web.Helpers.dll
+F:\PfizerUpgradeSVN\Pfizer\bin\System.Web.Http.dll
+F:\PfizerUpgradeSVN\Pfizer\bin\System.Web.Http.WebHost.dll
+F:\PfizerUpgradeSVN\Pfizer\bin\System.Web.Razor.dll
+F:\PfizerUpgradeSVN\Pfizer\bin\System.Web.WebPages.Deployment.dll
+F:\PfizerUpgradeSVN\Pfizer\bin\System.Web.WebPages.dll
+F:\PfizerUpgradeSVN\Pfizer\bin\System.Web.WebPages.Razor.dll
+F:\PfizerUpgradeSVN\Pfizer\bin\EntityFramework.xml
+F:\PfizerUpgradeSVN\Pfizer\bin\EntityFramework.SqlServer.xml
+F:\PfizerUpgradeSVN\Pfizer\bin\PfizerEntity.pdb
+F:\PfizerUpgradeSVN\Pfizer\bin\SifyGrid.pdb
+F:\PfizerUpgradeSVN\Pfizer\bin\Newtonsoft.Json.xml
+F:\PfizerUpgradeSVN\Pfizer\bin\System.Net.Http.Formatting.xml
+F:\PfizerUpgradeSVN\Pfizer\bin\System.Web.Helpers.xml
+F:\PfizerUpgradeSVN\Pfizer\bin\System.Web.Http.xml
+F:\PfizerUpgradeSVN\Pfizer\bin\System.Web.Http.WebHost.xml
+F:\PfizerUpgradeSVN\Pfizer\bin\System.Web.Razor.xml
+F:\PfizerUpgradeSVN\Pfizer\bin\System.Web.WebPages.xml
+F:\PfizerUpgradeSVN\Pfizer\bin\System.Web.WebPages.Deployment.xml
+F:\PfizerUpgradeSVN\Pfizer\bin\System.Web.WebPages.Razor.xml
+F:\PfizerUpgradeSVN\Pfizer\obj\Debug\Pfizer.pdb
+E:\PfizerUpgrade\Pfizer\obj\Debug\Pfizer.csprojResolveAssemblyReference.cache
+E:\PfizerUpgrade\Pfizer\bin\Pfizer.dll.config
+E:\PfizerUpgrade\Pfizer\bin\Pfizer.dll
+E:\PfizerUpgrade\Pfizer\bin\Pfizer.pdb
+E:\PfizerUpgrade\Pfizer\bin\EntityFramework.dll
+E:\PfizerUpgrade\Pfizer\bin\EntityFramework.SqlServer.dll
+E:\PfizerUpgrade\Pfizer\bin\EntityFramework.SqlServerCompact.dll
+E:\PfizerUpgrade\Pfizer\bin\Newtonsoft.Json.dll
+E:\PfizerUpgrade\Pfizer\bin\PfizerEntity.dll
+E:\PfizerUpgrade\Pfizer\bin\Sify.dll
+E:\PfizerUpgrade\Pfizer\bin\SifyGrid.dll
+E:\PfizerUpgrade\Pfizer\bin\System.Data.SqlServerCe.dll
+E:\PfizerUpgrade\Pfizer\bin\System.Net.Http.Formatting.dll
+E:\PfizerUpgrade\Pfizer\bin\System.Web.Helpers.dll
+E:\PfizerUpgrade\Pfizer\bin\System.Web.Http.dll
+E:\PfizerUpgrade\Pfizer\bin\System.Web.Http.WebHost.dll
+E:\PfizerUpgrade\Pfizer\bin\System.Web.Mvc.dll
+E:\PfizerUpgrade\Pfizer\bin\System.Web.Mvc.Extensions.dll
+E:\PfizerUpgrade\Pfizer\bin\System.Web.Razor.dll
+E:\PfizerUpgrade\Pfizer\bin\System.Web.WebPages.Deployment.dll
+E:\PfizerUpgrade\Pfizer\bin\System.Web.WebPages.dll
+E:\PfizerUpgrade\Pfizer\bin\System.Web.WebPages.Razor.dll
+E:\PfizerUpgrade\Pfizer\bin\DocumentFormat.OpenXml.dll
+E:\PfizerUpgrade\Pfizer\bin\itextsharp.dll
+E:\PfizerUpgrade\Pfizer\bin\PfizerEntity.pdb
+E:\PfizerUpgrade\Pfizer\bin\SifyGrid.pdb
+E:\PfizerUpgrade\Pfizer\bin\EntityFramework.xml
+E:\PfizerUpgrade\Pfizer\bin\EntityFramework.SqlServer.xml
+E:\PfizerUpgrade\Pfizer\bin\EntityFramework.SqlServerCompact.xml
+E:\PfizerUpgrade\Pfizer\bin\Newtonsoft.Json.xml
+E:\PfizerUpgrade\Pfizer\bin\System.Net.Http.Formatting.xml
+E:\PfizerUpgrade\Pfizer\bin\System.Web.Helpers.xml
+E:\PfizerUpgrade\Pfizer\bin\System.Web.Http.xml
+E:\PfizerUpgrade\Pfizer\bin\System.Web.Http.WebHost.xml
+E:\PfizerUpgrade\Pfizer\bin\System.Web.Mvc.xml
+E:\PfizerUpgrade\Pfizer\bin\System.Web.Mvc.Extensions.xml
+E:\PfizerUpgrade\Pfizer\bin\System.Web.Razor.xml
+E:\PfizerUpgrade\Pfizer\bin\System.Web.WebPages.xml
+E:\PfizerUpgrade\Pfizer\bin\System.Web.WebPages.Deployment.xml
+E:\PfizerUpgrade\Pfizer\bin\System.Web.WebPages.Razor.xml
+E:\PfizerUpgrade\Pfizer\bin\itextsharp.xml
+E:\PfizerUpgrade\Pfizer\obj\Debug\Pfizer.dll
+E:\PfizerUpgrade\Pfizer\obj\Debug\Pfizer.pdb

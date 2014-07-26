@@ -15,20 +15,7 @@
 @if (ViewBag.Type == "Team")
 {
 
-    <select>
-        <option value='select'>Select</option>
-        @foreach (KeyValuePair<int, string> value in Model)
-        {
-            <option value='@value.Key.ToString()'>@value.Value</option>
-        }
-    </select>
-}
-
-
-@if (ViewBag.Type == "Region")
-{
-
-    <select>
+    <select multiple>
         <option value='select'>Select</option>
         @foreach (KeyValuePair<int, string> value in Model)
         {
@@ -61,7 +48,98 @@
         }
     </select>
 }
+@*MUNIPRATHAP*@
+    
+@if (ViewBag.Type == "Region")
+{
+    <select>
+        <option value='0'>Select</option>
+        @foreach (KeyValuePair<int, string> value in Model)
+        {
+            if (@value.Key == ViewBag.Selected)
+            {
 
+                <option value='@value.Key.ToString()' selected="selected">@value.Value</option>
+            }
+            else
+            {
+                <option value='@value.Key.ToString()'>@value.Value</option>
+
+            }
+        }
+    </select>
+
+
+
+
+}
+
+
+
+
+@if (ViewBag.Type == "District")
+{
+
+    <select>
+        <option value='0'>Select</option>
+        @foreach (KeyValuePair<int, string> value in Model)
+        {
+            if (@value.Key == ViewBag.Selected)
+            {
+
+                <option value='@value.Key.ToString()' selected="selected">@value.Value</option>
+            }
+            else
+            {
+                <option value='@value.Key.ToString()'>@value.Value</option>
+
+            }
+        }
+    </select>
+}
+
+
+@if (ViewBag.Type == "NDistrict")
+{
+
+    <select id="DistrictCode" onchange="cal(this);">
+        <option value='0'>Select</option>
+        @foreach (KeyValuePair<int, string> value in Model)
+        {
+            <option value='@value.Key.ToString()'>@value.Value</option>
+        }
+    </select>
+}
+@if (ViewBag.Type == "NTerritory")
+{
+
+    <select id="Territory">
+        <option value='0'>Select</option>
+        @foreach (KeyValuePair<int, string> value in Model)
+        {
+            <option value='@value.Key.ToString()'>@value.Value</option>
+        }
+    </select>
+}
+
+@if (ViewBag.Type == "SHDay")
+{
+    <select>
+        @if (ViewBag.Selected != "null")
+        {
+            <option value='0'>Select</option>
+            foreach (KeyValuePair<int, string> value in Model)
+            {
+                <option value='@value.Key.ToString()' selected="selected">@value.Value</option>
+            }
+
+        }
+        else
+        {
+            <option value='0'>Select</option>
+        }
+    </select>
+}
 
 
 

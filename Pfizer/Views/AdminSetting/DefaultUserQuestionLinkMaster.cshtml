@@ -1,0 +1,133 @@
+﻿@{
+    ViewBag.Title = "DefaultUserQuestionLinkMaster";
+    Layout = "~/Views/Shared/MasterLayout.cshtml";
+}
+
+
+
+<body>
+    @using (Html.BeginForm(FormMethod.Post))
+    {
+        <div>
+            <table border="0" style="width: 100%">
+                <tr>
+                    <td>
+                        <!--JqGrid Starts-->
+                        <table style="margin-top: 7px; width :100%" border="0">
+                            <tr>
+                                <td align="center">
+                                    <label id="lblmsg" style="color:skyblue"/>
+                                </td>
+
+                            </tr>
+                            <tr>
+                                <td>
+                                    <table id="UserQuestionLinkMaster" style="width: 100%" border="0"></table>
+                                    <div id="UserQuestionLinkMasterPager"></div>
+                                </td>
+                            </tr>
+                            <tr>
+
+                                <td align="center">
+                                    <br />
+                                    <input type="button" id="Submit" class="blue_button" value="Submit" />
+                                    <input type="button" id="Cancel" class="blue_button" value="Cancel" />
+                                </td>
+                                
+                            </tr>
+                        </table>
+                        <!--Ends-->
+                    </td>
+                </tr>
+            </table>
+
+        </div>
+    }
+    <script type="text/javascript">
+
+    jQuery(document).ready(function () {
+
+        initGrid();
+    });
+
+    var lastsel;
+    function initGrid() {
+        jQuery("#UserQuestionLinkMaster").jqGrid({
+            url: '@Url.Action("GetUserQuestionLinkMaster")',
+            datatype: "json",
+            jsonReader: { repeatitems: false, id: "PKID" },
+            colNames: ['PKID', 'Question', 'Answer'],
+            colModel: [
+                         { name: 'PKID', index: 'PKID', align: 'left', viewable: true, key: true, hidden: true, editrules: { edithidden: true } },
+                         { name: 'Question', index: 'Question', align: 'left' },
+                           {
+                               name: 'Answer', index: 'Answer', align: 'left', editable: true,
+                               editoptions: {
+                                   size: 35, maxlength: 50,
+                                   dataEvents: [
+                                       {
+                                           type: 'keyup', // blur
+                                           fn: function (e) {
+                                               $('#FormError').hide();
+                                               SingleCharacter(this);
+                                           },
+
+                                       }
+                                   ]
+                               }
+                           }
+                         
+                      ],
+            caption: "User Question Link Master ",
+            autowidth: true,
+            gridview: true,
+            sortable: true,
+            hidegrid: false,
+            altRows: true,
+            viewrecords: true,
+            height: 'auto',
+            
+            onSelectRow: function (id, selected) {
+                if (id != lastsel) {
+                    jQuery('#UserQuestionLinkMaster').saveRow(lastsel);
+                    lastsel = id;
+                }
+                jQuery('#UserQuestionLinkMaster').editRow(id, true);
+
+            },
+            'cellsubmit': 'clientArray',
+            'editurl': 'clientArray',
+
+        });
+    }
+
+        $("#Submit").click(function () {
+           jQuery('#UserQuestionLinkMaster').jqGrid('saveRow', lastsel);
+            var gridData = jQuery("#UserQuestionLinkMaster").getRowData();
+            var postData = JSON.stringify(gridData);
+             $.ajax({
+                url: '@Url.Action("UpdateTeamReminderLinkMaster")',
+                type: 'POST',
+                dataType: 'json',
+                data: { gridData: postData },
+                success: function (result) {
+               lblmsg.textContent = result;
+                    
+                }
+            });
+            $("#UserQuestionLinkMaster").setGridParam({ datatype: 'json', page: 1 }).trigger('reloadGrid');
+             return true;
+            
+        });
+       
+
+        $("#Cancel").click(function () {
+            lblmsg.textContent = "";
+            $("#UserQuestionLinkMaster").setGridParam({ datatype: 'json', page: 1 }).trigger('reloadGrid');
+            return true;
+        });
+
+
+
+    </script>
+</body>

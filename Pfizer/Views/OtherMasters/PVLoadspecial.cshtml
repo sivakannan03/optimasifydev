@@ -29,3 +29,62 @@
     }
 </select>
 }
+
+@if (ViewBag.Type == "drpProd")
+{
+
+    <select id='@ViewBag.Count' onchange="productpackSize('@ViewBag.Id');">
+        <option value="0">Select</option>
+
+        @foreach (KeyValuePair<int, string> value in Model)
+        {
+            <option value='@value.Key.ToString()'>@value.Value</option>
+        }
+    </select>
+}
+
+@if (ViewBag.Type == "drppackbyProduct")
+{
+    //<select id='@ViewBag.Count'>
+    <select>
+        <option value="0" selected>Select</option>
+        @foreach (KeyValuePair<int, string> value in Model)
+        {
+            <option value='@value.Key.ToString()'>@value.Value</option>
+
+        }
+    </select>
+}
+
+
+@if (ViewBag.Type == "drpHosp")
+{
+    <select id='@ViewBag.Count'>
+        <option value="0">Select</option>
+
+        @foreach (KeyValuePair<int, string> value in Model)
+        {
+            <option value='@value.Key.ToString()'>@value.Value</option>
+        }
+    </select>
+}
+@if (ViewBag.Type == "drpStok")
+{
+    <select id='@ViewBag.Count'>
+        <option value="0">Select</option>
+
+        @foreach (KeyValuePair<int, string> value in Model)
+        {
+            <option value='@value.Key.ToString()'>@value.Value</option>
+        }
+    </select>
+}
+@if (ViewBag.Type == "drppack")
+{
+    <select id='@ViewBag.Count'>
+        <option value="0">Select</option>
+
+
+    </select>
+}
+

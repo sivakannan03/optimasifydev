@@ -4,9 +4,15 @@
 }
 
 <style>
-    .colCell {
-        cursor: pointer;
+   
+
+   select {
+        width: 250px;
     }
+    #PCLtoMCLGrid_chkbox .s-ico span {
+        display: none;
+    }
+     
 </style>
 
 
@@ -16,21 +22,27 @@
     @using (Html.BeginForm(FormMethod.Post))
     {
         <div>
+            
+       <div style="text-align:center;"><label id="lblError" style=" color:red"></label></div>
+              
             <table width="100%" class="inner_tb">
                 <tr>
-                    <td class="tb-r1">
+                    <th colspan="8">PCL to MCL Request </th>
+                </tr>
+                <tr>
+                    <td class="tb-r1" style="width:5%;">
                         Search
                     </td>
-                    <td class="tb-r1">Brick</td>
-                    <td class="tb-r1">
-                        @Html.ListBox("lstBrick", PfizerEntity.UsefulLink.GetBricks(Convert.ToInt32(@Session["Territory_FKID"].ToString())),"All")
+                    <td class="tb-r1" style="width:5%;">Brick</td>
+                    <td class="tb-r1" style="width:20%;">
+                        @Html.ListBox("lstBrick", PfizerEntity.UsefulLink.GetBricks(Convert.ToInt32(@Session["Territory_FKID"].ToString())), "All")
 
                     </td>
-                    <td class="tb-r1">Customer Type</td>
+                    <td class="tb-r1" style="width:10%;">Customer Type</td>
 
-                    <td class="tb-r1">
-                        <select  name="lstCustomer" multiple style=" width:150px !important;">
-                            <option value="All" selected>All</option>
+                    <td class="tb-r1" style="width:20%;">
+                        <select name="lstCustomer" id="lstCustomer" multiple style=" width:200px !important;">
+                            <option value="All">All</option>
                             <option value="Doctor">Doctor</option>
                             <option value="Chemist">Chemist</option>
                             <option value="Nurse">Nurse</option>
@@ -40,74 +52,298 @@
                         </select>
 
                     </td>
-                    <td class="tb-r1">Status</td>
-                    <td class="tb-r1">
+                    <td class="tb-r1" style="width:5%;">Status</td>
+                    <td class="tb-r1" style="width:15%;">
 
-                        <select  name="lstStatus" style=" width:120px !important;" >
-                            <option value="New Request" selected>New Request</option>
+                        <select name="lstStatus" id="lstStatus" style=" width:140px !important;">
+                            <option value="">Select</option>
+                              <option value="New Request" selected>New Request</option>
                             <option value="Pending Request">Pending Request</option>
                             <option value="Approved Request">Approved Request</option>
                             <option value="Rejected Request">Rejected Request</option>
                         </select>
 
                     </td>
-                    <td class="tb-r1"><input type='button' class=" blue_button" value="Fetch" name="btnFetch" /></td>
+                    <td class="tb-r1" style="width:5%;"><input type='button' class=" blue_button" value="Fetch" name="btnFetch" id="btnFetch" /></td>
                 </tr>
 
             </table>
 
-            <table border="0" style="width: 100%">
-                
+            <table border="0" style="width: 100%;"> 
+
                 <tr>
-
                     <td>
-                    <table class="inner_tb">
-                        <tr>
-                            <td class="DataTD">
-                                <input type="text" value="New Request" name="txtStatus" />
-                            </td>
-
-                        </tr>
-
-                    </table>
+                        <div id="divNew" style=" display:none">
+                            <!--JqGrid Starts-->
+                            <table style="margin-top: 7px; width: 100%; " border="0">
+                                <tr>
+                                    <td>
+                                        <table id="PCLtoMCLGrid" style="width: 100% ;" border="0"></table>
+                                        
+                                         
+                                    </td>
+                                </tr>
+                            </table>
+                        </div>
+                        <!--Ends-->
                     </td>
-
                 </tr>
 
                 <tr>
                     <td>
                         <!--JqGrid Starts-->
-                        <table style="margin-top: 7px; width :100%" border="0">
-                            <tr>
-                                <td>
-                                    <table id="PCLtoMCLGrid" style="width: 100%" border="0"></table>
-                                    <div id="Pager">
-                                    </div>
-                                </td>
-                            </tr>
-                        </table>
-                        <!--Ends-->
+                        <div id="divPending" style=" display:none">
+                            <table style="margin-top: 7px; width: 100%; " border="0">
+                                <tr>
+                                    <td>
+                                        <table id="PCLtoMCLPendingGrid" style="width: 100%; " border="0"></table>
+                                        <div id="PendingGridPager">
+                                        </div>
+                                    </td>
+                                </tr>
+                            </table>
+                        </div>
+                            <!--Ends-->
+</td>
+                </tr>
+
+                <tr>
+                    <td>
+                        <!--JqGrid Starts-->
+                        <div id="divApproved" style=" display:none">
+                            <table style="margin-top: 7px; width: 100%; " border="0">
+                                <tr>
+                                    <td>
+                                        <table id="PCLtoMCLApprovedGrid" style="width: 100%; " border="0"></table>
+                                        <div id="ApprovedGridPager">
+                                        </div>
+                                    </td>
+                                </tr>
+                            </table>
+                        </div>
+                            <!--Ends-->
+</td>
+                </tr> 
+
+                <tr>
+                    <td>
+                        <!--JqGrid Starts-->
+                        <div id="divRejected" style=" display:none">
+                            <table style="margin-top: 7px; width: 100%; " border="0">
+                                <tr>
+                                    <td>
+                                        <table id="PCLtoMCLRejectedGrid" style="width: 100%; " border="0"></table>
+                                        <div id="RejectedGridPager">
+                                        </div>
+                                    </td>
+                                </tr>
+                            </table>
+                        </div>
+                            <!--Ends-->
+</td>
+                </tr>
+
+                <tr>
+                    <td align="center"><br />
+                        <input type="button" class="orange_button" value="Print" id="btnPrint" />
+                        &nbsp;&nbsp;<input type="button" class="orange_button" value="Submit" id="btnSubmit" />
+                        &nbsp;&nbsp;<input type="button" class="orange_button" value="Cancel" id="btnCancel" />
+                
                     </td>
                 </tr>
             </table>
 
         </div>
-        <div id="openDiv"> </div>
+        <div id="openDiv" style="display:none">
+            
+             
+        </div>
+        
+           <!-- Doctor Profile Start-->
+        
+        <div class="inner_tbldiv" id="DoctorDiv" style="display: none; margin-top:10px !important;" >
+        <table border="0" style="width: 600px"> 
 
 
+            <tr style=" vertical-align:top" id="trDoctor">
+                <td width="2%"></td>
+                <td> 
+                    <table class="inner_tb" id="tblHeader" width="100%" cellpadding="0" cellspacing="0">
+                        <tr id="tr_Name">
+                            <td class="tb-r1">FirstName :</td>
+                            <td class="tb-r1"> </td>
+                            <td class="tb-r1">MiddleName :</td>
+                            <td class="tb-r1"></td>
+                            <td class="tb-r1">LastName :</td>
+                            <td class="tb-r1"></td>
+                        </tr>
+                        <tr id="tr_Address">
+                            <td class="tb-r2">Address :</td>
+                            <td class="tb-r2"> </td>
+                            <td class="tb-r2">Specialization :</td>
+                            <td class="tb-r2" colspan="3"></td>
+                        </tr>
+
+                        <tr id="tr_Street">
+                            <td class="tb-r1">Street :</td>
+                            <td class="tb-r1"> </td>
+                            <td class="tb-r1">Class :</td>
+                            <td colspan="3" class="tb-r1"></td>
+                        </tr>
+                        <tr id="tr_Area">
+                            <td class="tb-r2">Area :</td>
+                            <td colspan="5" class="tb-r2"> </td>
+
+                        </tr>
+
+                        <tr id="tr_Zip">
+                            <td class="tb-r1">Zip :</td>
+                            <td colspan="5" class="tb-r1"> </td>
+                        </tr>
+                        <tr id="tr_Phone">
+                            <td class="tb-r2">Phone(R) :</td>
+                            <td class="tb-r2"> </td>
+                            <td class="tb-r2">Phone(Clinic) :</td>
+                            <td class="tb-r2" colspan="3"></td>
+                        </tr>
+                        <tr id="tr_Mobile">
+                            <td class="tb-r1">Mobile :</td>
+                            <td class="tb-r1"> </td>
+                            <td class="tb-r1">e-Mail :</td>
+                            <td colspan="3" class="tb-r1"></td>
+                        </tr>
+                    </table>
+
+                </td>
+                <td></td>
+                <td width="2%"></td>
+
+            </tr>
+            <!-- Chemist Profile Starts-->
+            <tr id="trChemist">
+                <td width="2%"></td>
+                <td>
+                    <table class="inner_tb" id="tblChemist" width="100%" cellpadding="0" cellspacing="0">
+                        <tr id="tr_CheName">
+                            <td class="tb-r1">FirstName :</td>
+                            <td class="tb-r1"> </td>
+                            <td class="tb-r1">MiddleName :</td>
+                            <td class="tb-r1"></td>
+                            <td class="tb-r1">LastName :</td>
+                            <td class="tb-r1"></td>
+                        </tr>
+                        <tr id="tr_CheAddress">
+                            <td class="tb-r2">Address :</td>
+                            <td class="tb-r2"> </td>
+                            <td class="tb-r2">Street :</td>
+                            <td class="tb-r2" colspan="3"></td>
+                        </tr>
+
+
+                        <tr id="tr_CheArea">
+                            <td class="tb-r2">Area :</td>
+                            <td colspan="5" class="tb-r2"> </td>
+
+                        </tr>
+
+                        <tr id="tr_CheZip">
+                            <td class="tb-r1">Zip :</td>
+                            <td colspan="5" class="tb-r1"> </td>
+                        </tr>
+                        <tr id="tr_ChePhone">
+                            <td class="tb-r2">Phone(R) :</td>
+                            <td class="tb-r2"> </td>
+                            <td class="tb-r2">Mobile :</td>
+                            <td class="tb-r2" colspan="3"></td>
+                        </tr>
+                        <tr id="tr_CheMail">
+                            <td class="tb-r2">e-Mail :</td>
+                            <td colspan="5" class="tb-r1"> </td>
+
+                        </tr>
+                    </table>
+
+                </td>
+                <td width="2%"></td>
+
+            </tr>
+
+            <tr>
+                <td width="2%"></td>
+                <td>
+
+                   
+                    <table style="margin-top: 7px; width :600px" border="0">
+                        <tr>
+                            <td>
+                                <table id="DoctorInfoGrid" style="width: 600px;" border="0"></table>
+                                <div id="DoctorPager">
+                                </div>
+                            </td>
+                        </tr>
+                    </table>
+                   
+                </td>
+                <td width="2%"></td>
+            </tr>
+
+
+
+        </table>
+    </div>
+        
+        <!-- Doctor Profile end-->
 
         <script type="text/javascript"> 
+          
+            $('#btnCancel').click(function () {
+                
+                $("#lstBrick option").prop("selected", false);
+                $("#lstCustomer option").prop("selected", false);
+                $('#lstStatus').val('');
+                $('#divNew').css('display', 'none');
+                $('#divPending').css('display', 'none');
+                $('#divApproved').css('display', 'none');
+                $('#divRejected').css('display', 'none');
+                
+            });
 
+            function DisplayError(type) {
+                 
+                $('#openDiv').css('display', 'block');
+                if (type == 'notselect')
+                    $('#openDiv').html('Please Select atleast one row');
+                else
+                    $('#openDiv').html('Under Construction');
+                
+                
+                $('#openDiv').dialog({
+                    title: 'Alert Message',
+                    height: 78,
+                    width: 308,
+                    show: { effect: 'drop', direction: "up" },
+                    modal: true,
+                    open: function (event, ui) {
+
+                    },
+
+                });
+
+
+            } 
 
             $("#lstBrick").on('change', function () {
                 if ($(this).val() == "All") {
-                    $("select > option").prop("selected", true);
+                    $("#lstBrick option").prop("selected", true); 
+                    $("#lstBrick option:first").removeAttr('selected');
                 }
             });
 
             $("#lstCustomer").on('change', function () {
+               
                 if ($(this).val() == "All") {
-                    $("select > option").prop("selected", true);
+                    $("#lstCustomer option").prop("selected", true);
+                    $("#lstCustomer option:first").removeAttr('selected');
                 }
             });
 
@@ -116,222 +352,745 @@
             });
 
             
-            $('#lstBrick ')
+         
 
             jQuery(document).ready(function () {
-             
-            //      initGrid();
+                var CusTypeXML = "";
+                var AreaFKID = "";
+                $("#lstBrick option:first").removeAttr('selected');
+                $("#lstCustomer option").prop("selected", true);
+                $("#lstCustomer option:first").removeAttr('selected');
+                AreaFKID = $('#lstBrick').val();
+                $('#divNew').css('display', 'block');
+                initGrid(CusTypeXML, AreaFKID, 0);
+                
+                $('#lblError').text('');
+                
+
             });
 
+            function checkBox(e) { 
+
+                e = e || event;/* get IE event ( not passed ) */
+                e.stopPropagation ? e.stopPropagation() : e.cancelBubble = true;
+                var $checkBoxes = $('input[type="checkbox"]');
+                var check = !$(this).data('checked');
+                $checkBoxes.prop('checked', check);
+                $(this).data('checked', check); 
+              
+            }
+
+
+            function DoctorProfile(MASPKID, Type) {
+                
+                if ((Type == "Nurse") || (Type == "Patient"))
+                {
+                   
+                    DisplayError('Nurse');
+                  
+                }
+                else {
+
+                    //Get Doctor Information :
+ 
+                    if (Type == 'Doctor') {
+                        $.getJSON('@Url.Action("JsonGetDoctorDetails")?MASPKID=' + MASPKID + '&Type=' + Type + '&flag=' + 'header', function (data) {
+                            $("#trDoctor").show();
+                            $("#trChemist").hide();
+                            jQuery('#tr_Name  td:nth-child(2)').html(data.FName);
+                            jQuery('#tr_Name  td:nth-child(4)').html(data.MName);
+                            jQuery('#tr_Name  td:nth-child(6)').html(data.LName);
+
+                            jQuery('#tr_Address  td:nth-child(2)').html(data.Address);
+                            jQuery('#tr_Address  td:nth-child(4)').html(data.Specialization);
+
+
+                            jQuery('#tr_Street  td:nth-child(2)').html(data.Street);
+                            jQuery('#tr_Street  td:nth-child(4)').html(data.AreaFKID);
+
+                            jQuery('#tr_Area  td:nth-child(2)').html(data.AreaName);
+
+                            jQuery('#tr_Zip  td:nth-child(2)').html(data.Zipcode);
+                            jQuery('#tr_Phone  td:nth-child(2)').html(data.TelRoles);
+                            jQuery('#tr_Phone  td:nth-child(4)').html(data.TelClinic);
+
+                            jQuery('#tr_Mobile  td:nth-child(2)').html(data.Mobile);
+                            jQuery('#tr_Mobile  td:nth-child(4)').html(data.Email);
+
+                        });
+
+
+                    }
+                    else if (Type == 'Chemist')
+                    {
+                       $.getJSON('@Url.Action("JsonGetDoctorDetails")?MASPKID=' + MASPKID + '&Type=' + Type + '&flag=' + 'header', function (data) {
+                       $("#trChemist").show();
+                        $("#trDoctor").hide();
+                        jQuery('#tr_CheName  td:nth-child(2)').html(data.FName);
+                        jQuery('#tr_CheName  td:nth-child(4)').html(data.MName);
+                        jQuery('#tr_CheName  td:nth-child(6)').html(data.LName);
+
+                        jQuery('#tr_CheAddress  td:nth-child(2)').html(data.Address);
+                        jQuery('#tr_CheAddress  td:nth-child(4)').html(data.Street);
+                        jQuery('#tr_CheArea  td:nth-child(2)').html(data.AreaName);
+
+                        jQuery('#tr_CheZip  td:nth-child(2)').html(data.Zipcode);
+                        jQuery('#tr_ChePhone  td:nth-child(2)').html(data.PhoneNo);
+                        jQuery('#tr_ChePhone  td:nth-child(4)').html(data.Mobile);
+                        jQuery('#tr_CheMail  td:nth-child(2)').html(data.Email);
+                        });
+                    }
+                    $('#DoctorDiv').css('display', 'block');
+
+                    $('#DoctorInfoGrid').jqGrid('GridUnload');
+                    jQuery("#DoctorInfoGrid").jqGrid({
+                        url: '@Url.Action("JsonGetDoctorDetailsforGrid")?MASPKID=' + MASPKID + '&Type=' + Type ,
+                        datatype: "json",
+                        jsonReader: { repeatitems: false, id: "Name" },
+                        colNames: ['Name', 'Date'],
+                        colModel: [
+
+                            { name: 'LoginName', index: 'LoginName', align: 'left' },
+                            { name: 'Date', index: 'Date', align: 'left' }
+                        ],
+
+                        caption: 'Call History',
+                        gridview: true,
+                        jqModal: true,
+                        rowTotal: 10,
+                        rowNum: 5,
+                        width:600,
+                        align: 'center',
+                        sortable: true,
+                        hidegrid: true,
+                        altRows: true,
+                        viewrecords: true,
+                        pager: $('#DoctorPager'),
+                        height: 'auto' 
+
+                    });
+
+
+                    $('#DoctorDiv').dialog({
+                        title:'Daily Plan',
+                        width: 630,
+                        height:500,
+                        show: { effect: 'drop', direction: "up" },
+                        modal: true,
+                        open: function (event, ui) {
+
+                        },
+
+                    });
+
+                   
+                }
+            }
              
 
+            var lastsel;
+            function initGrid(CusTypeXML, AreaFKID, status) { 
+                if (status == '0')
+                    status = 'New Request'
+                else
+                    status = $('#lstStatus').val();
 
-
-            function initGrid() {
+                jQuery('#PCLtoMCLGrid').jqGrid('GridUnload');
                 jQuery("#PCLtoMCLGrid").jqGrid({
-                    url: '@Url.Action("PCLtoMCLGrid")',
+
+                    url: '@Url.Action("PCLtoMCLGridData")?CusTypeXML=' + $('#lstCustomer').val() + '&AreaFKID=' + AreaFKID,
+                    jsonReader: { repeatitems: false, id: "ID" },
                     datatype: "json",
-                    jsonReader: { repeatitems: false, id: "PKID" },
-                    colNames: ['PKID', 'Customer Name', 'Cus. Type', 'Brick', 'Speciality', 'Reason for Request'],
-                    colModel: [
-                        { name: 'PKID', index: 'PKID', align: 'left', hidden: true, editable: true },
-                        { name: 'Element', index: 'Customer Name', align: 'left', editable: true, searchoptions: { sopt: ['eq', 'bw', 'ew', 'cn'] }, formoptions: { rowpos: 2, colpos: 1 } },
-                        { name: 'Type', index: 'Type', align: 'left', hidden: false, editable: true, formoptions: { rowpos: 3, colpos: 1 } },
-                        { name: 'AreaName', index: 'AreaName', align: 'left', hidden: false, editable: true, formoptions: { rowpos: 3, colpos: 2 } },
+                     colNames: ['<input type="checkbox"  onclick="checkBox(event)"/>', 'Customer Name', 'Cus. Type', 'Brick', 'Speciality', 'Reason for Request', '',''],
+                    
+                    colModel: [                   
+                     {
+                         name: 'chks', index: 'chks',width:30,  align: "center", editable: true,
+                         edittype: "checkbox", editoptions: { value: "Yes:No" }, formatter: "checkbox", formatoptions: { disabled: false }
+                     },
+                        { name: 'CustomerName', index: 'CustomerName', align: 'left', hidden: false, editable: false, formatter: 'showlink'},
+                        { name: 'Type', index: 'Type', align: 'left', editable: false},
+                        { name: 'AreaName', index: 'AreaName', align: 'left', hidden: false, editable: false },
                         { name: 'Specialization', index: 'Specialization', align: 'left', hidden: false, edit: false },
                         {
-                            name: 'Reason', index: 'Reason', align: 'left', hidden: false, edittype: 'text', sortable: true, editrules: { required: true }, classes: 'colCell', sorttype: function (value) {
-                                return value;
+                            name: 'Reason', index: 'Reason', align: 'left', hidden: false, editable: true, edittype: 'text',  sortable: true, editoptions: {
+                                
+                                dataEvents: [{
+                                    type:'keyup', // blur
+                                    fn: function (e) {
+                                        SingleCharacter(this); 
+                                     
+                                    },
+
+                                }],
                             }
-                        }
-                         
 
-
-                    ],
-
+                           
+                        },
+                    { name: 'MASPKID', index: 'MASPKID', align: 'left', hidden: true, editable: false },
+                      { name: 'ID', index: 'ID', align: 'left', hidden: true, editable: false },
+                    ], 
+                    
                     autowidth: true,
-                    gridview: true,
-                    caption: 'Opinion Poll',
-                    jqModal: true,
-                    align: 'center',
-                    sortable: true,
-                    hidegrid: true,
+                   
+                    hidegrid: false,
                     altRows: true,
-                    sortname: 'PKID',
-                    sortorder: 'desc',
                     rowTotal: 10,
-                    rowNum: 1,
+                    height: 250,
+                    loadonce: true,
+                    sortname: 'ID',
+                    sortorder: 'asc',
+                    rowNum: 100000,
                     viewrecords: true,
-                    pager: $('#Pager'),
-                    height: 'auto',
-                    editable: true,
-                    'cellEdit': true, 
-                    'cellsubmit': 'clientArray',
-                    editurl: 'clientArray',
-                    gridComplete: function () {
+                    onSelectRow: function (id) {
+                      
+                        var ch = jQuery(this).find('#' + id + ' input[type=checkbox]').attr('checked');
+                        if (ch) {
+                            jQuery(this).find('#' + id + ' input[type=checkbox]').attr('checked', false);
+                        } else {
+                            jQuery(this).find('#' + id + ' input[type=checkbox]').attr('checked', true);
+                        }
+                        rowChecked = 1;
+                        currentrow = id;
+                        if (!$("input[type=checkbox]").is(':checked') && !$("#chks").is(':checked')) {
+                            jQuery('#PCLtoMCLGrid').jqGrid('saveRow', id);
 
-                        if (jQuery("#PCLtoMCLGrid").getGridParam("records") == 0) {
-                            jQuery("#PCLtoMCLGrid").addRowData(
+                        }
+                        else {
+                            jQuery("#PCLtoMCLGrid").jqGrid('editRow', id);
+
+                        }
+
+                        if (id != lastsel) {
+                            jQuery('#PCLtoMCLGrid').saveRow(lastsel);
+                            lastsel = id;
+                        }
+                        jQuery('#PCLtoMCLGrid').editRow(id, true);
+
+                      
+                   
+                    },
+                    afterInsertRow: function (rowid, rowData, rowelem) {
+                     
+                        var detail = rowData['Type'];
+                        if (detail == "Doctor" || detail == "Chemist") {
+                            $("#PCLtoMCLGrid").jqGrid('setRowData', rowid, false, { color: '#2f72c3' });
+                        } else if (detail == "Nurse") { 
+                            $("#PCLtoMCLGrid").jqGrid('setRowData', rowid, false, { color: '#E77471' });
+                        }
+                    },
+                    loadComplete: function () {
+                       
+                        var ids = jQuery("#PCLtoMCLGrid").jqGrid('getDataIDs');
+                        var c1 = "", c2 = "", c5 = "";
+                        
+                            if (jQuery("#PCLtoMCLGrid").getGridParam("records") == 0) {
+                                jQuery("#PCLtoMCLGrid").addRowData(
+                                "blankRow", { "Title": "No records to view" });
+                            }
+                           
+                            for (var i = 0; i < ids.length; i++) {
+
+                                 c1 = jQuery('#PCLtoMCLGrid').jqGrid('getCell', ids[i], 1);
+                                 c2 = jQuery('#PCLtoMCLGrid').jqGrid('getCell', ids[i], 2);
+                                 c5 = jQuery('#PCLtoMCLGrid').jqGrid('getCell', ids[i], 6);
+                                
+                                 if (c2 != 'Hospital' && c2 != 'Stockist' && c2 != 'Nurse') {
+                                     popUp1 = "<a onclick=\"javascript:DoctorProfile('" + c5 + "','" + c2 + "');\"  style=\"color:#2f72c3;font-weight:bold;cursor:pointer\">" + c1 + "</a>";
+                                     jQuery("#PCLtoMCLGrid").jqGrid('setRowData', ids[i], { CustomerName: popUp1 });
+                                 }
+                                 else if (c2 == 'Nurse') { 
+                                     
+                                     popUp2 = "<span  onclick=\"javascript:DoctorProfile('" + c5 + "','" + c2 + "');\" style=\"color:#E77471 !important;font-weight:bold;\">" + c1 + "</span>";
+                                     jQuery("#PCLtoMCLGrid").jqGrid('setRowData', ids[i], { CustomerName: popUp1 });
+                                 }
+
+                                 else if (c2 == 'Hospital' || c2 == 'Stockist') {
+                                     popUp3 = "<a style=\"font-weight:bold;\">" + c1 + "</a>";
+                                     jQuery("#PCLtoMCLApprovedGrid").jqGrid('setRowData', ids[i], { CustomerName: popUp3 });
+                                 }
+
+
+                            }
+                    }, 
+                    editable: true 
+                }); 
+            }  
+ 
+            $('#btnSubmit').click(function () {
+                var selr = jQuery('#PCLtoMCLGrid').jqGrid('getGridParam', 'selrow');
+                
+                jQuery('#PCLtoMCLGrid').jqGrid('saveRow', selr);
+                var gridData = jQuery("#PCLtoMCLGrid").getRowData();
+                var postData = JSON.stringify(gridData); 
+          
+                    $.ajax({
+                        url: '@Url.Action("SubmitPCLRequest")',
+                        type: 'POST',
+                        dataType: 'json',
+                        data: { gridData: postData },
+                        success: function (result) {
+                            if (result == 'notselect') {
+                                DisplayError(result);
+                            } else {
+                                $('#lblError').text(result);
+                                $("#PCLtoMCLGrid").setGridParam({ datatype: 'json', page: 1 }).trigger('reloadGrid');
+                                return true;
+                            }
+                           
+                        }
+                    });
+                  
+            });
+
+            $('#btnFetch').click(function () {
+                $('select').css("border", "1px solid #C0C0C0"); 
+                if ($("#lstBrick").val() == '' || $("#lstBrick").val() == null) {
+                    $('#lblError').text('Please select Brick');
+                    $("#lstBrick").css("background-color", "#FFE8E8").css("border", "1px solid #FF6666");
+                    $('#lstBrick').val('Please select Brick');
+                    $('#lstBrick').focus();
+                    
+                    return false;
+                }
+                else if ($("#lstCustomer").val() == '' || $("#lstCustomer").val() == null) {
+                    $('#lblError').text('Please select Customer Type');
+                    $("#lstCustomer").css("background-color", "#FFE8E8").css("border", "1px solid #FF6666");
+                    $('#lstCustomer').val('');
+                    $('#lstCustomer').focus();
+                    return false;
+
+                }
+                else if ($("#lstStatus").val() == '') {
+                    $('#lblError').text('Please select Status');
+                    $("#lstStatus").css("background-color", "#FFE8E8").css("border", "1px solid #FF6666");
+                    $('#lstStatus').val('');
+                    $('#lstStatus').focus();
+                    return false;
+                }
+
+
+
+                $('#divNew').css('display', 'none');
+                $('#divPending').css('display', 'none');
+                $('#divApproved').css('display', 'none');
+                $('#divRejected').css('display', 'none');
+
+                if ($('#lstStatus').val() == 'Pending Request') {
+                    $('#divPending').css('display', 'block');
+                    PendingGrid($('#lstCustomer').val(), $('#lstBrick').val(), $('#lstStatus').val());
+                    $('#btnPrint').hide();
+                    $('#btnSubmit').hide();
+                    $('#btnCancel').hide();
+                }
+                else if ($('#lstStatus').val() == 'Approved Request') {
+                    
+                    $('#divApproved').css('display', 'block');
+                    ApprovedGrid($('#lstCustomer').val(), $('#lstBrick').val(), $('#lstStatus').val());
+                    $('#btnPrint').hide();
+                    $('#btnSubmit').hide();
+                    $('#btnCancel').hide();
+                }
+                else if ($('#lstStatus').val() == 'Rejected Request') {
+                    $('#divRejected').css('display', 'block');
+                    RejectedGrid($('#lstCustomer').val(), $('#lstBrick').val(), $('#lstStatus').val());
+                    $('#btnPrint').hide();
+                    $('#btnSubmit').hide();
+                    $('#btnCancel').hide();
+                }
+                else if ($('#lstStatus').val() == 'New Request') {
+                    $('#divNew').css('display', 'block');
+                    initGrid($('#lstCustomer').val(), $('#lstBrick').val(), $('#lstStatus').val());
+                    $('#btnPrint').show();
+                    $('#btnSubmit').show();
+                    $('#btnCancel').show();
+                
+                }
+
+
+            });
+
+
+            function PendingGrid(CusTypeXML, AreaFKID, status) {
+
+                 
+                $('#PCLtoMCLPendingGrid').jqGrid('GridUnload');
+                jQuery("#PCLtoMCLPendingGrid").jqGrid({
+
+                    url: '@Url.Action("PCLPendingGridData")?CusTypeXML=' + $('#lstCustomer').val() + '&AreaFKID=' + AreaFKID,
+                   // jsonReader: { repeatitems: false, id: "MASPKID" },
+                    datatype: "json",
+                    colNames: ['Request Date', 'Customer Name', 'Customer Type', 'Brick', 'Speciality', 'Reason for Request', ''],
+
+                    colModel: [
+                        { name: 'CreatedDate', index: 'CreatedDate', align: 'center'},
+                        { name: 'CustomerName', index: 'CustomerName', align: 'left', formatter: 'showlink' },
+                        { name: 'Type', index: 'Type', align: 'left', editable: false },
+                        { name: 'AreaName', index: 'AreaName', align: 'left', hidden: false, editable: false },
+                        { name: 'Specialization', index: 'Specialization', align: 'left', hidden: false, edit: false },
+                        {
+                            name: 'ReasonforRequest', index: 'ReasonforRequest', align: 'left'
+                        },
+                    { name: 'MASPKID', index: 'MASPKID', align: 'left', hidden: true, editable: false },
+                    ], 
+                                     
+                    caption: status,
+                    jqModal: true,
+                    align: 'center', 
+                    sortname: 'MASPKID',
+                    hidegrid: true,
+                    rowTotal: 10,
+                    rowNum: 10,
+                    autowidth: true,
+                    height:'auto',
+                    altRows: true, 
+                    viewrecords: true, 
+                    pager: $('#PendingGridPager'),
+                    afterInsertRow: function (rowid, rowData, rowelem) {
+                        var detail = rowData['Type'];
+                        if (detail == "Doctor" || detail == "Chemist") {
+                            $(this).jqGrid('setRowData', rowid, false, { color: '#2f72c3' });
+                        } else if (detail == "Nurse") {
+
+                            $(this).jqGrid('setRowData', rowid, false, { color: '#E77471' });
+                        }
+                    },
+                    loadComplete: function () {
+                    
+                        var ids = jQuery("#PCLtoMCLPendingGrid").jqGrid('getDataIDs');
+                        var c1 = "", c2 = "", c5 = "";
+                       
+
+                        if (jQuery("#PCLtoMCLPendingGrid").getGridParam("records") == 0) {
+                            jQuery("#PCLtoMCLPendingGrid").addRowData(
                             "blankRow", { "Title": "No records to view" });
                         }
 
+                        for (var i = 0; i < ids.length; i++) {
 
-                        //var ids = jQuery("#PCLtoMCLGrid").jqGrid('getDataIDs');
+                            c1 = jQuery('#PCLtoMCLPendingGrid').jqGrid('getCell', ids[i], 1);
+                            c2 = jQuery('#PCLtoMCLPendingGrid').jqGrid('getCell', ids[i], 2);
+                            c6 = jQuery('#PCLtoMCLPendingGrid').jqGrid('getCell', ids[i], 6);
 
-                        //for (var i = 0; i < ids.length; i++) {
-                        //    var c6 = jQuery('#PCLtoMCLGrid').jqGrid('getCell', ids[i], 6);
+                            if (c2 != 'Hospital' && c2 != 'Stockist' && c2 != 'Nurse') {
+                                popUp1 = "<a onclick=\"javascript:DoctorProfile('" + c6 + "','" + c2 + "');\"  style=\"color:#2f72c3;font-weight:bold;cursor:pointer\">" + c1 + "</a>";
+                                jQuery("#PCLtoMCLPendingGrid").jqGrid('setRowData', ids[i], { CustomerName: popUp1 });
+                            }
+                            else if (c2 == 'Nurse' || c2 == 'Patient') {
+                                popUp1 = "<a onclick=\"javascript:DoctorProfile('" + c6 + "','" + c2 + "');\"  style=\"color:#990033;font-weight:bold;cursor:pointer\">" + c1 + "</a>";
+                                jQuery("#PCLtoMCLApprovedGrid").jqGrid('setRowData', ids[i], { CustomerName: popUp1 });
+                            }
 
-                        //    pop2 = "<input type='text' name='txtReason'/>";
+                            else if (c2 == 'Hospital' || c2 == 'Stockist') {
+                                popUp1 = "<a   style=\"color:#000000;font-weight:bold;\">" + c1 + "</a>";
+                                jQuery("#PCLtoMCLApprovedGrid").jqGrid('setRowData', ids[i], { CustomerName: popUp1 });
+                            }
 
-                        //    jQuery("#ajaxGrid").jqGrid('setRowData', ids[i], { fileToUpload: pop2 });
-                        //}
 
-
-                    },
-                    editurl: '@Url.Action("EditOpinionGrid")',
+                        }
+                    }
 
                 });
+                jQuery("#PCLtoMCLPendingGrid").jqGrid('navGrid', '#PendingGridPager', { edit: false, add: false, del: false, search: false, view: false },
+           {
+
+           });
+                setMethod('PCLtoMCLPendingGrid', 'PendingGridPager', 'Pending Request');
+            }
+
+            // Approved Status PCLtoMCLApprovedGrid
+
+            function ApprovedGrid(CusTypeXML, AreaFKID, status) {
 
 
-                @*jQuery("#PCLtoMCLGrid").jqGrid('navGrid', '#Pager', { edit: true, add: true, del: true, search: true, view: true },
+                $('#PCLtoMCLApprovedGrid').jqGrid('GridUnload');
+                jQuery("#PCLtoMCLApprovedGrid").jqGrid({
 
-                    {
-                        // Edit
-                        closeOnEscape: true,
-                        recreateForm: true,
-                        width: 650,
-                        checkOnSubmit: true,
-                        bSubmit: "Vote",
-                        beforeShowForm: function (form) {
+                    url: '@Url.Action("PCLApproveGridGridData")?CusTypeXML=' + $('#lstCustomer').val() + '&AreaFKID=' + AreaFKID,
+                    //jsonReader: { repeatitems: false, id: "MASPKID" },
+                    datatype: "json",
+                    colNames: ['Request Date', 'Customer Name', 'Customer Type', 'Brick', 'Speciality', 'Reason for Request', '', 'Approved BY', 'Approved Date'],
 
-
-                            var col1 = $('#PCLtoMCLGrid').jqGrid('getGridParam', 'selrow');
-
-                            var pkid = $('#PCLtoMCLGrid').jqGrid('getCell', col1, 'PKID');
-
-                            $.getJSON('@Url.Action("JsGetOpinionPoll")?pkid=' + pkid, function (data) {
-
-                                $('#Question').val(data.question);
-                                $('#Option1').val(data.option1);
-                                $('#Option2').val(data.option2);
-                                $('#Option3').val(data.option3);
-                                $('#Option4').val(data.option4);
-                                $('#Option5').val(data.option5);
-
-                            });
-
-
+                    colModel: [
+                        { name: 'CreatedDate', index: 'CreatedDate', align: 'center' },
+                        { name: 'CustomerName', index: 'CustomerName', align: 'left', formatter: 'showlink' },
+                        { name: 'Type', index: 'Type', align: 'left', editable: false },
+                        { name: 'AreaName', index: 'AreaName', align: 'left', hidden: false, editable: false },
+                        { name: 'Specialization', index: 'Specialization', align: 'left', hidden: false, edit: false },
+                        {
+                            name: 'Reason', index: 'Reason', align: 'left'
                         },
-                        afterShowForm: function (form_id) {
-                            var thisForm = form_id.selector.replace('FrmGrid_', 'editmod')
-                            var dialogHeight = $(thisForm).height();
-                            var dialogWidth = $(thisForm).width();
-                            var windowHeight = $(window).height();
-                            var windowWidth = $(window).width();
-                            $(thisForm).css('position', 'fixed');
-                            $(thisForm).css('top', ((windowHeight - dialogHeight) / 2));
-                            $(thisForm).css('left', ((windowWidth - dialogWidth) / 2));
+                    { name: 'MASPKID', index: 'MASPKID', align: 'left', hidden: true, editable: false },
+                    { name: 'ApprovedBy', index: 'ApprovedBy', align: 'left' },
+                   { name: 'ApprovedDate', index: 'ApprovedDate', align: 'center' },
+                    ],
+
+                    caption: status,
+                    jqModal: true,
+                    align: 'center',
+                    sortname: 'MASPKID',
+                    hidegrid: true,
+                    rowTotal: 10,
+                    rowNum: 10,
+                    autowidth: true,
+                    height: 'auto',
+                    afterInsertRow: function (rowid, rowData, rowelem) {
+                        var detail = rowData['Type'];
+                        if (detail == "Doctor" || detail == "Chemist") {
+                            $(this).jqGrid('setRowData', rowid, false, { color: '#2f72c3' });
+                        } else if (detail == "Nurse") {
+
+                            $(this).jqGrid('setRowData', rowid, false, { color: '#E77471' });
+                        }
+                    },
+                    altRows: true,
+                    viewrecords: true,
+                    pager: $('#ApprovedGridPager'),
+                    loadComplete: function () {
+
+                        var ids = jQuery("#PCLtoMCLApprovedGrid").jqGrid('getDataIDs');
+                        var c1 = "", c2 = "", c5 = "";
+                         
+
+                        if (jQuery("#PCLtoMCLApprovedGrid").getGridParam("records") == 0) {
+                            jQuery("#PCLtoMCLApprovedGrid").addRowData(
+                            "blankRow", { "Title": "No records to view" });
+                        }
+
+                        for (var i = 0; i < ids.length; i++) {
+
+                            c1 = jQuery('#PCLtoMCLApprovedGrid').jqGrid('getCell', ids[i], 1);
+                            c2 = jQuery('#PCLtoMCLApprovedGrid').jqGrid('getCell', ids[i], 2);
+                            c6 = jQuery('#PCLtoMCLApprovedGrid').jqGrid('getCell', ids[i], 6);
+
+                            if (c2 != 'Hospital' && c2 != 'Stockist' && c2 != 'Nurse') {
+                                popUp1 = "<a onclick=\"javascript:DoctorProfile('" + c6 + "','" + c2 + "');\"  style=\"color:#2f72c3;font-weight:bold;cursor:pointer\">" + c1 + "</a>";
+                                jQuery("#PCLtoMCLApprovedGrid").jqGrid('setRowData', ids[i], { CustomerName: popUp1 });
+                            }
+                           else if (c2 == 'Nurse' || c2=='Patient') {
+                                popUp1 = "<a onclick=\"javascript:DoctorProfile('" + c6 + "','" + c2 + "');\"  style=\"color:#990033;font-weight:bold;cursor:pointer\">" + c1 + "</a>";
+                                jQuery("#PCLtoMCLApprovedGrid").jqGrid('setRowData', ids[i], { CustomerName: popUp1 });
+                           }
+
+                           else if (c2 == 'Hospital' || c2 == 'Stockist') {
+                               popUp1 = "<a   style=\"color:#000000;font-weight:bold;\">" + c1 + "</a>";
+                               jQuery("#PCLtoMCLApprovedGrid").jqGrid('setRowData', ids[i], { CustomerName: popUp1 });
+                           }
+
+
+                        }
+                    }
+
+                });
+                jQuery("#PCLtoMCLApprovedGrid").jqGrid('navGrid', '#ApprovedGridPager', { edit: false, add: false, del: false, search: false, view: false },
+         {
+
+         });
+                setMethodApproved('PCLtoMCLApprovedGrid', 'ApprovedGridPager', 'Approved Request');
+            }
+
+            // Rejected Status :
+
+
+            function RejectedGrid(CusTypeXML, AreaFKID, status) {
+
+
+                $('#PCLtoMCLRejectedGrid').jqGrid('GridUnload');
+                jQuery("#PCLtoMCLRejectedGrid").jqGrid({
+
+                    url: '@Url.Action("PCLRejectedGridData")?CusTypeXML=' + $('#lstCustomer').val() + '&AreaFKID=' + AreaFKID,
+                   // jsonReader: { repeatitems: false, id: "MASPKID" },
+                    datatype: "json",
+                    colNames: ['Request Date', 'Customer Name', 'Customer Type', 'Brick', 'Speciality', 'Reason for Request', '', 'Approved BY', 'Approved Date', 'Rejected Reason'],
+
+                    colModel: [
+                        { name: 'CreatedDate', index: 'CreatedDate', align: 'center' },
+                        { name: 'CustomerName', index: 'CustomerName', align: 'left', formatter: 'showlink' },
+                        { name: 'Type', index: 'Type', align: 'left', editable: false },
+                        { name: 'AreaName', index: 'AreaName', align: 'left', hidden: false, editable: false },
+                        { name: 'Specialization', index: 'Specialization', align: 'left', hidden: false, edit: false },
+                        {
+                            name: 'Reason', index: 'Reason', align: 'left'
                         },
+                    { name: 'MASPKID', index: 'MASPKID', align: 'left', hidden: true, editable: false },
+                    { name: 'ApprovedBy', index: 'ApprovedBy', align: 'left' },
+                   { name: 'ApprovedDate', index: 'ApprovedDate', align: 'center' },
+                    { name: 'RejectedReason', index: 'RejectedReason', align: 'left' }
+                    ],
 
+                    caption: status,
+                    jqModal: true,
+                    align: 'center',
+                    sortname: 'MASPKID',
+                    afterInsertRow: function (rowid, rowData, rowelem) {
+                        var detail = rowData['Type'];
+                        if (detail == "Doctor" || detail == "Chemist") {
+                            $(this).jqGrid('setRowData', rowid, false, { color: '#2f72c3' });
+                        } else if (detail == "Nurse") {
 
-                        afterSubmit: function (response, postdata) {
-
-
-                            $("#PCLtoMCLGrid").jqGrid('setGridParam', { datatype: 'json' }).trigger('reloadGrid');
-                            $('#TblGrid_OpinionGrid td.ui-state-error').removeClass('ui-state-error').addClass('ui-state-highlight');
-                            return [false, response.responseText];
-                        },
-                        closeAfterEdit: true,
+                            $(this).jqGrid('setRowData', rowid, false, { color: '#E77471' });
+                        }
                     },
+                    hidegrid: true,
+                    rowTotal: 10,
+                    rowNum: 10,
+                    autowidth: true,
+                    height: 'auto',
+                    altRows: true,
+                    viewrecords: true,
+                    pager: $('#RejectedGridPager'),
+                    loadComplete: function () {
 
-                {
+                        var ids = jQuery("#PCLtoMCLRejectedGrid").jqGrid('getDataIDs');
+                        var c1 = "", c2 = "", c5 = "",c6="";
+                       
+                        if (jQuery("#PCLtoMCLRejectedGrid").getGridParam("records") == 0) {
+                            jQuery("#PCLtoMCLRejectedGrid").addRowData(
+                            "blankRow", { "Title": "No records to view" });
+                        }
 
-                    //Add
-                    closeOnEscape: true,
-                    closeAfterAdd: true,
-                    recreateForm: true,
-                    width: 650,
-                    bSubmit: "Vote",
-                    beforeShowForm: function (form) {
+                        for (var i = 0; i < ids.length; i++) {
+
+                            c1 = jQuery('#PCLtoMCLRejectedGrid').jqGrid('getCell', ids[i], 1);
+                            c2 = jQuery('#PCLtoMCLRejectedGrid').jqGrid('getCell', ids[i], 2);
+                            c6 = jQuery('#PCLtoMCLRejectedGrid').jqGrid('getCell', ids[i], 6);
+                         
+                            if (c2 == 'Doctor' || c2 == 'Chemist') {
+                                
+                                popUp1 = "<a onclick=\"javascript:DoctorProfile('" + c6 + "','" + c2 + "');\" style=\"color:#2f72c3 ;font-weight:bold;cursor:pointer\">" + c1 + "</a>";
+
+                               
+                                jQuery("#PCLtoMCLRejectedGrid").jqGrid('setRowData', ids[i], { CustomerName: popUp1 });
+                            }
+                            else if (c2 == 'Nurse' || c2 == 'Patient') {
+                                
+                                popUp1 = "<a onclick=\"javascript:DoctorProfile('" + c6 + "','" + c2 + "');\"  style=\"color:#990033;font-weight:bold;cursor:pointer\">" + c1 + "</a>";
+                                jQuery("#PCLtoMCLRejectedGrid").jqGrid('setRowData', ids[i], { CustomerName: popUp1 });
+                            }
+                            else if (c2 == 'Hospital' || c2 == 'Stockist') {
+                                
+                                popUp1 = "<a style=\"color:#000000;font-weight:bold;\">" + c1 + "</a>";
+                                jQuery("#PCLtoMCLRejectedGrid").jqGrid('setRowData', ids[i], { CustomerName: popUp1 });
+                            }
 
 
-                    },
-                    afterShowForm: function (form_id) {
-                        var thisForm = form_id.selector.replace('FrmGrid_', 'editmod')
-                        var dialogHeight = $(thisForm).height();
-                        var dialogWidth = $(thisForm).width();
-                        var windowHeight = $(window).height();
-                        var windowWidth = $(window).width();
-                        $(thisForm).css('position', 'fixed');
-                        $(thisForm).css('top', ((windowHeight - dialogHeight) / 2));
-                        $(thisForm).css('left', ((windowWidth - dialogWidth) / 2));
-                    },
-                    afterShowForm: function (form_id) {
-                        var thisForm = form_id.selector.replace('FrmGrid_', 'editmod')
-                        var dialogHeight = $(thisForm).height();
-                        var dialogWidth = $(thisForm).width();
-                        var windowHeight = $(window).height();
-                        var windowWidth = $(window).width();
-                        $(thisForm).css('position', 'fixed');
-                        $(thisForm).css('top', ((windowHeight - dialogHeight) / 2));
-                        $(thisForm).css('left', ((windowWidth - dialogWidth) / 2));
-                    },
-
-                    afterSubmit: function (response, postdata) {
-                        alert('Information Added Successfully');
-                        $("#PCLtoMCLGrid").jqGrid('setGridParam', { datatype: 'json' }).trigger('reloadGrid');
-                        return [true, "", ''];
+                        }
                     }
-                },
 
-                //Delete
-                {
-                    closeOnEscape: true,
-                    recreateForm: true,
-                    width: 600,
+                });
+                jQuery("#PCLtoMCLRejectedGrid").jqGrid('navGrid', '#RejectedGridPager', { edit: false, add: false, del: false, search: false, view: false },
+       {
 
-                    beforeShowForm: function (form) {
+       });
+                setMethodRejected('PCLtoMCLRejectedGrid', 'RejectedGridPager', 'Rejected Request');
+            }
 
+            //Rejected  Request
+            function setMethodRejected(gid, id, pgTitle) {
 
-                    },
+                var btnTitle = 'Export to Excel';
+                $('#' + gid).jqGrid('navSeparatorAdd', '#' + id, { sepclass: "ui-separator" });
+                $('#' + gid).jqGrid('navButtonAdd', '#' + id, { caption: '', title: btnTitle, position: 'last', buttonicon: 'ui-icon-calculator', onClickButton: function () { ExcelRejectedExport(); } });
 
+                var btnTitle = 'Export to PDF';
+                $('#' + gid).jqGrid('navSeparatorAdd', '#' + id, { sepclass: "ui-separator" });
+                $('#' + gid).jqGrid('navButtonAdd', '#' + id, { caption: '', title: btnTitle, position: 'last', buttonicon: 'ui-icon-bookmark', onClickButton: function () { PDFRejectedExport(); } });
 
-
-                    afterSubmit: function (response, postdata) {
-
-                        $("#PCLtoMCLGrid").jqGrid('setGridParam', { datatype: 'json' }).trigger('reloadGrid');
-                        return [false, response.responseText];
-                    }
-                },
-
-                {
-                    //View :
-                    closeOnEscape: true,
-                    recreateForm: true,
-                    width: 600,
-
-                    beforeShowForm: function (form) {
+                var btnTitle = 'Export to CSV';
+                $('#' + gid).jqGrid('navSeparatorAdd', '#' + id, { sepclass: "ui-separator" });
+                $('#' + gid).jqGrid('navButtonAdd', '#' + id, { caption: '', title: btnTitle, position: 'last', buttonicon: 'ui-icon-note', onClickButton: function () { CSVRejectedExport(); } });
 
 
-                        var thisForm = $("#viewmod" + jQuery("#PCLtoMCLGrid")[0].id);
-                        var dialogHeight = $(thisForm).height();
-                        var dialogWidth = $(thisForm).width();
-                        var windowHeight = $(window).height();
-                        var windowWidth = $(window).width();
-                        $(thisForm).css('position', 'fixed');
-                        $(thisForm).css('top', ((windowHeight - dialogHeight) / 2));
-                        $(thisForm).css('left', ((windowWidth - dialogWidth) / 2));
+                var btnTitle = 'Print Grid';
+                $('#' + gid).jqGrid('navSeparatorAdd', '#' + id, { sepclass: "ui-separator" });
+                $('#' + gid).jqGrid('navButtonAdd', '#' + id, { caption: '', title: btnTitle, position: 'last', buttonicon: 'ui-icon-print', onClickButton: function () { PrintRejectedGrid(gid); } });
+            }
+            function ExcelRejectedExport() {
+                window.location = '@Url.Action("ExportPCLRejectedGridToExcel")?CusTypeXML=' + $('#lstCustomer').val() + '&AreaFKID=' + $('#lstBrick').val() + '&status=' + $('#lstStatus').val();
+            }
+            function PDFRejectedExport() {
+                window.location = '@Url.Action("ExportPCLRejectedRequestToPDF")?CusTypeXML=' + $('#lstCustomer').val() + '&AreaFKID=' + $('#lstBrick').val() + '&status=' + $('#lstStatus').val();
+            }
+            function CSVRejectedExport() {
 
-                    }
+                window.location = '@Url.Action("ExportPCLRejectedRequestToCsv")?CusTypeXML=' + $('#lstCustomer').val() + '&AreaFKID=' + $('#lstBrick').val() + '&status=' + $('#lstStatus').val();
+
+            }
+            function PrintRejectedGrid(gid) {
+                // empty the print div container.
+                var rows = $('#PCLtoMCLRejectedGrid').jqGrid('getRowData');
+                for (var i = 0; i < rows.length; i++) {
+                    var row = rows[i];
+                    $('#Table3').append("<tr><td>" + row.CreatedDate + "</td><td>" + row.CustomerName + "</td><td>" + row.Type + "</td><td>" + row.AreaName + "</td><td>" + row.Specialization + "</td><td>" + row.ReasonforRequest + "</td><td>" + row.ApprovedBy + "</td><td>" + row.ApprovedDate + "</td><td>" + row.RejectedReason + "</td></tr>");//
 
                 }
-
-                        );
-
-                setMethod('HolidayGroup', 'Pager', 'Holiday Group Master');
+                $(function () { printRejectedChrome('divRejectedChrome') });
             }
-            function setMethod(gid, id, pgTitle) {
 
+            function printRejectedChrome(divContainer) {
+
+                var printContent = document.getElementById(divContainer);
+                window.document.body.innerHTML = printContent.innerHTML;
+                window.print();
+                window.location.reload();
+            }
+
+
+            //Approved  Request
+            function setMethodApproved(gid, id, pgTitle) {
+
+                var btnTitle = 'Export to Excel';
+                $('#' + gid).jqGrid('navSeparatorAdd', '#' + id, { sepclass: "ui-separator" });
+                $('#' + gid).jqGrid('navButtonAdd', '#' + id, { caption: '', title: btnTitle, position: 'last', buttonicon: 'ui-icon-calculator', onClickButton: function () { ExcelApprovedExport(); } });
+
+                var btnTitle = 'Export to PDF';
+                $('#' + gid).jqGrid('navSeparatorAdd', '#' + id, { sepclass: "ui-separator" });
+                $('#' + gid).jqGrid('navButtonAdd', '#' + id, { caption: '', title: btnTitle, position: 'last', buttonicon: 'ui-icon-bookmark', onClickButton: function () { PDFApprovedExport(); } });
+
+                var btnTitle = 'Export to CSV';
+                $('#' + gid).jqGrid('navSeparatorAdd', '#' + id, { sepclass: "ui-separator" });
+                $('#' + gid).jqGrid('navButtonAdd', '#' + id, { caption: '', title: btnTitle, position: 'last', buttonicon: 'ui-icon-note', onClickButton: function () { CSVApprovedExport(); } });
+
+
+                var btnTitle = 'Print Grid';
+                $('#' + gid).jqGrid('navSeparatorAdd', '#' + id, { sepclass: "ui-separator" });
+                $('#' + gid).jqGrid('navButtonAdd', '#' + id, { caption: '', title: btnTitle, position: 'last', buttonicon: 'ui-icon-print', onClickButton: function () { PrintApprovedGrid(gid); } });
+            }
+            function ExcelApprovedExport() {
+                window.location = '@Url.Action("ExportPCLApprovedGridToExcel")?CusTypeXML=' + $('#lstCustomer').val() + '&AreaFKID=' + $('#lstBrick').val() + '&status=' + $('#lstStatus').val();
+            }
+            function PDFApprovedExport() {
+                window.location = '@Url.Action("ExportPCLApprovedRequestToPDF")?CusTypeXML=' + $('#lstCustomer').val() + '&AreaFKID=' + $('#lstBrick').val() + '&status=' + $('#lstStatus').val();
+            }
+            function CSVApprovedExport() {
+
+                window.location = '@Url.Action("ExportPCLApprovedRequestToCsv")?CusTypeXML=' + $('#lstCustomer').val() + '&AreaFKID=' + $('#lstBrick').val() + '&status=' + $('#lstStatus').val();
+               
+            }
+            function PrintApprovedGrid(gid) {
+                // empty the print div container.
+                var rows = $('#PCLtoMCLApprovedGrid').jqGrid('getRowData');
+                for (var i = 0; i < rows.length; i++) {
+                    var row = rows[i];
+                    $('#Table2').append("<tr><td>" + row.CreatedDate + "</td><td>" + row.CustomerName + "</td><td>" + row.Type + "</td><td>" + row.AreaName + "</td><td>" + row.Specialization + "</td><td>" + row.ReasonforRequest + "</td><td>" + row.ApprovedBy + "</td><td>" + row.ApprovedDate + "</td></tr>");//
+
+                }
+                $(function () { printApprovedChrome('divApproveContainer') });
+            }
+
+            function printApprovedChrome(divContainer) {
+
+                var printContent = document.getElementById(divContainer);
+                window.document.body.innerHTML = printContent.innerHTML;
+                window.print();
+                window.location.reload();
+            }
+           
+
+
+            // Pending Request 
+            function setMethod(gid, id, pgTitle) {
+                 
                 var btnTitle = 'Export to Excel';
                 $('#' + gid).jqGrid('navSeparatorAdd', '#' + id, { sepclass: "ui-separator" });
                 $('#' + gid).jqGrid('navButtonAdd', '#' + id, { caption: '', title: btnTitle, position: 'last', buttonicon: 'ui-icon-calculator', onClickButton: function () { ExcelExport(); } });
@@ -350,36 +1109,134 @@
                 $('#' + gid).jqGrid('navButtonAdd', '#' + id, { caption: '', title: btnTitle, position: 'last', buttonicon: 'ui-icon-print', onClickButton: function () { PrintGrid(gid); } });
             }
             function ExcelExport() {
-                window.location = '@Url.Action("ExportHolidayGroupMasToExcel")';
+                window.location = '@Url.Action("ExportPCLPendingGridToExcel")?CusTypeXML=' + $('#lstCustomer').val() + '&AreaFKID=' + $('#lstBrick').val() + '&status=' + $('#lstStatus').val();
             }
             function PDFExport() {
-                window.location = '@Url.Action("ExportHolidayGroupMasToPDF")';
+                window.location = '@Url.Action("ExportPCLPendingRequestToPDF")?CusTypeXML=' + $('#lstCustomer').val() + '&AreaFKID=' + $('#lstBrick').val() + '&status=' + $('#lstStatus').val();
             }
             function CSVExport() {
-                window.location = '@Url.Action("ExportHolidayGroupMasToCsv")';
+
+                window.location = '@Url.Action("ExportPCLPendingRequestToCsv")?CusTypeXML=' + $('#lstCustomer').val() + '&AreaFKID=' + $('#lstBrick').val() + '&status=' + $('#lstStatus').val();
+                // $('#DesigMaster').table2CSV({ header: ['PKID', 'Designation Name','Node Type', 'Status'] });
             }
             function PrintGrid(gid) {
-
                 // empty the print div container.
-                $('#prt-container').empty();
+                var rows = $('#PCLtoMCLPendingGrid').jqGrid('getRowData');
+                for (var i = 0; i < rows.length; i++) {
+                    var row = rows[i];
+                    $('#Table1').append("<tr><td>" + row.CreatedDate + "</td><td>" + row.CustomerName + "</td><td>" + row.Type + "</td><td>" + row.AreaName + "</td><td>" + row.Specialization + "</td><td>" + row.ReasonforRequest + "</td></tr>");
 
-                // copy and append grid view to print div container.
-                $('#gview_' + gid).clone().appendTo('#prt-container').css({ 'page-break-after': 'auto' });
+                }
                 $(function () { printChrome('prt-container') });
-
             }
-
+             
             function printChrome(divContainer) {
-
-                var printContent = document.getElementById(divContainer);
+ 
+                var printContent = document.getElementById(divContainer); 
                 window.document.body.innerHTML = printContent.innerHTML;
                 window.print();
                 window.location.reload();
-            }*@
+            }
 
+            //end
+
+
+
+            $('#btnPrint').click(function () {
+
+                var rows = $('#PCLtoMCLGrid').jqGrid('getRowData');
+                for (var i = 0; i < rows.length; i++) {
+                    var row = rows[i];
+                    $('#Table4').append("<tr><td>" + row.CustomerName + "</td><td>" + row.Type + "</td><td>" + row.AreaName + "</td><td>" + row.Specialization + "</td><td>" + row.ReasonforRequest + "</td></tr>");
+
+                }
+                $(function () { printNewChrome('divNewChrome') });
+
+            });
+            function printNewChrome(divContainer) {
+ 
+                var printContent = document.getElementById(divContainer); 
+                window.document.body.innerHTML = printContent.innerHTML;
+                window.print();
+                window.location.reload();
+            }
 
         </script>
         <div id='prt-container' style="display:none">
+            <table id="Table1" border="1" width="100%">
+                <thead>
+                    <tr>
+                        <td><b>Request Date</b></td>
+                        <td><b>Customer Name</b></td>
+                        <td><b>Customer Type</b></td>
+                        <td><b>Brick</b></td>
+                        <td><b>Speciality</b></td>
+                        <td><b>Reason For Request</b></td>
+
+                    </tr>
+                </thead>
+                <tbody></tbody>
+
+            </table>
         </div>
+        
+           <div id='divApproveContainer' style="display:none">
+            <table id="Table2" border="1" width="100%">
+                <thead>
+                    <tr>
+                        <td><b>Request Date</b></td>
+                        <td><b>Customer Name</b></td>
+                        <td><b>Customer Type</b></td>
+                        <td><b>Brick</b></td>
+                        <td><b>Speciality</b></td>
+                        <td><b>Reason For Request</b></td>
+                        <td><b>Approved BY</b></td>
+                        <td><b>Approved Date</b></td>
+                    </tr>
+                </thead>
+                <tbody></tbody>
+
+            </table>
+        </div>
+
+
+    <div id='divRejectedChrome' style="display:none">
+        <table id="Table3" border="1" width="100%">
+            <thead>
+                <tr>
+                    <td><b>Request Date</b></td>
+                    <td><b>Customer Name</b></td>
+                    <td><b>Customer Type</b></td>
+                    <td><b>Brick</b></td>
+                    <td><b>Speciality</b></td>
+                    <td><b>Reason For Request</b></td>
+                    <td><b>Approved BY</b></td>
+                    <td><b>Approved Date</b></td>
+                    <td><b>Rejected Reason</b></td>
+                </tr>
+            </thead>
+            <tbody></tbody>
+
+        </table>
+    </div>
+        
+        
+          <div id='divNewChrome' style="display:none">
+        <table id="Table4" border="1" width="100%">
+            <thead>
+                <tr>
+                 
+                    <td><b>Customer Name</b></td>
+                    <td><b>Customer Type</b></td>
+                    <td><b>Brick</b></td>
+                    <td><b>Speciality</b></td>
+                    <td><b>Reason For Request</b></td>
+                  
+                </tr>
+            </thead>
+            <tbody></tbody>
+
+        </table>
+    </div>
     }
 </body>

@@ -64,6 +64,7 @@ namespace PfizerEntity
         public virtual DbSet<Notification> Notifications { get; set; }
         public virtual DbSet<Masters_Hospitalmaster_tb> Masters_Hospitalmaster_tb { get; set; }
         public virtual DbSet<Masters_Stockistmaster_Tb> Masters_Stockistmaster_Tb { get; set; }
+        public virtual DbSet<ChemistMaster> ChemistMasters { get; set; }
     
         public virtual ObjectResult<Nullable<decimal>> LoginLock(string loginname)
         {
@@ -896,11 +897,6 @@ namespace PfizerEntity
             return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<USP_GET_PROD_TEAMMASTER_Result>("USP_GET_PROD_TEAMMASTER", pkIdParameter);
         }
     
-        public virtual ObjectResult<USP_GET_PRODUCTMASTER_Result> USP_GET_PRODUCTMASTER()
-        {
-            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<USP_GET_PRODUCTMASTER_Result>("USP_GET_PRODUCTMASTER");
-        }
-    
         public virtual ObjectResult<USP_GET_ROLEMASTER_Result> USP_GET_ROLEMASTER()
         {
             return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<USP_GET_ROLEMASTER_Result>("USP_GET_ROLEMASTER");
@@ -1484,11 +1480,6 @@ namespace PfizerEntity
             return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<GetDivUserByXml_Result>("GetDivUserByXml", nodeIDParameter, divIDParameter);
         }
     
-        public virtual ObjectResult<usp_ReconcileSettings_Result> usp_ReconcileSettings()
-        {
-            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<usp_ReconcileSettings_Result>("usp_ReconcileSettings");
-        }
-    
         public virtual ObjectResult<GetTeamNameForReconcileByPKID_Result1> GetTeamNameForReconcileByPKID(Nullable<decimal> pKID)
         {
             var pKIDParameter = pKID.HasValue ?
@@ -1552,23 +1543,6 @@ namespace PfizerEntity
                 new ObjectParameter("CreatedBy", typeof(int));
     
             return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction("DeleteSampleInputReconcileSettings", pKIDParameter, createdByParameter);
-        }
-    
-        public virtual ObjectResult<string> Usp_GetPSOsForCyclePlanUnlock(Nullable<int> cycleFKID, Nullable<int> divPKID, Nullable<int> teamPKID)
-        {
-            var cycleFKIDParameter = cycleFKID.HasValue ?
-                new ObjectParameter("CycleFKID", cycleFKID) :
-                new ObjectParameter("CycleFKID", typeof(int));
-    
-            var divPKIDParameter = divPKID.HasValue ?
-                new ObjectParameter("DivPKID", divPKID) :
-                new ObjectParameter("DivPKID", typeof(int));
-    
-            var teamPKIDParameter = teamPKID.HasValue ?
-                new ObjectParameter("TeamPKID", teamPKID) :
-                new ObjectParameter("TeamPKID", typeof(int));
-    
-            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<string>("Usp_GetPSOsForCyclePlanUnlock", cycleFKIDParameter, divPKIDParameter, teamPKIDParameter);
         }
     
         public virtual int AddTeamRegionLinkMaster(Nullable<decimal> teamFKID, string xmlRegionFKID, Nullable<int> createdBy)
@@ -2593,31 +2567,9 @@ namespace PfizerEntity
             return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<GetAreaDetailsPCL_Result>("GetAreaDetailsPCL", territoryFKIDParameter);
         }
     
-        public virtual ObjectResult<AllPendingCustomer_Result> AllPendingCustomer(Nullable<decimal> pSOFKID, string areaFKID, string xMLCusCode)
-        {
-            var pSOFKIDParameter = pSOFKID.HasValue ?
-                new ObjectParameter("PSOFKID", pSOFKID) :
-                new ObjectParameter("PSOFKID", typeof(decimal));
-    
-            var areaFKIDParameter = areaFKID != null ?
-                new ObjectParameter("AreaFKID", areaFKID) :
-                new ObjectParameter("AreaFKID", typeof(string));
-    
-            var xMLCusCodeParameter = xMLCusCode != null ?
-                new ObjectParameter("XMLCusCode", xMLCusCode) :
-                new ObjectParameter("XMLCusCode", typeof(string));
-    
-            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<AllPendingCustomer_Result>("AllPendingCustomer", pSOFKIDParameter, areaFKIDParameter, xMLCusCodeParameter);
-        }
-    
         public virtual ObjectResult<GetReportingByXml_Result> GetReportingByXml()
         {
             return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<GetReportingByXml_Result>("GetReportingByXml");
-        }
-    
-        public virtual ObjectResult<getDistrictNameWSNew_Result> getDistrictNameWSNew()
-        {
-            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<getDistrictNameWSNew_Result>("getDistrictNameWSNew");
         }
     
         public virtual ObjectResult<GetLocatioNameByXml_Result> GetLocatioNameByXml()
@@ -3208,6 +3160,2133 @@ namespace PfizerEntity
                 new ObjectParameter("NodeTypeFKID", typeof(decimal));
     
             return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<GetLinkUserTeamMasterforDrpuserfillByXml_Result1>("GetLinkUserTeamMasterforDrpuserfillByXml", teamFKIDParameter, nodeTypeFKIDParameter);
+        }
+    
+        public virtual ObjectResult<GetPSONameforDrRepByXml_Result> GetPSONameforDrRepByXml(Nullable<int> pSOFKID)
+        {
+            var pSOFKIDParameter = pSOFKID.HasValue ?
+                new ObjectParameter("PSOFKID", pSOFKID) :
+                new ObjectParameter("PSOFKID", typeof(int));
+    
+            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<GetPSONameforDrRepByXml_Result>("GetPSONameforDrRepByXml", pSOFKIDParameter);
+        }
+    
+        public virtual ObjectResult<usp_SELECT_CustList_COUNT_ForDashboard_Result> usp_SELECT_CustList_COUNT_ForDashboard(Nullable<int> custId)
+        {
+            var custIdParameter = custId.HasValue ?
+                new ObjectParameter("CustId", custId) :
+                new ObjectParameter("CustId", typeof(int));
+    
+            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<usp_SELECT_CustList_COUNT_ForDashboard_Result>("usp_SELECT_CustList_COUNT_ForDashboard", custIdParameter);
+        }
+    
+        public virtual ObjectResult<usp_GetChemistRpt_Result> usp_GetChemistRpt(Nullable<decimal> input, string custype, string flag, Nullable<decimal> userId, Nullable<int> psoid, Nullable<int> roleId)
+        {
+            var inputParameter = input.HasValue ?
+                new ObjectParameter("input", input) :
+                new ObjectParameter("input", typeof(decimal));
+    
+            var custypeParameter = custype != null ?
+                new ObjectParameter("Custype", custype) :
+                new ObjectParameter("Custype", typeof(string));
+    
+            var flagParameter = flag != null ?
+                new ObjectParameter("flag", flag) :
+                new ObjectParameter("flag", typeof(string));
+    
+            var userIdParameter = userId.HasValue ?
+                new ObjectParameter("UserId", userId) :
+                new ObjectParameter("UserId", typeof(decimal));
+    
+            var psoidParameter = psoid.HasValue ?
+                new ObjectParameter("psoid", psoid) :
+                new ObjectParameter("psoid", typeof(int));
+    
+            var roleIdParameter = roleId.HasValue ?
+                new ObjectParameter("roleId", roleId) :
+                new ObjectParameter("roleId", typeof(int));
+    
+            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<usp_GetChemistRpt_Result>("usp_GetChemistRpt", inputParameter, custypeParameter, flagParameter, userIdParameter, psoidParameter, roleIdParameter);
+        }
+    
+        public virtual ObjectResult<usp_GetCustTerritory_Result> usp_GetCustTerritory(Nullable<decimal> input, string custype, string flag, Nullable<decimal> userId, Nullable<int> psoid, Nullable<int> roleId)
+        {
+            var inputParameter = input.HasValue ?
+                new ObjectParameter("input", input) :
+                new ObjectParameter("input", typeof(decimal));
+    
+            var custypeParameter = custype != null ?
+                new ObjectParameter("Custype", custype) :
+                new ObjectParameter("Custype", typeof(string));
+    
+            var flagParameter = flag != null ?
+                new ObjectParameter("flag", flag) :
+                new ObjectParameter("flag", typeof(string));
+    
+            var userIdParameter = userId.HasValue ?
+                new ObjectParameter("UserId", userId) :
+                new ObjectParameter("UserId", typeof(decimal));
+    
+            var psoidParameter = psoid.HasValue ?
+                new ObjectParameter("psoid", psoid) :
+                new ObjectParameter("psoid", typeof(int));
+    
+            var roleIdParameter = roleId.HasValue ?
+                new ObjectParameter("roleId", roleId) :
+                new ObjectParameter("roleId", typeof(int));
+    
+            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<usp_GetCustTerritory_Result>("usp_GetCustTerritory", inputParameter, custypeParameter, flagParameter, userIdParameter, psoidParameter, roleIdParameter);
+        }
+    
+        public virtual ObjectResult<usp_GetDoctorRpt_Result> usp_GetDoctorRpt(Nullable<decimal> input, string custype, string flag, Nullable<decimal> userId, Nullable<int> psoid, Nullable<int> roleId)
+        {
+            var inputParameter = input.HasValue ?
+                new ObjectParameter("input", input) :
+                new ObjectParameter("input", typeof(decimal));
+    
+            var custypeParameter = custype != null ?
+                new ObjectParameter("Custype", custype) :
+                new ObjectParameter("Custype", typeof(string));
+    
+            var flagParameter = flag != null ?
+                new ObjectParameter("flag", flag) :
+                new ObjectParameter("flag", typeof(string));
+    
+            var userIdParameter = userId.HasValue ?
+                new ObjectParameter("UserId", userId) :
+                new ObjectParameter("UserId", typeof(decimal));
+    
+            var psoidParameter = psoid.HasValue ?
+                new ObjectParameter("psoid", psoid) :
+                new ObjectParameter("psoid", typeof(int));
+    
+            var roleIdParameter = roleId.HasValue ?
+                new ObjectParameter("roleId", roleId) :
+                new ObjectParameter("roleId", typeof(int));
+    
+            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<usp_GetDoctorRpt_Result>("usp_GetDoctorRpt", inputParameter, custypeParameter, flagParameter, userIdParameter, psoidParameter, roleIdParameter);
+        }
+    
+        public virtual ObjectResult<usp_GetHospitalRpt_Result> usp_GetHospitalRpt(Nullable<decimal> input, string custype, string flag, Nullable<decimal> userId, Nullable<int> psoid, Nullable<int> roleId)
+        {
+            var inputParameter = input.HasValue ?
+                new ObjectParameter("input", input) :
+                new ObjectParameter("input", typeof(decimal));
+    
+            var custypeParameter = custype != null ?
+                new ObjectParameter("Custype", custype) :
+                new ObjectParameter("Custype", typeof(string));
+    
+            var flagParameter = flag != null ?
+                new ObjectParameter("flag", flag) :
+                new ObjectParameter("flag", typeof(string));
+    
+            var userIdParameter = userId.HasValue ?
+                new ObjectParameter("UserId", userId) :
+                new ObjectParameter("UserId", typeof(decimal));
+    
+            var psoidParameter = psoid.HasValue ?
+                new ObjectParameter("psoid", psoid) :
+                new ObjectParameter("psoid", typeof(int));
+    
+            var roleIdParameter = roleId.HasValue ?
+                new ObjectParameter("roleId", roleId) :
+                new ObjectParameter("roleId", typeof(int));
+    
+            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<usp_GetHospitalRpt_Result>("usp_GetHospitalRpt", inputParameter, custypeParameter, flagParameter, userIdParameter, psoidParameter, roleIdParameter);
+        }
+    
+        public virtual ObjectResult<usp_GetPSOName_Result> usp_GetPSOName(Nullable<decimal> input, string custype, string flag, Nullable<decimal> userId, Nullable<int> psoid, Nullable<int> roleId)
+        {
+            var inputParameter = input.HasValue ?
+                new ObjectParameter("input", input) :
+                new ObjectParameter("input", typeof(decimal));
+    
+            var custypeParameter = custype != null ?
+                new ObjectParameter("Custype", custype) :
+                new ObjectParameter("Custype", typeof(string));
+    
+            var flagParameter = flag != null ?
+                new ObjectParameter("flag", flag) :
+                new ObjectParameter("flag", typeof(string));
+    
+            var userIdParameter = userId.HasValue ?
+                new ObjectParameter("UserId", userId) :
+                new ObjectParameter("UserId", typeof(decimal));
+    
+            var psoidParameter = psoid.HasValue ?
+                new ObjectParameter("psoid", psoid) :
+                new ObjectParameter("psoid", typeof(int));
+    
+            var roleIdParameter = roleId.HasValue ?
+                new ObjectParameter("roleId", roleId) :
+                new ObjectParameter("roleId", typeof(int));
+    
+            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<usp_GetPSOName_Result>("usp_GetPSOName", inputParameter, custypeParameter, flagParameter, userIdParameter, psoidParameter, roleIdParameter);
+        }
+    
+        public virtual ObjectResult<usp_GetStockistRpt_Result> usp_GetStockistRpt(Nullable<decimal> input, string custype, string flag, Nullable<decimal> userId, Nullable<int> psoid, Nullable<int> roleId)
+        {
+            var inputParameter = input.HasValue ?
+                new ObjectParameter("input", input) :
+                new ObjectParameter("input", typeof(decimal));
+    
+            var custypeParameter = custype != null ?
+                new ObjectParameter("Custype", custype) :
+                new ObjectParameter("Custype", typeof(string));
+    
+            var flagParameter = flag != null ?
+                new ObjectParameter("flag", flag) :
+                new ObjectParameter("flag", typeof(string));
+    
+            var userIdParameter = userId.HasValue ?
+                new ObjectParameter("UserId", userId) :
+                new ObjectParameter("UserId", typeof(decimal));
+    
+            var psoidParameter = psoid.HasValue ?
+                new ObjectParameter("psoid", psoid) :
+                new ObjectParameter("psoid", typeof(int));
+    
+            var roleIdParameter = roleId.HasValue ?
+                new ObjectParameter("roleId", roleId) :
+                new ObjectParameter("roleId", typeof(int));
+    
+            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<usp_GetStockistRpt_Result>("usp_GetStockistRpt", inputParameter, custypeParameter, flagParameter, userIdParameter, psoidParameter, roleIdParameter);
+        }
+    
+        public virtual ObjectResult<GetNodeByPSOFKID_Result> GetNodeByPSOFKID(Nullable<decimal> userFKID)
+        {
+            var userFKIDParameter = userFKID.HasValue ?
+                new ObjectParameter("UserFKID", userFKID) :
+                new ObjectParameter("UserFKID", typeof(decimal));
+    
+            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<GetNodeByPSOFKID_Result>("GetNodeByPSOFKID", userFKIDParameter);
+        }
+    
+        public virtual ObjectResult<GetPSONamebyRepID_Result> GetPSONamebyRepID(Nullable<decimal> userFKID)
+        {
+            var userFKIDParameter = userFKID.HasValue ?
+                new ObjectParameter("UserFKID", userFKID) :
+                new ObjectParameter("UserFKID", typeof(decimal));
+    
+            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<GetPSONamebyRepID_Result>("GetPSONamebyRepID", userFKIDParameter);
+        }
+    
+        public virtual ObjectResult<GetTerritoryName_Result> GetTerritoryName(Nullable<decimal> divFKID)
+        {
+            var divFKIDParameter = divFKID.HasValue ?
+                new ObjectParameter("DivFKID", divFKID) :
+                new ObjectParameter("DivFKID", typeof(decimal));
+    
+            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<GetTerritoryName_Result>("GetTerritoryName", divFKIDParameter);
+        }
+    
+        public virtual ObjectResult<GetDrAreaDetails_Result> GetDrAreaDetails(Nullable<decimal> territoryFKID)
+        {
+            var territoryFKIDParameter = territoryFKID.HasValue ?
+                new ObjectParameter("TerritoryFKID", territoryFKID) :
+                new ObjectParameter("TerritoryFKID", typeof(decimal));
+    
+            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<GetDrAreaDetails_Result>("GetDrAreaDetails", territoryFKIDParameter);
+        }
+    
+        public virtual ObjectResult<GetDoctorNameBYPSO_Result> GetDoctorNameBYPSO(Nullable<decimal> terPKID, string areaFKID, Nullable<decimal> divFKID)
+        {
+            var terPKIDParameter = terPKID.HasValue ?
+                new ObjectParameter("TerPKID", terPKID) :
+                new ObjectParameter("TerPKID", typeof(decimal));
+    
+            var areaFKIDParameter = areaFKID != null ?
+                new ObjectParameter("AreaFKID", areaFKID) :
+                new ObjectParameter("AreaFKID", typeof(string));
+    
+            var divFKIDParameter = divFKID.HasValue ?
+                new ObjectParameter("DivFKID", divFKID) :
+                new ObjectParameter("DivFKID", typeof(decimal));
+    
+            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<GetDoctorNameBYPSO_Result>("GetDoctorNameBYPSO", terPKIDParameter, areaFKIDParameter, divFKIDParameter);
+        }
+    
+        public virtual ObjectResult<GetTerritoryByDest_Result> GetTerritoryByDest(Nullable<decimal> terPKID, Nullable<decimal> divFKID)
+        {
+            var terPKIDParameter = terPKID.HasValue ?
+                new ObjectParameter("TerPKID", terPKID) :
+                new ObjectParameter("TerPKID", typeof(decimal));
+    
+            var divFKIDParameter = divFKID.HasValue ?
+                new ObjectParameter("DivFKID", divFKID) :
+                new ObjectParameter("DivFKID", typeof(decimal));
+    
+            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<GetTerritoryByDest_Result>("GetTerritoryByDest", terPKIDParameter, divFKIDParameter);
+        }
+    
+        public virtual int addDoctorCopy(Nullable<decimal> territoryDFKID, Nullable<decimal> territorySFKID, Nullable<decimal> createdBy, string xml)
+        {
+            var territoryDFKIDParameter = territoryDFKID.HasValue ?
+                new ObjectParameter("TerritoryDFKID", territoryDFKID) :
+                new ObjectParameter("TerritoryDFKID", typeof(decimal));
+    
+            var territorySFKIDParameter = territorySFKID.HasValue ?
+                new ObjectParameter("TerritorySFKID", territorySFKID) :
+                new ObjectParameter("TerritorySFKID", typeof(decimal));
+    
+            var createdByParameter = createdBy.HasValue ?
+                new ObjectParameter("CreatedBy", createdBy) :
+                new ObjectParameter("CreatedBy", typeof(decimal));
+    
+            var xmlParameter = xml != null ?
+                new ObjectParameter("xml", xml) :
+                new ObjectParameter("xml", typeof(string));
+    
+            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction("addDoctorCopy", territoryDFKIDParameter, territorySFKIDParameter, createdByParameter, xmlParameter);
+        }
+    
+        public virtual int addDoctorTranster(Nullable<decimal> territoryDFKID, Nullable<decimal> territorySFKID, Nullable<decimal> createdBy, string xml)
+        {
+            var territoryDFKIDParameter = territoryDFKID.HasValue ?
+                new ObjectParameter("TerritoryDFKID", territoryDFKID) :
+                new ObjectParameter("TerritoryDFKID", typeof(decimal));
+    
+            var territorySFKIDParameter = territorySFKID.HasValue ?
+                new ObjectParameter("TerritorySFKID", territorySFKID) :
+                new ObjectParameter("TerritorySFKID", typeof(decimal));
+    
+            var createdByParameter = createdBy.HasValue ?
+                new ObjectParameter("CreatedBy", createdBy) :
+                new ObjectParameter("CreatedBy", typeof(decimal));
+    
+            var xmlParameter = xml != null ?
+                new ObjectParameter("xml", xml) :
+                new ObjectParameter("xml", typeof(string));
+    
+            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction("addDoctorTranster", territoryDFKIDParameter, territorySFKIDParameter, createdByParameter, xmlParameter);
+        }
+    
+        public virtual ObjectResult<string> GetSplDoctorName(string docPKID)
+        {
+            var docPKIDParameter = docPKID != null ?
+                new ObjectParameter("DocPKID", docPKID) :
+                new ObjectParameter("DocPKID", typeof(string));
+    
+            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<string>("GetSplDoctorName", docPKIDParameter);
+        }
+    
+        public virtual ObjectResult<GetSplDoctorName1_Result> GetSplDoctorName1(string docPKID)
+        {
+            var docPKIDParameter = docPKID != null ?
+                new ObjectParameter("DocPKID", docPKID) :
+                new ObjectParameter("DocPKID", typeof(string));
+    
+            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<GetSplDoctorName1_Result>("GetSplDoctorName1", docPKIDParameter);
+        }
+    
+        public virtual ObjectResult<GetChemistNameByTerritory_Result> GetChemistNameByTerritory(Nullable<decimal> terPKID, string areaFKID, Nullable<decimal> divFKID)
+        {
+            var terPKIDParameter = terPKID.HasValue ?
+                new ObjectParameter("TerPKID", terPKID) :
+                new ObjectParameter("TerPKID", typeof(decimal));
+    
+            var areaFKIDParameter = areaFKID != null ?
+                new ObjectParameter("AreaFKID", areaFKID) :
+                new ObjectParameter("AreaFKID", typeof(string));
+    
+            var divFKIDParameter = divFKID.HasValue ?
+                new ObjectParameter("DivFKID", divFKID) :
+                new ObjectParameter("DivFKID", typeof(decimal));
+    
+            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<GetChemistNameByTerritory_Result>("GetChemistNameByTerritory", terPKIDParameter, areaFKIDParameter, divFKIDParameter);
+        }
+    
+        public virtual int AddChemistCopy(Nullable<decimal> territoryDFKID, Nullable<decimal> territorySFKID, Nullable<decimal> createdBy, string xml)
+        {
+            var territoryDFKIDParameter = territoryDFKID.HasValue ?
+                new ObjectParameter("TerritoryDFKID", territoryDFKID) :
+                new ObjectParameter("TerritoryDFKID", typeof(decimal));
+    
+            var territorySFKIDParameter = territorySFKID.HasValue ?
+                new ObjectParameter("TerritorySFKID", territorySFKID) :
+                new ObjectParameter("TerritorySFKID", typeof(decimal));
+    
+            var createdByParameter = createdBy.HasValue ?
+                new ObjectParameter("CreatedBy", createdBy) :
+                new ObjectParameter("CreatedBy", typeof(decimal));
+    
+            var xmlParameter = xml != null ?
+                new ObjectParameter("xml", xml) :
+                new ObjectParameter("xml", typeof(string));
+    
+            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction("AddChemistCopy", territoryDFKIDParameter, territorySFKIDParameter, createdByParameter, xmlParameter);
+        }
+    
+        public virtual int AddChemistTransfer(Nullable<decimal> territoryDFKID, Nullable<decimal> territorySFKID, Nullable<decimal> createdBy, string xml)
+        {
+            var territoryDFKIDParameter = territoryDFKID.HasValue ?
+                new ObjectParameter("TerritoryDFKID", territoryDFKID) :
+                new ObjectParameter("TerritoryDFKID", typeof(decimal));
+    
+            var territorySFKIDParameter = territorySFKID.HasValue ?
+                new ObjectParameter("TerritorySFKID", territorySFKID) :
+                new ObjectParameter("TerritorySFKID", typeof(decimal));
+    
+            var createdByParameter = createdBy.HasValue ?
+                new ObjectParameter("CreatedBy", createdBy) :
+                new ObjectParameter("CreatedBy", typeof(decimal));
+    
+            var xmlParameter = xml != null ?
+                new ObjectParameter("xml", xml) :
+                new ObjectParameter("xml", typeof(string));
+    
+            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction("AddChemistTransfer", territoryDFKIDParameter, territorySFKIDParameter, createdByParameter, xmlParameter);
+        }
+    
+        public virtual ObjectResult<GetDailyReportatGlanceAllNew_Result> GetDailyReportatGlanceAllNew(Nullable<System.DateTime> fromDate, Nullable<System.DateTime> toDate, Nullable<int> pSOFKID)
+        {
+            var fromDateParameter = fromDate.HasValue ?
+                new ObjectParameter("FromDate", fromDate) :
+                new ObjectParameter("FromDate", typeof(System.DateTime));
+    
+            var toDateParameter = toDate.HasValue ?
+                new ObjectParameter("ToDate", toDate) :
+                new ObjectParameter("ToDate", typeof(System.DateTime));
+    
+            var pSOFKIDParameter = pSOFKID.HasValue ?
+                new ObjectParameter("PSOFKID", pSOFKID) :
+                new ObjectParameter("PSOFKID", typeof(int));
+    
+            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<GetDailyReportatGlanceAllNew_Result>("GetDailyReportatGlanceAllNew", fromDateParameter, toDateParameter, pSOFKIDParameter);
+        }
+    
+        public virtual int SubmitDoctor(string xmlStr, Nullable<decimal> userFKID)
+        {
+            var xmlStrParameter = xmlStr != null ?
+                new ObjectParameter("XmlStr", xmlStr) :
+                new ObjectParameter("XmlStr", typeof(string));
+    
+            var userFKIDParameter = userFKID.HasValue ?
+                new ObjectParameter("UserFKID", userFKID) :
+                new ObjectParameter("UserFKID", typeof(decimal));
+    
+            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction("SubmitDoctor", xmlStrParameter, userFKIDParameter);
+        }
+    
+        public virtual int submitOtherCustomer(string xmlStr, Nullable<decimal> userFKID)
+        {
+            var xmlStrParameter = xmlStr != null ?
+                new ObjectParameter("XmlStr", xmlStr) :
+                new ObjectParameter("XmlStr", typeof(string));
+    
+            var userFKIDParameter = userFKID.HasValue ?
+                new ObjectParameter("UserFKID", userFKID) :
+                new ObjectParameter("UserFKID", typeof(decimal));
+    
+            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction("submitOtherCustomer", xmlStrParameter, userFKIDParameter);
+        }
+    
+        public virtual ObjectResult<GetNodeByPSOFKIDForRegularVisit_Result> GetNodeByPSOFKIDForRegularVisit(Nullable<decimal> userFKID)
+        {
+            var userFKIDParameter = userFKID.HasValue ?
+                new ObjectParameter("UserFKID", userFKID) :
+                new ObjectParameter("UserFKID", typeof(decimal));
+    
+            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<GetNodeByPSOFKIDForRegularVisit_Result>("GetNodeByPSOFKIDForRegularVisit", userFKIDParameter);
+        }
+    
+        public virtual ObjectResult<GetPSONameDRAtGforRG_Result> GetPSONameDRAtGforRG(Nullable<decimal> userFKID, Nullable<decimal> nodeTypeFKID)
+        {
+            var userFKIDParameter = userFKID.HasValue ?
+                new ObjectParameter("UserFKID", userFKID) :
+                new ObjectParameter("UserFKID", typeof(decimal));
+    
+            var nodeTypeFKIDParameter = nodeTypeFKID.HasValue ?
+                new ObjectParameter("NodeTypeFKID", nodeTypeFKID) :
+                new ObjectParameter("NodeTypeFKID", typeof(decimal));
+    
+            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<GetPSONameDRAtGforRG_Result>("GetPSONameDRAtGforRG", userFKIDParameter, nodeTypeFKIDParameter);
+        }
+    
+        public virtual ObjectResult<TeamsForCallVolumeReport_Result> TeamsForCallVolumeReport()
+        {
+            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<TeamsForCallVolumeReport_Result>("TeamsForCallVolumeReport");
+        }
+    
+        public virtual ObjectResult<TeamPSOList_Result> TeamPSOList(Nullable<long> teamfkid)
+        {
+            var teamfkidParameter = teamfkid.HasValue ?
+                new ObjectParameter("teamfkid", teamfkid) :
+                new ObjectParameter("teamfkid", typeof(long));
+    
+            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<TeamPSOList_Result>("TeamPSOList", teamfkidParameter);
+        }
+    
+        public virtual ObjectResult<GetInputNameforReport_Result> GetInputNameforReport(Nullable<decimal> psoFKID)
+        {
+            var psoFKIDParameter = psoFKID.HasValue ?
+                new ObjectParameter("psoFKID", psoFKID) :
+                new ObjectParameter("psoFKID", typeof(decimal));
+    
+            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<GetInputNameforReport_Result>("GetInputNameforReport", psoFKIDParameter);
+        }
+    
+        public virtual ObjectResult<GetPsoNameBySampleReport_Result> GetPsoNameBySampleReport(Nullable<decimal> userFKID)
+        {
+            var userFKIDParameter = userFKID.HasValue ?
+                new ObjectParameter("UserFKID", userFKID) :
+                new ObjectParameter("UserFKID", typeof(decimal));
+    
+            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<GetPsoNameBySampleReport_Result>("GetPsoNameBySampleReport", userFKIDParameter);
+        }
+    
+        public virtual ObjectResult<GetInputNameforDMReport_Result> GetInputNameforDMReport()
+        {
+            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<GetInputNameforDMReport_Result>("GetInputNameforDMReport");
+        }
+    
+        public virtual ObjectResult<GetUsageRepbyXML_Result> GetUsageRepbyXML(Nullable<decimal> pKID, string fromDate, string toDate)
+        {
+            var pKIDParameter = pKID.HasValue ?
+                new ObjectParameter("PKID", pKID) :
+                new ObjectParameter("PKID", typeof(decimal));
+    
+            var fromDateParameter = fromDate != null ?
+                new ObjectParameter("FromDate", fromDate) :
+                new ObjectParameter("FromDate", typeof(string));
+    
+            var toDateParameter = toDate != null ?
+                new ObjectParameter("ToDate", toDate) :
+                new ObjectParameter("ToDate", typeof(string));
+    
+            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<GetUsageRepbyXML_Result>("GetUsageRepbyXML", pKIDParameter, fromDateParameter, toDateParameter);
+        }
+    
+        public virtual ObjectResult<Searchaudittrial_Result> Searchaudittrial(Nullable<int> userFKId, Nullable<System.DateTime> fromDate, Nullable<System.DateTime> toDate)
+        {
+            var userFKIdParameter = userFKId.HasValue ?
+                new ObjectParameter("UserFKId", userFKId) :
+                new ObjectParameter("UserFKId", typeof(int));
+    
+            var fromDateParameter = fromDate.HasValue ?
+                new ObjectParameter("FromDate", fromDate) :
+                new ObjectParameter("FromDate", typeof(System.DateTime));
+    
+            var toDateParameter = toDate.HasValue ?
+                new ObjectParameter("ToDate", toDate) :
+                new ObjectParameter("ToDate", typeof(System.DateTime));
+    
+            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<Searchaudittrial_Result>("Searchaudittrial", userFKIdParameter, fromDateParameter, toDateParameter);
+        }
+    
+        public virtual ObjectResult<GetPsoNameByCFSAReport_Result> GetPsoNameByCFSAReport(Nullable<decimal> pSOFKID)
+        {
+            var pSOFKIDParameter = pSOFKID.HasValue ?
+                new ObjectParameter("PSOFKID", pSOFKID) :
+                new ObjectParameter("PSOFKID", typeof(decimal));
+    
+            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<GetPsoNameByCFSAReport_Result>("GetPsoNameByCFSAReport", pSOFKIDParameter);
+        }
+    
+        public virtual ObjectResult<USP_sp_CFSAReportforPSO_Result> USP_sp_CFSAReportforPSO(string fromDate, string toDate, string psoFKID)
+        {
+            var fromDateParameter = fromDate != null ?
+                new ObjectParameter("FromDate", fromDate) :
+                new ObjectParameter("FromDate", typeof(string));
+    
+            var toDateParameter = toDate != null ?
+                new ObjectParameter("ToDate", toDate) :
+                new ObjectParameter("ToDate", typeof(string));
+    
+            var psoFKIDParameter = psoFKID != null ?
+                new ObjectParameter("PsoFKID", psoFKID) :
+                new ObjectParameter("PsoFKID", typeof(string));
+    
+            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<USP_sp_CFSAReportforPSO_Result>("USP_sp_CFSAReportforPSO", fromDateParameter, toDateParameter, psoFKIDParameter);
+        }
+    
+        public virtual int AddChemistMaster(string chemistName, string firstName, string middleName, string lastName, string address, string street, Nullable<decimal> areaFKID, string zip, string iSDCode, string sTDCode, string phoneNo, string mobile, string fax, string email, Nullable<int> prescriptionPerMonth, Nullable<bool> isActive, Nullable<decimal> createdBy, Nullable<bool> isDeletion, Nullable<int> avgCustomers, Nullable<int> noCustomersMed, Nullable<int> oTCSales)
+        {
+            var chemistNameParameter = chemistName != null ?
+                new ObjectParameter("ChemistName", chemistName) :
+                new ObjectParameter("ChemistName", typeof(string));
+    
+            var firstNameParameter = firstName != null ?
+                new ObjectParameter("FirstName", firstName) :
+                new ObjectParameter("FirstName", typeof(string));
+    
+            var middleNameParameter = middleName != null ?
+                new ObjectParameter("MiddleName", middleName) :
+                new ObjectParameter("MiddleName", typeof(string));
+    
+            var lastNameParameter = lastName != null ?
+                new ObjectParameter("LastName", lastName) :
+                new ObjectParameter("LastName", typeof(string));
+    
+            var addressParameter = address != null ?
+                new ObjectParameter("Address", address) :
+                new ObjectParameter("Address", typeof(string));
+    
+            var streetParameter = street != null ?
+                new ObjectParameter("Street", street) :
+                new ObjectParameter("Street", typeof(string));
+    
+            var areaFKIDParameter = areaFKID.HasValue ?
+                new ObjectParameter("AreaFKID", areaFKID) :
+                new ObjectParameter("AreaFKID", typeof(decimal));
+    
+            var zipParameter = zip != null ?
+                new ObjectParameter("Zip", zip) :
+                new ObjectParameter("Zip", typeof(string));
+    
+            var iSDCodeParameter = iSDCode != null ?
+                new ObjectParameter("ISDCode", iSDCode) :
+                new ObjectParameter("ISDCode", typeof(string));
+    
+            var sTDCodeParameter = sTDCode != null ?
+                new ObjectParameter("STDCode", sTDCode) :
+                new ObjectParameter("STDCode", typeof(string));
+    
+            var phoneNoParameter = phoneNo != null ?
+                new ObjectParameter("PhoneNo", phoneNo) :
+                new ObjectParameter("PhoneNo", typeof(string));
+    
+            var mobileParameter = mobile != null ?
+                new ObjectParameter("Mobile", mobile) :
+                new ObjectParameter("Mobile", typeof(string));
+    
+            var faxParameter = fax != null ?
+                new ObjectParameter("Fax", fax) :
+                new ObjectParameter("Fax", typeof(string));
+    
+            var emailParameter = email != null ?
+                new ObjectParameter("Email", email) :
+                new ObjectParameter("Email", typeof(string));
+    
+            var prescriptionPerMonthParameter = prescriptionPerMonth.HasValue ?
+                new ObjectParameter("PrescriptionPerMonth", prescriptionPerMonth) :
+                new ObjectParameter("PrescriptionPerMonth", typeof(int));
+    
+            var isActiveParameter = isActive.HasValue ?
+                new ObjectParameter("IsActive", isActive) :
+                new ObjectParameter("IsActive", typeof(bool));
+    
+            var createdByParameter = createdBy.HasValue ?
+                new ObjectParameter("CreatedBy", createdBy) :
+                new ObjectParameter("CreatedBy", typeof(decimal));
+    
+            var isDeletionParameter = isDeletion.HasValue ?
+                new ObjectParameter("IsDeletion", isDeletion) :
+                new ObjectParameter("IsDeletion", typeof(bool));
+    
+            var avgCustomersParameter = avgCustomers.HasValue ?
+                new ObjectParameter("AvgCustomers", avgCustomers) :
+                new ObjectParameter("AvgCustomers", typeof(int));
+    
+            var noCustomersMedParameter = noCustomersMed.HasValue ?
+                new ObjectParameter("NoCustomersMed", noCustomersMed) :
+                new ObjectParameter("NoCustomersMed", typeof(int));
+    
+            var oTCSalesParameter = oTCSales.HasValue ?
+                new ObjectParameter("OTCSales", oTCSales) :
+                new ObjectParameter("OTCSales", typeof(int));
+    
+            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction("AddChemistMaster", chemistNameParameter, firstNameParameter, middleNameParameter, lastNameParameter, addressParameter, streetParameter, areaFKIDParameter, zipParameter, iSDCodeParameter, sTDCodeParameter, phoneNoParameter, mobileParameter, faxParameter, emailParameter, prescriptionPerMonthParameter, isActiveParameter, createdByParameter, isDeletionParameter, avgCustomersParameter, noCustomersMedParameter, oTCSalesParameter);
+        }
+    
+        public virtual int DeleteChemistMaster(Nullable<decimal> pKID, string reasonForPSODeletion, Nullable<bool> isDeletion, Nullable<decimal> modifiedBy)
+        {
+            var pKIDParameter = pKID.HasValue ?
+                new ObjectParameter("PKID", pKID) :
+                new ObjectParameter("PKID", typeof(decimal));
+    
+            var reasonForPSODeletionParameter = reasonForPSODeletion != null ?
+                new ObjectParameter("ReasonForPSODeletion", reasonForPSODeletion) :
+                new ObjectParameter("ReasonForPSODeletion", typeof(string));
+    
+            var isDeletionParameter = isDeletion.HasValue ?
+                new ObjectParameter("IsDeletion", isDeletion) :
+                new ObjectParameter("IsDeletion", typeof(bool));
+    
+            var modifiedByParameter = modifiedBy.HasValue ?
+                new ObjectParameter("ModifiedBy", modifiedBy) :
+                new ObjectParameter("ModifiedBy", typeof(decimal));
+    
+            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction("DeleteChemistMaster", pKIDParameter, reasonForPSODeletionParameter, isDeletionParameter, modifiedByParameter);
+        }
+    
+        public virtual int EditChemistMaster(Nullable<decimal> pKID, string chemistName, string firstName, string middleName, string lastName, string address, string street, Nullable<decimal> areaFKID, string zip, string iSDCode, string sTDCode, string phoneNo, string mobile, string fax, string email, Nullable<int> prescriptionPerMonth, Nullable<bool> isActive, Nullable<decimal> modifiedBy, Nullable<int> avgCustomers, Nullable<int> noCustomersMed, Nullable<int> oTCSales)
+        {
+            var pKIDParameter = pKID.HasValue ?
+                new ObjectParameter("PKID", pKID) :
+                new ObjectParameter("PKID", typeof(decimal));
+    
+            var chemistNameParameter = chemistName != null ?
+                new ObjectParameter("ChemistName", chemistName) :
+                new ObjectParameter("ChemistName", typeof(string));
+    
+            var firstNameParameter = firstName != null ?
+                new ObjectParameter("FirstName", firstName) :
+                new ObjectParameter("FirstName", typeof(string));
+    
+            var middleNameParameter = middleName != null ?
+                new ObjectParameter("MiddleName", middleName) :
+                new ObjectParameter("MiddleName", typeof(string));
+    
+            var lastNameParameter = lastName != null ?
+                new ObjectParameter("LastName", lastName) :
+                new ObjectParameter("LastName", typeof(string));
+    
+            var addressParameter = address != null ?
+                new ObjectParameter("Address", address) :
+                new ObjectParameter("Address", typeof(string));
+    
+            var streetParameter = street != null ?
+                new ObjectParameter("Street", street) :
+                new ObjectParameter("Street", typeof(string));
+    
+            var areaFKIDParameter = areaFKID.HasValue ?
+                new ObjectParameter("AreaFKID", areaFKID) :
+                new ObjectParameter("AreaFKID", typeof(decimal));
+    
+            var zipParameter = zip != null ?
+                new ObjectParameter("Zip", zip) :
+                new ObjectParameter("Zip", typeof(string));
+    
+            var iSDCodeParameter = iSDCode != null ?
+                new ObjectParameter("ISDCode", iSDCode) :
+                new ObjectParameter("ISDCode", typeof(string));
+    
+            var sTDCodeParameter = sTDCode != null ?
+                new ObjectParameter("STDCode", sTDCode) :
+                new ObjectParameter("STDCode", typeof(string));
+    
+            var phoneNoParameter = phoneNo != null ?
+                new ObjectParameter("PhoneNo", phoneNo) :
+                new ObjectParameter("PhoneNo", typeof(string));
+    
+            var mobileParameter = mobile != null ?
+                new ObjectParameter("Mobile", mobile) :
+                new ObjectParameter("Mobile", typeof(string));
+    
+            var faxParameter = fax != null ?
+                new ObjectParameter("Fax", fax) :
+                new ObjectParameter("Fax", typeof(string));
+    
+            var emailParameter = email != null ?
+                new ObjectParameter("Email", email) :
+                new ObjectParameter("Email", typeof(string));
+    
+            var prescriptionPerMonthParameter = prescriptionPerMonth.HasValue ?
+                new ObjectParameter("PrescriptionPerMonth", prescriptionPerMonth) :
+                new ObjectParameter("PrescriptionPerMonth", typeof(int));
+    
+            var isActiveParameter = isActive.HasValue ?
+                new ObjectParameter("IsActive", isActive) :
+                new ObjectParameter("IsActive", typeof(bool));
+    
+            var modifiedByParameter = modifiedBy.HasValue ?
+                new ObjectParameter("ModifiedBy", modifiedBy) :
+                new ObjectParameter("ModifiedBy", typeof(decimal));
+    
+            var avgCustomersParameter = avgCustomers.HasValue ?
+                new ObjectParameter("AvgCustomers", avgCustomers) :
+                new ObjectParameter("AvgCustomers", typeof(int));
+    
+            var noCustomersMedParameter = noCustomersMed.HasValue ?
+                new ObjectParameter("NoCustomersMed", noCustomersMed) :
+                new ObjectParameter("NoCustomersMed", typeof(int));
+    
+            var oTCSalesParameter = oTCSales.HasValue ?
+                new ObjectParameter("OTCSales", oTCSales) :
+                new ObjectParameter("OTCSales", typeof(int));
+    
+            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction("EditChemistMaster", pKIDParameter, chemistNameParameter, firstNameParameter, middleNameParameter, lastNameParameter, addressParameter, streetParameter, areaFKIDParameter, zipParameter, iSDCodeParameter, sTDCodeParameter, phoneNoParameter, mobileParameter, faxParameter, emailParameter, prescriptionPerMonthParameter, isActiveParameter, modifiedByParameter, avgCustomersParameter, noCustomersMedParameter, oTCSalesParameter);
+        }
+    
+        public virtual int Get_District_BasedOn_Region_ByXML(string id)
+        {
+            var idParameter = id != null ?
+                new ObjectParameter("Id", id) :
+                new ObjectParameter("Id", typeof(string));
+    
+            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction("Get_District_BasedOn_Region_ByXML", idParameter);
+        }
+    
+        public virtual int Get_Region_BasedOn_Team_ByXML(string id)
+        {
+            var idParameter = id != null ?
+                new ObjectParameter("Id", id) :
+                new ObjectParameter("Id", typeof(string));
+    
+            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction("Get_Region_BasedOn_Team_ByXML", idParameter);
+        }
+    
+        public virtual ObjectResult<Get_Region_ByXML_Result> Get_Region_ByXML()
+        {
+            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<Get_Region_ByXML_Result>("Get_Region_ByXML");
+        }
+    
+        public virtual ObjectResult<Get_Team_ByXML_Result> Get_Team_ByXML()
+        {
+            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<Get_Team_ByXML_Result>("Get_Team_ByXML");
+        }
+    
+        public virtual int Get_Territory_BasedOn_District_ByXML(string id)
+        {
+            var idParameter = id != null ?
+                new ObjectParameter("Id", id) :
+                new ObjectParameter("Id", typeof(string));
+    
+            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction("Get_Territory_BasedOn_District_ByXML", idParameter);
+        }
+    
+        public virtual ObjectResult<Get_Territory_ByXML_Result> Get_Territory_ByXML()
+        {
+            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<Get_Territory_ByXML_Result>("Get_Territory_ByXML");
+        }
+    
+        public virtual ObjectResult<GetAreaByCityFKIDXML_Result> GetAreaByCityFKIDXML(Nullable<decimal> cityFKID)
+        {
+            var cityFKIDParameter = cityFKID.HasValue ?
+                new ObjectParameter("CityFKID", cityFKID) :
+                new ObjectParameter("CityFKID", typeof(decimal));
+    
+            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<GetAreaByCityFKIDXML_Result>("GetAreaByCityFKIDXML", cityFKIDParameter);
+        }
+    
+        public virtual ObjectResult<USP_GetAllDetailsFromDoctorMaster_Result> USP_GetAllDetailsFromDoctorMaster(Nullable<int> userfkid, Nullable<int> territoryFkid)
+        {
+            var userfkidParameter = userfkid.HasValue ?
+                new ObjectParameter("userfkid", userfkid) :
+                new ObjectParameter("userfkid", typeof(int));
+    
+            var territoryFkidParameter = territoryFkid.HasValue ?
+                new ObjectParameter("TerritoryFkid", territoryFkid) :
+                new ObjectParameter("TerritoryFkid", typeof(int));
+    
+            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<USP_GetAllDetailsFromDoctorMaster_Result>("USP_GetAllDetailsFromDoctorMaster", userfkidParameter, territoryFkidParameter);
+        }
+    
+        public virtual ObjectResult<Nullable<int>> CFSAActivateORInActivateByXML(string intActive, string userId)
+        {
+            var intActiveParameter = intActive != null ?
+                new ObjectParameter("intActive", intActive) :
+                new ObjectParameter("intActive", typeof(string));
+    
+            var userIdParameter = userId != null ?
+                new ObjectParameter("UserId", userId) :
+                new ObjectParameter("UserId", typeof(string));
+    
+            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<Nullable<int>>("CFSAActivateORInActivateByXML", intActiveParameter, userIdParameter);
+        }
+    
+        public virtual int DeleteChemistMaster1(Nullable<decimal> pKID)
+        {
+            var pKIDParameter = pKID.HasValue ?
+                new ObjectParameter("PKID", pKID) :
+                new ObjectParameter("PKID", typeof(decimal));
+    
+            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction("DeleteChemistMaster1", pKIDParameter);
+        }
+    
+        public virtual ObjectResult<Get_District_ByXML_Result> Get_District_ByXML()
+        {
+            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<Get_District_ByXML_Result>("Get_District_ByXML");
+        }
+    
+        public virtual ObjectResult<GetAllTerritoryCodeByXml_Result> GetAllTerritoryCodeByXml()
+        {
+            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<GetAllTerritoryCodeByXml_Result>("GetAllTerritoryCodeByXml");
+        }
+    
+        public virtual ObjectResult<GetUserNameByXML_Result> GetUserNameByXML()
+        {
+            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<GetUserNameByXML_Result>("GetUserNameByXML");
+        }
+    
+        public virtual ObjectResult<GetUserNameforUsageRepByXml_Result> GetUserNameforUsageRepByXml()
+        {
+            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<GetUserNameforUsageRepByXml_Result>("GetUserNameforUsageRepByXml");
+        }
+    
+        public virtual ObjectResult<USP_GetPSONameForCustomer_Result> USP_GetPSONameForCustomer()
+        {
+            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<USP_GetPSONameForCustomer_Result>("USP_GetPSONameForCustomer");
+        }
+    
+        public virtual ObjectResult<GetNameBySelectedNodeType_Result> GetNameBySelectedNodeType(string nodePKID, Nullable<int> userFKID)
+        {
+            var nodePKIDParameter = nodePKID != null ?
+                new ObjectParameter("NodePKID", nodePKID) :
+                new ObjectParameter("NodePKID", typeof(string));
+    
+            var userFKIDParameter = userFKID.HasValue ?
+                new ObjectParameter("UserFKID", userFKID) :
+                new ObjectParameter("UserFKID", typeof(int));
+    
+            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<GetNameBySelectedNodeType_Result>("GetNameBySelectedNodeType", nodePKIDParameter, userFKIDParameter);
+        }
+    
+        public virtual int SummeryReportPSO(Nullable<long> userid)
+        {
+            var useridParameter = userid.HasValue ?
+                new ObjectParameter("userid", userid) :
+                new ObjectParameter("userid", typeof(long));
+    
+            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction("SummeryReportPSO", useridParameter);
+        }
+    
+        public virtual ObjectResult<GetLeaveTypeByLeaveReport_Result> GetLeaveTypeByLeaveReport()
+        {
+            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<GetLeaveTypeByLeaveReport_Result>("GetLeaveTypeByLeaveReport");
+        }
+    
+        public virtual ObjectResult<GetNodeTypeByLeaveReport_Result1> GetNodeTypeByLeaveReport()
+        {
+            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<GetNodeTypeByLeaveReport_Result1>("GetNodeTypeByLeaveReport");
+        }
+    
+        public virtual ObjectResult<SearchCycleByYear_Result> SearchCycleByYear(string cycleYear)
+        {
+            var cycleYearParameter = cycleYear != null ?
+                new ObjectParameter("CycleYear", cycleYear) :
+                new ObjectParameter("CycleYear", typeof(string));
+    
+            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<SearchCycleByYear_Result>("SearchCycleByYear", cycleYearParameter);
+        }
+    
+        public virtual ObjectResult<SampleAckRpt_Admin_Result> SampleAckRpt_Admin(Nullable<System.DateTime> fromDate, Nullable<System.DateTime> toDate, Nullable<int> pending, Nullable<int> all)
+        {
+            var fromDateParameter = fromDate.HasValue ?
+                new ObjectParameter("FromDate", fromDate) :
+                new ObjectParameter("FromDate", typeof(System.DateTime));
+    
+            var toDateParameter = toDate.HasValue ?
+                new ObjectParameter("ToDate", toDate) :
+                new ObjectParameter("ToDate", typeof(System.DateTime));
+    
+            var pendingParameter = pending.HasValue ?
+                new ObjectParameter("Pending", pending) :
+                new ObjectParameter("Pending", typeof(int));
+    
+            var allParameter = all.HasValue ?
+                new ObjectParameter("All", all) :
+                new ObjectParameter("All", typeof(int));
+    
+            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<SampleAckRpt_Admin_Result>("SampleAckRpt_Admin", fromDateParameter, toDateParameter, pendingParameter, allParameter);
+        }
+    
+        public virtual ObjectResult<SummeryReportReportingUsers_Result> SummeryReportReportingUsers(Nullable<long> userid)
+        {
+            var useridParameter = userid.HasValue ?
+                new ObjectParameter("userid", userid) :
+                new ObjectParameter("userid", typeof(long));
+    
+            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<SummeryReportReportingUsers_Result>("SummeryReportReportingUsers", useridParameter);
+        }
+    
+        public virtual ObjectResult<GetPsoNameByReport_Result> GetPsoNameByReport(Nullable<decimal> userFKID)
+        {
+            var userFKIDParameter = userFKID.HasValue ?
+                new ObjectParameter("UserFKID", userFKID) :
+                new ObjectParameter("UserFKID", typeof(decimal));
+    
+            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<GetPsoNameByReport_Result>("GetPsoNameByReport", userFKIDParameter);
+        }
+    
+        public virtual int AddUserMaster3(Nullable<decimal> userFKID, Nullable<decimal> createdBy, string xmlStr)
+        {
+            var userFKIDParameter = userFKID.HasValue ?
+                new ObjectParameter("UserFKID", userFKID) :
+                new ObjectParameter("UserFKID", typeof(decimal));
+    
+            var createdByParameter = createdBy.HasValue ?
+                new ObjectParameter("CreatedBy", createdBy) :
+                new ObjectParameter("CreatedBy", typeof(decimal));
+    
+            var xmlStrParameter = xmlStr != null ?
+                new ObjectParameter("XmlStr", xmlStr) :
+                new ObjectParameter("XmlStr", typeof(string));
+    
+            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction("AddUserMaster3", userFKIDParameter, createdByParameter, xmlStrParameter);
+        }
+    
+        public virtual ObjectResult<GetDMNameByReport_Result> GetDMNameByReport(Nullable<decimal> userFKID)
+        {
+            var userFKIDParameter = userFKID.HasValue ?
+                new ObjectParameter("UserFKID", userFKID) :
+                new ObjectParameter("UserFKID", typeof(decimal));
+    
+            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<GetDMNameByReport_Result>("GetDMNameByReport", userFKIDParameter);
+        }
+    
+        public virtual ObjectResult<GetMonthDetails_Result> GetMonthDetails()
+        {
+            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<GetMonthDetails_Result>("GetMonthDetails");
+        }
+    
+        public virtual ObjectResult<GetNamebyIDForFTMTrackSheet_Result> GetNamebyIDForFTMTrackSheet(Nullable<decimal> userFKID)
+        {
+            var userFKIDParameter = userFKID.HasValue ?
+                new ObjectParameter("UserFKID", userFKID) :
+                new ObjectParameter("UserFKID", typeof(decimal));
+    
+            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<GetNamebyIDForFTMTrackSheet_Result>("GetNamebyIDForFTMTrackSheet", userFKIDParameter);
+        }
+    
+        public virtual ObjectResult<getPrescriptionByPSO_Result> getPrescriptionByPSO(Nullable<decimal> psoFKID, Nullable<System.DateTime> fromDate, Nullable<System.DateTime> toDate, Nullable<decimal> territoryFKID, Nullable<int> productFKID, Nullable<int> bVOStatus)
+        {
+            var psoFKIDParameter = psoFKID.HasValue ?
+                new ObjectParameter("PsoFKID", psoFKID) :
+                new ObjectParameter("PsoFKID", typeof(decimal));
+    
+            var fromDateParameter = fromDate.HasValue ?
+                new ObjectParameter("FromDate", fromDate) :
+                new ObjectParameter("FromDate", typeof(System.DateTime));
+    
+            var toDateParameter = toDate.HasValue ?
+                new ObjectParameter("ToDate", toDate) :
+                new ObjectParameter("ToDate", typeof(System.DateTime));
+    
+            var territoryFKIDParameter = territoryFKID.HasValue ?
+                new ObjectParameter("TerritoryFKID", territoryFKID) :
+                new ObjectParameter("TerritoryFKID", typeof(decimal));
+    
+            var productFKIDParameter = productFKID.HasValue ?
+                new ObjectParameter("ProductFKID", productFKID) :
+                new ObjectParameter("ProductFKID", typeof(int));
+    
+            var bVOStatusParameter = bVOStatus.HasValue ?
+                new ObjectParameter("BVOStatus", bVOStatus) :
+                new ObjectParameter("BVOStatus", typeof(int));
+    
+            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<getPrescriptionByPSO_Result>("getPrescriptionByPSO", psoFKIDParameter, fromDateParameter, toDateParameter, territoryFKIDParameter, productFKIDParameter, bVOStatusParameter);
+        }
+    
+        public virtual ObjectResult<GetPrescriptionProductNamebyPSO_Result> GetPrescriptionProductNamebyPSO(Nullable<decimal> pSOFKID)
+        {
+            var pSOFKIDParameter = pSOFKID.HasValue ?
+                new ObjectParameter("PSOFKID", pSOFKID) :
+                new ObjectParameter("PSOFKID", typeof(decimal));
+    
+            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<GetPrescriptionProductNamebyPSO_Result>("GetPrescriptionProductNamebyPSO", pSOFKIDParameter);
+        }
+    
+        public virtual ObjectResult<GetProductNameforSampleReport_Result> GetProductNameforSampleReport(Nullable<int> userFKID)
+        {
+            var userFKIDParameter = userFKID.HasValue ?
+                new ObjectParameter("UserFKID", userFKID) :
+                new ObjectParameter("UserFKID", typeof(int));
+    
+            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<GetProductNameforSampleReport_Result>("GetProductNameforSampleReport", userFKIDParameter);
+        }
+    
+        public virtual ObjectResult<GetPsoNameByReportmul_Result> GetPsoNameByReportmul(string userFKID)
+        {
+            var userFKIDParameter = userFKID != null ?
+                new ObjectParameter("UserFKID", userFKID) :
+                new ObjectParameter("UserFKID", typeof(string));
+    
+            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<GetPsoNameByReportmul_Result>("GetPsoNameByReportmul", userFKIDParameter);
+        }
+    
+        public virtual ObjectResult<GetPsoNameForAdmin_Result> GetPsoNameForAdmin()
+        {
+            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<GetPsoNameForAdmin_Result>("GetPsoNameForAdmin");
+        }
+    
+        public virtual int SummeryReportReportingUsersData(Nullable<long> userid)
+        {
+            var useridParameter = userid.HasValue ?
+                new ObjectParameter("userid", userid) :
+                new ObjectParameter("userid", typeof(long));
+    
+            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction("SummeryReportReportingUsersData", useridParameter);
+        }
+    
+        public virtual ObjectResult<TrackSheetReportFromJobs_Result> TrackSheetReportFromJobs(Nullable<int> pSOFKID, Nullable<int> year)
+        {
+            var pSOFKIDParameter = pSOFKID.HasValue ?
+                new ObjectParameter("PSOFKID", pSOFKID) :
+                new ObjectParameter("PSOFKID", typeof(int));
+    
+            var yearParameter = year.HasValue ?
+                new ObjectParameter("Year", year) :
+                new ObjectParameter("Year", typeof(int));
+    
+            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<TrackSheetReportFromJobs_Result>("TrackSheetReportFromJobs", pSOFKIDParameter, yearParameter);
+        }
+    
+        public virtual ObjectResult<TrackSheetReportFromJobsForFTM_Result> TrackSheetReportFromJobsForFTM(Nullable<int> fTMFKID, Nullable<int> year)
+        {
+            var fTMFKIDParameter = fTMFKID.HasValue ?
+                new ObjectParameter("FTMFKID", fTMFKID) :
+                new ObjectParameter("FTMFKID", typeof(int));
+    
+            var yearParameter = year.HasValue ?
+                new ObjectParameter("Year", year) :
+                new ObjectParameter("Year", typeof(int));
+    
+            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<TrackSheetReportFromJobsForFTM_Result>("TrackSheetReportFromJobsForFTM", fTMFKIDParameter, yearParameter);
+        }
+    
+        public virtual int AddPrescriptionTrackermaster(Nullable<decimal> doctorFKID, Nullable<decimal> specializationID, Nullable<decimal> pSOFKID, Nullable<decimal> territoryFKID, string xmlProductPack)
+        {
+            var doctorFKIDParameter = doctorFKID.HasValue ?
+                new ObjectParameter("DoctorFKID", doctorFKID) :
+                new ObjectParameter("DoctorFKID", typeof(decimal));
+    
+            var specializationIDParameter = specializationID.HasValue ?
+                new ObjectParameter("SpecializationID", specializationID) :
+                new ObjectParameter("SpecializationID", typeof(decimal));
+    
+            var pSOFKIDParameter = pSOFKID.HasValue ?
+                new ObjectParameter("PSOFKID", pSOFKID) :
+                new ObjectParameter("PSOFKID", typeof(decimal));
+    
+            var territoryFKIDParameter = territoryFKID.HasValue ?
+                new ObjectParameter("TerritoryFKID", territoryFKID) :
+                new ObjectParameter("TerritoryFKID", typeof(decimal));
+    
+            var xmlProductPackParameter = xmlProductPack != null ?
+                new ObjectParameter("xmlProductPack", xmlProductPack) :
+                new ObjectParameter("xmlProductPack", typeof(string));
+    
+            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction("AddPrescriptionTrackermaster", doctorFKIDParameter, specializationIDParameter, pSOFKIDParameter, territoryFKIDParameter, xmlProductPackParameter);
+        }
+    
+        public virtual ObjectResult<Nullable<decimal>> AddSalesMaster2(Nullable<int> islower, Nullable<int> nodeTypeFKID, Nullable<decimal> divFKID, Nullable<decimal> userFKID, Nullable<decimal> territoryFKID, Nullable<decimal> reportingUserFKID, Nullable<int> nodeFunctionFKID, string nodeDesc, Nullable<decimal> locationFKID, string locationDesc, Nullable<int> forumCreator, string xmLTeamFkid, Nullable<int> createdBy, Nullable<decimal> hQFKID, Nullable<decimal> districtFKID, Nullable<decimal> regionFKId)
+        {
+            var islowerParameter = islower.HasValue ?
+                new ObjectParameter("Islower", islower) :
+                new ObjectParameter("Islower", typeof(int));
+    
+            var nodeTypeFKIDParameter = nodeTypeFKID.HasValue ?
+                new ObjectParameter("NodeTypeFKID", nodeTypeFKID) :
+                new ObjectParameter("NodeTypeFKID", typeof(int));
+    
+            var divFKIDParameter = divFKID.HasValue ?
+                new ObjectParameter("DivFKID", divFKID) :
+                new ObjectParameter("DivFKID", typeof(decimal));
+    
+            var userFKIDParameter = userFKID.HasValue ?
+                new ObjectParameter("UserFKID", userFKID) :
+                new ObjectParameter("UserFKID", typeof(decimal));
+    
+            var territoryFKIDParameter = territoryFKID.HasValue ?
+                new ObjectParameter("TerritoryFKID", territoryFKID) :
+                new ObjectParameter("TerritoryFKID", typeof(decimal));
+    
+            var reportingUserFKIDParameter = reportingUserFKID.HasValue ?
+                new ObjectParameter("ReportingUserFKID", reportingUserFKID) :
+                new ObjectParameter("ReportingUserFKID", typeof(decimal));
+    
+            var nodeFunctionFKIDParameter = nodeFunctionFKID.HasValue ?
+                new ObjectParameter("NodeFunctionFKID", nodeFunctionFKID) :
+                new ObjectParameter("NodeFunctionFKID", typeof(int));
+    
+            var nodeDescParameter = nodeDesc != null ?
+                new ObjectParameter("NodeDesc", nodeDesc) :
+                new ObjectParameter("NodeDesc", typeof(string));
+    
+            var locationFKIDParameter = locationFKID.HasValue ?
+                new ObjectParameter("LocationFKID", locationFKID) :
+                new ObjectParameter("LocationFKID", typeof(decimal));
+    
+            var locationDescParameter = locationDesc != null ?
+                new ObjectParameter("LocationDesc", locationDesc) :
+                new ObjectParameter("LocationDesc", typeof(string));
+    
+            var forumCreatorParameter = forumCreator.HasValue ?
+                new ObjectParameter("ForumCreator", forumCreator) :
+                new ObjectParameter("ForumCreator", typeof(int));
+    
+            var xmLTeamFkidParameter = xmLTeamFkid != null ?
+                new ObjectParameter("xmLTeamFkid", xmLTeamFkid) :
+                new ObjectParameter("xmLTeamFkid", typeof(string));
+    
+            var createdByParameter = createdBy.HasValue ?
+                new ObjectParameter("CreatedBy", createdBy) :
+                new ObjectParameter("CreatedBy", typeof(int));
+    
+            var hQFKIDParameter = hQFKID.HasValue ?
+                new ObjectParameter("HQFKID", hQFKID) :
+                new ObjectParameter("HQFKID", typeof(decimal));
+    
+            var districtFKIDParameter = districtFKID.HasValue ?
+                new ObjectParameter("DistrictFKID", districtFKID) :
+                new ObjectParameter("DistrictFKID", typeof(decimal));
+    
+            var regionFKIdParameter = regionFKId.HasValue ?
+                new ObjectParameter("RegionFKId", regionFKId) :
+                new ObjectParameter("RegionFKId", typeof(decimal));
+    
+            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<Nullable<decimal>>("AddSalesMaster2", islowerParameter, nodeTypeFKIDParameter, divFKIDParameter, userFKIDParameter, territoryFKIDParameter, reportingUserFKIDParameter, nodeFunctionFKIDParameter, nodeDescParameter, locationFKIDParameter, locationDescParameter, forumCreatorParameter, xmLTeamFkidParameter, createdByParameter, hQFKIDParameter, districtFKIDParameter, regionFKIdParameter);
+        }
+    
+        public virtual ObjectResult<AreaSearch_Result> AreaSearch(Nullable<int> areaFKID, Nullable<int> specialityFKID, Nullable<int> territoryFKID, Nullable<int> pSOFKID)
+        {
+            var areaFKIDParameter = areaFKID.HasValue ?
+                new ObjectParameter("AreaFKID", areaFKID) :
+                new ObjectParameter("AreaFKID", typeof(int));
+    
+            var specialityFKIDParameter = specialityFKID.HasValue ?
+                new ObjectParameter("SpecialityFKID", specialityFKID) :
+                new ObjectParameter("SpecialityFKID", typeof(int));
+    
+            var territoryFKIDParameter = territoryFKID.HasValue ?
+                new ObjectParameter("TerritoryFKID", territoryFKID) :
+                new ObjectParameter("TerritoryFKID", typeof(int));
+    
+            var pSOFKIDParameter = pSOFKID.HasValue ?
+                new ObjectParameter("PSOFKID", pSOFKID) :
+                new ObjectParameter("PSOFKID", typeof(int));
+    
+            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<AreaSearch_Result>("AreaSearch", areaFKIDParameter, specialityFKIDParameter, territoryFKIDParameter, pSOFKIDParameter);
+        }
+    
+        public virtual int EditSalesMaster2(Nullable<decimal> pKID, Nullable<int> islower, Nullable<int> nodeTypeFKID, Nullable<decimal> divFKID, Nullable<decimal> userFKID, Nullable<decimal> territoryFKID, Nullable<decimal> reportingUserFKID, Nullable<int> nodeFunctionFKID, string locationDesc, Nullable<int> forumCreator, string xmLTeamFkid, Nullable<decimal> locationFKID, string nodeDesc, Nullable<int> createdBy, Nullable<int> modifiedBy, Nullable<int> isActive, Nullable<decimal> hQFKID, Nullable<decimal> districtFKID, Nullable<decimal> regionFKId)
+        {
+            var pKIDParameter = pKID.HasValue ?
+                new ObjectParameter("PKID", pKID) :
+                new ObjectParameter("PKID", typeof(decimal));
+    
+            var islowerParameter = islower.HasValue ?
+                new ObjectParameter("Islower", islower) :
+                new ObjectParameter("Islower", typeof(int));
+    
+            var nodeTypeFKIDParameter = nodeTypeFKID.HasValue ?
+                new ObjectParameter("NodeTypeFKID", nodeTypeFKID) :
+                new ObjectParameter("NodeTypeFKID", typeof(int));
+    
+            var divFKIDParameter = divFKID.HasValue ?
+                new ObjectParameter("DivFKID", divFKID) :
+                new ObjectParameter("DivFKID", typeof(decimal));
+    
+            var userFKIDParameter = userFKID.HasValue ?
+                new ObjectParameter("UserFKID", userFKID) :
+                new ObjectParameter("UserFKID", typeof(decimal));
+    
+            var territoryFKIDParameter = territoryFKID.HasValue ?
+                new ObjectParameter("TerritoryFKID", territoryFKID) :
+                new ObjectParameter("TerritoryFKID", typeof(decimal));
+    
+            var reportingUserFKIDParameter = reportingUserFKID.HasValue ?
+                new ObjectParameter("ReportingUserFKID", reportingUserFKID) :
+                new ObjectParameter("ReportingUserFKID", typeof(decimal));
+    
+            var nodeFunctionFKIDParameter = nodeFunctionFKID.HasValue ?
+                new ObjectParameter("NodeFunctionFKID", nodeFunctionFKID) :
+                new ObjectParameter("NodeFunctionFKID", typeof(int));
+    
+            var locationDescParameter = locationDesc != null ?
+                new ObjectParameter("LocationDesc", locationDesc) :
+                new ObjectParameter("LocationDesc", typeof(string));
+    
+            var forumCreatorParameter = forumCreator.HasValue ?
+                new ObjectParameter("ForumCreator", forumCreator) :
+                new ObjectParameter("ForumCreator", typeof(int));
+    
+            var xmLTeamFkidParameter = xmLTeamFkid != null ?
+                new ObjectParameter("xmLTeamFkid", xmLTeamFkid) :
+                new ObjectParameter("xmLTeamFkid", typeof(string));
+    
+            var locationFKIDParameter = locationFKID.HasValue ?
+                new ObjectParameter("LocationFKID", locationFKID) :
+                new ObjectParameter("LocationFKID", typeof(decimal));
+    
+            var nodeDescParameter = nodeDesc != null ?
+                new ObjectParameter("NodeDesc", nodeDesc) :
+                new ObjectParameter("NodeDesc", typeof(string));
+    
+            var createdByParameter = createdBy.HasValue ?
+                new ObjectParameter("CreatedBy", createdBy) :
+                new ObjectParameter("CreatedBy", typeof(int));
+    
+            var modifiedByParameter = modifiedBy.HasValue ?
+                new ObjectParameter("ModifiedBy", modifiedBy) :
+                new ObjectParameter("ModifiedBy", typeof(int));
+    
+            var isActiveParameter = isActive.HasValue ?
+                new ObjectParameter("IsActive", isActive) :
+                new ObjectParameter("IsActive", typeof(int));
+    
+            var hQFKIDParameter = hQFKID.HasValue ?
+                new ObjectParameter("HQFKID", hQFKID) :
+                new ObjectParameter("HQFKID", typeof(decimal));
+    
+            var districtFKIDParameter = districtFKID.HasValue ?
+                new ObjectParameter("DistrictFKID", districtFKID) :
+                new ObjectParameter("DistrictFKID", typeof(decimal));
+    
+            var regionFKIdParameter = regionFKId.HasValue ?
+                new ObjectParameter("RegionFKId", regionFKId) :
+                new ObjectParameter("RegionFKId", typeof(decimal));
+    
+            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction("EditSalesMaster2", pKIDParameter, islowerParameter, nodeTypeFKIDParameter, divFKIDParameter, userFKIDParameter, territoryFKIDParameter, reportingUserFKIDParameter, nodeFunctionFKIDParameter, locationDescParameter, forumCreatorParameter, xmLTeamFkidParameter, locationFKIDParameter, nodeDescParameter, createdByParameter, modifiedByParameter, isActiveParameter, hQFKIDParameter, districtFKIDParameter, regionFKIdParameter);
+        }
+    
+        public virtual ObjectResult<getDoctorPrescriptionTrackerDtls_Result> getDoctorPrescriptionTrackerDtls(Nullable<decimal> doctorFKID, Nullable<int> rCnt)
+        {
+            var doctorFKIDParameter = doctorFKID.HasValue ?
+                new ObjectParameter("DoctorFKID", doctorFKID) :
+                new ObjectParameter("DoctorFKID", typeof(decimal));
+    
+            var rCntParameter = rCnt.HasValue ?
+                new ObjectParameter("RCnt", rCnt) :
+                new ObjectParameter("RCnt", typeof(int));
+    
+            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<getDoctorPrescriptionTrackerDtls_Result>("getDoctorPrescriptionTrackerDtls", doctorFKIDParameter, rCntParameter);
+        }
+    
+        public virtual ObjectResult<GetDoctorPSOLinkMaster_Result> GetDoctorPSOLinkMaster(Nullable<decimal> territoryFKID, Nullable<int> pSOFKID)
+        {
+            var territoryFKIDParameter = territoryFKID.HasValue ?
+                new ObjectParameter("TerritoryFKID", territoryFKID) :
+                new ObjectParameter("TerritoryFKID", typeof(decimal));
+    
+            var pSOFKIDParameter = pSOFKID.HasValue ?
+                new ObjectParameter("PSOFKID", pSOFKID) :
+                new ObjectParameter("PSOFKID", typeof(int));
+    
+            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<GetDoctorPSOLinkMaster_Result>("GetDoctorPSOLinkMaster", territoryFKIDParameter, pSOFKIDParameter);
+        }
+    
+        public virtual ObjectResult<getProdPackSizeByXML_Result> getProdPackSizeByXML(Nullable<decimal> pKID)
+        {
+            var pKIDParameter = pKID.HasValue ?
+                new ObjectParameter("PKID", pKID) :
+                new ObjectParameter("PKID", typeof(decimal));
+    
+            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<getProdPackSizeByXML_Result>("getProdPackSizeByXML", pKIDParameter);
+        }
+    
+        public virtual ObjectResult<GetProductByTeamByXML_Result> GetProductByTeamByXML(Nullable<decimal> pSOFKID)
+        {
+            var pSOFKIDParameter = pSOFKID.HasValue ?
+                new ObjectParameter("PSOFKID", pSOFKID) :
+                new ObjectParameter("PSOFKID", typeof(decimal));
+    
+            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<GetProductByTeamByXML_Result>("GetProductByTeamByXML", pSOFKIDParameter);
+        }
+    
+        public virtual ObjectResult<PrescGetHospital_Result> PrescGetHospital(Nullable<decimal> pSOFKID)
+        {
+            var pSOFKIDParameter = pSOFKID.HasValue ?
+                new ObjectParameter("PSOFKID", pSOFKID) :
+                new ObjectParameter("PSOFKID", typeof(decimal));
+    
+            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<PrescGetHospital_Result>("PrescGetHospital", pSOFKIDParameter);
+        }
+    
+        public virtual ObjectResult<PrescGetStockist_Result> PrescGetStockist(Nullable<decimal> pSOFKID)
+        {
+            var pSOFKIDParameter = pSOFKID.HasValue ?
+                new ObjectParameter("PSOFKID", pSOFKID) :
+                new ObjectParameter("PSOFKID", typeof(decimal));
+    
+            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<PrescGetStockist_Result>("PrescGetStockist", pSOFKIDParameter);
+        }
+    
+        public virtual int DeleteSalesHierarchy_New(Nullable<decimal> pKID, Nullable<decimal> uSERID)
+        {
+            var pKIDParameter = pKID.HasValue ?
+                new ObjectParameter("PKID", pKID) :
+                new ObjectParameter("PKID", typeof(decimal));
+    
+            var uSERIDParameter = uSERID.HasValue ?
+                new ObjectParameter("USERID", uSERID) :
+                new ObjectParameter("USERID", typeof(decimal));
+    
+            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction("DeleteSalesHierarchy_New", pKIDParameter, uSERIDParameter);
+        }
+    
+        public virtual ObjectResult<GetAllDistrictMasterXMLByRegionFKID_Result> GetAllDistrictMasterXMLByRegionFKID(Nullable<int> regionFKID)
+        {
+            var regionFKIDParameter = regionFKID.HasValue ?
+                new ObjectParameter("RegionFKID", regionFKID) :
+                new ObjectParameter("RegionFKID", typeof(int));
+    
+            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<GetAllDistrictMasterXMLByRegionFKID_Result>("GetAllDistrictMasterXMLByRegionFKID", regionFKIDParameter);
+        }
+    
+        public virtual ObjectResult<GetAllTerritoryCodeXmlByDistrictFKID_Result> GetAllTerritoryCodeXmlByDistrictFKID(Nullable<decimal> districtFKID)
+        {
+            var districtFKIDParameter = districtFKID.HasValue ?
+                new ObjectParameter("DistrictFKID", districtFKID) :
+                new ObjectParameter("DistrictFKID", typeof(decimal));
+    
+            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<GetAllTerritoryCodeXmlByDistrictFKID_Result>("GetAllTerritoryCodeXmlByDistrictFKID", districtFKIDParameter);
+        }
+    
+        public virtual ObjectResult<GetDistrictMasterByPKID_Result> GetDistrictMasterByPKID(Nullable<decimal> pKID)
+        {
+            var pKIDParameter = pKID.HasValue ?
+                new ObjectParameter("PKID", pKID) :
+                new ObjectParameter("PKID", typeof(decimal));
+    
+            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<GetDistrictMasterByPKID_Result>("GetDistrictMasterByPKID", pKIDParameter);
+        }
+    
+        public virtual ObjectResult<GetSalesHierrachy_Result> GetSalesHierrachy(Nullable<decimal> pKID)
+        {
+            var pKIDParameter = pKID.HasValue ?
+                new ObjectParameter("PKID", pKID) :
+                new ObjectParameter("PKID", typeof(decimal));
+    
+            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<GetSalesHierrachy_Result>("GetSalesHierrachy", pKIDParameter);
+        }
+    
+        public virtual ObjectResult<GetSalesTeamByXml_Result> GetSalesTeamByXml(Nullable<decimal> pKID)
+        {
+            var pKIDParameter = pKID.HasValue ?
+                new ObjectParameter("PKID", pKID) :
+                new ObjectParameter("PKID", typeof(decimal));
+    
+            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<GetSalesTeamByXml_Result>("GetSalesTeamByXml", pKIDParameter);
+        }
+    
+        public virtual ObjectResult<GetNamebyRepIDForTrackSheet_Result> GetNamebyRepIDForTrackSheet(Nullable<decimal> userFKID, Nullable<decimal> nodeTypeFKID)
+        {
+            var userFKIDParameter = userFKID.HasValue ?
+                new ObjectParameter("UserFKID", userFKID) :
+                new ObjectParameter("UserFKID", typeof(decimal));
+    
+            var nodeTypeFKIDParameter = nodeTypeFKID.HasValue ?
+                new ObjectParameter("NodeTypeFKID", nodeTypeFKID) :
+                new ObjectParameter("NodeTypeFKID", typeof(decimal));
+    
+            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<GetNamebyRepIDForTrackSheet_Result>("GetNamebyRepIDForTrackSheet", userFKIDParameter, nodeTypeFKIDParameter);
+        }
+    
+        public virtual ObjectResult<GetNodeByFKID_Result> GetNodeByFKID(Nullable<decimal> userFKID)
+        {
+            var userFKIDParameter = userFKID.HasValue ?
+                new ObjectParameter("UserFKID", userFKID) :
+                new ObjectParameter("UserFKID", typeof(decimal));
+    
+            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<GetNodeByFKID_Result>("GetNodeByFKID", userFKIDParameter);
+        }
+    
+        public virtual ObjectResult<RR_GetSpecialization_Result> RR_GetSpecialization(Nullable<decimal> territoryFKID)
+        {
+            var territoryFKIDParameter = territoryFKID.HasValue ?
+                new ObjectParameter("TerritoryFKID", territoryFKID) :
+                new ObjectParameter("TerritoryFKID", typeof(decimal));
+    
+            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<RR_GetSpecialization_Result>("RR_GetSpecialization", territoryFKIDParameter);
+        }
+    
+        public virtual ObjectResult<GetPrescriptionBrickDetails_Result> GetPrescriptionBrickDetails(Nullable<int> territoryFKID)
+        {
+            var territoryFKIDParameter = territoryFKID.HasValue ?
+                new ObjectParameter("TerritoryFKID", territoryFKID) :
+                new ObjectParameter("TerritoryFKID", typeof(int));
+    
+            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<GetPrescriptionBrickDetails_Result>("GetPrescriptionBrickDetails", territoryFKIDParameter);
+        }
+    
+        public virtual ObjectResult<GetCyclePlanSpcialization_Result> GetCyclePlanSpcialization()
+        {
+            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<GetCyclePlanSpcialization_Result>("GetCyclePlanSpcialization");
+        }
+    
+        public virtual ObjectResult<GetAreaDetails_Result> GetAreaDetails(Nullable<int> territoryFKID)
+        {
+            var territoryFKIDParameter = territoryFKID.HasValue ?
+                new ObjectParameter("TerritoryFKID", territoryFKID) :
+                new ObjectParameter("TerritoryFKID", typeof(int));
+    
+            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<GetAreaDetails_Result>("GetAreaDetails", territoryFKIDParameter);
+        }
+    
+        public virtual ObjectResult<AllNewCustomerRequest_Result> AllNewCustomerRequest(Nullable<decimal> pSOFKID, string areaFKID, Nullable<decimal> territoryFKID, string xMLCusCode)
+        {
+            var pSOFKIDParameter = pSOFKID.HasValue ?
+                new ObjectParameter("PSOFKID", pSOFKID) :
+                new ObjectParameter("PSOFKID", typeof(decimal));
+    
+            var areaFKIDParameter = areaFKID != null ?
+                new ObjectParameter("AreaFKID", areaFKID) :
+                new ObjectParameter("AreaFKID", typeof(string));
+    
+            var territoryFKIDParameter = territoryFKID.HasValue ?
+                new ObjectParameter("TerritoryFKID", territoryFKID) :
+                new ObjectParameter("TerritoryFKID", typeof(decimal));
+    
+            var xMLCusCodeParameter = xMLCusCode != null ?
+                new ObjectParameter("XMLCusCode", xMLCusCode) :
+                new ObjectParameter("XMLCusCode", typeof(string));
+    
+            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<AllNewCustomerRequest_Result>("AllNewCustomerRequest", pSOFKIDParameter, areaFKIDParameter, territoryFKIDParameter, xMLCusCodeParameter);
+        }
+    
+        public virtual int IncludeDoctor(string xmlStr, Nullable<decimal> userFKID, Nullable<decimal> terFKID)
+        {
+            var xmlStrParameter = xmlStr != null ?
+                new ObjectParameter("XmlStr", xmlStr) :
+                new ObjectParameter("XmlStr", typeof(string));
+    
+            var userFKIDParameter = userFKID.HasValue ?
+                new ObjectParameter("UserFKID", userFKID) :
+                new ObjectParameter("UserFKID", typeof(decimal));
+    
+            var terFKIDParameter = terFKID.HasValue ?
+                new ObjectParameter("TerFKID", terFKID) :
+                new ObjectParameter("TerFKID", typeof(decimal));
+    
+            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction("IncludeDoctor", xmlStrParameter, userFKIDParameter, terFKIDParameter);
+        }
+    
+        public virtual int IncludeOtherCustomer(string xmlStr, Nullable<decimal> userFKID, Nullable<decimal> terFKID)
+        {
+            var xmlStrParameter = xmlStr != null ?
+                new ObjectParameter("XmlStr", xmlStr) :
+                new ObjectParameter("XmlStr", typeof(string));
+    
+            var userFKIDParameter = userFKID.HasValue ?
+                new ObjectParameter("UserFKID", userFKID) :
+                new ObjectParameter("UserFKID", typeof(decimal));
+    
+            var terFKIDParameter = terFKID.HasValue ?
+                new ObjectParameter("TerFKID", terFKID) :
+                new ObjectParameter("TerFKID", typeof(decimal));
+    
+            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction("IncludeOtherCustomer", xmlStrParameter, userFKIDParameter, terFKIDParameter);
+        }
+    
+        public virtual ObjectResult<usp_getSpecialization_Result> usp_getSpecialization(Nullable<decimal> pSOFKID)
+        {
+            var pSOFKIDParameter = pSOFKID.HasValue ?
+                new ObjectParameter("PSOFKID", pSOFKID) :
+                new ObjectParameter("PSOFKID", typeof(decimal));
+    
+            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<usp_getSpecialization_Result>("usp_getSpecialization", pSOFKIDParameter);
+        }
+    
+        public virtual ObjectResult<USP_GetSpecializationCode_Result> USP_GetSpecializationCode(string specifaction)
+        {
+            var specifactionParameter = specifaction != null ?
+                new ObjectParameter("Specifaction", specifaction) :
+                new ObjectParameter("Specifaction", typeof(string));
+    
+            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<USP_GetSpecializationCode_Result>("USP_GetSpecializationCode", specifactionParameter);
+        }
+    
+        public virtual ObjectResult<GetBVOProductByXml_Result1> GetBVOProductByXml()
+        {
+            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<GetBVOProductByXml_Result1>("GetBVOProductByXml");
+        }
+    
+        public virtual ObjectResult<GetPsoNameByUserId_Result> GetPsoNameByUserId(Nullable<decimal> userFKID)
+        {
+            var userFKIDParameter = userFKID.HasValue ?
+                new ObjectParameter("UserFKID", userFKID) :
+                new ObjectParameter("UserFKID", typeof(decimal));
+    
+            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<GetPsoNameByUserId_Result>("GetPsoNameByUserId", userFKIDParameter);
+        }
+    
+        public virtual ObjectResult<usp_DMGetChemistRpt_Result> usp_DMGetChemistRpt(Nullable<decimal> input, string custype, string flag, Nullable<decimal> userId, Nullable<int> psoid, Nullable<int> roleId)
+        {
+            var inputParameter = input.HasValue ?
+                new ObjectParameter("input", input) :
+                new ObjectParameter("input", typeof(decimal));
+    
+            var custypeParameter = custype != null ?
+                new ObjectParameter("Custype", custype) :
+                new ObjectParameter("Custype", typeof(string));
+    
+            var flagParameter = flag != null ?
+                new ObjectParameter("flag", flag) :
+                new ObjectParameter("flag", typeof(string));
+    
+            var userIdParameter = userId.HasValue ?
+                new ObjectParameter("UserId", userId) :
+                new ObjectParameter("UserId", typeof(decimal));
+    
+            var psoidParameter = psoid.HasValue ?
+                new ObjectParameter("psoid", psoid) :
+                new ObjectParameter("psoid", typeof(int));
+    
+            var roleIdParameter = roleId.HasValue ?
+                new ObjectParameter("roleId", roleId) :
+                new ObjectParameter("roleId", typeof(int));
+    
+            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<usp_DMGetChemistRpt_Result>("usp_DMGetChemistRpt", inputParameter, custypeParameter, flagParameter, userIdParameter, psoidParameter, roleIdParameter);
+        }
+    
+        public virtual ObjectResult<usp_DMGetDoctorRpt_Result> usp_DMGetDoctorRpt(Nullable<decimal> input, string custype, string flag, Nullable<decimal> userId, Nullable<int> psoid, Nullable<int> roleId)
+        {
+            var inputParameter = input.HasValue ?
+                new ObjectParameter("input", input) :
+                new ObjectParameter("input", typeof(decimal));
+    
+            var custypeParameter = custype != null ?
+                new ObjectParameter("Custype", custype) :
+                new ObjectParameter("Custype", typeof(string));
+    
+            var flagParameter = flag != null ?
+                new ObjectParameter("flag", flag) :
+                new ObjectParameter("flag", typeof(string));
+    
+            var userIdParameter = userId.HasValue ?
+                new ObjectParameter("UserId", userId) :
+                new ObjectParameter("UserId", typeof(decimal));
+    
+            var psoidParameter = psoid.HasValue ?
+                new ObjectParameter("psoid", psoid) :
+                new ObjectParameter("psoid", typeof(int));
+    
+            var roleIdParameter = roleId.HasValue ?
+                new ObjectParameter("roleId", roleId) :
+                new ObjectParameter("roleId", typeof(int));
+    
+            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<usp_DMGetDoctorRpt_Result>("usp_DMGetDoctorRpt", inputParameter, custypeParameter, flagParameter, userIdParameter, psoidParameter, roleIdParameter);
+        }
+    
+        public virtual ObjectResult<usp_DMGetHospitalRpt_Result> usp_DMGetHospitalRpt(Nullable<decimal> input, string custype, string flag, Nullable<decimal> userId, Nullable<int> psoid, Nullable<int> roleId)
+        {
+            var inputParameter = input.HasValue ?
+                new ObjectParameter("input", input) :
+                new ObjectParameter("input", typeof(decimal));
+    
+            var custypeParameter = custype != null ?
+                new ObjectParameter("Custype", custype) :
+                new ObjectParameter("Custype", typeof(string));
+    
+            var flagParameter = flag != null ?
+                new ObjectParameter("flag", flag) :
+                new ObjectParameter("flag", typeof(string));
+    
+            var userIdParameter = userId.HasValue ?
+                new ObjectParameter("UserId", userId) :
+                new ObjectParameter("UserId", typeof(decimal));
+    
+            var psoidParameter = psoid.HasValue ?
+                new ObjectParameter("psoid", psoid) :
+                new ObjectParameter("psoid", typeof(int));
+    
+            var roleIdParameter = roleId.HasValue ?
+                new ObjectParameter("roleId", roleId) :
+                new ObjectParameter("roleId", typeof(int));
+    
+            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<usp_DMGetHospitalRpt_Result>("usp_DMGetHospitalRpt", inputParameter, custypeParameter, flagParameter, userIdParameter, psoidParameter, roleIdParameter);
+        }
+    
+        public virtual ObjectResult<usp_DMGetStockistRpt_Result> usp_DMGetStockistRpt(Nullable<decimal> input, string custype, string flag, Nullable<decimal> userId, Nullable<int> psoid, Nullable<int> roleId)
+        {
+            var inputParameter = input.HasValue ?
+                new ObjectParameter("input", input) :
+                new ObjectParameter("input", typeof(decimal));
+    
+            var custypeParameter = custype != null ?
+                new ObjectParameter("Custype", custype) :
+                new ObjectParameter("Custype", typeof(string));
+    
+            var flagParameter = flag != null ?
+                new ObjectParameter("flag", flag) :
+                new ObjectParameter("flag", typeof(string));
+    
+            var userIdParameter = userId.HasValue ?
+                new ObjectParameter("UserId", userId) :
+                new ObjectParameter("UserId", typeof(decimal));
+    
+            var psoidParameter = psoid.HasValue ?
+                new ObjectParameter("psoid", psoid) :
+                new ObjectParameter("psoid", typeof(int));
+    
+            var roleIdParameter = roleId.HasValue ?
+                new ObjectParameter("roleId", roleId) :
+                new ObjectParameter("roleId", typeof(int));
+    
+            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<usp_DMGetStockistRpt_Result>("usp_DMGetStockistRpt", inputParameter, custypeParameter, flagParameter, userIdParameter, psoidParameter, roleIdParameter);
+        }
+    
+        public virtual ObjectResult<usp_Get_CustomerTerritory_Result> usp_Get_CustomerTerritory(Nullable<decimal> input, string custype, string flag, Nullable<decimal> userId, Nullable<int> psoid, Nullable<int> roleId)
+        {
+            var inputParameter = input.HasValue ?
+                new ObjectParameter("input", input) :
+                new ObjectParameter("input", typeof(decimal));
+    
+            var custypeParameter = custype != null ?
+                new ObjectParameter("Custype", custype) :
+                new ObjectParameter("Custype", typeof(string));
+    
+            var flagParameter = flag != null ?
+                new ObjectParameter("flag", flag) :
+                new ObjectParameter("flag", typeof(string));
+    
+            var userIdParameter = userId.HasValue ?
+                new ObjectParameter("UserId", userId) :
+                new ObjectParameter("UserId", typeof(decimal));
+    
+            var psoidParameter = psoid.HasValue ?
+                new ObjectParameter("psoid", psoid) :
+                new ObjectParameter("psoid", typeof(int));
+    
+            var roleIdParameter = roleId.HasValue ?
+                new ObjectParameter("roleId", roleId) :
+                new ObjectParameter("roleId", typeof(int));
+    
+            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<usp_Get_CustomerTerritory_Result>("usp_Get_CustomerTerritory", inputParameter, custypeParameter, flagParameter, userIdParameter, psoidParameter, roleIdParameter);
+        }
+    
+        public virtual ObjectResult<usp_Get_UserName_Result> usp_Get_UserName(Nullable<decimal> input, string custype, string flag, Nullable<decimal> userId, Nullable<int> psoid, Nullable<int> roleId)
+        {
+            var inputParameter = input.HasValue ?
+                new ObjectParameter("input", input) :
+                new ObjectParameter("input", typeof(decimal));
+    
+            var custypeParameter = custype != null ?
+                new ObjectParameter("Custype", custype) :
+                new ObjectParameter("Custype", typeof(string));
+    
+            var flagParameter = flag != null ?
+                new ObjectParameter("flag", flag) :
+                new ObjectParameter("flag", typeof(string));
+    
+            var userIdParameter = userId.HasValue ?
+                new ObjectParameter("UserId", userId) :
+                new ObjectParameter("UserId", typeof(decimal));
+    
+            var psoidParameter = psoid.HasValue ?
+                new ObjectParameter("psoid", psoid) :
+                new ObjectParameter("psoid", typeof(int));
+    
+            var roleIdParameter = roleId.HasValue ?
+                new ObjectParameter("roleId", roleId) :
+                new ObjectParameter("roleId", typeof(int));
+    
+            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<usp_Get_UserName_Result>("usp_Get_UserName", inputParameter, custypeParameter, flagParameter, userIdParameter, psoidParameter, roleIdParameter);
+        }
+    
+        public virtual ObjectResult<usp_SELECT_PSOList_COUNTBy_DM_ForDashboard_Result> usp_SELECT_PSOList_COUNTBy_DM_ForDashboard(Nullable<int> custId, Nullable<int> roleId)
+        {
+            var custIdParameter = custId.HasValue ?
+                new ObjectParameter("CustId", custId) :
+                new ObjectParameter("CustId", typeof(int));
+    
+            var roleIdParameter = roleId.HasValue ?
+                new ObjectParameter("RoleId", roleId) :
+                new ObjectParameter("RoleId", typeof(int));
+    
+            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<usp_SELECT_PSOList_COUNTBy_DM_ForDashboard_Result>("usp_SELECT_PSOList_COUNTBy_DM_ForDashboard", custIdParameter, roleIdParameter);
+        }
+    
+        public virtual int EditCustomDeletions(string hdnXML)
+        {
+            var hdnXMLParameter = hdnXML != null ?
+                new ObjectParameter("hdnXML", hdnXML) :
+                new ObjectParameter("hdnXML", typeof(string));
+    
+            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction("EditCustomDeletions", hdnXMLParameter);
+        }
+    
+        public virtual ObjectResult<GetSampleDivisionByXML_Result> GetSampleDivisionByXML()
+        {
+            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<GetSampleDivisionByXML_Result>("GetSampleDivisionByXML");
+        }
+    
+        public virtual ObjectResult<GetTeamNameByXml_Result> GetTeamNameByXml(Nullable<decimal> dIVPKID)
+        {
+            var dIVPKIDParameter = dIVPKID.HasValue ?
+                new ObjectParameter("DIVPKID", dIVPKID) :
+                new ObjectParameter("DIVPKID", typeof(decimal));
+    
+            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<GetTeamNameByXml_Result>("GetTeamNameByXml", dIVPKIDParameter);
+        }
+    
+        public virtual ObjectResult<Usp_GetPSOsForCyclePlanRetailerUnlock_Result> Usp_GetPSOsForCyclePlanRetailerUnlock(Nullable<int> cycleFKID, Nullable<int> divPKID, Nullable<int> teamPKID)
+        {
+            var cycleFKIDParameter = cycleFKID.HasValue ?
+                new ObjectParameter("CycleFKID", cycleFKID) :
+                new ObjectParameter("CycleFKID", typeof(int));
+    
+            var divPKIDParameter = divPKID.HasValue ?
+                new ObjectParameter("DivPKID", divPKID) :
+                new ObjectParameter("DivPKID", typeof(int));
+    
+            var teamPKIDParameter = teamPKID.HasValue ?
+                new ObjectParameter("TeamPKID", teamPKID) :
+                new ObjectParameter("TeamPKID", typeof(int));
+    
+            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<Usp_GetPSOsForCyclePlanRetailerUnlock_Result>("Usp_GetPSOsForCyclePlanRetailerUnlock", cycleFKIDParameter, divPKIDParameter, teamPKIDParameter);
+        }
+    
+        public virtual int Usp_UpdtForUnLockingCyclePlan(string xmlStr)
+        {
+            var xmlStrParameter = xmlStr != null ?
+                new ObjectParameter("XmlStr", xmlStr) :
+                new ObjectParameter("XmlStr", typeof(string));
+    
+            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction("Usp_UpdtForUnLockingCyclePlan", xmlStrParameter);
+        }
+    
+        public virtual int Usp_UpdtForUnLockingCyclePlanRetailer(Nullable<decimal> userFKID, Nullable<decimal> cycleFKID, string xmlStr)
+        {
+            var userFKIDParameter = userFKID.HasValue ?
+                new ObjectParameter("UserFKID", userFKID) :
+                new ObjectParameter("UserFKID", typeof(decimal));
+    
+            var cycleFKIDParameter = cycleFKID.HasValue ?
+                new ObjectParameter("CycleFKID", cycleFKID) :
+                new ObjectParameter("CycleFKID", typeof(decimal));
+    
+            var xmlStrParameter = xmlStr != null ?
+                new ObjectParameter("XmlStr", xmlStr) :
+                new ObjectParameter("XmlStr", typeof(string));
+    
+            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction("Usp_UpdtForUnLockingCyclePlanRetailer", userFKIDParameter, cycleFKIDParameter, xmlStrParameter);
+        }
+    
+        public virtual ObjectResult<Usp_GetPSOsForCyclePlanUnlock_Result> Usp_GetPSOsForCyclePlanUnlock(Nullable<int> cycleFKID, Nullable<int> divPKID, Nullable<int> teamPKID)
+        {
+            var cycleFKIDParameter = cycleFKID.HasValue ?
+                new ObjectParameter("CycleFKID", cycleFKID) :
+                new ObjectParameter("CycleFKID", typeof(int));
+    
+            var divPKIDParameter = divPKID.HasValue ?
+                new ObjectParameter("DivPKID", divPKID) :
+                new ObjectParameter("DivPKID", typeof(int));
+    
+            var teamPKIDParameter = teamPKID.HasValue ?
+                new ObjectParameter("TeamPKID", teamPKID) :
+                new ObjectParameter("TeamPKID", typeof(int));
+    
+            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<Usp_GetPSOsForCyclePlanUnlock_Result>("Usp_GetPSOsForCyclePlanUnlock", cycleFKIDParameter, divPKIDParameter, teamPKIDParameter);
+        }
+    
+        public virtual ObjectResult<GetMenuForChile_Result> GetMenuForChile(Nullable<int> parentId)
+        {
+            var parentIdParameter = parentId.HasValue ?
+                new ObjectParameter("ParentId", parentId) :
+                new ObjectParameter("ParentId", typeof(int));
+    
+            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<GetMenuForChile_Result>("GetMenuForChile", parentIdParameter);
+        }
+    
+        public virtual ObjectResult<GetMenuForRole_Result> GetMenuForRole(string userPKID)
+        {
+            var userPKIDParameter = userPKID != null ?
+                new ObjectParameter("UserPKID", userPKID) :
+                new ObjectParameter("UserPKID", typeof(string));
+    
+            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<GetMenuForRole_Result>("GetMenuForRole", userPKIDParameter);
+        }
+    
+        public virtual ObjectResult<GetTerNameByReport_Result> GetTerNameByReport(Nullable<decimal> userFKID)
+        {
+            var userFKIDParameter = userFKID.HasValue ?
+                new ObjectParameter("UserFKID", userFKID) :
+                new ObjectParameter("UserFKID", typeof(decimal));
+    
+            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<GetTerNameByReport_Result>("GetTerNameByReport", userFKIDParameter);
+        }
+    
+        public virtual ObjectResult<USP_GetAreaDetailsPCL_Result> USP_GetAreaDetailsPCL(Nullable<int> territoryFKID)
+        {
+            var territoryFKIDParameter = territoryFKID.HasValue ?
+                new ObjectParameter("TerritoryFKID", territoryFKID) :
+                new ObjectParameter("TerritoryFKID", typeof(int));
+    
+            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<USP_GetAreaDetailsPCL_Result>("USP_GetAreaDetailsPCL", territoryFKIDParameter);
+        }
+    
+        public virtual ObjectResult<getRoleBasedmenu_Result> getRoleBasedmenu(string roleID)
+        {
+            var roleIDParameter = roleID != null ?
+                new ObjectParameter("RoleID", roleID) :
+                new ObjectParameter("RoleID", typeof(string));
+    
+            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<getRoleBasedmenu_Result>("getRoleBasedmenu", roleIDParameter);
+        }
+    
+        public virtual int DeleteProductMaster(Nullable<decimal> pKID)
+        {
+            var pKIDParameter = pKID.HasValue ?
+                new ObjectParameter("PKID", pKID) :
+                new ObjectParameter("PKID", typeof(decimal));
+    
+            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction("DeleteProductMaster", pKIDParameter);
+        }
+    
+        public virtual int EditProductmaster(string productCode, string productName, Nullable<decimal> prodGroupFKID, Nullable<decimal> nodeTypeFKID, Nullable<decimal> metisProductID, string iMSCode, Nullable<int> isKDP, string xmlMgrFkid, string xmlTeamFkid, string xmlProductPack, Nullable<int> createdBy, Nullable<int> isActive, Nullable<decimal> pKID)
+        {
+            var productCodeParameter = productCode != null ?
+                new ObjectParameter("ProductCode", productCode) :
+                new ObjectParameter("ProductCode", typeof(string));
+    
+            var productNameParameter = productName != null ?
+                new ObjectParameter("ProductName", productName) :
+                new ObjectParameter("ProductName", typeof(string));
+    
+            var prodGroupFKIDParameter = prodGroupFKID.HasValue ?
+                new ObjectParameter("ProdGroupFKID", prodGroupFKID) :
+                new ObjectParameter("ProdGroupFKID", typeof(decimal));
+    
+            var nodeTypeFKIDParameter = nodeTypeFKID.HasValue ?
+                new ObjectParameter("NodeTypeFKID", nodeTypeFKID) :
+                new ObjectParameter("NodeTypeFKID", typeof(decimal));
+    
+            var metisProductIDParameter = metisProductID.HasValue ?
+                new ObjectParameter("MetisProductID", metisProductID) :
+                new ObjectParameter("MetisProductID", typeof(decimal));
+    
+            var iMSCodeParameter = iMSCode != null ?
+                new ObjectParameter("IMSCode", iMSCode) :
+                new ObjectParameter("IMSCode", typeof(string));
+    
+            var isKDPParameter = isKDP.HasValue ?
+                new ObjectParameter("IsKDP", isKDP) :
+                new ObjectParameter("IsKDP", typeof(int));
+    
+            var xmlMgrFkidParameter = xmlMgrFkid != null ?
+                new ObjectParameter("xmlMgrFkid", xmlMgrFkid) :
+                new ObjectParameter("xmlMgrFkid", typeof(string));
+    
+            var xmlTeamFkidParameter = xmlTeamFkid != null ?
+                new ObjectParameter("xmlTeamFkid", xmlTeamFkid) :
+                new ObjectParameter("xmlTeamFkid", typeof(string));
+    
+            var xmlProductPackParameter = xmlProductPack != null ?
+                new ObjectParameter("xmlProductPack", xmlProductPack) :
+                new ObjectParameter("xmlProductPack", typeof(string));
+    
+            var createdByParameter = createdBy.HasValue ?
+                new ObjectParameter("CreatedBy", createdBy) :
+                new ObjectParameter("CreatedBy", typeof(int));
+    
+            var isActiveParameter = isActive.HasValue ?
+                new ObjectParameter("IsActive", isActive) :
+                new ObjectParameter("IsActive", typeof(int));
+    
+            var pKIDParameter = pKID.HasValue ?
+                new ObjectParameter("PKID", pKID) :
+                new ObjectParameter("PKID", typeof(decimal));
+    
+            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction("EditProductmaster", productCodeParameter, productNameParameter, prodGroupFKIDParameter, nodeTypeFKIDParameter, metisProductIDParameter, iMSCodeParameter, isKDPParameter, xmlMgrFkidParameter, xmlTeamFkidParameter, xmlProductPackParameter, createdByParameter, isActiveParameter, pKIDParameter);
+        }
+    
+        public virtual ObjectResult<GetMappedMetisProductName_Result> GetMappedMetisProductName(Nullable<decimal> pKID)
+        {
+            var pKIDParameter = pKID.HasValue ?
+                new ObjectParameter("PKID", pKID) :
+                new ObjectParameter("PKID", typeof(decimal));
+    
+            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<GetMappedMetisProductName_Result>("GetMappedMetisProductName", pKIDParameter);
+        }
+    
+        public virtual ObjectResult<GetProductByPKIDXml_Result> GetProductByPKIDXml(Nullable<decimal> pKID)
+        {
+            var pKIDParameter = pKID.HasValue ?
+                new ObjectParameter("PKID", pKID) :
+                new ObjectParameter("PKID", typeof(decimal));
+    
+            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<GetProductByPKIDXml_Result>("GetProductByPKIDXml", pKIDParameter);
+        }
+    
+        public virtual ObjectResult<GetProductManagerByXml_Result> GetProductManagerByXml(Nullable<decimal> pKID)
+        {
+            var pKIDParameter = pKID.HasValue ?
+                new ObjectParameter("PKID", pKID) :
+                new ObjectParameter("PKID", typeof(decimal));
+    
+            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<GetProductManagerByXml_Result>("GetProductManagerByXml", pKIDParameter);
+        }
+    
+        public virtual ObjectResult<GetProductMgrByXml_Result> GetProductMgrByXml(Nullable<decimal> nodeTypeFKID)
+        {
+            var nodeTypeFKIDParameter = nodeTypeFKID.HasValue ?
+                new ObjectParameter("NodeTypeFKID", nodeTypeFKID) :
+                new ObjectParameter("NodeTypeFKID", typeof(decimal));
+    
+            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<GetProductMgrByXml_Result>("GetProductMgrByXml", nodeTypeFKIDParameter);
+        }
+    
+        public virtual ObjectResult<GetProductPackDetails_Result> GetProductPackDetails(Nullable<decimal> pKID)
+        {
+            var pKIDParameter = pKID.HasValue ?
+                new ObjectParameter("PKID", pKID) :
+                new ObjectParameter("PKID", typeof(decimal));
+    
+            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<GetProductPackDetails_Result>("GetProductPackDetails", pKIDParameter);
+        }
+    
+        public virtual ObjectResult<GetTeamByXML_Result> GetTeamByXML()
+        {
+            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<GetTeamByXML_Result>("GetTeamByXML");
+        }
+    
+        public virtual ObjectResult<GetTeamforProductByXml_Result> GetTeamforProductByXml(Nullable<decimal> teamFKID)
+        {
+            var teamFKIDParameter = teamFKID.HasValue ?
+                new ObjectParameter("TeamFKID", teamFKID) :
+                new ObjectParameter("TeamFKID", typeof(decimal));
+    
+            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<GetTeamforProductByXml_Result>("GetTeamforProductByXml", teamFKIDParameter);
+        }
+    
+        public virtual ObjectResult<getDistrictNameWSNew_Result1> getDistrictNameWSNew()
+        {
+            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<getDistrictNameWSNew_Result1>("getDistrictNameWSNew");
+        }
+    
+        public virtual ObjectResult<GetFormforProductByXML_Result> GetFormforProductByXML()
+        {
+            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<GetFormforProductByXML_Result>("GetFormforProductByXML");
+        }
+    
+        public virtual int insertRoleBasedMenu(string roleId, string xmlQuery)
+        {
+            var roleIdParameter = roleId != null ?
+                new ObjectParameter("RoleId", roleId) :
+                new ObjectParameter("RoleId", typeof(string));
+    
+            var xmlQueryParameter = xmlQuery != null ?
+                new ObjectParameter("xmlQuery", xmlQuery) :
+                new ObjectParameter("xmlQuery", typeof(string));
+    
+            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction("insertRoleBasedMenu", roleIdParameter, xmlQueryParameter);
+        }
+    
+        public virtual int MVCAddSpecializationProductlinkMasterNew(Nullable<decimal> specializationFKID, Nullable<decimal> teamFKID, string strXML, Nullable<decimal> createdBy)
+        {
+            var specializationFKIDParameter = specializationFKID.HasValue ?
+                new ObjectParameter("SpecializationFKID", specializationFKID) :
+                new ObjectParameter("SpecializationFKID", typeof(decimal));
+    
+            var teamFKIDParameter = teamFKID.HasValue ?
+                new ObjectParameter("TeamFKID", teamFKID) :
+                new ObjectParameter("TeamFKID", typeof(decimal));
+    
+            var strXMLParameter = strXML != null ?
+                new ObjectParameter("StrXML", strXML) :
+                new ObjectParameter("StrXML", typeof(string));
+    
+            var createdByParameter = createdBy.HasValue ?
+                new ObjectParameter("CreatedBy", createdBy) :
+                new ObjectParameter("CreatedBy", typeof(decimal));
+    
+            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction("MVCAddSpecializationProductlinkMasterNew", specializationFKIDParameter, teamFKIDParameter, strXMLParameter, createdByParameter);
+        }
+    
+        public virtual ObjectResult<string> MVCGetSpecializationandProductByXml(Nullable<long> specialityFKID, Nullable<long> teamFKID)
+        {
+            var specialityFKIDParameter = specialityFKID.HasValue ?
+                new ObjectParameter("SpecialityFKID", specialityFKID) :
+                new ObjectParameter("SpecialityFKID", typeof(long));
+    
+            var teamFKIDParameter = teamFKID.HasValue ?
+                new ObjectParameter("TeamFKID", teamFKID) :
+                new ObjectParameter("TeamFKID", typeof(long));
+    
+            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<string>("MVCGetSpecializationandProductByXml", specialityFKIDParameter, teamFKIDParameter);
+        }
+    
+        public virtual ObjectResult<MVCGetSpecializationNameByXml_Result> MVCGetSpecializationNameByXml()
+        {
+            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<MVCGetSpecializationNameByXml_Result>("MVCGetSpecializationNameByXml");
+        }
+    
+        public virtual ObjectResult<MVCGetTeamsBySpecialityXML_Result> MVCGetTeamsBySpecialityXML(Nullable<decimal> specFKID)
+        {
+            var specFKIDParameter = specFKID.HasValue ?
+                new ObjectParameter("SpecFKID", specFKID) :
+                new ObjectParameter("SpecFKID", typeof(decimal));
+    
+            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<MVCGetTeamsBySpecialityXML_Result>("MVCGetTeamsBySpecialityXML", specFKIDParameter);
+        }
+    
+        public virtual ObjectResult<GetLeaveApprovalNew_Result> GetLeaveApprovalNew(Nullable<decimal> pSOFKID)
+        {
+            var pSOFKIDParameter = pSOFKID.HasValue ?
+                new ObjectParameter("PSOFKID", pSOFKID) :
+                new ObjectParameter("PSOFKID", typeof(decimal));
+    
+            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<GetLeaveApprovalNew_Result>("GetLeaveApprovalNew", pSOFKIDParameter);
+        }
+    
+        public virtual ObjectResult<string> GetLeaveMasterReason(Nullable<decimal> lMPKID)
+        {
+            var lMPKIDParameter = lMPKID.HasValue ?
+                new ObjectParameter("LMPKID", lMPKID) :
+                new ObjectParameter("LMPKID", typeof(decimal));
+    
+            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<string>("GetLeaveMasterReason", lMPKIDParameter);
+        }
+    
+        public virtual ObjectResult<usp_SELECT_CustPSO_COUNT_BYDM_Result> usp_SELECT_CustPSO_COUNT_BYDM(Nullable<int> custId, Nullable<int> loginCustId, Nullable<int> roleId)
+        {
+            var custIdParameter = custId.HasValue ?
+                new ObjectParameter("CustId", custId) :
+                new ObjectParameter("CustId", typeof(int));
+    
+            var loginCustIdParameter = loginCustId.HasValue ?
+                new ObjectParameter("LoginCustId", loginCustId) :
+                new ObjectParameter("LoginCustId", typeof(int));
+    
+            var roleIdParameter = roleId.HasValue ?
+                new ObjectParameter("RoleId", roleId) :
+                new ObjectParameter("RoleId", typeof(int));
+    
+            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<usp_SELECT_CustPSO_COUNT_BYDM_Result>("usp_SELECT_CustPSO_COUNT_BYDM", custIdParameter, loginCustIdParameter, roleIdParameter);
+        }
+    
+        public virtual ObjectResult<USP_GET_PRODUCTMASTER_Result1> USP_GET_PRODUCTMASTER()
+        {
+            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<USP_GET_PRODUCTMASTER_Result1>("USP_GET_PRODUCTMASTER");
+        }
+    
+        public virtual int AddProductmaster(string productCode, string productName, Nullable<decimal> prodGroupFKID, Nullable<decimal> nodeTypeFKID, Nullable<decimal> metisProductID, string iMSCode, Nullable<int> isKDP, string xmlMgrFkid, string xmlTeamFkid, string xmlProductPack, Nullable<int> createdBy)
+        {
+            var productCodeParameter = productCode != null ?
+                new ObjectParameter("ProductCode", productCode) :
+                new ObjectParameter("ProductCode", typeof(string));
+    
+            var productNameParameter = productName != null ?
+                new ObjectParameter("ProductName", productName) :
+                new ObjectParameter("ProductName", typeof(string));
+    
+            var prodGroupFKIDParameter = prodGroupFKID.HasValue ?
+                new ObjectParameter("ProdGroupFKID", prodGroupFKID) :
+                new ObjectParameter("ProdGroupFKID", typeof(decimal));
+    
+            var nodeTypeFKIDParameter = nodeTypeFKID.HasValue ?
+                new ObjectParameter("NodeTypeFKID", nodeTypeFKID) :
+                new ObjectParameter("NodeTypeFKID", typeof(decimal));
+    
+            var metisProductIDParameter = metisProductID.HasValue ?
+                new ObjectParameter("MetisProductID", metisProductID) :
+                new ObjectParameter("MetisProductID", typeof(decimal));
+    
+            var iMSCodeParameter = iMSCode != null ?
+                new ObjectParameter("IMSCode", iMSCode) :
+                new ObjectParameter("IMSCode", typeof(string));
+    
+            var isKDPParameter = isKDP.HasValue ?
+                new ObjectParameter("IsKDP", isKDP) :
+                new ObjectParameter("IsKDP", typeof(int));
+    
+            var xmlMgrFkidParameter = xmlMgrFkid != null ?
+                new ObjectParameter("xmlMgrFkid", xmlMgrFkid) :
+                new ObjectParameter("xmlMgrFkid", typeof(string));
+    
+            var xmlTeamFkidParameter = xmlTeamFkid != null ?
+                new ObjectParameter("xmlTeamFkid", xmlTeamFkid) :
+                new ObjectParameter("xmlTeamFkid", typeof(string));
+    
+            var xmlProductPackParameter = xmlProductPack != null ?
+                new ObjectParameter("xmlProductPack", xmlProductPack) :
+                new ObjectParameter("xmlProductPack", typeof(string));
+    
+            var createdByParameter = createdBy.HasValue ?
+                new ObjectParameter("CreatedBy", createdBy) :
+                new ObjectParameter("CreatedBy", typeof(int));
+    
+            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction("AddProductmaster", productCodeParameter, productNameParameter, prodGroupFKIDParameter, nodeTypeFKIDParameter, metisProductIDParameter, iMSCodeParameter, isKDPParameter, xmlMgrFkidParameter, xmlTeamFkidParameter, xmlProductPackParameter, createdByParameter);
+        }
+    
+        public virtual ObjectResult<usp_ReconcileSettings_Result2> usp_ReconcileSettings()
+        {
+            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<usp_ReconcileSettings_Result2>("usp_ReconcileSettings");
         }
     }
 }

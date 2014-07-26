@@ -1,0 +1,336 @@
+﻿@{
+    ViewBag.Title = "PrescriptionTracker";
+    Layout = "~/Views/Shared/MasterLayout.cshtml";
+}
+
+<h2>PrescriptionTracker</h2>
+
+<body>
+
+    @using (Html.BeginForm(FormMethod.Post))
+    {
+        <div>
+            <table width="100%" border="1" cellspacing="0" class="inner_tb" cellpadding="0" align="left">
+                <tr>
+                    <th colspan="8" style="margin-top: 10px; background-color: #00AADA; color: white;height:20px;">FilterOn</th>
+                </tr>
+                <tr>
+                    <td width="30%" valign="top" class="tb-r2">
+                        <table border="0" width="100%" class="inner_tb">
+                            <tbody>
+                                <tr>
+                                    <td class="tb-r2">Product</td>
+                                    <td class="tb-r2">
+                                        &nbsp;&nbsp;&nbsp;
+                                        @Html.DropDownList("drpSelectProductName", new[]{
+
+                                            new SelectListItem { Text="Select", Value="0"} })
+
+                                    </td>
+
+                                </tr>
+                            </tbody>
+                        </table>
+                    </td>
+                    <td width="30%" valign="middle" class="tb-r2">
+                        <table border="0" width="100%" class="inner_tb">
+                            <tbody>
+                                <tr>
+                                    <td class="tb-r2">BVO Status</td>
+                                    <td class="tb-r2">
+                                        &nbsp;&nbsp;&nbsp;
+                                        <select id="drpSelectBVOStatus">
+
+                                            <option value="0">Select</option>
+                                            <option value="1">True</option>
+                                            <option value="2">False</option>
+
+                                        </select>
+
+                                    </td>
+                                </tr>
+
+
+                            </tbody>
+
+                        </table>
+                    </td>
+
+                </tr>
+
+                <tr>
+                    <td class="tb-r2">
+                        <table border="0" width="100%" class="inner_tb">
+                            <tr>
+                                <td class="tb-r2">From Date</td>
+                                <td class="tb-r2"> &nbsp;&nbsp;&nbsp;<input type="text" class="tbox" id="txtFrmdate" name="txtFromdate" value="" onclick="$(function () { $('#txtFrmdate').datepicker({ changeMonth: true, changeYear: true, yearRange: '1900:myDate', dateFormat: 'dd/mm/yy', maxDate: 0 ,});});" /></td>
+                            </tr>
+                        </table>
+                    </td>
+                    <td class="tb-r2">
+                        <table border="0" width="100%" class="inner_tb">
+                            <tr>
+                                <td class="tb-r2">End Date</td>
+                                <td class="tb-r2"> &nbsp;&nbsp;&nbsp;<input type="text" class="tbox" id="txtTodate" name="txtTodate" value="" onclick="$(function () { $('#txtTodate').datepicker({ changeMonth: true, changeYear: true, yearRange: '1900:myDate', dateFormat: 'dd/mm/yy', maxDate: 0 }); });" /></td>
+                                <td class="tb-r2"><input class="blue_button add_btn" type="button" width="5%" id="btnSubmit" value="GO"></td>
+
+                            </tr>
+
+                        </table>
+                    </td>
+
+                </tr>
+
+            </table>
+
+           
+                <table border="0" style="width: 100%">
+                    <tr>
+                        <td>
+                            <!--JqGrid Starts-->
+                            <table style="margin-top: 40px; width :100%" border="0">
+                                <tr>
+                                    <td>
+                                        <table id="ajaxGrid" style="width: 100%" border="0"></table>
+                                        <div id="ajaxGridPager">
+                                        </div>
+                                    </td>
+                                </tr>
+                            </table>
+                            <!--Ends-->
+                        </td>
+                    </tr>
+                </table>
+
+            </div>
+
+      
+    }
+    <script type="text/javascript">
+        $("#btnSubmit").click(function () {
+
+            $("#txtFrmdate").css("background-color", "white").css("border", "1px solid #d5d5d5");
+            $("#txtTodate").css("background-color", "white").css("border", "1px solid #d5d5d5");
+            $("#drpSelectProductName").css("background-color", "white").css("border", "1px solid #d5d5d5");
+            $("#drpSelectBVOStatus").css("background-color", "white").css("border", "1px solid #d5d5d5");
+            
+            if ($('#drpSelectProductName').val() == 0 || $('#drpSelectProductName').val() == null) {
+               
+                $("#drpSelectProductName").css("background-color", "#FFE8E8").css("border", "1px solid #FF6666");
+                $('#drpSelectProductName').focus();
+                return false;
+            }
+            else if ($('#drpSelectBVOStatus').val() == 0) {
+               
+                $("#drpSelectBVOStatus").css("background-color", "#FFE8E8").css("border", "1px solid #FF6666");
+                $('#drpSelectBVOStatus').focus();
+                return false;
+            }
+            else if ($('#txtFrmdate').val() == '') {
+                
+                $("#txtFrmdate").css("background-color", "#FFE8E8").css("border", "1px solid #FF6666");
+                $('#txtFrmdate').focus();
+                return false;
+            }
+            else if ($('#txtTodate').val() == '') {
+                
+                $("#txtTodate").css("background-color", "#FFE8E8").css("border", "1px solid #FF6666");
+                $('#txtTodate').focus();
+                return false;
+            }
+            else if ($('#txtFrmdate').val() != '' && $('#txtTodate').val() != '') {
+
+
+                var date1 = $('#txtFrmdate').val().split('/')[1] + '/' + $('#txtFrmdate').val().split('/')[0] + '/' + $('#txtFrmdate').val().split('/')[2];
+                var date2 = $('#txtTodate').val().split('/')[1] + '/' + $('#txtTodate').val().split('/')[0] + '/' + $('#txtTodate').val().split('/')[2];
+                var startDate = new Date(date1);
+                var endDate = new Date(date2);
+
+                if (startDate > endDate) {
+
+                    alert('End date should be greater than Start date');
+                    $('#txtTodate').focus();
+                    $("#txtTodate").css("background-color", "#FFE8E8").css("border", "1px solid #FF6666");
+                    return false;
+                }
+            }
+           
+           
+           
+            
+            var ProductName = $("#drpSelectProductName").val();
+            var BVOStatus = $("#drpSelectBVOStatus").val();
+            var From = $("#txtFrmdate").val();
+            var strFrmdate = From.split("/");
+            var txtFrmdate = strFrmdate[1] + "/" + strFrmdate[0] + "/" + strFrmdate[2];
+            
+            var To = $("#txtTodate").val();
+            var strTodate = To.split("/");
+            var txtTodate = strTodate[1] + "/" + strTodate[0] + "/" + strTodate[2];
+            
+            
+            initGrid(txtFrmdate, txtTodate, ProductName, BVOStatus);
+        });
+
+
+        $(document).ready(function () {
+            
+            $("#txtFrmdate").datepicker({ changeMonth: true, changeYear: true, yearRange: '1900:myDate', dateFormat: 'dd/mm/yy', maxDate: 0 });
+            $("#txtTodate").datepicker({ changeMonth: true, changeYear: true, yearRange: '1900:myDate', dateFormat: 'dd/mm/yy', maxDate: 0 });
+            $("#txtFrmdate").val($.datepicker.formatDate("dd/mm/yy", new Date()));
+            $("#txtTodate").val($.datepicker.formatDate("dd/mm/yy", new Date()));
+            $("#drpSelectProductName").empty();
+            $('#drpSelectProductName').append("<option value='0'>Select</option>");
+            
+            $.getJSON('@Url.Action("JsonLoadProductName")', function (data) {
+                
+                for (var i = 0; i < data.countyCount; i++) {
+
+                    $('#drpSelectProductName').append("<option value='" + data.countyItems[i].Value + "'>" + data.countyItems[i].Text + "</option>");
+                }
+            
+
+            });
+    
+
+
+    });
+
+       
+
+        function initGrid(txtFrmdate, txtTodate, ProductName, BVOStatus) {
+            $('#ajaxGrid').jqGrid('GridUnload');
+            var test = "";
+            jQuery("#ajaxGrid").jqGrid({
+                url: '@Url.Action("GridPrescriptionTracker")?BVOStatus=' + BVOStatus + '&ProductName=' + ProductName + '&Frmdate=' + txtFrmdate + '&Todate=' + txtTodate,
+
+                datatype: "json",
+                jsonReader: { repeatitems: false, id: "PKID" },
+                colNames: [ 'Date', 'PSOName', 'RegionCode', 'TerritoryCode', 'DoctorName', 'Specilization', 'ProductName', 'ProductPackName', 'Prescription', 'Hospital', 'Stokiest', 'BVOStatus'],
+                colModel: [
+                    
+                     { name: 'Date', index: 'Date', align: 'left',search:false },
+                     { name: 'PSOName', index: 'PSOName', align: 'left' },
+                     { name: 'RegionCode', index: 'RegionCode', align: 'left', search: false },
+                     { name: 'TerritoryCode', index: 'TerritoryCode', align: 'left', search: false },
+                     { name: 'DoctorName', index: 'DoctorName', align: 'left', search: false },
+                     { name: 'Specilization', index: 'Specilization', align: 'left', search: false }, 
+                     { name: 'ProductName', index: 'ProductName', align: 'left', search: false },
+                     { name: 'ProductPackName', index: 'ProductPackName', align: 'left', search: false },
+                     { name: 'Prescription', index: 'Prescription', align: 'left', search: false },
+                     { name: 'Hospital', index: 'Hospital', align: 'left', search: false },
+                     { name: 'Stokiest', index: 'Stokiest', align: 'left', search: false },
+                     { name: 'BVOStatus', index: 'BVOStatus', align: 'left', search: false }
+
+
+
+                ],
+                autowidth: true,
+                gridview: true,
+                caption: 'PrescriptionTracker',
+                align: 'center',
+                sortable: true,
+                hidegrid: true,
+                altRows: true,
+                sortname: 'PKID',
+                sortorder: 'desc',
+                rowTotal: 10,
+                rowNum: 10,
+                gridComplete: function () {
+                    alert('HI');
+                    if (jQuery("#ajaxGrid").getGridParam("records") == 0) {
+                   
+                        jQuery("#ajaxGrid").addRowData(
+                        "blankRow", { "TerritoryCode": "No records to view" });
+                    }
+                },
+                viewrecords: true,
+                pager: $('#ajaxGridPager'),
+                height: 'auto',
+
+
+
+            });
+
+            jQuery("#ajaxGrid").jqGrid('navGrid', '#ajaxGridPager', { edit: false, add: false, del: false, search: false, view: false, enableClear: false },
+                  {            
+            
+            });
+            setMethod('ajaxGrid', 'ajaxGridPager', 'PrescriptionTracker', txtFrmdate, txtTodate, ProductName, BVOStatus);
+
+        }
+        function setMethod(gid, id, pgTitle, txtFrmdate, txtTodate, ProductName, BVOStatus) {
+
+        var btnTitle = 'Export to Excel';
+        $('#' + gid).jqGrid('navSeparatorAdd', '#' + id, { sepclass: "ui-separator" });
+        $('#' + gid).jqGrid('navButtonAdd', '#' + id, { caption: '', title: btnTitle, position: 'last', buttonicon: 'ui-icon-calculator', onClickButton: function () { ExcelExport(txtFrmdate, txtTodate, ProductName, BVOStatus); } });
+
+        var btnTitle = 'Export to PDF';
+        $('#' + gid).jqGrid('navSeparatorAdd', '#' + id, { sepclass: "ui-separator" });
+        $('#' + gid).jqGrid('navButtonAdd', '#' + id, { caption: '', title: btnTitle, position: 'last', buttonicon: 'ui-icon-bookmark', onClickButton: function () { PDFExport(txtFrmdate, txtTodate, ProductName, BVOStatus); } });
+
+       
+
+        var btnTitle = 'Print Grid';
+        $('#' + gid).jqGrid('navSeparatorAdd', '#' + id, { sepclass: "ui-separator" });
+        $('#' + gid).jqGrid('navButtonAdd', '#' + id, { caption: '', title: btnTitle, position: 'last', buttonicon: 'ui-icon-print', onClickButton: function () { PrintGrid(gid); } });
+    }
+        function ExcelExport(txtFrmdate, txtTodate, ProductName, BVOStatus) {
+            window.location = '@Url.Action("ExportPrescriptionTrackerToExcel")?BVOStatus=' + BVOStatus + '&ProductName=' + ProductName + '&Frmdate=' + txtFrmdate + '&Todate=' + txtTodate;
+    }
+        function PDFExport(txtFrmdate, txtTodate, ProductName, BVOStatus) {
+            window.location = '@Url.Action("ExportPrescriptionTrackerToPDF")?BVOStatus=' + BVOStatus + '&ProductName=' + ProductName + '&Frmdate=' + txtFrmdate + '&Todate=' + txtTodate;
+    }
+       
+    function PrintGrid(gid) {
+             
+        var rows = $('#ajaxGrid').jqGrid('getRowData');
+        
+        for(var i=0;i<rows.length;i++)
+        {
+            var row = rows[i];                     
+            $('#Table1').append("<tr><td>" + row.Date + "</td><td>" + row.PSOName + "</td><td>" + row.RegionCode + "</td><td>" + row.TerritoryCode + "</td><td>" + row.DoctorName + "</td><td>" + row.Specilization + "</td><td>" + row.ProductName + "</td><td>" + row.ProductPackName + "</td><td>" + row.Prescription + "</td><td>" + row.Hospital + "</td><td>" + row.Stokiest + "</td><td>" + row.BVOStatus + "</td></tr>");
+                    
+        }
+                               
+        $(function () { printChrome('prt-container') });
+    }
+
+    function printChrome(divContainer) {
+
+        var printContent = document.getElementById(divContainer);
+        window.document.body.innerHTML = printContent.innerHTML;
+        window.print();
+        window.location.reload();
+    }
+
+
+    </script>
+    <div id='prt-container' style="display:none">
+        <table id="Table1" border="1" width="100%">
+            <thead>
+                <tr>
+                    <td><b>Date</b></td>
+                    <td><b>PSOName</b></td>
+                    <td><b>RegionCode</b></td>
+                    <td><b>TerritoryCode</b></td>
+                    <td><b>DoctorName</b></td>
+                    <td><b>Specilization</b></td>
+                    <td><b>ProductName</b></td>
+                    <td><b>ProductPackName</b></td>
+                    <td><b>Prescription</b></td>
+                    <td><b>Hospital</b></td>
+                    <td><b>Stokiest</b></td>
+                    <td><b>BVOStatus</b></td>
+
+                </tr>
+
+            </thead>
+            <tbody></tbody>
+
+        </table>
+    </div>
+  
+
+    </script>
+</body>

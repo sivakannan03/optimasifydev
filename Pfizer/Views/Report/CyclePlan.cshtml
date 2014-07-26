@@ -1,0 +1,142 @@
+﻿@{
+    ViewBag.Title = "CyclePlan";
+    Layout = "~/Views/Shared/MasterLayout.cshtml";
+}
+
+@using (Html.BeginForm(FormMethod.Post))
+{
+
+    <div class="inner_tbldiv" style="margin-top:0px">
+        <div class="man_field">* Mandatory Field</div><label id="lblError" name="lblError" style=" color:red"> </label>
+        <table width="100%" border="0" cellspacing="0" cellpadding="0" align="left" class="inner_tb">
+            <tr>
+                <th colspan="7">Cycle Plan Report Filter On </th>
+            </tr>
+
+            <tr>
+                <td width="10%" class="tb-r1">PSO Name<span class="star">*</span></td>
+                <td width="20%" class="tb-r1">
+                    @Html.DropDownList("ddlPSOName", PfizerEntity.UsefulLink.GetPSOName(Convert.ToInt32(@Session["USER_FKID"].ToString())), "Select")
+
+                </td>
+                <td class="tb-r1" width="10%">Year<span class="star">*</span></td>
+                <td class="tb-r1" width="25%">
+                    &nbsp;  @Html.DropDownList("drpSelectYear", new[]{
+
+                                            new SelectListItem { Text="Select", Value="0"} })
+
+                </td>
+                <td class="tb-r1" width="10%">Cycle<span class="star">*</span></td>
+                <td class="tb-r1" width="25%">
+                    <select name="lstGetCycle" id="lstGetCycle" class="listboxRpt">
+                        <option selected="selected" value="0">Select</option>
+                        @*<option  value="1">Cycle 1</option>
+                            <option  value="2">Cycle 2</option>
+                            <option  value="3">Cycle 3</option>*@
+                    </select>
+
+                </td>
+                <td width="15%" class="tb-r1"><input class="blue_button add_btn" type="button" width="5%" id="btnFetch" value="Fetch"></td>
+            </tr>
+
+        </table>
+
+        <div style="display:none;" id="reportsDiv">
+        </div>
+    </div>
+    <script type="text/javascript">
+
+        function DownloadExcel() {
+            var win = window.open('@Url.Action("ExcelDownload")?fileName=' + 'CyclePlan', 'showwin', 'width=550,height=400,top=0,left=0,toolbar=yes,location=no,directories=no,status=no,menubar=no,scrollbars=yes,resizeable=yes');
+
+            return false;
+        }
+
+        $("#drpSelectYear").change(function () {
+
+            $("#lstGetCycle").empty();
+            $('#lstGetCycle').append("<option selected='selected' value='0'>Select</option>");
+            $.getJSON('@Url.Action("JsonLoadSelectedCycleName")?Year=' + $('#drpSelectYear :selected').text(), function (data) {
+
+                for (var i = 0; i < data.countyCount; i++) {
+                    $('#lstGetCycle').append("<option  value='" + data.countyItems[i].Value + "'>" + data.countyItems[i].Text + "</option>");
+                }
+
+            });
+
+        });
+
+
+        function LoadYear() {
+            var today = new Date(); // Initialize Date in raw form
+            var Currentyear = today.getFullYear(); // Get the year
+            var CurrentDate = today.getDate();
+            //Year binding into year ComboBox
+            var cPreviousYear = today.getFullYear() - 5;
+
+            var cNextYear = today.getFullYear() + 3;
+            var iSelected = 0;
+            for (var iCount = cPreviousYear; iCount < cNextYear; iCount++) {
+
+                document.getElementById("drpSelectYear").options.add(new Option(iCount, "0"))
+                //if (document.getElementById("drpSelectYear").options[iSelected].innerText == Currentyear) {
+                //    document.getElementById("drpSelectYear").selectedIndex = iSelected;
+                //}
+                iSelected++;
+            }
+        }
+
+        $('#btnFetch').click(function () {
+
+            //alert($("#ddlPSOName").val());
+            //alert($("#drpSelectYear :selected").text());
+            //alert($("#lstGetCycle").val());
+            $('label[id*="lblError"]').text('');
+            $("#drpSelectYear").css("border", "1px solid #d5d5d5");
+            $("#lstGetCycle").css("border", "1px solid #d5d5d5");
+            $("#ddlPSOName").css("border", "1px solid #d5d5d5");
+
+
+            if ($('#ddlPSOName option:selected').text() == 'Select') {
+                $("#lblError").text('Please select PSO Name');
+                $('#ddlPSOName').focus();
+                $("#ddlPSOName").css("background-color", "#FFE8E8").css("border", "1px solid #FF6666");
+                return false;
+            }
+            else if ($('#drpSelectYear option:selected').text() == 'Select') {
+                $("#lblError").text('Please select Year');
+                $('#drpSelectYear').focus();
+                $("#drpSelectYear").css("background-color", "#FFE8E8").css("border", "1px solid #FF6666");
+
+                return false;
+            }
+            else if ($('#lstGetCycle option:selected').text() == 'Select') {
+                $("#lblError").text('Please select Month');
+                $('#lstGetCycle').focus();
+                $("#lstGetCycle").css("background-color", "#FFE8E8").css("border", "1px solid #FF6666");
+                return false;
+            }
+
+
+            $.getJSON('@Url.Action("JsPostCyclePlan")?PSOName=' + $("#ddlPSOName").val() + '&Year=' + $("#drpSelectYear :selected").text() + '&Cycle=' + $("#lstGetCycle").val(), function (data) {
+
+                $('#reportsDiv').html(data.rslt);
+                $('#reportsDiv').dialog({
+                    title: 'CyclePlan',
+                    width: 830,
+                    height: 350,
+                    show: { effect: 'drop', direction: "up" },
+                    modal: true,
+                    open: function (event, ui) {
+
+                    }
+                });
+            });
+
+        });
+        $(document).ready(function () {
+            //Load Year ...
+            LoadYear();
+        });
+    </script>
+}

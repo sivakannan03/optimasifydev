@@ -54,7 +54,7 @@
                             //{ name: 'SLNo', index: 'SLNo', align: 'left' },
                             { name: 'PKID', index: 'PKID', align: 'left',viewable:true,key:true, hidden: true,editrules:{edithidden:true} },
                             { name: 'Notification', index: 'Notification', align: 'left', editable: true, searchoptions: { sopt: ['eq', 'bw', 'ew', 'cn'] }, serach: true, searchrules: { required: true }, editrules: { required: false }, editoptions: { maxlength: 30, dataEvents: [{ type: 'keyup', fn: function (e) { SingleCharacter(this); } }] }, formoptions: { elmsuffix: "<span style='align:left;color:red'>*</span>&nbsp;" } },
-                            { name: 'ExpiryDate', index: 'ExpiryDate', align: 'left', editable: true,search:false, editoptions: { dataInit: function (elem) { $(elem).datepicker({ changeMonth: true, changeYear: true, dateFormat: 'dd/mm/yy', }); } }, editrules: { required: false }, formoptions: { elmsuffix: ' *' } },
+                            { name: 'ExpiryDate', index: 'ExpiryDate', align: 'left', editable: true,search:false, editoptions: { dataInit: function (elem) { $(elem).datepicker({ changeMonth: true, changeYear: true, dateFormat: 'dd/mm/yy', }); } }, editrules: { required: false }, formoptions: {  elmsuffix: "<span style='align:left;color:red'>*</span>&nbsp;" } },
                             { name: 'Status', index: 'Status', align: 'left',  editable: true, edittype: 'checkbox',search:false, editoptions: { value: "Active:Passive", defaultValue: "Active" } },
 
                 ],
@@ -136,7 +136,8 @@
                         else if ($("#ExpiryDate").val() == "" || (Mydate < currentDate && Mydate != currentDate))
                         {
                             error += "ExpiryDate";
-                            $('#FormError').html("<td class='ui-state-error' colspan='2'>" + error + ":Field is required</td>");
+                            
+                            $('#FormError').html("<td class='ui-state-error' colspan='2'>" + error + " is Greater than or Equl to Current date</td>");
                             $("#ExpiryDate").val('');
                             $('#ExpiryDate').focus();
                             $("#ExpiryDate").css("background-color", "#FFE8E8").css("border", "1px solid #FF6666");
@@ -203,7 +204,7 @@
                     else if ($("#ExpiryDate").val() == "" || (Mydate < currentDate && Mydate != currentDate))
                     {
                         error += "ExpiryDate";
-                        $('#FormError').html("<td class='ui-state-error' colspan='2'>" + error + ":Field is required</td>");
+                        $('#FormError').html("<td class='ui-state-error' colspan='2'>" + error + " is Greater than or Equl to Current date</td>");
                         $("#ExpiryDate").val('');
                         $('#ExpiryDate').focus();
                         $("#ExpiryDate").css("background-color", "#FFE8E8").css("border", "1px solid #FF6666");

@@ -1,0 +1,151 @@
+﻿@{
+    ViewBag.Title = "Reallocatemenu";
+    Layout = "~/Views/Shared/MasterLayout.cshtml";
+}
+
+<body>
+    @using (Html.BeginForm(FormMethod.Post))
+    {
+        <div>
+            <table border="0" align="center" style="margin-top: 7px;width: 40%;margin-left:230px;" class="inner_tb">
+                <tr>
+                    <td colspan="4" align="center">
+                        <div style="text-align:center;">
+                            <label id="lblSuccessfully" style=" color:red"></label>
+                        </div>
+                    </td>
+
+                </tr>
+                <tr>
+                    <th colspan="3">Menu Reallocation</th>
+                </tr>
+                <tr style="margin-top: 10px;">
+                    <td class="tb-r1">
+                        <b>Role<span style="color:red">*</span></b>
+                    </td>
+                    <td class="tb-r1">
+                        @Html.DropDownList("drpRole", new[]{
+                                      new SelectListItem { Text="", Value=""} })
+                    </td>
+                </tr>
+
+            </table>
+
+            <br />
+            <div id="TreeViewMenu" style="max-height:230px; width: 40%; margin-left: 230px; align-items: center; overflow: scroll;overflow-x:hidden;">
+            </div>
+            <div id="MenuBtn" style="margin-top: 7px;width: 60%;margin-left:420px;align-items:center;">
+                <table>
+                    <tr>
+                        <td align="center" style="padding-top:20px; ">
+                            <table>
+                                <tr>
+                                    <td style="padding-right:10px;">
+                                        <input type="button" class="blue_button" id="bntSubmit" title="Submit" value="Submit" />
+                                    </td>
+                                    <td>
+                                        <input type="button" class="orange_button" id="bntCancel" title="Cancel" value="Cancel" />
+                                    </td>
+
+                                </tr>
+                            </table>
+                        </td>
+
+                    </tr>
+
+                </table>
+            </div>
+        </div>
+
+    }
+</body>
+
+<script type="text/javascript">
+
+    $("#drpRole").change(function () {
+        var RoleId = $("#drpRole").val();
+        $("#lblSuccessfully").text('');
+        $(":checkbox").prop("checked", false)
+        if ((RoleId == null) || (RoleId == 0)) {
+            $("#TreeViewMenu").css("display", "none");
+            $("#bntSubmit").css("display", "none");
+            $("#bntCancel").css("display", "none");
+        }
+        else {
+            $("#TreeViewMenu").css("display", "block");
+            $("#bntSubmit").css("display", "block");
+            $("#bntCancel").css("display", "block");
+        }
+        $(function () {
+            $("#TreeViewMenu").accordion();
+        });
+        $("#TreeViewMenu").accordion({
+            collapsible: true,
+            heightStyle: "content"
+        });
+        $.ajax({
+            type: 'POST',
+            url: '@Url.Action("GetRoleBasedmenuItem")?RoleId=' + RoleId,
+            success: function (rec) {
+                for (var i = 0; i <= rec.length; i++) {
+                    $("#" + rec[i].MenuFKID + "").prop('checked', true);
+
+                }
+            }
+
+        });
+    });
+
+    $(document).ready(function () {
+
+
+        $("#drpRole").empty();
+        $('#drpRole').append("<option selected='selected' value='0'>Select</option>");
+        $.getJSON('@Url.Action("GetRoles")', function (data) {
+            for (var i = 0; i < data.RoleCount; i++) {
+                $('#drpRole').append("<option value='" + data.RoleItem[i].Value + "'>" + data.RoleItem[i].Text + "</option>");
+            }
+            if (($("#drpRole").val() == 0)) {
+                $("#TreeViewMenu").css("display", "none");
+                $("#bntSubmit").css("display", "none");
+                $("#bntCancel").css("display", "none");
+            }
+
+        });
+        $.ajax({
+            type: 'POST',
+            url: '@Url.Action("JsonLoadRole")',
+            success: function (rec) {
+
+                $("#TreeViewMenu").html(rec.str);
+                $("#TreeViewMenu").css("display", "none");
+            }
+        });
+
+
+    });
+
+    //Cancel Btn
+    $("#bntCancel").click(function () {
+        $("#TreeViewMenu").css("display", "none");
+        $("#bntSubmit").css("display", "none");
+        $("#bntCancel").css("display", "none");
+        $("#drpRole").val(0);
+    });
+
+    //Submit Btn User Menu Rights
+    $("#bntSubmit").click(function () {
+        $("#lblSuccessfully").text('');
+        var RoleId = $("#drpRole").val();
+        var checkedIds = $(":checkbox:checked").map(function () {
+            return this.id;
+        }).get();
+        $.ajax({
+            type: 'POST',
+            url: '@Url.Action("UseMenuRight")?RoleId=' + RoleId + '&Right=' + checkedIds,
+            success: function (rec) {
+                $("#lblSuccessfully").html(rec.msg);
+            }
+        });
+    });
+</script>

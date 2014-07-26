@@ -8,8 +8,7 @@
 {
         
     <div class="inner_tbldiv">
-        <div class="man_field">* Mandatory Field</div><label id="lblError" name="lblError" style=" color:red"> </label>
-        <table width="100%" border="0" cellspacing="0" cellpadding="0" align="left" class="inner_tb">
+          <table width="100%" border="0" cellspacing="0" cellpadding="0" align="left" class="inner_tb">
             <tr>
                 <th colspan="2">Create User</th>
             </tr>
@@ -94,7 +93,7 @@
 
             </tr>
             <tr>
-                <td colspan="2" valign="middle" align="center"><input class="blue_button add_btn" type="button" width="5%" id="btnSubmit" value="Submit"> &nbsp;&nbsp;<input class="blue_button add_btn" type="button" width="5%" value="Clear">
+                <td colspan="2" valign="middle" align="center"><input class="blue_button add_btn" type="button" width="5%" id="btnSubmit" value="Submit"> &nbsp;&nbsp;<input class="blue_button add_btn" type="button" id="btnClear" width="5%" value="Clear">
                    
                 </td>
 
@@ -106,7 +105,17 @@
 }
 
     <script type="text/javascript">
+        $("#btnClear").click(function () {
+            $('#ddlEmployeeList').val('');
+            $("#txtLogin").val('');
+            $("#txtPwd").val('');
+            $("#txtConfirmPwd").val('');
+            //$('#lstGetRole').empty();
+            $('#lstGetSelectedRole').val(0);
 
+
+
+        });
         $('#btnSubmit').click(function () {
             var str = "";
             var i = 1;

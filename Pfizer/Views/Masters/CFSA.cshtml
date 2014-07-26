@@ -1,0 +1,716 @@
+﻿@{
+    ViewBag.Title = "CFSA";
+    Layout = "~/Views/Shared/MasterLayout.cshtml";
+}
+
+<body>
+    @using (Html.BeginForm(FormMethod.Post))
+    {
+
+        <div class="inner_tbldiv" style="margin-top:0px">
+            @*<div class="man_field">* Mandatory Field</div>*@
+            <label id="lblError" name="lblError" style=" color:red"> </label>
+            <table width="100%" border="0" cellspacing="0" cellpadding="0" align="left" class="inner_tb">
+                <tr>
+                    <th colspan="7">CFSA Master</th>
+                </tr>
+
+                <tr>
+                    <td width="10%" class="tb-r2">Team<span class="star"></span></td>
+                    <td width="30%" class="tb-r2">
+                        @Html.ListBox("lstGetTeamName", new[] { new SelectListItem { Text = "", Value = "" } }, new { @class = "listboxRpt" })
+
+
+                    </td>
+                    <td class="tb-r2" width="10%">Region<span class="star"></span></td>
+                    <td class="tb-r2" width="30%">
+                        @Html.ListBox("lstGetRegionName", new[] { new SelectListItem { Text = "", Value = "" } }, new { @class = "listboxRpt" })
+
+                    </td>
+                </tr>
+                <tr>
+                    <td class="tb-r2" width="10%">District<span class="star"></span></td>
+                    <td class="tb-r2" width="30%">
+                        @Html.ListBox("lstGetDistrictName", new[] { new SelectListItem { Text = "", Value = "" } }, new { @class = "listboxRpt" })
+
+                    </td>
+                    <td class="tb-r2" width="10%">Territory<span class="star"></span></td>
+                    <td class="tb-r2" width="30%">
+                        @Html.ListBox("lstGetTerritoryName", new[] { new SelectListItem { Text = "", Value = "" } }, new { @class = "listboxRpt" })
+
+                    </td>
+                    <td width="15%"><input class="blue_button add_btn" type="button" width="5%" id="btnFetch" value="Fetch"></td>
+                </tr>
+                <tr>
+                    <td>&nbsp;</td>
+                    <td>&nbsp;</td>
+                    <td>&nbsp;</td>
+                    <td width="15%" style="float:right; margin-right:30px;"><input class="blue_button add_btn" type="button" width="5%" id="btnActivate" value="Active"></td>
+                    <td width="15%"><input class="blue_button add_btn" type="button" width="5%" id="btnInActivate" value="InActive"></td>
+
+                </tr>
+            </table>
+        </div>
+
+        <div>
+            <table>
+                <tr><td>&nbsp;</td></tr>
+                <tr><td>&nbsp;</td></tr>
+                <tr><td>&nbsp;</td></tr>
+            </table>
+
+        </div>
+        <div>
+            <table border="0" style="width: 100%">
+                <tr>
+                    <td>
+                        <!--JqGrid Starts-->
+                        <table style="margin-top: 7px; width :100%" border="0">
+                            <tr><td align="center"><span style="font-weight:bold"><label id="lblmsg" style="color:black" /></span></td></tr>
+                            <tr><td>&nbsp;</td></tr>
+                            <tr>
+                                <td>
+                                    <table id="CFSAMaster" style="width: 100%" border="0"></table>
+                                    <div id="CFSAMasterPager">
+                                    </div>
+                                </td>
+                            </tr>
+                        </table>
+                        <!--Ends-->
+                        <input type="hidden" id="hdnMultiRegion" name="hdnMultiRegion" />
+                        <input type="hidden" id="hdnMultiDistrict" name="hdnMultiDistrict" />
+                        <input type="hidden" id="hdnMultiTerritory" name="hdnMultiTerritory" />
+                        <input type="hidden" id="hdnMultifetch" name="hdnMultifetch" />
+                    </td>
+                </tr>
+            </table>
+
+        </div>
+    }
+
+    <script type="text/javascript">
+
+    $("#lstGetTeamName").change(function () {
+
+        MultiRegion();
+
+
+        $("#lstGetRegionName").empty();
+        $('#lstGetRegionName').append("<option value='0'>Select All</option>");
+
+        $.getJSON('@Url.Action("JsonLoadSelectedRegionName")?SelectedTeamID=' + $("#hdnMultiRegion").val(), function (data) {
+
+            for (var i = 0; i < data.countyCount; i++) {
+                $('#lstGetRegionName').append("<option selected='selected' value='" + data.countyItems[i].Value + "'>" + data.countyItems[i].Text + "</option>");
+
+            }
+            MultiDistrict();
+
+            $("#lstGetDistrictName").empty();
+            $('#lstGetDistrictName').append("<option value='0'>Select All</option>");
+            $.getJSON('@Url.Action("JsonLoadSelectedDistrictName")?SelectedTeamID=' + $("#hdnMultiDistrict").val(), function (data) {
+
+                for (var i = 0; i < data.countyCount; i++) {
+                    $('#lstGetDistrictName').append("<option selected='selected'  value='" + data.countyItems[i].Value + "'>" + data.countyItems[i].Text + "</option>");
+                }
+                MultiTerritory();
+
+                $("#lstGetTerritoryName").empty();
+                $('#lstGetTerritoryName').append("<option value='0'>Select All</option>");
+                $.getJSON('@Url.Action("JsonLoadSelectedTerritoryName")?SelectedTeamID=' + $("#hdnMultiTerritory").val(), function (data) {
+
+                    for (var i = 0; i < data.countyCount; i++) {
+                        $('#lstGetTerritoryName').append("<option selected='selected'  value='" + data.countyItems[i].Value + "'>" + data.countyItems[i].Text + "</option>");
+                    }
+
+                });
+
+
+            });
+
+        });
+
+        function MultiRegion() {
+
+            SelectAllTeam();
+
+            if (($("#lstGetTeamName").val() != "") && ($("#lstGetTeamName").val() != 0))
+            {
+                var RegionXML = ',' + $("#lstGetTeamName").val();
+                $("#hdnMultiRegion").val(RegionXML);
+
+            }
+        }
+
+        function MultiDistrict() {
+
+            SelectAllRegion();
+
+            if (($("#lstGetRegionName").val() != "") && ($("#lstGetRegionName").val() != 0)) {
+                var DistrictXML = ',' + $("#lstGetRegionName").val();
+                $("#hdnMultiDistrict").val(DistrictXML);
+            }
+
+        }
+
+        function MultiTerritory() {
+
+            SelectAllDistrict();
+
+            if (($("#lstGetDistrictName").val() != "") && ($("#lstGetDistrictName").val() != 0)) {
+                var TerritoryXML = ',' + $("#lstGetDistrictName").val();
+                $("#hdnMultiTerritory").val(TerritoryXML);
+            }
+
+            SelectAllTerritory();
+        }
+
+        function SelectAllTeam()
+        {
+            $("#hdnMultiRegion").val = "";
+            if (($("#lstGetTeamName").val() == "") || ($("#lstGetTeamName").val() == 0)) {
+
+                if ($("#lstGetTeamName").val() == 0) {
+                    $("#lstGetTeamName option").prop("selected", true);
+                    $("#lstGetTeamName option:first").removeAttr('selected');
+                }
+
+                var RegionXML = ',' + $("#lstGetTeamName").val();
+
+                $("#hdnMultiRegion").val(RegionXML);
+
+                return true;
+
+            }
+        }
+
+        function SelectAllRegion() {
+
+            $("#hdnMultiDistrict").val = "";
+
+            if (($("#lstGetRegionName").val() == "") || ($("#lstGetRegionName").val() == 0)) {
+
+                if ($("#lstGetRegionName").val() == 0) {
+                    $("#lstGetRegionName option").prop("selected", true);
+                    $("#lstGetRegionName option:first").removeAttr('selected');
+                }
+
+                var DistrictXML = ',' + $("#lstGetRegionName").val();
+
+                $("#hdnMultiDistrict").val(DistrictXML);
+
+                return true;
+
+            }
+        }
+
+        function SelectAllDistrict() {
+
+            $("#hdnMultiTerritory").val = "";
+            if (($("#lstGetDistrictName").val() == "") || ($("#lstGetDistrictName").val() == 0)) {
+                if ($("#lstGetDistrictName").val() == 0) {
+                    $("#lstGetDistrictName option").prop("selected", true);
+                    $("#lstGetDistrictName option:first").removeAttr('selected');
+                }
+
+                var TerritoryXML = ',' + $("#lstGetDistrictName").val();
+
+                $("#hdnMultiTerritory").val(TerritoryXML);
+
+                return true;
+
+            }
+        }
+
+        function SelectAllTerritory() {
+
+            $("#hdnMultifetch").val = "";
+
+            if (($("#lstGetTerritoryName").val() == "") || ($("#lstGetTerritoryName").val() == 0)) {
+                if ($("#lstGetTerritoryName").val() == 0) {
+                    $("#lstGetTerritoryName option").prop("selected", true);
+                    $("#lstGetTerritoryName option:first").removeAttr('selected');
+                }
+
+                var FetchXML = ',' + $("#lstGetTerritoryName").val();
+
+                $("#hdnMultifetch").val(FetchXML);
+
+                return true;
+
+            }
+        }
+
+    });
+
+    $("#lstGetRegionName").change(function () {
+
+        MultiDistrict();
+
+        $("#lstGetDistrictName").empty();
+        $('#lstGetDistrictName').append("<option value='0'>Select All</option>");
+        $.getJSON('@Url.Action("JsonLoadSelectedDistrictName")?SelectedTeamID=' + $("#hdnMultiDistrict").val(), function (data) {
+
+            for (var i = 0; i < data.countyCount; i++) {
+                $('#lstGetDistrictName').append("<option selected='selected'  value='" + data.countyItems[i].Value + "'>" + data.countyItems[i].Text + "</option>");
+            }
+            MultiTerritory();
+
+            $("#lstGetTerritoryName").empty();
+            $('#lstGetTerritoryName').append("<option value='0'>Select All</option>");
+            $.getJSON('@Url.Action("JsonLoadSelectedTerritoryName")?SelectedTeamID=' + $("#hdnMultiTerritory").val(), function (data) {
+
+                for (var i = 0; i < data.countyCount; i++) {
+                    $('#lstGetTerritoryName').append("<option selected='selected'  value='" + data.countyItems[i].Value + "'>" + data.countyItems[i].Text + "</option>");
+                }
+
+            });
+
+
+        });
+
+        function MultiDistrict() {
+            SelectAllRegion();
+            if (($("#lstGetRegionName").val() != "") && ($("#lstGetRegionName").val() != 0)) {
+                var DistrictXML = ',' + $("#lstGetRegionName").val();
+                $("#hdnMultiDistrict").val(DistrictXML);
+            }
+
+        }
+
+        function MultiTerritory() {
+
+            SelectAllDistrict();
+
+            if (($("#lstGetDistrictName").val() != "") && ($("#lstGetDistrictName").val() != 0)) {
+                var TerritoryXML = ',' + $("#lstGetDistrictName").val();
+                $("#hdnMultiTerritory").val(TerritoryXML);
+            }
+
+            SelectAllTerritory();
+        }
+
+        function SelectAllRegion() {
+
+            $("#hdnMultiDistrict").val = "";
+
+            if (($("#lstGetRegionName").val() == "") || ($("#lstGetRegionName").val() == 0)) {
+
+                if ($("#lstGetRegionName").val() == 0) {
+                    $("#lstGetRegionName option").prop("selected", true);
+                    $("#lstGetRegionName option:first").removeAttr('selected');
+                }
+
+                var DistrictXML = ',' + $("#lstGetRegionName").val();
+
+                $("#hdnMultiDistrict").val(DistrictXML);
+
+                return true;
+
+            }
+        }
+
+        function SelectAllDistrict() {
+
+            $("#hdnMultiTerritory").val = "";
+            if (($("#lstGetDistrictName").val() == "") || ($("#lstGetDistrictName").val() == 0)) {
+                if ($("#lstGetDistrictName").val() == 0) {
+                    $("#lstGetDistrictName option").prop("selected", true);
+                    $("#lstGetDistrictName option:first").removeAttr('selected');
+                }
+
+                var TerritoryXML = ',' + $("#lstGetDistrictName").val();
+
+                $("#hdnMultiTerritory").val(TerritoryXML);
+
+                return true;
+
+            }
+        }
+
+        function SelectAllTerritory() {
+
+            $("#hdnMultifetch").val = "";
+
+            if (($("#lstGetTerritoryName").val() == "") || ($("#lstGetTerritoryName").val() == 0)) {
+                if ($("#lstGetTerritoryName").val() == 0) {
+                    $("#lstGetTerritoryName option").prop("selected", true);
+                    $("#lstGetTerritoryName option:first").removeAttr('selected');
+                }
+
+                var FetchXML = ',' + $("#lstGetTerritoryName").val();
+
+                $("#hdnMultifetch").val(FetchXML);
+
+                return true;
+
+            }
+        }
+
+    });
+
+
+    $("#lstGetDistrictName").change(function () {
+
+        MultiTerritory();
+
+        $("#lstGetTerritoryName").empty();
+        $('#lstGetTerritoryName').append("<option value='0'>Select All</option>");
+        $.getJSON('@Url.Action("JsonLoadSelectedTerritoryName")?SelectedTeamID=' + $("#hdnMultiTerritory").val(), function (data) {
+
+            for (var i = 0; i < data.countyCount; i++) {
+                $('#lstGetTerritoryName').append("<option selected='selected'  value='" + data.countyItems[i].Value + "'>" + data.countyItems[i].Text + "</option>");
+            }
+
+        });
+
+
+        function MultiTerritory() {
+
+            SelectAllDistrict();
+
+            if (($("#lstGetDistrictName").val() != "") && ($("#lstGetDistrictName").val() != 0)) {
+                var TerritoryXML = ',' + $("#lstGetDistrictName").val();
+                $("#hdnMultiTerritory").val(TerritoryXML);
+            }
+
+            SelectAllTerritory();
+        }
+
+        function SelectAllDistrict() {
+
+            $("#hdnMultiTerritory").val = "";
+            if (($("#lstGetDistrictName").val() == "") || ($("#lstGetDistrictName").val() == 0)) {
+                if ($("#lstGetDistrictName").val() == 0) {
+                    $("#lstGetDistrictName option").prop("selected", true);
+                    $("#lstGetDistrictName option:first").removeAttr('selected');
+                }
+
+                var TerritoryXML = ',' + $("#lstGetDistrictName").val();
+
+                $("#hdnMultiTerritory").val(TerritoryXML);
+
+                return true;
+
+            }
+        }
+
+        function SelectAllTerritory() {
+
+            $("#hdnMultifetch").val = "";
+
+            if (($("#lstGetTerritoryName").val() == "") || ($("#lstGetTerritoryName").val() == 0)) {
+                if ($("#lstGetTerritoryName").val() == 0) {
+                    $("#lstGetTerritoryName option").prop("selected", true);
+                    $("#lstGetTerritoryName option:first").removeAttr('selected');
+                }
+
+                var FetchXML = ',' + $("#lstGetTerritoryName").val();
+
+                $("#hdnMultifetch").val(FetchXML);
+
+                return true;
+
+            }
+        }
+
+    });
+
+    function MultiFetch() {
+        if (($("#lstGetTerritoryName").val() != "") && ($("#lstGetTerritoryName").val() != 0)) {
+            var FetchXML = ',' + $("#lstGetTerritoryName").val();
+            $("#hdnMultifetch").val(FetchXML);
+        }
+    }
+
+
+    $('#btnFetch').click(function () {
+        //alert('hi');
+        if ($('#lstGetTeamName').val() == null) {
+            //alert($('#lstGetTeamName').val());
+            if ($('#lstGetTeamName').val() == null) {
+                $('[id$=lblError]').text("Please Select Team");
+                $("#lstGetTeamName").css("background-color", "#FFE8E8").css("border", "1px solid #FF6666");
+                $('#lstGetTeamName').focus();
+                return false;
+            }
+            else {
+                $("#lstGetTeamName").css("background-color", "#FFE8E8").css("border", "1px solid #d5d5d5");
+                lblError.textContent = "";
+            }
+            
+        }
+        else
+        {
+             if ((($('#lstGetTeamName').val() != null) && ($('#lstGetTerritoryName').val() == null)) && (($('#lstGetRegionName').val() == null) && ($('#lstGetDistrictName').val() == null))) {
+                    $('[id$=lblError]').text("Please Select Valide Team");
+                    return false;
+            }
+            else {
+                $("#lstGetTeamName").css("background-color", "#FFE8E8").css("border", "1px solid #d5d5d5");
+                lblError.textContent = "";
+            }
+
+            if (($('#lstGetTeamName').val() != null) && ($('#lstGetTerritoryName').val() == null) && ($('#lstGetRegionName').val() != null) && ($('#lstGetDistrictName').val() == null)) {
+                $('[id$=lblError]').text("Please Select Valide Region");
+                $("#lstGetRegionName").css("background-color", "#FFE8E8").css("border", "1px solid #FF6666");
+                $('#lstGetRegionName').focus();
+                return false;
+            }
+            else
+            {
+                $("#lstGetRegionName").css("background-color", "#FFE8E8").css("border", "1px solid #d5d5d5");
+                lblError.textContent = "";
+            }
+            if (($('#lstGetTeamName').val() != null) && ($('#lstGetTerritoryName').val() == null) && ($('#lstGetRegionName').val() != null) && ($('#lstGetDistrictName').val() != null)) {
+                $('[id$=lblError]').text("Please Select Valide District");
+                $("#lstGetDistrictName").css("background-color", "#FFE8E8").css("border", "1px solid #FF6666");
+                $('#lstGetDistrictName').focus();
+                return false;
+            }
+            else {
+                $("#lstGetDistrictName").css("background-color", "#FFE8E8").css("border", "1px solid #d5d5d5");
+                lblError.textContent = "";
+            }
+        MultiFetch();
+        initGrid();
+        }
+
+    });
+
+    $("#btnActivate").click(function () {
+              
+            if ($('#lstGetTerritoryName').val() == null) {
+                $('[id$=lblError]').text("Please Fetch The Data First");
+                return false;
+            }
+                 
+
+        jQuery('#CFSAMaster').jqGrid('saveRow', lastsel);
+      
+        var gridData = jQuery("#CFSAMaster").getRowData();
+        var postData = JSON.stringify(gridData);
+        // alert(postData);
+     
+        $.ajax({
+            url: '@Url.Action("CFSAActivateInActivateMaster")',
+            type: 'POST',
+            dataType: 'json',
+            data: { gridData: postData },
+            success: function (result) {
+                
+            }
+        });
+        $("#CFSAMaster").setGridParam({ datatype: 'json', page: 1 }).trigger('reloadGrid');
+        return true;
+    });
+        $("#btnInActivate").click(function () {
+
+            if ($('#lstGetTerritoryName').val() == null) {
+                $('[id$=lblError]').text("Please Fetch The Data First");
+                return false;
+            }
+
+            jQuery('#CFSAMaster').jqGrid('saveRow', lastsel);
+            var gridData = jQuery("#CFSAMaster").getRowData();
+            var postData = JSON.stringify(gridData);
+            //alert(postData);
+            $.ajax({
+                url: '@Url.Action("CFSAInActivateMaster")',
+                type: 'POST',
+                dataType: 'json',
+                data: { gridData: postData },
+                success: function (result) {
+
+                }
+            });
+            $("#CFSAMaster").setGridParam({ datatype: 'json', page: 1 }).trigger('reloadGrid');
+            return true;
+        });
+    var lastsel;
+    function initGrid() {
+        $('#CFSAMaster').jqGrid('GridUnload');
+        jQuery("#CFSAMaster").jqGrid({
+            url: '@Url.Action("GetCFSAMaster")?PKID=' + $("#hdnMultifetch").val(),
+            datatype: "json",
+            jsonReader: { repeatitems: false, id: "UserFKID" },
+            colNames: ['UserFKID', 'FirstName', 'LastName', 'Teritorry Code', 'CFSAActive','Active/InActive'],
+            colModel: [
+                { name: 'UserFKID', index: 'UserFKID', align: 'left', hidden: true, editable: false },
+                
+                 { name: 'FirstName', index: 'FirstName', align: 'left', hidden: false, editable: false },
+                 { name: 'LastName', index: 'LastName', align: 'left', hidden: false, editable: false },
+                 { name: 'TerCode', index: 'TerCode', align: 'left', hidden: false, editable: false },
+                 
+                { name: 'CFSAActive', index: 'CFSAActive', align: 'left', hidden: false, editable: false},
+                {
+                    name: 'chks', index: 'chks', width: 50, align: "center", editable: true,
+                    edittype: "checkbox", editoptions: { value: "1:0" }, formatter: "checkbox", formatoptions: { disabled: false }
+                },
+
+
+            ],
+           autowidth: true,
+            gridview: true,
+            caption: 'CFSA Master',
+            jqModal: true,
+            rowTotal: 10,
+            rowNum: 10,
+            align: 'center',
+            sortable: true,
+            hidegrid: true,
+            altRows: true,
+            sortname: 'PKID',
+            sortorder: 'desc',
+            viewrecords: true,
+            pager: $('#CFSAMasterPager'),
+            height: 'auto',
+            editable: true,
+            onSelectRow: function (id, selected) {
+                var ch = jQuery(this).find('#' + id + ' input[type=checkbox]').attr('checked');
+                if (ch) {
+                    jQuery(this).find('#' + id + ' input[type=checkbox]').attr('checked', false);
+                } else {
+                    jQuery(this).find('#' + id + ' input[type=checkbox]').attr('checked', true);
+                }
+                rowChecked = 1;
+                currentrow = id;
+                if (!$("input[type=checkbox]").is(':checked') && !$("#chks").is(':checked')) {
+                    jQuery('#CFSAMaster').jqGrid('saveRow', id);
+
+                }
+                else {
+                    jQuery("#CFSAMaster").jqGrid('editRow', id);
+
+                }
+
+                if (id != lastsel) {
+                    jQuery('#CFSAMaster').saveRow(lastsel);
+                    lastsel = id;
+                }
+                jQuery('#CFSAMaster').editRow(id, true);
+
+            },
+            'cellsubmit': 'clientArray',
+            'editurl': 'clientArray',
+            editable: true,
+            gridComplete: function () {
+
+                if (jQuery("#CFSAMaster").getGridParam("records") == 0) {
+
+                    jQuery("#CFSAMaster").addRowData(
+
+                    "blankRow", { "FirstName": "No records to view" });
+                }
+            },
+
+
+        });
+
+        jQuery("#CFSAMaster").jqGrid('navGrid', '#CFSAMasterPager', { edit: false, add: false, del: false, search: false, view: false });
+
+
+        setMethod('CFSAMaster', 'CFSAMasterPager', 'CFSA Master');
+
+    }
+    function setMethod(gid, id, pgTitle) {
+
+        var btnTitle = 'Export to Excel';
+        $('#' + gid).jqGrid('navSeparatorAdd', '#' + id, { sepclass: "ui-separator" });
+        $('#' + gid).jqGrid('navButtonAdd', '#' + id, { caption: '', title: btnTitle, position: 'last', buttonicon: 'ui-icon-calculator', onClickButton: function () { ExcelExport(); } });
+
+        var btnTitle = 'Export to PDF';
+        $('#' + gid).jqGrid('navSeparatorAdd', '#' + id, { sepclass: "ui-separator" });
+        $('#' + gid).jqGrid('navButtonAdd', '#' + id, { caption: '', title: btnTitle, position: 'last', buttonicon: 'ui-icon-bookmark', onClickButton: function () { PDFExport(); } });
+
+        var btnTitle = 'Export to CSV';
+        $('#' + gid).jqGrid('navSeparatorAdd', '#' + id, { sepclass: "ui-separator" });
+        $('#' + gid).jqGrid('navButtonAdd', '#' + id, { caption: '', title: btnTitle, position: 'last', buttonicon: 'ui-icon-note', onClickButton: function () { CSVExport(); } });
+
+
+        var btnTitle = 'Print Grid';
+        $('#' + gid).jqGrid('navSeparatorAdd', '#' + id, { sepclass: "ui-separator" });
+        $('#' + gid).jqGrid('navButtonAdd', '#' + id, { caption: '', title: btnTitle, position: 'last', buttonicon: 'ui-icon-print', onClickButton: function () { PrintGrid(gid); } });
+    }
+    function ExcelExport() {
+        window.location = '@Url.Action("ExportCFSAMasterToExcel")?PKID=' + $("#hdnMultifetch").val();
+    }
+    function PDFExport() {
+        window.location = '@Url.Action("ExportCFSAMasterPDF")?PKID=' + $("#hdnMultifetch").val();
+    }
+    function CSVExport() {
+        window.location = '@Url.Action("ExportCFSAMasterCsv")?PKID=' + $("#hdnMultifetch").val();
+    }
+    function PrintGrid(gid) {
+        // empty the print div container.
+        var rows = $('#CFSAMaster').jqGrid('getRowData');
+        for (var i = 0; i < rows.length; i++) {
+            var row = rows[i];
+            $('#Table1').append("<tr><td>" + row.FirstName + "</td><td>" + row.LastName + "</td><td>" + row.TerCode + "</td><td>" + row.CFSAActive + "</td></tr>");
+
+        }
+        $(function () { printChrome('prt-container') });
+
+    }
+
+    function printChrome(divContainer) {
+
+        var printContent = document.getElementById(divContainer);
+        window.document.body.innerHTML = printContent.innerHTML;
+        window.print();
+        window.location.reload();
+    }
+    $(document).ready(function () {
+
+        $('#lstGetTeamName').empty();
+        $.getJSON('@Url.Action("JsonLoadTeamNameForCFSA")', function (data) {
+            $('#lstGetTeamName').append("<option value='0'>Select All</option>");
+            for (var i = 0; i < data.countyCount; i++) {
+                $('#lstGetTeamName').append("<option value='" + data.countyItems[i].Value + "'>" + data.countyItems[i].Text + "</option>");
+            }
+        });
+
+        $('#lstGetRegionName').empty();
+
+        $.getJSON('@Url.Action("JsonLoadRegionNameForCFSA")', function (data) {
+            $('#lstGetRegionName').append("<option value='0'>Select All</option>");
+            for (var i = 0; i < data.countyCount; i++) {
+                $('#lstGetRegionName').append("<option value='" + data.countyItems[i].Value + "'>" + data.countyItems[i].Text + "</option>");
+            }
+        });
+
+        $('#lstGetDistrictName').empty();
+        $.getJSON('@Url.Action("JsonLoadDistrictNameForCFSA")', function (data) {
+            $('#lstGetDistrictName').append("<option value='0'>Select All</option>");
+            for (var i = 0; i < data.countyCount; i++) {
+                $('#lstGetDistrictName').append("<option value='" + data.countyItems[i].Value + "'>" + data.countyItems[i].Text + "</option>");
+            }
+        });
+
+        $('#lstGetTerritoryName').empty();
+        $.getJSON('@Url.Action("JsonLoadTerritoryNameForCFSA")', function (data) {
+            $('#lstGetTerritoryName').append("<option value='0'>Select All</option>");
+            for (var i = 0; i < data.countyCount; i++) {
+                $('#lstGetTerritoryName').append("<option value='" + data.countyItems[i].Value + "'>" + data.countyItems[i].Text + "</option>");
+            }
+        });
+
+    });
+
+    </script>
+    <div id='prt-container' style="display:none">
+        <table id="Table1" border="1" width="100%">
+            <thead>
+                <tr>
+                    <td><b>FirstName</b></td>
+                    <td><b>LastName</b></td>
+                    <td><b>TerCode</b></td>
+                    <td><b>CFSAActive</b></td>
+                </tr>
+
+            </thead>
+            <tbody></tbody>
+
+        </table>
+    </div>
+</body>

@@ -1,0 +1,526 @@
+﻿@{
+    ViewBag.Title = "PrescriptionTracker";
+    Layout = "~/Views/Shared/MasterLayout.cshtml";
+}
+
+
+
+
+<body>
+
+    @using (Html.BeginForm(FormMethod.Post))
+{
+
+    
+
+    <div class="inner_tbldiv" id="DocDiv" style="display: none; left:2px; margin-top:10px !important;">
+       
+
+    </div>
+        <!--Brick and Specilization starts-->
+                
+        <div>
+            <table border="0" style="margin-top: 7px;width: 100%">
+                
+                <tr style="margin-top: 10px; background-color: #00AADA; color: white;">
+                    <td>Search</td>
+                    <td width="15%" class="tb-r2">Brick<span style='align:left;color:red'>*</span></td>
+                    <td width="25%" class="tb-r2">
+                        @Html.DropDownList("ddlBrickList", PfizerEntity.UsefulLink.GetBrickDetails(Convert.ToInt32(Session["Territory_FKID"] == null ? "0" : Session["Territory_FKID"].ToString())), "Select")
+                    </td>
+
+                
+                    <td width="15%" class="tb-r2">Specialization<span style='align:left;color:red'>*</span></td>
+                    <td width="25%" class="tb-r2">
+                        @Html.DropDownList("ddlSpecialization", PfizerEntity.UsefulLink.GetSpecilizationDetails(), "Select")
+                    </td>
+                    <td width="10%" ><input type="button" id="btnFetch" style="height:30px; width:70px;border-radius:7px" value="Fetch" /></td>
+                   
+               </tr>
+
+            </table>
+
+
+        </div>
+         <div id="testDiv">
+            <table border="0" style="width: 100%">
+                <tr>
+                    <td>
+                        <!--JqGrid Starts-->
+                        <table style="margin-top: 25px; width :100%" border="0">
+                            <tr>
+                                <td>
+                                    <table id="ajaxGrid" style="width: 100%" border="0"></table>
+                                    <div id="ajaxGridPager">
+                                    </div>
+                                </td>
+                            </tr>
+                        </table>
+                        <!--Ends-->
+                    </td>
+                </tr>
+            </table>
+        </div>
+        
+              
+        
+    }
+    
+
+    <script type="text/javascript">
+    function dceDeleteRows() {
+        $('#tbl4').find('tr').each(function () {
+            var chkrow = $(this);
+            if (chkrow.find('input:checkbox:last').is(':checked')) {
+                $(this).remove();
+            }
+        });
+    }
+   
+    function productpackSize(id) {
+        $.ajax({
+            type: 'POST',
+            url: '@Url.Action("ProductPackByProduct")?type=' + 'drppackbyProduct' + '&Product=' + $('#drpProduc_' + id).val(),
+            success: function (result4) {
+                
+                $('#drpPack_' + id).html(result4);
+                   
+               
+
+            }
+        });
+    }
+
+    jQuery(document).ready(function () {
+         initGrid("", "");
+    });
+
+    function DisplayRpt(input, Doc, Spe, SpeFkid, DocFkid) {
+        $("#tbl3 tr").remove();
+        $('#DocDiv').dialog({
+
+            height: 500,
+            width: 950,
+            show: { effect: 'drop', direction: "up" },
+            modal: true,
+            open: function (event, ui) {
+                $.ajax({
+                    type: 'POST',
+                    url: '@Url.Action("ProductLoad")?type=' + 'drpProd' + '&Count=1',
+                    success: function (result) {
+                        
+                        $.ajax({
+                            type: 'POST',
+                            url: '@Url.Action("ProductHospital")?type=' + 'drpHosp' + '&Count=1',
+                            success: function (result1) {
+
+                        
+                                $.ajax({
+                                    type: 'POST',
+                                    url: '@Url.Action("ProductStokiest")?type=' + 'drpStok' + '&Count=1',
+                                    success: function (result2) {
+
+                                        $.ajax({
+                                            type: 'POST',
+                                            url: '@Url.Action("ProductPack")?type=' + 'drppack' + '&Count=1',
+                                            success: function (result3) {
+
+                                                $("#mainTb").remove();
+                                                
+                                                $("#DocDiv").append("<tr rowpos='11'><td colspan='4'><table id='mainTb'><tr><td><table id='tblBrand' border='1' cellspacing='1' cellpadding='0' width='700px'  height='25px' style='margin-left:80px;' align='center'><tr style='width:25px;height:20px;'><td style='background-color:#00AADA;color:white'><b>DoctorName</b></td><td style='width:50%'><label id='lblDoctor'>" + Doc + "</label></td><td style='background-color:#00AADA;color:white'><b>SpeciliZation</b></td><td style='width:50%'><label id='lblSpec'>" + Spe + "</label></td></tr></table><br\><br\><b>Prescriptions Tracker Details</b><br/><br/><br/><table id='tbl3' border='1' cellspacing='1' cellpadding='0' width='700px'  height='25px' style='margin-left:80px;' align='center'><tr style='background-color:#00AADA;color:white'><th>SNO</th><th>Date</th><th>ProductName</th><th>Packsize</th><th>No.of Prescription</th><th>Hospital</th><th>Stokiest</th></tr><tr></tr></table><br/><br/><br/><p><b>PrescriptionTracker</b><p><br/><br/><table id='tbl4' border='1' cellspacing='1' style='margin-left:20px;' cellpadding='0' width='945px' height='25px' align='center'><thead><tr style='background-color:#00AADA;color:white;height:30px;'><td>SNo</td><td>Date<font style='color:red'> *</font></td><td>Product<font style='color:red'> *</font></td><td>PackSize <font style='color:red'> *</font></td><td>No.Of Prescription<font style='color:red'> *</font></td><td>Hospital</td><td>Stokiest</td><td>Delete</td></tr></thead><tr id='1'><td>1</td><td><input id='txtDate_1'  maxlength='30' size='10' name='txtDate' onclick='date()'/></td><td style='width:100px;height:30px;padding:5px'>" + result + "</td><td style='width:100px;height:30px;padding:5px'>" + result3 + "</td><td><input id='txtPrec_1' onkeyup='OnlyNumber(this)' maxlength='30' size='20' name='txtPrec'/></td><td style='width:100px;height:30px;padding:5px'>" + result1 + "</td><td style='width:100px;height:30px;padding:5px'>" + result2 + "</td><td><input id='chkDelete' type='checkbox' name='chkDelete'disabled></td><td><input id='hdnSamFKID' value='0' type='hidden' name='hdnSamFKID'></td></tr></table><table style='margin-left:10px;'><tr><td valign='top' align='right'><input id='btnAddNew' onclick='dceAddRow();' value=' + ' type='submit' name='btnAddNew'style='background-color:#00AADA;color:white'></td><td><input id='btnDelete' onclick='dceDeleteRows();' value=' - ' type='button' name='btnDelete'style='background-color:#00AADA;color:white'></td></tr><table><br/><br/><br/><br/><table><td> <input id='btnSaveProductData' onclick='SaveRecords(" + DocFkid + "," + SpeFkid + ");' value='Save' type='button'name='btnAddNew' style='background-color:#00AADA;color:white'> </td></td> </table></td></tr></table></td></tr>");
+                                
+                                            }
+                                        });
+                                    }
+                                });
+                            }
+                        });
+                    }
+                });
+                $.ajax({
+                    type: 'POST',
+                    url: '@Url.Action("PrescriptionTracker1")?DoctorFkid=' + DocFkid,
+                    success: function (result) {
+                            
+                        for (var i = 0; i <= result.length; i++) {
+                            if (result.length != 0) {
+
+                                 var Srl = i + 1;
+                                $("#tbl3").append("<tr><td>" + Srl + "</td><td>" + result[i].Date + "</td><td>" + result[i].ProductName + "</td><td>" + result[i].Productpack + "</td><td>" + result[i].Prescription + "</td><td>" + result[i].Hospital + "</td><td>" + result[i].Stockist + "</td></tr>");
+                            }
+                            else {
+
+                                $("#tbl3").append("<tr><td></td><td></td><td></td><td color='red'>No Records Found</td><td></td><td></td><td></td></tr>")
+                            }
+                         }
+                    }
+                });
+            }
+           
+
+        });
+        
+        
+
+    }
+
+        function date() {
+
+            var Count = $('#tbl4 tr').length - 1;
+            for (var i = 1; i <= Count; i++) {
+                
+               
+                $('#txtDate_' + i).datepicker({ changeMonth: true, changeYear: true, yearRange: '1900:myDate', dateFormat: 'dd/mm/yy', maxDate: 0, });
+                $('#txtDate_' + i).val($.datepicker.formatDate('dd/mm/yy', new Date()));
+         
+           
+            }
+            
+        }
+    function dceAddRow() {
+        var Count = $('#tbl4 tr').length;
+        
+        $.ajax({
+            type: 'POST',
+            url: '@Url.Action("ProductLoad")?type=' + 'drpProd' + '&Count=' + Count,
+                success: function (result) {
+
+                   
+                    $.ajax({
+                              type: 'POST',
+                              url: '@Url.Action("ProductPack")?type=' + 'drppack' + '&Count=' + Count,
+                        success: function (result3) {
+
+                            $.ajax({
+                                type: 'POST',
+                                url: '@Url.Action("ProductHospital")?type=' + 'drpHosp' + '&Count=' + Count,
+                                success: function (result1) {
+                                    $.ajax({
+                                        type: 'POST',
+                                        url: '@Url.Action("ProductStokiest")?type=' + 'drpStok' + '&Count=' + Count,
+                                        success: function (result2) {
+                                            $('#tbl4').append("<tr id=" + Count + "><td>" + Count + "</td><td><input id='txtDate_" + Count + "'  maxlength='30' size='10' name='txtDate' onclick='date()' /></td><td style='width:100px;height:30px;padding:5px'>" + result + "</td><td style='width:100px;height:30px;padding:5px'>" + result3 + "</td><td><input id='txtPrec_" + Count + "'  maxlength='30' size='20' name='txtPrec' onkeyup='OnlyNumber(this)'/></td><td style='width:100px;height:30px;padding:5px'>" + result1 + "</td><td style='width:100px;height:30px;padding:5px'>" + result2 + "</td><td><input id='chkDelete_" + Count + "' type='checkbox' name='chkDelete'></td><td><input id='hdnSamFKID' value='0' type='hidden' name='hdnSamFKID'></td></tr>");
+                                
+                                        }
+                                    });
+                                }
+                            });
+                        }
+                    });
+                }
+            });
+    }
+
+        function CancelRecords() {
+            $('#DocDiv').remove();
+           
+            
+        }
+        function SaveRecords(DocFkid, SpeFkid) {
+          
+           
+            var tblValue = "";
+
+            var Count = $('#tbl4 tr').length - 1;
+            
+            for (var i = 1; i <= Count; i++) {
+                $('select').css("border", "1px solid #C0C0C0");
+                $("input[type=text]").css("border", "1px solid #C0C0C0");
+                $("#txtDate_" + i).css("border", "1px solid #C0C0C0");
+                $("#txtPrec_" + i).css("border", "1px solid #C0C0C0");
+                var error = "";
+                if ($("#txtDate_" + i).val().charAt(0) == ' ' || $("#txtDate_" + i).val().charAt($("#txtDate_" + i).val().length - 1) == ' ' || $("#txtDate_" + i).val() == "") {
+                    error += "Date";
+                    $('#FormError').html("<td class='ui-state-error' colspan='10'>" + error + ":Field is required</td>");
+                    $("#txtDate_" + i).css("background-color", "#FFE8E8").css("border", "1px solid #FF6666");
+                    $("#txtDate_" + i).focus();
+                    return [false, response.responseText];
+                }
+                else if ($("#drpProduc_" + i).val() == 0) {
+                    error += "Product";
+                    $('#FormError').html("<td class='ui-state-error' colspan='10'>" + error + ":Field is required</td>");
+                    $("#drpProduc_" + i).css("background-color", "#FFE8E8").css("border", "1px solid #FF6666");
+                    $("#drpProduc_" + i).focus();
+                    return [false, response.responseText];
+                }
+                else if ($("#drpPack_" + i).val() == 0) {
+                    error += "Packsize";
+                    $('#FormError').html("<td class='ui-state-error' colspan='10'>" + error + ":Field is required</td>");
+                    $("#drpPack_" + i).css("background-color", "#FFE8E8").css("border", "1px solid #FF6666");
+                    $("#drpPack_" + i).focus();
+                    return [false, response.responseText];
+                }
+                else if ($("#txtPrec_" + i).val().charAt(0) == ' ' || $("#txtPrec_" + i).val().charAt($("#txtPrec_" + i).val().length - 1) == ' ' || $("#txtPrec_" + i).val() == "") {
+                    error += "Date";
+                    $('#FormError').html("<td class='ui-state-error' colspan='10'>" + error + ":Field is required</td>");
+                    $("#txtPrec_" + i).css("background-color", "#FFE8E8").css("border", "1px solid #FF6666");
+                    $("#txtPrec_" + i).focus();
+                    return [false, response.responseText];
+                }
+                tblValue += $("#txtDate_" + i).val() + "," + $("#drpProduc_" + i + " option:selected").val() + "," + $("#drpPack_" + i + " option:selected").val() + ","+ $("#txtPrec_" + i).val() + "," + $("#drpHosp_" + i + " option:selected").val() + "," + $("#drpStok_" + i + " option:selected").val() + "|";
+            }
+            $.ajax({
+                type: 'POST',
+                url: '@Url.Action("PrescriptionAdd")?TblValue=' + tblValue + '&DoctorFkid=' + DocFkid + '&SpecialityFkid=' + SpeFkid,
+                success: function (result) {
+                    
+                    var Count = $('#tbl4 tr').length - 1;
+                    //alert("PrescriptionTracker Details Added Successfully");
+                    for (var i = 1; i <= Count; i++)
+                    {
+                        if (i != 1)
+
+                            $('#tbl4 tr#' + i).remove();
+                        else
+                        {
+                            $("#txtDate_" + i).val('');
+                            $("#drpProduc_" + i).val(0);
+                            $("#drpPack_" + i).val(0);
+                            $("#txtPrec_" + i).val('');
+                            $("#drpHosp_" + i).val(0);
+                            $("#drpStok_" + i).val(0);
+
+                        }
+                    }
+                    alert("Prescription Tracker Details added Successfully");
+
+                        
+
+                }
+            });
+        }
+
+    
+        $("#btnFetch").click(function () {
+            if ($("#ddlBrickList").val() == 0 || $("#ddlSpecialization").val() == 0) {
+                alert('select values from Brick & Specilization');
+                $("#ddlBrickList").css("background-color", "white").css("border", "2px solid #C0C0C0");
+                $("#ddlSpecialization").css("background-color", "white").css("border", "2px solid #C0C0C0");
+                if ($("#ddlBrickList").val() == '')
+                    $("#ddlBrickList").css("background-color", "#FFE8E8").css("border", "2px solid #FF6666");
+                else if ($("#ddlSpecialization").val() == '')
+                    $("#ddlSpecialization").css("background-color", "#FFE8E8").css("border", "2px solid #FF6666");
+
+
+            }
+            else {
+
+                var brick = $("#ddlBrickList").val();
+                var specialization = $("#ddlSpecialization").val();
+
+
+                initGrid(brick, specialization);
+                $("#ddlBrickList").css("background-color", "white").css("border", "2px solid #C0C0C0");
+                $("#ddlSpecialization").css("background-color", "white").css("border", "2px solid #C0C0C0");
+                $('#ddlBrickList').val('');
+                $('#ddlSpecialization').val('');
+
+            }
+        });
+
+
+
+    function initGrid(brick, specialization) {
+
+        $('#ajaxGrid').jqGrid('GridUnload');
+        var test = "";
+        jQuery("#ajaxGrid").jqGrid({
+
+            url: '@Url.Action("GridPrecscriptionMaster")?brick=' + brick + '&specialization=' + specialization,
+
+            datatype: "json",
+            jsonReader: { repeatitems: false, id: "PKID" },
+            colNames: ['PKID', 'DoctorFKID', 'DoctorName', 'SpecialityFKID', 'Specialization', 'AreaName'],
+            colModel: [
+                 { name: 'PKID', index: 'PKID', align: 'left', hidden: true, editable: true },
+                  { name: 'DoctorFKID', index: 'DoctorFKID', search: false, align: 'left', hidden: true, editable: true },
+                  {
+                    name: 'DoctorName', index: 'DoctorName', align: 'left', editable: true, editrules: { edithidden: true, required: false }, searchoptions: { sopt: ['eq', 'bw', 'ew', 'cn'] },
+                    searchoptions: { sopt: ['eq', 'bw', 'ew', 'cn'] }, search: false, searchrules: { required: false }
+
+                  },
+
+                 { name: 'SpecialityFKID', search: false, index: 'SpecialityFKID', align: 'left', hidden: true, editable: true },
+                 {
+                     name: 'Specialization', index: 'Specialization', align: 'left',
+                     searchoptions: { sopt: ['eq', 'bw', 'ew', 'cn'] }, search: true, searchrules: { required: true }
+                 },
+                 {
+                     name: 'AreaName', index: 'AreaName', align: 'left',
+                     searchoptions: { sopt: ['eq', 'bw', 'ew', 'cn'] }, search: true, searchrules: { required: true }
+                 },
+
+            ],
+            autowidth: true,
+            gridview: true,
+            caption: 'PrescriptionMaster',
+            align: 'center',
+            sortable: true,
+            hidegrid: true,
+            altRows: true,
+            sortname: 'Doctor',
+            sortorder: 'asc',
+            rowTotal: 10,
+            rowNum: 10,
+
+            gridComplete: function () {
+
+                var ids = jQuery("#ajaxGrid").jqGrid('getDataIDs');
+               
+                for (var i = 0; i < ids.length; i++) {
+                   
+                    var col0 = jQuery('#ajaxGrid').jqGrid('getCell', ids[i], 2);
+                   
+                    var Doc = jQuery('#ajaxGrid').jqGrid('getCell', ids[i], "DoctorName");
+                    var DocFkid = jQuery('#ajaxGrid').jqGrid('getCell', ids[i], "DoctorFKID");
+                    
+                    var Spe = jQuery('#ajaxGrid').jqGrid('getCell', ids[i], "Specialization");
+                    var SpeFkid = jQuery('#ajaxGrid').jqGrid('getCell', ids[i], "SpecialityFKID");
+                    pop2 = "<a onclick=\"javascript:DisplayRpt('" + col0 + "','" + Doc + "','" + Spe + "','" + SpeFkid + "','" + DocFkid + "');\"  style=\"color:#2f72c3;text-decoration:underline;font-weight:bold;cursor:pointer\">" + col0 + "</a>";
+
+
+                    jQuery("#ajaxGrid").jqGrid('setRowData', ids[i], { DoctorName: pop2 });
+                }
+
+
+               
+
+                if (jQuery("#ajaxGrid").getGridParam("records") == 0) {
+                    jQuery("#ajaxGrid").addRowData(
+                    "blankRow", { "Specialization": "No records to view" });
+                }
+            },
+            viewrecords: true,
+            pager: $('#ajaxGridPager'),
+            height: 'auto',
+
+
+
+        });
+
+        jQuery("#ajaxGrid").jqGrid('navGrid', '#ajaxGridPager', { edit: false, add: false, del: false, search: true, view: true, enableClear: false },
+                {
+                    //Edit
+                },
+                {
+                    //Add
+                },
+                {
+                    //Delete
+                },
+                {
+                    //Search
+                    closeOnEscape: true,
+                    modal: true,
+                    recreateForm: true,
+                    width: 600,
+                    caption: "Search",
+                    searchOnEnter: true,
+                    beforeShowSearch: function (form) {
+
+                        $('#jqg1').val('');
+                        $('#fbox_ajaxGrid_reset').click();
+
+                        var dialogHeight = $("#searchmodfbox_ajaxGrid").height();
+                        var dialogWidth = $("#searchmodfbox_ajaxGrid").width();
+                        var windowHeight = $(window).height();
+                        var windowWidth = $(window).width();
+                        $("#searchmodfbox_ajaxGrid").css('position', 'fixed');
+                        $("#searchmodfbox_ajaxGrid").css('top', ((windowHeight - dialogHeight) / 2));
+                        $("#searchmodfbox_ajaxGrid").css('left', ((windowWidth - dialogWidth) / 2));
+
+                        return [true, ""];
+                    }
+
+                },
+                {
+                    //View :
+                    closeOnEscape: true,
+                    recreateForm: true,
+                    width: 600,
+                    modal: true,
+                    beforeShowForm: function (form) {
+
+                        var thisForm = $("#viewmod" + jQuery("#ajaxGrid")[0].id);
+                        var dialogHeight = $(thisForm).height();
+                        var dialogWidth = $(thisForm).width();
+                        var windowHeight = $(window).height();
+                        var windowWidth = $(window).width();
+                        $(thisForm).css('position', 'fixed');
+                        $(thisForm).css('top', ((windowHeight - dialogHeight) / 2));
+                        $(thisForm).css('left', ((windowWidth - dialogWidth) / 2));
+                    }
+                }
+           );
+        setMethod('ajaxGrid', 'ajaxGridPager', 'PrescriptionTracker');
+    }
+    function setMethod(gid, id, pgTitle) {
+
+        var btnTitle = 'Export to Excel';
+        $('#' + gid).jqGrid('navSeparatorAdd', '#' + id, { sepclass: "ui-separator" });
+        $('#' + gid).jqGrid('navButtonAdd', '#' + id, { caption: '', title: btnTitle, position: 'last', buttonicon: 'ui-icon-calculator', onClickButton: function () { ExcelExport(); } });
+
+        var btnTitle = 'Export to PDF';
+        $('#' + gid).jqGrid('navSeparatorAdd', '#' + id, { sepclass: "ui-separator" });
+        $('#' + gid).jqGrid('navButtonAdd', '#' + id, { caption: '', title: btnTitle, position: 'last', buttonicon: 'ui-icon-bookmark', onClickButton: function () { PDFExport(); } });
+
+        var btnTitle = 'Export to CSV';
+        $('#' + gid).jqGrid('navSeparatorAdd', '#' + id, { sepclass: "ui-separator" });
+        $('#' + gid).jqGrid('navButtonAdd', '#' + id, { caption: '', title: btnTitle, position: 'last', buttonicon: 'ui-icon-note', onClickButton: function () { CSVExport(); } });
+
+
+        var btnTitle = 'Print Grid';
+        $('#' + gid).jqGrid('navSeparatorAdd', '#' + id, { sepclass: "ui-separator" });
+        $('#' + gid).jqGrid('navButtonAdd', '#' + id, { caption: '', title: btnTitle, position: 'last', buttonicon: 'ui-icon-print', onClickButton: function () { PrintGrid(gid); } });
+    }
+    function ExcelExport() {
+        window.location = '@Url.Action("ExportPrescriptionTrackerToExcel")';
+    }
+    function PDFExport() {
+        window.location = '@Url.Action("ExportPrescriptionTrackerToPDF")';
+    }
+    function CSVExport() {
+        window.location = '@Url.Action("ExportPrescriptionTrackerToCsv")';
+    }
+    function PrintGrid(gid) {
+
+        var rows = $('#ajaxGrid').jqGrid('getRowData');
+
+        for (var i = 0; i < rows.length; i++) {
+            var row = rows[i];
+            $('#Table1').append("<tr><td>" + row.DoctorName + "</td><td>" + row.Specialization + "</td><td>" + row.AreaName + "</td></tr>");
+
+
+        }
+
+        $(function () { printChrome('prt-container') });
+    }
+
+    function printChrome(divContainer) {
+
+        var printContent = document.getElementById(divContainer);
+        window.document.body.innerHTML = printContent.innerHTML;
+        window.print();
+        window.location.reload();
+    }
+
+
+</script>
+    <div id='prt-container' style="display:none">
+        <table id="Table1" border="1" width="100%">
+            <thead>
+                <tr>
+                    <td><b>DoctorName</b></td>
+                    <td><b>Specialization</b></td>
+                    <td><b>AreaName</b></td>
+                </tr>
+
+            </thead>
+            <tbody></tbody>
+
+        </table>
+    </div>
+
+        
+   
+</body>

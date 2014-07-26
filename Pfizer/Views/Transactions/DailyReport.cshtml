@@ -1,0 +1,91 @@
+﻿@{
+    ViewBag.Title = "DailyReport";
+    Layout = "~/Views/Shared/MasterLayout.cshtml";
+}
+
+<body>
+    @using (Html.BeginForm(FormMethod.Post))
+    {
+
+        <div class="inner_tbldiv" style=" margin-top:0">
+
+            <table style="width:85% !important;" border="1" cellspacing="0" cellpadding="0" align="center" class="inner_tb">
+                <tr>
+                    <th colspan="6">
+                      Daily Report
+                    </th>
+                </tr>
+                <tr>
+                    <td></td>
+                </tr>
+
+                <tr>
+                    <td colspan="6" align="center">
+                        <div style="text-align:center;"><label id="lblError" style=" color:red"></label></div>
+                    </td>
+
+                </tr>
+                <tr>
+                    <td class="tb-r2" style="width:13%"></td>
+                    <td class="tb-r2">Search </td>
+                    <td class="tb-r2"><input type="text" id="txtDate" class="tboxlargedate" value="" onclick="$(function () { $('#txtDate').datepicker(); });" /></td>
+                    <td colspan="3" class="tb-r2">
+                        <input type="button" class="orange_button" id="btnPrev" value="Previous"/>
+                        &nbsp;&nbsp;
+                        <input type="button" class="orange_button" id="btnNext" value="  Next  " />
+                        &nbsp;&nbsp;
+                        <input type="button" class="orange_button" id="btnChangeRpt" value="Change Report" />
+                        &nbsp;&nbsp;
+                        <input type="button" class="orange_button" id="btnGo" value="Go To Plan" />
+
+                    </td>
+                </tr>
+
+                <tr>
+                    <td>
+                        <input type="hidden" id="hdnDaysBeforeAllowed" />
+                        <input type="hidden" id="hdnAllowedTime" />
+                        <input type="hidden" id="hdnLockEntry" />
+
+                    </td>
+
+                </tr>
+ 
+
+            </table>
+
+        </div>
+
+
+        <div id="DivReport">
+        </div>
+    }
+    <script>
+
+        $(document).ready(function () {
+
+            $("#txtDate").datepicker({ changeMonth: true, changeYear: true, yearRange: '1900:myDate', dateFormat: 'dd/mm/yy', maxDate: 0 });          
+            var currentDate = new Date();
+            $("#txtDate").datepicker("setDate", currentDate);
+
+            GetSettingMaster();
+            
+        });
+        $('#txtDate').datepicker({
+            dateFormat: 'dd/mm/yy',
+            onSelect: function (date) {
+              //  alert(date);
+                } 
+        });
+        
+        
+        function GetSettingMaster() {
+            $.getJSON('@Url.Action("JsonGetSettingMaster")', function (data) {
+
+                
+            });
+
+        }
+
+    </script>
+        </body>

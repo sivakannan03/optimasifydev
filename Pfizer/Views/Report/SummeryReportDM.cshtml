@@ -1,0 +1,188 @@
+﻿@{
+    ViewBag.Title = "SummeryReportDM";
+    Layout = "~/Views/Shared/MasterLayout.cshtml";
+}
+
+<body>
+    @using (Html.BeginForm(FormMethod.Post))
+    {
+
+
+        <div class="inner_tbldiv" style="margin-top:0px">
+            <div class="man_field">* Mandatory Field</div><label id="lblError" name="lblError" style=" color:red"> </label>
+            <table width="100%" border="0" cellspacing="0" cellpadding="0" align="left" class="inner_tb">
+                <tr>
+                    <td width="10%" class="tb-r1">Employee Name<span class="star">*</span></td>
+                    <td width="20%" class="tb-r1">
+                        @Html.DropDownList("drpSelectEmpName", new[]{
+                                            new SelectListItem { Text="Select", Value="0"} })
+                    </td>
+                </tr>
+            </table>
+
+
+        </div>
+
+        <div>
+            <table border="0" style="width: 100%">
+                <tr>
+                    <td>
+                        <!--JqGrid Starts-->
+                        <table style="margin-top: 7px; width :100%" border="0">
+                            <tr>
+                                <td>
+                                    <table id="SummeryReportDMGrid" style="width: 100%" border="0"></table>
+                                    <div id="SummeryReportPDMGridPager">
+                                    </div>
+                                </td>
+                            </tr>
+                        </table>
+                        <!--Ends-->
+                    </td>
+                </tr>
+            </table>
+        </div>
+    }
+
+    <script type="text/javascript">
+        $("#drpSelectEmpName").change(function () {
+
+         var Userid = $("#drpSelectEmpName").val();
+            initGrid(Userid);
+            
+        });
+
+
+        jQuery(document).ready(function () {
+
+            var Userid = "";
+
+            $("#drpSelectEmpName").empty();
+            $('#drpSelectEmpName').append("<option value='256'>All</option>");
+
+            $.getJSON('@Url.Action("JsonLoadSREmpName")', function (data) {
+                for (var i = 0; i < data.countyCount; i++) {
+                    $('#drpSelectEmpName').append("<option  value='" + data.countyItems[i].Value + "'>" + data.countyItems[i].Text + "</option>");
+                }
+            }); 
+
+          
+            Userid = '@Session["USER_FKID"]';
+          
+            initGrid(Userid);
+        });
+
+        function initGrid(Userid) {
+        
+            jQuery("#SummeryReportDMGrid").jqGrid("GridUnload");
+            jQuery("#SummeryReportDMGrid").jqGrid({
+                url: '@Url.Action("GridDataSummeryReportDM")?Userid=' + Userid,
+                datatype: "json",
+                jsonReader: { repeatitems: false },
+                colNames: ['Designation','HQ', 'Name', 'SPL/Segment', 'A+', 'A', 'B', 'C', 'Total'],
+                colModel: [
+                     { name: 'NodeName', index: 'NodeName', align: 'left' },
+                     { name: 'CityName', index: 'Name', align: 'left' },
+                      { name: 'Name', index: 'Name', align: 'left' },                      
+                       { name: 'Specialization', index: 'Specialization', align: 'left' },
+                        { name: 'APlus', index: 'APlus', align: 'left' },
+                         { name: 'A', index: 'A', align: 'left' },
+                          { name: 'B', index: 'B', align: 'left' },
+                           { name: 'C', index: 'C', align: 'left' },
+                            { name: 'total', index: 'total', align: 'left' },
+
+
+                ],
+                autowidth: true,
+                gridview: true,
+                caption: 'SummeryReport for DM',
+                jqModal: true,
+                align: 'center',
+                sortable: true,
+                hidegrid: true,
+                altRows: true,
+                rowTotal: 10,
+                rowNum: 10,
+                gridComplete: function () {
+
+                    if (jQuery("#SummeryReportDMGrid").getGridParam("records") == 0) {
+                        jQuery("#SummeryReportDMGrid").addRowData(
+                        "blankRow", { "NodeName": "No records to view" });
+                    }
+                },
+
+                viewrecords: true,
+                pager: $('#SummeryReportPDMGridPager'),
+                height: 'auto',
+                editable: true,
+            });
+
+            jQuery("#SummeryReportDMGrid").jqGrid('navGrid', '#SummeryReportPDMGridPager', { edit: false, add: false, del: false, search: false, view: false }),
+
+
+            setMethod('SummeryReportDMGrid', 'SummeryReportPDMGridPager', 'Summery Report - for DM', Userid);
+        }
+
+        function setMethod(gid, id, pgTitle, Userid) {
+            // alert(1);           
+            var btnTitle = 'Export to Excel';
+            $('#' + gid).jqGrid('navSeparatorAdd', '#' + id, { sepclass: "ui-separator" });
+            $('#' + gid).jqGrid('navButtonAdd', '#' + id, { caption: '', title: btnTitle, position: 'last', buttonicon: 'ui-icon-calculator', onClickButton: function () { ExcelExport(Userid); } });
+
+            var btnTitle = 'Export to PDF';
+            $('#' + gid).jqGrid('navSeparatorAdd', '#' + id, { sepclass: "ui-separator" });
+            $('#' + gid).jqGrid('navButtonAdd', '#' + id, { caption: '', title: btnTitle, position: 'last', buttonicon: 'ui-icon-bookmark', onClickButton: function () { PDFExport(Userid); } });
+
+            var btnTitle = 'Print Grid';
+            $('#' + gid).jqGrid('navSeparatorAdd', '#' + id, { sepclass: "ui-separator" });
+            $('#' + gid).jqGrid('navButtonAdd', '#' + id, { caption: '', title: btnTitle, position: 'last', buttonicon: 'ui-icon-print', onClickButton: function () { PrintGrid(gid); } });
+        }
+        function ExcelExport(Userid) {
+            window.location = '@Url.Action("ExportSummeryReportDMToExcel")?Userid=' + Userid;
+        }
+        function PDFExport(Userid) {
+            window.location = '@Url.Action("ExportSummeryReportDMToPDF")?Userid=' + Userid;
+        }
+
+        function PrintGrid(gid) {
+            // empty the print div container.
+            var rows = $('#SummeryReportDMGrid').jqGrid('getRowData');
+            for (var i = 0; i < rows.length; i++) {
+                var row = rows[i];
+                $('#Table1').append("<tr><td>" + row.NodeName + "</td><td>" + row.Name + "</td><td>" + row.Specialization + "</td><td>" + row.APlus + "</td><td>" + row.A + "</td><td>" + row.B + "</td><td>" + row.C + "</td><td>" + row.total + "</td></tr>");
+            }
+            $(function () { printChrome('prt-container') });
+        }
+
+
+        function printChrome(divContainer) {
+
+            var printContent = document.getElementById(divContainer);
+            window.document.body.innerHTML = printContent.innerHTML;
+            window.print();
+            window.location.reload();
+        }
+
+
+    </script>
+
+    <div id='prt-container' style="display:none">
+        <table id="Table1" border="1" width="100%">
+            <thead>
+                <tr>
+                    <td><b>Designation HQ</b></td>
+                    <td><b>Name</b></td>
+                    <td><b>SPL/Segment</b></td>
+                    <td><b>A+</b></td>
+                    <td><b>A</b></td>
+                    <td><b>B</b></td>
+                    <td><b>C</b></td>
+                    <td><b>Total</b></td>
+                </tr>
+
+            </thead>
+            <tbody></tbody>
+
+        </table>
+    </div>
+</body>

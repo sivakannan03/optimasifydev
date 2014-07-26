@@ -1,0 +1,204 @@
+﻿@{
+    ViewBag.Title = "PotentialYieldForSM";
+    Layout = "~/Views/Shared/MasterLayout.cshtml";
+}
+
+<h2>PotentialYieldForSM</h2>
+
+<body>
+
+    @using (Html.BeginForm(FormMethod.Post))
+    {
+        <div>
+            <table width="100%" border="0" cellspacing="0" cellpadding="0" align="left">
+                <tr>
+                    <th colspan="8" style="margin-top: 10px; background-color: #00AADA; color: white;height:20px;">FilterOn</th>
+                </tr>
+                <tr>
+                    <td width="30%" valign="middle">
+                        <table border="1" width="100%">
+                            <tbody>
+                                <tr>
+
+                                    <td>Year<span style="color:red">*</span></td>
+                                    <td>
+                                        &nbsp;&nbsp;&nbsp;
+                                        @Html.DropDownList("drpSelectYear", new[]{
+
+                                            new SelectListItem { Text="Select", Value="0"} })
+
+                                    </td>
+                                    <td>Month<span style="color:red">*</span></td>
+                                    <td>
+                                        &nbsp;&nbsp;&nbsp;
+                                        @Html.DropDownList("drpSelectMonth", new[]{
+
+                                            new SelectListItem { Text="Select", Value="0"} })
+
+                                    </td>
+                                    <td>Cycle<span style="color:red">*</span></td>
+                                    <td>
+                                        &nbsp;&nbsp;&nbsp;
+                                        @Html.DropDownList("drpSelectCycle", new[]{
+
+                                            new SelectListItem { Text="Select", Value="0"} })
+
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>Products<span style="color:red">*</span></td>
+                                    <td>
+                                        &nbsp;&nbsp;&nbsp;
+                                        @Html.DropDownList("drpProductsName", new[]{
+
+                                            new SelectListItem { Text="Select", Value="0"} })
+                                    </td>
+                                    <td>Speciality<span style="color:red">*</span></td>
+                                    <td>
+                                        &nbsp;&nbsp;&nbsp;
+                                        
+                                        @Html.DropDownList("drpSpecialityName", new[]{
+
+                                            new SelectListItem { Text="Select", Value="0"} })
+                                    </td>
+                                    <td>Frequency<span style="color:red">*</span></td>
+                                    <td>
+                                        &nbsp;&nbsp;&nbsp;
+                                        @Html.DropDownList("drpSelectFreq", new[]{
+
+                                            new SelectListItem { Text="Select", Value="0"} })
+
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>NodeName<span style="color:red">*</span></td>
+                                    <td>
+                                        &nbsp;&nbsp;&nbsp;
+                                        @Html.DropDownList("drpSelectNode", new[]{
+
+                                            new SelectListItem { Text="Select", Value="0"} })
+
+                                    </td>
+                                    <td>PSOName<span style="color:red">*</span></td>
+                                    <td>
+                                        &nbsp;&nbsp;&nbsp;
+                                       
+                                        <select name="lstPSOName" id="lstPSOName" size="5">
+                                            <option value="0">Select</option>
+
+                                        </select>
+
+                                    </td>
+                                    <td>
+
+                                        <input type="radio" id="rdbSummery" name="rdbPSO" value="S" checked="checked" />Summery
+                                        <br />
+                                        <input type="radio" id="rdbDetail" name="rdbPSO" value="D" />Details
+                                    </td>
+                                    <td>
+
+                                        <input class="blue_button add_btn" type="button" width="5%" id="btnGO" value="GO">
+
+                                        <input class="blue_button add_btn" type="button" width="5%" id="btnReset" value="Reset">
+
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+
+                    </td>
+                </tr>
+            </table>
+        </div>
+        <div id="testDiv">
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+            <table id="tabStatus" style="margin-top: 30px; width :100%" border="0">
+
+                <tr>
+                    <td></td>
+                </tr>
+            </table>
+            <table border="0" style="width: 100%">
+                <tr>
+                    <td>
+                        <!--JqGrid Starts-->
+                        <table style="margin-top: 40px; width :100%" border="0">
+                            <tr>
+                                <td>
+                                    <table id="ajaxGrid" style="width: 100%" border="0"></table>
+                                    <div id="ajaxGridPager">
+                                    </div>
+                                </td>
+                            </tr>
+                        </table>
+                        <!--Ends-->
+                    </td>
+                </tr>
+            </table>
+        </div>
+    }
+</body>
+
+<script type="text/javascript">
+    $("#btnReset").click(function () {
+
+        $('input:radio[name=rdbPSO]')[0].checked = true;
+        $("#drpSelectYear").val(0);
+        $("#drpSelectMonth").val(0);
+        $('#drpSelectCycle').val(0);
+        $('#drpProductsName').val(0);
+        $('#drpSpecialityName').val(0);
+        $('#drpSelectFreq').val(0);
+        $('#drpSelectNode').val(0);
+        $('#lstPSOName').val(0);
+    });
+    $(document).ready(function () {
+        $.ajax({
+            type: 'POST',
+            url: '@Url.Action("LoadSelectPSOYear")',
+            success: function (data) {
+
+                $.ajax({
+                    type: 'POST',
+                    url: '@Url.Action("LoadSelectPSOMonth")',
+                    success: function (data1) {
+                        $('#drpSelectYear').html(data);
+                        $('#drpSelectMonth').html(data1);
+
+                    }
+                });
+
+            }
+
+        });
+        $.getJSON('@Url.Action("JsonLoadDrpSpec")', function (data) {
+            
+            for (var i = 0; i < data.countyCount; i++) {
+
+                $('#drpSpecialityName').append("<option  value='" + data.countyItems[i].Value.split("-")[0] + "'>" + data.countyItems[i].Text + "</option>");
+            }
+
+        });
+        $.getJSON('@Url.Action("JsonLoadDrpNode")', function (data) {
+
+            for (var i = 0; i < data.countyCount; i++) {
+
+                $('#drpSelectNode').append("<option  value='" + data.countyItems[i].Value.split("-")[0] + "'>" + data.countyItems[i].Text + "</option>");
+            }
+
+        });
+        $.getJSON('@Url.Action("JsonLoadDrpProducts")', function (data) {
+
+            for (var i = 0; i < data.countyCount; i++) {
+
+                $('#drpProductsName').append("<option  value='" + data.countyItems[i].Value.split("-")[0] + "'>" + data.countyItems[i].Text + "</option>");
+            }
+
+        });
+
+
+
+    });
+
+
+</script>

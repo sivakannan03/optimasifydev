@@ -1,0 +1,120 @@
+﻿@model Dictionary<decimal, string>
+
+@if (ViewBag.Type == "NodeType")
+{
+
+    <select id="NodeType">
+
+        <option value='0'>Select</option>
+
+        @foreach (KeyValuePair<decimal, string> value in Model)
+        {
+
+            if (@value.Key == ViewBag.Selected)
+            {
+
+                <option value='@value.Key.ToString()' selected="selected">@value.Value</option>
+            }
+            else
+            {
+                <option value='@value.Key.ToString()'>@value.Value</option>
+
+            }
+        }
+    </select>
+}
+
+@if (ViewBag.Type == "Product")
+{
+    <select multiple id="ProductManager" class="FormElement ui-widget-content ui-corner-all">
+        <option value='0'>Select</option>
+        @foreach (KeyValuePair<decimal, string> value in Model)
+        {
+            <option value='@value.Key.ToString()'>@value.Value</option>
+        }
+    </select>
+}
+
+
+
+
+
+@if (ViewBag.Type == "ProductManager")
+{
+    <select multiple id="ProductManager" class="FormElement ui-widget-content ui-corner-all">
+        <option value='0'>Select</option>
+      @foreach (KeyValuePair<decimal, string> value in Model)
+        {
+         if (@value.Value.Substring(@value.Value.Length - 1, 1) == "1")
+            {
+                <option value="@value.Key.ToString()" selected="selected">@value.Value.Substring(0, @value.Value.Length - 1)</option>
+            }
+            else
+            {
+                <option value='@value.Key.ToString()'>@value.Value.Substring(0, @value.Value.Length - 1)</option>
+            }
+         }
+
+    </select>
+}
+
+      
+@if (ViewBag.Type == "Team")
+{
+    <select multiple id="Team" class="FormElement ui-widget-content ui-corner-all">
+        <option value='0'>Select</option>
+        @foreach (KeyValuePair<decimal, string> value in Model)
+        {
+            if (@value.Value.Substring(@value.Value.Length - 1, 1) == "1")
+            {
+                <option value="@value.Key.ToString()" selected="selected">@value.Value.Substring(0, @value.Value.Length - 1)</option>
+            }
+            else
+            {
+                <option value='@value.Key.ToString()'>@value.Value.Substring(0, @value.Value.Length - 1)</option>
+            }
+        }
+
+
+    </select>
+}
+
+@if (ViewBag.Type == "Metis")
+{
+   <select id="METISProductName">
+
+        <option value='0'>Select</option>
+
+        @foreach (KeyValuePair<decimal, string> value in Model)
+        {
+
+            if (@value.Key == ViewBag.Selected)
+            {
+
+                <option value='@value.Key.ToString()' selected="selected">@value.Value</option>
+            }
+            else
+            {
+                <option value='@value.Key.ToString()'>@value.Value</option>
+
+            }
+        }
+    </select>
+
+
+
+}
+@if (ViewBag.Type == "drpForm")
+{
+    <select id='@ViewBag.id'>
+        <option value='0'>Select</option>
+        @foreach (KeyValuePair<decimal, string> value in Model)
+        {
+            <option value='@value.Key.ToString()'>@value.Value</option>
+        }
+    </select>
+    
+    
+   
+}
+

@@ -1,0 +1,920 @@
+﻿@{
+    ViewBag.Title = "NewCustomerALLPSOReportByDM";
+    Layout = "~/Views/Shared/MasterLayout.cshtml";
+}
+
+<body>
+    @using (Html.BeginForm(FormMethod.Post))
+    {
+
+        <div class="inner_tbldiv" style=" margin-top:0">
+            <table width="100%" border="0" cellspacing="0" cellpadding="0" align="left" class="inner_tb">
+                <tr>
+                    <th colspan="6">New Customer DM/RBM </th>
+                </tr>
+
+                <tr>
+                    <td width="35%" valign="middle" align="center" class="tb-r1">Name<span class="star">*</span></td>
+                    <td width="35%" class="tb-r1">
+                        @Html.DropDownList("ddlUsers", new[] { new SelectListItem { Text = "", Value = "" } })
+                        &nbsp;
+                    </td>
+                    <td class="tb-r1">
+                        <input type="button" class="blue_button" value="Fetch" id="btnFetch" name="btnFetch" />
+                    </td>
+                </tr>
+
+            </table>
+        </div>
+        <div>
+            <table border="0" style="width: 100%">
+                <tr>
+                    <td>
+                        <br /><br />
+                        <!--JqGrid Starts-->
+                        <table style="margin-top: 7px; width :100%" border="0">
+                            <tr>
+                                <td>
+                                    <table id="NewCustomer" style="width: 100%" border="0"></table>
+                                    <div id="NewCustomerPager">
+                                    </div>
+
+                                </td>
+                            </tr>
+                        </table>
+                        <!--Ends-->
+                    </td>
+                </tr>
+            </table>
+
+        </div>
+
+        <!-- Report Panels -->
+
+        <!-- Chemist Rpt Start-->
+
+        <div class="inner_tbldiv" id="CustomerDiv" style="display: none; margin-top:10px !important;">
+            <table border="0" style="width: 90%">
+
+                <tr style=" vertical-align:top">
+                    <td width="2%"></td>
+                    <td>
+                        <table class="inner_tb" id="tblHeader" width="100%" cellpadding="0" cellspacing="0">
+                            <tr id="tr_title">
+                                <td class="tb-r1">Name :</td>
+                                <td class="tb-r1"> </td>
+                                <td class="tb-r1">Total Chemists :</td>
+                                <td class="tb-r1"></td>
+                                <td class="tb-r1">Type :</td>
+                                <td class="tb-r1"></td>
+                                <td class="tb-r1">Territory Code :</td>
+                                <td class="tb-r1"> </td>
+                            </tr>
+
+                        </table>
+
+                    </td>
+                    <td></td>
+                    <td width="2%"></td>
+
+                </tr>
+
+                <tr>
+                    <td width="2%"></td>
+                    <td>
+
+
+                        <table style="margin-top: 7px; width :100%" border="0">
+                            <tr>
+                                <td>
+                                    <table id="CustomerRptGrid" style="width: 100%" border="0"></table>
+                                    <div id="CustomerPager">
+                                    </div>
+                                </td>
+                            </tr>
+                        </table>
+
+                    </td>
+                    <td width="2%"></td>
+                </tr>
+            </table>
+        </div>
+
+        <!-- Chemist Rpt end-->
+
+
+        <!--Doctor Rpt Starts-->
+
+        <div class="inner_tbldiv" id="DoctorDiv" style="display: none; margin-top:10px !important;">
+            <table border="0" style="width: 90%">
+                <tr style=" vertical-align:top">
+                    <td width="2%"></td>
+                    <td>
+                        <table class="inner_tb" id="tblDocHeader" width="100%" cellpadding="0" cellspacing="0">
+                            <tr id="tr_title">
+                                <td class="tb-r1">Name :</td>
+                                <td class="tb-r1"> </td>
+                                <td class="tb-r1">Total Doctor :</td>
+                                <td class="tb-r1"></td>
+                                <td class="tb-r1">Type :</td>
+                                <td class="tb-r1"></td>
+                                <td class="tb-r1">Territory Code :</td>
+                                <td class="tb-r1"></td>
+                            </tr>
+
+                        </table>
+
+                    </td>
+                    <td></td>
+                    <td width="2%"></td>
+
+                </tr>
+
+                <tr>
+                    <td width="2%"></td>
+                    <td>
+
+                        <!--JqGrid Starts-->
+                        <table style="margin-top: 7px; width :100%" border="0">
+                            <tr>
+                                <td>
+                                    <table id="DocotorRptGrid" style="width: 100%" border="0"></table>
+                                    <div id="DocotorPager">
+                                    </div>
+                                </td>
+                            </tr>
+                        </table>
+                        <!--Ends-->
+                    </td>
+                    <td width="2%"></td>
+                </tr>
+            </table>
+        </div>
+
+
+        <!--Doctor Rpt end-->
+
+        <!--Hospital Rpt Starts-->
+
+        <div class="inner_tbldiv" id="HospitalDiv" style="display: none; margin-top:10px !important;">
+            <table border="0" style="width: 90%">
+
+
+                <tr style=" vertical-align:top">
+                    <td width="2%"></td>
+                    <td>
+                        <table class="inner_tb" id="tblHospitalHeader" width="100%" cellpadding="0" cellspacing="0">
+                            <tr id="tr_title">
+                                <td class="tb-r1">Name :</td>
+                                <td class="tb-r1"> </td>
+                                <td class="tb-r1">Total Hospital :</td>
+                                <td class="tb-r1"></td>
+                                <td class="tb-r1">Type :</td>
+                                <td class="tb-r1"></td>
+                                <td class="tb-r1">Territory Code :</td>
+                                <td class="tb-r1"></td>
+                            </tr>
+
+                        </table>
+
+                    </td>
+                    <td></td>
+                    <td width="2%"></td>
+
+                </tr>
+
+                <tr>
+                    <td width="2%"></td>
+                    <td>
+
+                        <!--JqGrid Starts-->
+                        <table style="margin-top: 7px; width :100%" border="0">
+                            <tr>
+                                <td>
+                                    <table id="HospitalRptGrid" style="width: 100%" border="0"></table>
+                                    <div id="HospitalPager">
+                                    </div>
+                                </td>
+                            </tr>
+                        </table>
+                        <!--Ends-->
+                    </td>
+                    <td width="2%"></td>
+                </tr>
+            </table>
+        </div>
+
+
+        <!--Hospital Rpt end-->
+
+
+          <!--Stockist Rpt Starts-->
+
+        <div class="inner_tbldiv" id="StockistDiv" style="display: none; margin-top:10px !important;">
+            <table border="0" style="width: 90%">
+                <tr style=" vertical-align:top">
+                    <td width="2%"></td>
+                    <td>
+                        <table class="inner_tb" id="tblStockistHeader" width="100%" cellpadding="0" cellspacing="0">
+                            <tr id="tr_title">
+                                <td class="tb-r1">Name :</td>
+                                <td class="tb-r1"> </td>
+                                <td class="tb-r1">Total Stockist :</td>
+                                <td class="tb-r1"></td>
+                                <td class="tb-r1">Type :</td>
+                                <td class="tb-r1"></td>
+                                <td class="tb-r1">Territory Code :</td>
+                                <td class="tb-r1"></td>
+                            </tr>
+
+                        </table>
+
+                    </td>
+                    <td></td>
+                    <td width="2%"></td>
+
+                </tr>
+
+                <tr>
+                    <td width="2%"></td>
+                    <td>
+
+                        <!--JqGrid Starts-->
+                        <table style="margin-top: 7px; width :100%" border="0">
+                            <tr>
+                                <td>
+                                    <table id="StockistRptGrid" style="width: 100%" border="0"></table>
+                                    <div id="StockistPager">
+                                    </div>
+                                </td>
+                            </tr>
+                        </table>
+                        <!--Ends-->
+                    </td>
+                    <td width="2%"></td>
+                </tr>
+            </table>
+        </div>
+        <!--Stockist Rpt end-->
+
+        <!--end-->
+
+    }
+
+    <script type="text/javascript">
+
+        $('#btnFetch').click(function () {
+            var UserID = $('#ddlUsers').val();
+            LoadGrid(UserID);
+        });
+
+        jQuery(document).ready(function () {
+            $('#ddlUsers').empty();
+
+            $('#ddlUsers').append("<option selected='selected' value='0'>All</option>");
+
+            $.getJSON('@Url.Action("JsonGetUserName")', function (data) {
+                   for (var i = 0; i < data.countyCount; i++) {
+                       $('#ddlUsers').append("<option value='" + data.countyItems[i].Value + "'>" + data.countyItems[i].Text + "</option>");
+                }
+
+            });
+            var UserID = $('#ddlUsers').val();
+            LoadGrid(UserID);
+        });
+
+
+        function LoadGrid(UserID) {
+            $('#NewCustomer').jqGrid('GridUnload');
+             jQuery("#NewCustomer").jqGrid({
+                 url: '@Url.Action("NewCustomeGridDM")?UserId=' + UserID,
+                datatype: "json",
+                jsonReader: { repeatitems: false, id: "Custtype" },
+                colNames: ['Customer type', 'MCL', 'PCL'],
+                colModel: [
+
+                    { name: 'Custtype', index: 'Custtype', align: 'left' },
+                    { name: 'MCL', index: 'MCL', align: 'center' },
+                    { name: 'PCL', index: 'PCL', align: 'center' }
+                ],
+
+                caption: 'PSO Details Wise',
+                autowidth: true,
+                gridview: true,
+                jqModal: true,
+                rowTotal: 10,
+                rowNum: 10,
+                align: 'center',
+                sortable: true,
+                hidegrid: true,
+                altRows: true,
+                sortname: 'Custtype',
+                viewrecords: true,
+                height: 'auto',
+                editable: true,
+                gridComplete: function () {
+
+                    if (jQuery("#NewCustomer").getGridParam("records") == 0) {
+                        jQuery("#NewCustomer").addRowData(
+                              "blankRow", { "Custtype": "No records to view" });
+                    }
+
+                    var ids = jQuery("#NewCustomer").jqGrid('getDataIDs');
+                    for (var i = 0; i < ids.length; i++) {
+                        var c0 = jQuery('#NewCustomer').jqGrid('getCell', ids[i], 0);
+                     
+                        var c1 = jQuery('#NewCustomer').jqGrid('getCell', ids[i], 1);
+                    
+                        var c2 = jQuery('#NewCustomer').jqGrid('getCell', ids[i], 2);
+                    
+                        if ($('#ddlUsers').val() != 0) {
+                            if (c1 != 0) {
+                                popUp1 = "<a onclick=\"javascript:DisplayRpt('" + c1 + "','" + c0 + "','M','" + UserID + "');\"  style=\"color:#2f72c3;text-decoration:underline;font-weight:bold;cursor:pointer\">" + c1 + "</a>";
+                                jQuery("#NewCustomer").jqGrid('setRowData', ids[i], { MCL: popUp1 });
+
+                            }
+                            if (c2 != 0) {
+                                popUp2 = "<a onclick=\"javascript:DisplayRpt('" + c2 + "','" + c0 + "','P','" + UserID + "');\"  style=\"color:#2f72c3;text-decoration:underline;font-weight:bold;cursor:pointer\">" + c2 + "</a>";
+                                jQuery("#NewCustomer").jqGrid('setRowData', ids[i], { PCL: popUp2 });
+                            }
+
+                        }
+                        else {
+
+                        }
+
+
+                    }
+
+
+                },
+
+            });
+
+
+        }
+
+        function DisplayRpt(input, CustType, Flag, UserID)
+        {
+         
+            $.getJSON('@Url.Action("JsonGetDMHeader")?custType=' + CustType + '&flag=' + Flag + '&input=' + input + '&UserIDs=' + UserID,
+            function (data)
+              {
+                $(".ui-dialog-title").text(data.PSO + " " + '@ViewBag.Today');
+                jQuery('#tr_title  td:nth-child(2)').html(data.PSO);
+                jQuery('#tr_title  td:nth-child(4)').html(input);
+                jQuery('#tr_title  td:nth-child(6)').html(Flag);
+                jQuery('#tr_title  td:nth-child(8)').html(data.territory);
+
+
+            });
+
+
+            if (CustType == 'Chemist')
+            {
+
+                $('#CustomerDiv').css('display', 'block');
+
+                $('#CustomerRptGrid').jqGrid('GridUnload');
+                jQuery("#CustomerRptGrid").jqGrid({
+                    url: '@Url.Action("DMCustomerRptGridData")?custType=' + CustType + '&flag=' + Flag + '&input=' + input + '&UserIDs=' + UserID,
+                    datatype: "json",
+                    jsonReader: { repeatitems: false, id: "ChemistName" },
+                    colNames: ['Chemist Name', 'Area', 'Email'],
+                    colModel: [
+
+                        { name: 'ChemistName', index: 'ChemistName', align: 'left' },
+                        { name: 'AreaName', index: 'AreaName', align: 'left' },
+                        { name: 'email', index: 'email', align: 'left' }
+                    ],
+
+                    caption: '&nbsp;',
+                    width: 790,
+                    gridview: true,
+                    jqModal: true,
+                    rowTotal: 10,
+                    rowNum: 10,
+                    align: 'center',
+                    sortable: true,
+                    hidegrid: true,
+                    altRows: true,
+
+                    viewrecords: true,
+                    pager: $('#CustomerPager'),
+                    height: 'auto',
+                    editable: true
+
+                });
+
+
+                $('#CustomerDiv').dialog({
+                    height: 470,
+                    width: 810,
+                    show: { effect: 'drop', direction: "up" },
+                    modal: true,
+                    open: function (event, ui) {
+
+                    },
+
+                });
+
+                jQuery("#CustomerRptGrid").jqGrid('navGrid', '#CustomerPager', { edit: false, add: false, del: false, search: false, view: false },
+                        {
+
+                        }
+                        );
+
+                setMethod('CustomerRptGrid', 'CustomerPager', 'Customer Report', input, CustType, Flag, UserID);
+            }
+
+            else if (CustType == 'Doctor') {
+                @*Doctor  Grid starts*@
+                $('#DoctorDiv').css('display', 'block');
+
+                $('#DocotorRptGrid').jqGrid('GridUnload');
+                jQuery("#DocotorRptGrid").jqGrid({
+                    url: '@Url.Action("DMDocotorRptGridData")?custType=' + CustType + '&flag=' + Flag + '&input=' + input + '&UserIDs=' + UserID,
+                    datatype: "json",
+                    jsonReader: { repeatitems: false, id: "DoctorName" },
+                    colNames: ['Doctor', 'Doctor Code', 'Specialization', 'Area', 'KOL', 'Registration No.', 'Email'],
+                    colModel: [
+
+                        { name: 'DoctorName', index: 'DoctorName', align: 'left' },
+                        { name: 'DoctorCode', index: 'DoctorCode', align: 'left' },
+                        { name: 'Specialization', index: 'Specialization', align: 'left' },
+                        { name: 'AreaName', index: 'AreaName', align: 'left' },
+                        { name: 'KOLFlag', index: 'KOLFlag', align: 'left' },
+                        { name: 'RegistrationNo', index: 'RegistrationNo', align: 'left' },
+                        { name: 'email', index: 'email', align: 'left' }
+
+                    ],
+
+                    caption: '&nbsp;',
+                    width: 790,
+                    gridview: true,
+                    jqModal: true,
+                    rowTotal: 10,
+                    rowNum: 10,
+                    align: 'center',
+                    sortable: true,
+                    hidegrid: true,
+                    altRows: true,
+
+                    viewrecords: true,
+                    pager: $('#DocotorPager'),
+                    height: 'auto',
+                    editable: true
+
+                });
+
+
+
+                $('#DoctorDiv').dialog({
+
+                    height: 470,
+                    width: 810,
+                    show: { effect: 'drop', direction: "up" },
+                    modal: true,
+
+                    open: function (event, ui) {
+
+                        //  $(".ui-dialog-titlebar-close").show();
+
+                    },
+
+                });
+
+                jQuery("#DocotorRptGrid").jqGrid('navGrid', '#DocotorPager', { edit: false, add: false, del: false, search: false, view: false },
+                        {
+
+                        }
+                        );
+                setDoctorMethod('DocotorRptGrid', 'DocotorPager', 'Doctor Report', input, CustType, Flag, UserID);
+
+                @*Doctor  Grid ends*@
+
+            }
+            else if (CustType == 'Hospital') {
+
+                @*Hospital  Grid starts*@
+                $('#HospitalDiv').css('display', 'block');
+
+                $('#HospitalRptGrid').jqGrid('GridUnload');
+                jQuery("#HospitalRptGrid").jqGrid({
+                    url: '@Url.Action("DMHospitalRptGridData")?custType=' + CustType + '&flag=' + Flag + '&input=' + input + '&UserIDs=' + UserID,
+                    datatype: "json",
+                    jsonReader: { repeatitems: false, id: "NameofHospital" },
+                    colNames: ['Hospital Name', 'City', 'Area', 'Email'],
+                    colModel: [
+
+                        { name: 'NameofHospital', index: 'NameofHospital', align: 'left' },
+                        { name: 'CityName', index: 'CityName', align: 'left' },
+                        { name: 'AreaName', index: 'AreaName', align: 'left' },
+                        { name: 'email', index: 'email', align: 'left' }
+
+                    ],
+
+                    caption: '&nbsp;',
+                    width: 790,
+                    gridview: true,
+                    jqModal: true,
+                    rowTotal: 10,
+                    rowNum: 10,
+                    align: 'center',
+                    sortable: true,
+                    hidegrid: true,
+                    altRows: true,
+                    viewrecords: true,
+                    pager: $('#HospitalPager'),
+                    height: 'auto',
+                    editable: true
+
+                });
+
+                $('#HospitalDiv').dialog({
+
+                    height: 470,
+                    width: 810,
+                    show: { effect: 'drop', direction: "up" },
+                    modal: true,
+
+                    open: function (event, ui) {
+
+                        //  $(".ui-dialog-titlebar-close").show();
+
+                    },
+
+                });
+
+                jQuery("#HospitalRptGrid").jqGrid('navGrid', '#HospitalPager', { edit: false, add: false, del: false, search: false, view: false },
+                        {
+
+                        }
+                        );
+                setHospitalMethod('HospitalRptGrid', 'HospitalPager', 'Hospital Report', input, CustType, Flag, UserID);
+
+                @*Hospital  Grid ends*@
+
+            }
+
+            else if (CustType == 'Stockist') {
+
+                @*Stockist  Grid starts*@
+                $('#StockistDiv').css('display', 'block');
+
+                $('#StockistRptGrid').jqGrid('GridUnload');
+                jQuery("#StockistRptGrid").jqGrid({
+                    url: '@Url.Action("DMStockistRptGridData")?custType=' + CustType + '&flag=' + Flag + '&input=' + input + '&UserIDs=' + UserID,
+                    datatype: "json",
+                    jsonReader: { repeatitems: false, id: "NameofStockist" },
+                    colNames: ['StockiestName Name', 'City', 'Area', 'Email'],
+                    colModel: [
+
+                        { name: 'NameofStockist', index: 'NameofStockist', align: 'left' },
+                        { name: 'CityName', index: 'CityName', align: 'left' },
+                        { name: 'AreaName', index: 'AreaName', align: 'left' },
+                        { name: 'email', index: 'email', align: 'left' }
+
+                    ],
+
+                    caption: '&nbsp;',
+                    width: 790,
+                    gridview: true,
+                    jqModal: true,
+                    rowTotal: 10,
+                    rowNum: 10,
+                    align: 'center',
+                    sortable: true,
+                    hidegrid: true,
+                    altRows: true,
+                    viewrecords: true,
+                    pager: $('#StockistPager'),
+                    height: 'auto',
+                    editable: true
+
+                });
+
+
+
+                $('#StockistDiv').dialog({
+
+                    height: 470,
+                    width: 810,
+                    show: { effect: 'drop', direction: "up" },
+                    modal: true,
+
+                    open: function (event, ui) {
+
+                        //  $(".ui-dialog-titlebar-close").show();
+
+                    },
+
+                });
+
+                jQuery("#StockistRptGrid").jqGrid('navGrid', '#StockistPager', { edit: false, add: false, del: false, search: false, view: false },
+                        {
+
+                        }
+                        );
+                setStockistMethod('StockistRptGrid', 'StockistPager', 'Stockist Report', input, CustType, Flag, UserID);
+
+                @*Hospital  Grid ends*@
+
+            }
+
+
+
+        }
+
+
+        @*Stockist Rpt Excel, PDF starts*@
+
+        function setStockistMethod(gid, id, pgTitle, input, CustType, Flag, UserID) {
+
+            var btnTitle = 'Download Excel';
+            $('#' + gid).jqGrid('navSeparatorAdd', '#' + id, { sepclass: "ui-separator" });
+            $('#' + gid).jqGrid('navButtonAdd', '#' + id, { caption: '', title: btnTitle, position: 'last', buttonicon: 'ui-icon-calculator', onClickButton: function () { ExcelStockistExport(input, CustType, Flag, UserID); } });
+
+            var btnTitle = 'Download PDF';
+            $('#' + gid).jqGrid('navSeparatorAdd', '#' + id, { sepclass: "ui-separator" });
+            $('#' + gid).jqGrid('navButtonAdd', '#' + id, { caption: '', title: btnTitle, position: 'last', buttonicon: 'ui-icon-bookmark', onClickButton: function () { PDFStockistExport(input, CustType, Flag, UserID); } });
+
+
+
+            var btnTitle = 'Print';
+            $('#' + gid).jqGrid('navSeparatorAdd', '#' + id, { sepclass: "ui-separator" });
+            $('#' + gid).jqGrid('navButtonAdd', '#' + id, { caption: '', title: btnTitle, position: 'last', buttonicon: 'ui-icon-print', onClickButton: function () { StockistPrintGrid(gid); } });
+        }
+        function ExcelStockistExport(input, CustType, Flag, UserID) {
+            window.location = '@Url.Action("ExportStockistRptExcelRBM")?custType=' + CustType + '&flag=' + Flag + '&input=' + input + '&UserIDs=' + UserID;
+        }
+        function PDFStockistExport(input, CustType, Flag, UserID) {
+            window.location = '@Url.Action("ExportStockistRptToPDFRBM")?custType=' + CustType + '&flag=' + Flag + '&input=' + input + '&UserIDs=' + UserID;
+        }
+
+        function StockistPrintGrid(gid) {
+
+            var rows = $('#StockistRptGrid').jqGrid('getRowData');
+
+            for (var i = 0; i < rows.length; i++) {
+                var row = rows[i];
+                $('#Table4').append("<tr><td>" + row.NameofStockist + "</td><td>" + row.CityName + "</td><td>" + row.AreaName + "</td><td>" + row.email + "</td></tr>");
+            }
+
+            $(function () { StockistRptprintChrome('prnt-Stockist-Container') });
+        }
+
+        function StockistRptprintChrome(divContainer) {
+
+            var printContent = document.getElementById(divContainer);
+            window.document.body.innerHTML = printContent.innerHTML;
+            window.print();
+            window.location.reload();
+        }
+
+
+        @*Hospital Rpt ends*@
+
+
+
+        @*Hospital Rpt Excel starts*@
+
+        function setHospitalMethod(gid, id, pgTitle, input, CustType, Flag, UserID) {
+
+            var btnTitle = 'Download Excel';
+            $('#' + gid).jqGrid('navSeparatorAdd', '#' + id, { sepclass: "ui-separator" });
+            $('#' + gid).jqGrid('navButtonAdd', '#' + id, { caption: '', title: btnTitle, position: 'last', buttonicon: 'ui-icon-calculator', onClickButton: function () { ExcelHospitalExport(input, CustType, Flag, UserID); } });
+
+            var btnTitle = 'Download PDF';
+            $('#' + gid).jqGrid('navSeparatorAdd', '#' + id, { sepclass: "ui-separator" });
+            $('#' + gid).jqGrid('navButtonAdd', '#' + id, { caption: '', title: btnTitle, position: 'last', buttonicon: 'ui-icon-bookmark', onClickButton: function () { PDFHospitalExport(input, CustType, Flag, UserID); } });
+
+
+
+            var btnTitle = 'Print';
+            $('#' + gid).jqGrid('navSeparatorAdd', '#' + id, { sepclass: "ui-separator" });
+            $('#' + gid).jqGrid('navButtonAdd', '#' + id, { caption: '', title: btnTitle, position: 'last', buttonicon: 'ui-icon-print', onClickButton: function () { HospitalPrintGrid(gid); } });
+        }
+        function ExcelHospitalExport(input, CustType, Flag, UserID) {
+            window.location = '@Url.Action("ExportHospitalRptExcelRBM")?custType=' + CustType + '&flag=' + Flag + '&input=' + input + '&UserIDs=' + UserID;
+        }
+        function PDFHospitalExport(input, CustType, Flag, UserID) {
+            window.location = '@Url.Action("ExportHospitalRptToPDFRBM")?custType=' + CustType + '&flag=' + Flag + '&input=' + input + '&UserIDs=' + UserID;
+        }
+
+        function HospitalPrintGrid(gid) {
+
+            var rows = $('#HospitalRptGrid').jqGrid('getRowData');
+
+            for (var i = 0; i < rows.length; i++) {
+                var row = rows[i];
+                $('#Table3').append("<tr><td>" + row.NameofHospital + "</td><td>" + row.CityName + "</td><td>" + row.AreaName + "</td><td>" + row.email + "</td></tr>");
+            }
+
+            $(function () { HospitalRptprintChrome('prnt-Hospital-Container') });
+        }
+
+        function HospitalRptprintChrome(divContainer) {
+
+            var printContent = document.getElementById(divContainer);
+            window.document.body.innerHTML = printContent.innerHTML;
+            window.print();
+            window.location.reload();
+        }
+
+
+        @*Hospital Rpt ends*@
+
+        @*Doctor Rpt Excel, PDF starts*@
+
+
+        function setDoctorMethod(gid, id, pgTitle, input, CustType, Flag, UserID) {
+
+            var btnTitle = 'Download Excel';
+            $('#' + gid).jqGrid('navSeparatorAdd', '#' + id, { sepclass: "ui-separator" });
+            $('#' + gid).jqGrid('navButtonAdd', '#' + id, { caption: '', title: btnTitle, position: 'last', buttonicon: 'ui-icon-calculator', onClickButton: function () { ExcelDoctorExport(input, CustType, Flag, UserID); } });
+
+            var btnTitle = 'Download PDF';
+            $('#' + gid).jqGrid('navSeparatorAdd', '#' + id, { sepclass: "ui-separator" });
+            $('#' + gid).jqGrid('navButtonAdd', '#' + id, { caption: '', title: btnTitle, position: 'last', buttonicon: 'ui-icon-bookmark', onClickButton: function () { PDFDoctorExport(input, CustType, Flag, UserID); } });
+
+
+
+            var btnTitle = 'Print';
+            $('#' + gid).jqGrid('navSeparatorAdd', '#' + id, { sepclass: "ui-separator" });
+
+            $('#' + gid).jqGrid('navButtonAdd', '#' + id, { caption: '', title: btnTitle, position: 'last', buttonicon: 'ui-icon-print', onClickButton: function () { DoctorPrintGrid(gid); } });
+        }
+        function ExcelDoctorExport(input, CustType, Flag, UserID) {
+            window.location = '@Url.Action("ExportDocotorRptExcelRBM")?custType=' + CustType + '&flag=' + Flag + '&input=' + input + '&UserIDs=' + UserID;
+        }
+        function PDFDoctorExport(input, CustType, Flag, UserID) {
+            window.location = '@Url.Action("ExportDocotorRptToPDFRBM")?custType=' + CustType + '&flag=' + Flag + '&input=' + input + '&UserIDs=' + UserID;
+        }
+
+        function DoctorPrintGrid(gid) {
+
+            var rows = $('#DocotorRptGrid').jqGrid('getRowData');
+
+            for (var i = 0; i < rows.length; i++) {
+                var row = rows[i];
+                $('#Table2').append("<tr><td>" + row.DoctorName + "</td><td>" + row.DoctorCode + "</td><td>" + row.Specialization + "</td><td>" + row.AreaName + "</td><td>" + row.KOLFlag + "</td><td>" + row.RegistrationNo + "</td><td>" + row.email + "</td></tr>");
+            }
+
+            $(function () { DoctorRptprintChrome('prnt-Doctor-Container') });
+        }
+
+
+
+
+        function DoctorRptprintChrome(divContainer) {
+
+            var printContent = document.getElementById(divContainer);
+            window.document.body.innerHTML = printContent.innerHTML;
+            window.print();
+            window.location.reload();
+        }
+
+
+
+
+
+        @*Chemist Rpt ends*@
+        function setMethod(gid, id, pgTitle, input, CustType, Flag, UserID) {
+
+            var btnTitle = 'Download Excel';
+            $('#' + gid).jqGrid('navSeparatorAdd', '#' + id, { sepclass: "ui-separator" });
+            $('#' + gid).jqGrid('navButtonAdd', '#' + id, { caption: '', title: btnTitle, position: 'last', buttonicon: 'ui-icon-calculator', onClickButton: function () { ExcelExport(input, CustType, Flag, UserID); } });
+
+            var btnTitle = 'Download PDF';
+            $('#' + gid).jqGrid('navSeparatorAdd', '#' + id, { sepclass: "ui-separator" });
+            $('#' + gid).jqGrid('navButtonAdd', '#' + id, { caption: '', title: btnTitle, position: 'last', buttonicon: 'ui-icon-bookmark', onClickButton: function () { PDFExport(input, CustType, Flag, UserID); } });
+
+
+
+            var btnTitle = 'Print';
+            $('#' + gid).jqGrid('navSeparatorAdd', '#' + id, { sepclass: "ui-separator" });
+            $('#' + gid).jqGrid('navButtonAdd', '#' + id, { caption: '', title: btnTitle, position: 'last', buttonicon: 'ui-icon-print', onClickButton: function () { PrintGrid(gid); } });
+        }
+        function ExcelExport(input, CustType, Flag, UserID) {
+            window.location = '@Url.Action("ExportCustomerRptExcelRBM")?custType=' + CustType + '&flag=' + Flag + '&input=' + input + '&UserIDs=' + UserID;;
+        }
+        function PDFExport(input, CustType, Flag, UserID) {
+            window.location = '@Url.Action("ExportCustomerRptToPDFRBM")?custType=' + CustType + '&flag=' + Flag + '&input=' + input + '&UserIDs=' + UserID;;
+        }
+
+
+
+
+        function PrintGrid(gid) {
+
+            var rows = $('#CustomerRptGrid').jqGrid('getRowData');
+
+            for (var i = 0; i < rows.length; i++) {
+                var row = rows[i];
+                $('#Table1').append("<tr><td>" + row.ChemistName + "</td><td>" + row.AreaName + "</td><td>" + row.email + "</td></tr>");
+            }
+
+            $(function () { printChrome('prt-container') });
+        }
+
+
+
+
+        function printChrome(divContainer) {
+
+            var printContent = document.getElementById(divContainer);
+            window.document.body.innerHTML = printContent.innerHTML;
+            window.print();
+            window.location.reload();
+        }
+
+
+    </script>
+
+
+
+
+    @*Chemist Print Div*@
+    <div id='prt-container' style="display:none">
+        <table id="Table1" border="1" width="100%">
+            <thead>
+                <tr>
+                    <td><b>Chemist Name</b></td>
+                    <td><b>Area</b></td>
+                    <td><b>Email</b></td>
+                </tr>
+
+            </thead>
+            <tbody></tbody>
+
+        </table>
+    </div>
+
+    @*end*@
+
+    @*Doctor Print Div*@
+
+    <div id='prnt-Doctor-Container' style="display:none">
+        <table id="Table2" border="1" width="100%">
+            <thead>
+                <tr>
+                    <td><b>Doctor</b></td>
+                    <td><b>Doctor Code</b></td>
+                    <td><b>Specialization</b></td>
+                    <td><b>Area</b></td>
+                    <td><b>KOL</b></td>
+                    <td><b>Registration No.	</b></td>
+                    <td><b>Email</b></td>
+                </tr>
+
+            </thead>
+            <tbody></tbody>
+
+        </table>
+    </div>
+    @*end*@
+
+    @*Hospital Print Div*@
+    <div id='prnt-Hospital-Container' style="display:none">
+        <table id="Table3" border="1" width="100%">
+            <thead>
+                <tr>
+                    <td><b>Hospital Name</b></td>
+                    <td><b>City</b></td>
+                    <td><b>Area</b></td>
+                    <td><b>Email</b></td>
+
+                </tr>
+
+            </thead>
+            <tbody></tbody>
+
+        </table>
+    </div>
+
+    @*end*@
+
+
+    @*Stockist Print Div*@
+    <div id='prnt-Stockist-Container' style="display:none">
+        <table id="Table4" border="1" width="100%">
+            <thead>
+                <tr>
+                    <td><b>StockiestName Name</b></td>
+                    <td><b>City</b></td>
+                    <td><b>Area</b></td>
+                    <td><b>Email</b></td>
+
+                </tr>
+
+            </thead>
+            <tbody></tbody>
+
+        </table>
+    </div>
+
+    @*end*@
+
+
+</body>

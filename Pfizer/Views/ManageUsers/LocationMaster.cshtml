@@ -232,23 +232,15 @@
                     }
 
                 },
-                afterSubmit: function (response, postdata) {
 
+                afterSubmit: function (response, postdata) {
                     $('tr td.delmsg').html('');
                     $("#LocationMaster").jqGrid('setGridParam', { datatype: 'json' }).trigger('reloadGrid');
-                    return [false, response.responseText];                
-                  
+                    $('#DelTbl_LocationMaster td.ui-state-error').removeClass('ui-state-error').addClass('ui-state-highlight');
+                    $('#dData').hide();
+                    return [false, response.responseText];
                 },
-
-
-              
-                delData: {
-                    PKID: function () {
-                        var sel_id = $('#LocationMaster').jqGrid('getGridParam', 'selrow');
-                        var value = $('#LocationMaster').jqGrid('getCell', sel_id, '_id');
-                        return value;
-                    }
-                }
+             
 
             },
             {

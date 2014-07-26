@@ -189,7 +189,7 @@ namespace Pfizer.Controllers
                     var result = dcManageUsers.SaveChanges();
                     if (result == 1)
                     {
-                        msg = "Record Updated Successfully";
+                        msg = "Location Details Updated Successfully";
                     }
                     //}
                 }
@@ -202,7 +202,7 @@ namespace Pfizer.Controllers
                     var Result = dcManageUsers.SaveChanges();
                     if (Result == 1)
                     {
-                        msg = "Record Deleted Successfully.";
+                        msg = "Location Details Deleted Successfully.";
                     }
 
 
@@ -315,64 +315,560 @@ namespace Pfizer.Controllers
             public string Status { get; set; }
         }
         #endregion
-        #region SalesHierarchy
+       
+
+        #region MuniPrathap SalesHierachy
         public ActionResult SalesHierarchy()
         {
 
             return View();
         }
 
-        public JsonResult GridSalesHierarchy(GridQueryModel gridQueryModel)
+        public string returnXml(string SelTeamName)
         {
-            var searchString = gridQueryModel.searchString;
-            var searchOper = gridQueryModel.searchOper;
-            var searchField = gridQueryModel.searchField;
 
+            string[] arrayUser = SelTeamName.Split(',');
 
-            var rslt = (from a in dcManageUsers.usp_GetSalesHierarchy()
-                        select new
-                        {
-                            a.IsActive,
-                            userName = a.FirstName + " " + a.uMiddleName + " " + a.uLastName,
-                            reportingTo = a.LMN + " " + a.MiddleName + " " + a.LastName,
-                            a.NodeName,
-                            a.PKID
-                        }).ToList();
-            var count = rslt.Count();
-            // var pageData = rslt.OrderBy(x => x.userName).OrderBy(x => x.reportingTo).OrderBy(x=>x.NodeName).Skip((gridQueryModel.page - 1) * gridQueryModel.rows).Take(gridQueryModel.rows);
-            var pageData = rslt.OrderBy(x => x.PKID).Skip((gridQueryModel.page - 1) * gridQueryModel.rows).Take(gridQueryModel.rows);
+            string xml = "<root>";
 
-            //if (gridQueryModel._search == true && searchString != "")
-            //{
-            //    if ((searchField == "ImpactScreenName"))
-            //    {
-
-            //        var rslt = (from a in query where a.ImpactScreenName.ToString().Contains(searchString) select a).ToList();
-            //        count = rslt.Count();
-            //        pageData = rslt.OrderBy(x => x.ImpactScreenName).Skip((gridQueryModel.page - 1) * gridQueryModel.rows).Take(gridQueryModel.rows);
-
-            //    }
-            //}
-
-            return Json(new
+            for (int i = 0; i < arrayUser.Count(); i++)
             {
-                page = gridQueryModel.page,
-                records = count,
-                rows = pageData,
-                total = Math.Ceiling((decimal)count / gridQueryModel.rows)
-            }, JsonRequestBehavior.AllowGet);
+
+                xml += "<CompBrand";
+                xml += " TeamFkid='" + arrayUser[i] + "'";
+                xml += "/>";
+
+
+            }
+            xml += "</root>";
+
+            return xml;
+
 
         }
 
 
+        public JsonResult AddSalesHierarchy(string id, string oper, string IsLower, string NodeType, string Division, string User, string reportingTo, string NodeFunction, string NodeDescription, string Location, string LocationDescription, string ForumCreator,
+                                              string HQ, string SelTeams, string RegionCode, string DistrictCode, string Territory, string IsActive)
+        {
+            string msg = string.Empty;
+            string xml = "";
+            if (IsActive == "true")
+            {
+                IsActive = "1";
+            }
+            else
+            {
+                IsActive = "0";
+            }
+            try
+            {
 
+                var Islower = Convert.ToInt32(IsLower);
+                var Nodetype = Convert.ToInt32(NodeType);
+                var dPkid = Convert.ToDecimal(Division);
+                var user = Convert.ToDecimal(User);
+                var territory = Convert.ToDecimal(Territory);
+                var reporting = Convert.ToDecimal(reportingTo);
+
+                var Nodefunction = Convert.ToInt32(NodeFunction);
+
+                var location = Convert.ToDecimal(Location);
+
+
+                var forum = Convert.ToInt32(ForumCreator);
+
+                xml = returnXml(SelTeams);
+
+                var createdBy = Convert.ToInt32(Session["USER_FKID"] == null ? "0" : Session["USER_FKID"].ToString());
+
+                var Hq = Convert.ToDecimal(HQ);
+
+                var district = Convert.ToDecimal(DistrictCode);
+
+                var region = Convert.ToDecimal(RegionCode);
+
+
+                dcManageUsers.AddSalesMaster2(Islower, Nodetype, dPkid, user, territory, reporting, Nodefunction, NodeDescription, location, LocationDescription, forum, xml, createdBy, Hq, district, region);
+
+
+                msg = "SalesHierachy added Successfully.";
+
+
+                return Json(msg);
+            }
+            catch (Exception ex)
+            {
+                return Json("SalesHierachy added Successfully.");
+
+            }
+
+
+        }
+        public JsonResult EditSalesHierarchy(string id, string oper, string IsLower, string NodeType, string Division, string User, string reportingTo, string NodeFunction, string NodeDescription, string Location, string LocationDescription, string ForumCreator,
+                                               string HQ, string SelTeams, string RegionCode, string DistrictCode, string Territory, string IsActive)
+        {
+
+            string msg = string.Empty;
+            try
+            {
+                string xml = "";
+
+                if (oper == "edit")
+                {
+
+
+                    if (IsActive == "true")
+                    {
+                        IsActive = "1";
+                    }
+                    else
+                    {
+                        IsActive = "0";
+                    }
+                    var pKID = Convert.ToDecimal(id);
+                    var Islower = Convert.ToInt32(IsLower);
+                    var Nodetype = Convert.ToInt32(NodeType);
+                    var dPkid = Convert.ToDecimal(Division);
+                    var user = Convert.ToDecimal(User);
+                    var territory = Convert.ToDecimal(Territory);
+                    var reporting = Convert.ToDecimal(reportingTo);
+
+                    var Nodefunction = Convert.ToInt32(NodeFunction);
+
+                    var location = Convert.ToDecimal(Location);
+
+
+                    var forum = Convert.ToInt32(ForumCreator);
+
+                    xml = returnXml(SelTeams);
+
+                    var createdBy = Convert.ToInt32(Session["USER_FKID"] == null ? "0" : Session["USER_FKID"].ToString());
+                    var modifiedBy = Convert.ToInt32(Session["USER_FKID"] == null ? "0" : Session["USER_FKID"].ToString());
+                    var Hq = Convert.ToDecimal(HQ);
+
+                    var district = Convert.ToDecimal(DistrictCode);
+
+                    var region = Convert.ToDecimal(RegionCode);
+
+
+                    dcManageUsers.EditSalesMaster2(pKID, Islower, Nodetype, dPkid, user, territory, reporting, Nodefunction, LocationDescription, forum, xml, location, NodeDescription, createdBy, modifiedBy, Convert.ToInt32(IsActive), Hq, district, region);
+
+                    dcManageUsers.SaveChanges();
+                    msg = "SalesHierachy modified Successfully.";
+
+                }
+
+
+
+                if (oper == "del")
+                {
+
+                    var PKID = Convert.ToDecimal(id);
+                    var userid = Convert.ToDecimal(User);
+                    dcManageUsers.DeleteSalesHierarchy_New(PKID, userid);
+
+                    msg = "SalesHierachy Master deleted Successfully.";
+                }
+
+                return Json(msg);
+            }
+            catch (Exception ex)
+            {
+                return Json("SalesHierachy Master Modified Successfully.");
+            }
+        }
+
+
+        public JsonResult GridSalesHierarchy(GridQueryModel gridQueryModel)
+        {
+            try
+            {
+
+                var searchString = gridQueryModel.searchString;
+                var searchOper = gridQueryModel.searchOper;
+                var searchField = gridQueryModel.searchField;
+
+
+                var query = (from a in dcManageUsers.usp_GetSalesHierarchy()
+                             select new
+                             {
+                                 a.IsActive,
+                                 userName = a.FirstName + " " + a.uMiddleName + " " + a.uLastName,
+                                 reportingTo = a.LMN + " " + a.MiddleName + " " + a.LastName,
+                                 a.NodeName,
+                                 a.PKID
+                             }).ToList();
+                var count = query.Count();
+                
+                var pageData = query.OrderBy(x => x.PKID).Skip((gridQueryModel.page - 1) * gridQueryModel.rows).Take(gridQueryModel.rows);
+
+                if (gridQueryModel._search == true && searchString != "")
+                {
+                    if ((searchField == "userName"))
+                    {
+                        if (searchOper == "bw")//begins with
+                        {
+                            var q = (from sq in query where sq.userName != null && sq.userName.ToUpper().StartsWith(searchString, StringComparison.CurrentCultureIgnoreCase) select sq).ToList();
+                            count = q.Count();
+                            pageData = q.OrderBy(x => x.userName).Skip((gridQueryModel.page - 1) * gridQueryModel.rows).Take(gridQueryModel.rows);
+                        }
+                        else if (searchOper == "eq") //equal
+                        {
+                            var q = (from sq in query where sq.userName != null && sq.userName.ToUpper().Equals(searchString, StringComparison.CurrentCultureIgnoreCase) select sq).ToList();
+                            count = q.Count();
+                            pageData = q.OrderBy(x => x.userName).Skip((gridQueryModel.page - 1) * gridQueryModel.rows).Take(gridQueryModel.rows);
+                        }
+                        else if (searchOper == "ew") // ends with
+                        {
+                            var q = (from sq in query where sq.userName != null && sq.userName.ToUpper().EndsWith(searchString, StringComparison.CurrentCultureIgnoreCase) select sq).ToList();
+                            count = q.Count();
+                            pageData = q.OrderBy(x => x.userName).Skip((gridQueryModel.page - 1) * gridQueryModel.rows).Take(gridQueryModel.rows);
+                        }
+                        else if (searchOper == "cn")//contains
+                        {
+                            var q = (from sq in pageData where sq.userName != null && sq.userName.ToUpper().Contains(searchString) select sq).ToList();
+                            count = q.Count();
+                            pageData = q.OrderBy(x => x.userName).Skip((gridQueryModel.page - 1) * gridQueryModel.rows).Take(gridQueryModel.rows);
+                        }
+                    }
+                    else if (searchField == "NodeName")
+                    {
+                        if (searchOper == "bw")//begins with
+                        {
+                            var q = (from sq in query where sq.NodeName != null && sq.NodeName.ToUpper().StartsWith(searchString, StringComparison.CurrentCultureIgnoreCase) select sq).ToList();
+                            count = q.Count();
+                            pageData = q.OrderBy(x => x.NodeName).Skip((gridQueryModel.page - 1) * gridQueryModel.rows).Take(gridQueryModel.rows);
+                        }
+                        else if (searchOper == "eq") //equal
+                        {
+                            var q = (from sq in query where sq.NodeName != null && sq.NodeName.ToUpper().Equals(searchString, StringComparison.CurrentCultureIgnoreCase) select sq).ToList();
+                            count = q.Count();
+                            pageData = q.OrderBy(x => x.NodeName).Skip((gridQueryModel.page - 1) * gridQueryModel.rows).Take(gridQueryModel.rows);
+                        }
+                        else if (searchOper == "ew") // ends with
+                        {
+                            var q = (from sq in query where sq.NodeName != null && sq.NodeName.ToUpper().EndsWith(searchString, StringComparison.CurrentCultureIgnoreCase) select sq).ToList();
+                            count = q.Count();
+                            pageData = q.OrderBy(x => x.NodeName).Skip((gridQueryModel.page - 1) * gridQueryModel.rows).Take(gridQueryModel.rows);
+                        }
+                        else if (searchOper == "cn")//contains
+                        {
+                            var q = (from sq in query where sq.NodeName != null && sq.NodeName.ToUpper().Contains(searchString) select sq).ToList();
+                            count = q.Count();
+                            pageData = q.OrderBy(x => x.NodeName).Skip((gridQueryModel.page - 1) * gridQueryModel.rows).Take(gridQueryModel.rows);
+                        }
+
+                    }
+                    else if (searchField == "reportingTo")
+                    {
+                        if (searchOper == "bw")//begins with
+                        {
+                            var q = (from sq in query where sq.reportingTo != null && sq.reportingTo.ToUpper().StartsWith(searchString, StringComparison.CurrentCultureIgnoreCase) select sq).ToList();
+                            count = q.Count();
+                            pageData = q.OrderBy(x => x.reportingTo).Skip((gridQueryModel.page - 1) * gridQueryModel.rows).Take(gridQueryModel.rows);
+                        }
+                        else if (searchOper == "eq") //equal
+                        {
+                            var q = (from sq in query where sq.reportingTo != null && sq.reportingTo.ToUpper().Equals(searchString, StringComparison.CurrentCultureIgnoreCase) select sq).ToList();
+                            count = q.Count();
+                            pageData = q.OrderBy(x => x.reportingTo).Skip((gridQueryModel.page - 1) * gridQueryModel.rows).Take(gridQueryModel.rows);
+                        }
+                        else if (searchOper == "ew") // ends with
+                        {
+                            var q = (from sq in query where sq.reportingTo != null && sq.reportingTo.ToUpper().EndsWith(searchString, StringComparison.CurrentCultureIgnoreCase) select sq).ToList();
+                            count = q.Count();
+                            pageData = q.OrderBy(x => x.reportingTo).Skip((gridQueryModel.page - 1) * gridQueryModel.rows).Take(gridQueryModel.rows);
+                        }
+                        else if (searchOper == "cn")//contains
+                        {
+                            var q = (from sq in pageData where sq.reportingTo != null && sq.reportingTo.ToUpper().Contains(searchString) select sq).ToList();
+                            count = q.Count();
+                            pageData = q.OrderBy(x => x.reportingTo).Skip((gridQueryModel.page - 1) * gridQueryModel.rows).Take(gridQueryModel.rows);
+                        }
+
+
+                    }
+                }
+                else
+                {
+                    count = query.Count();
+                    if (gridQueryModel.sidx == "userName" && gridQueryModel.sord == "asc")
+                        pageData = (from cust in query orderby cust.userName ascending select cust).Skip((gridQueryModel.page - 1) * gridQueryModel.rows).Take(gridQueryModel.rows);
+                    else
+                        if (gridQueryModel.sidx == "userName" && gridQueryModel.sord == "desc")
+                            pageData = (from cust in query orderby cust.userName descending select cust).Skip((gridQueryModel.page - 1) * gridQueryModel.rows).Take(gridQueryModel.rows);
+
+                    if (gridQueryModel.sidx == "NodeName" && gridQueryModel.sord == "asc")
+                        pageData = (from cust in query orderby cust.NodeName ascending select cust).Skip((gridQueryModel.page - 1) * gridQueryModel.rows).Take(gridQueryModel.rows);
+                    else
+                        if (gridQueryModel.sidx == "NodeName" && gridQueryModel.sord == "desc")
+                            pageData = (from cust in query orderby cust.NodeName descending select cust).Skip((gridQueryModel.page - 1) * gridQueryModel.rows).Take(gridQueryModel.rows);
+
+
+                    if (gridQueryModel.sidx == "reportingTo" && gridQueryModel.sord == "asc")
+                        pageData = (from cust in query orderby cust.reportingTo ascending select cust).Skip((gridQueryModel.page - 1) * gridQueryModel.rows).Take(gridQueryModel.rows);
+                    else
+                        if (gridQueryModel.sidx == "reportingTo" && gridQueryModel.sord == "desc")
+                            pageData = (from cust in query orderby cust.reportingTo descending select cust).Skip((gridQueryModel.page - 1) * gridQueryModel.rows).Take(gridQueryModel.rows);
+
+                    if (gridQueryModel.sidx == "IsActive" && gridQueryModel.sord == "asc")
+                        pageData = (from cust in query orderby cust.IsActive ascending select cust).Skip((gridQueryModel.page - 1) * gridQueryModel.rows).Take(gridQueryModel.rows);
+                    else
+                        if (gridQueryModel.sidx == "IsActive" && gridQueryModel.sord == "desc")
+                            pageData = (from cust in query orderby cust.IsActive descending select cust).Skip((gridQueryModel.page - 1) * gridQueryModel.rows).Take(gridQueryModel.rows);
+
+
+
+                }
+                return Json(new
+                {
+                    page = gridQueryModel.page,
+                    records = count,
+                    rows = pageData,
+                    total = Math.Ceiling((decimal)count / gridQueryModel.rows)
+                }, JsonRequestBehavior.AllowGet);
+            }
+            catch
+            {
+                return Json(gridQueryModel);
+            }
+
+        }
+        //For Excel & PDF & CSV For SalesHierachy Master
+        public ActionResult ExportSalesHierarchyMasterToExcel()
+        {
+
+
+            var context = (from a in dcManageUsers.usp_GetSalesHierarchy()
+                           orderby a.PKID
+                           select new
+                           {
+                               PKID = a.PKID.ToString(),
+                               userName = a.FirstName + " " + a.uMiddleName + " " + a.uLastName,
+                               a.NodeName,
+                               reportingTo = a.LMN + " " + a.MiddleName + " " + a.LastName,
+                               IsActive = a.IsActive == null ? "" : a.IsActive.ToString()
+                           }).ToList();
+
+            if (context.Count == 0)
+                return new EmptyResult();
+            var data = new List<string[]>(context.Count);
+            data.AddRange(context.Select(item => new[]{            
+             // item.PKID,
+              item.userName,
+              item.NodeName ,
+              item.reportingTo,
+              item.IsActive 
+                   
+                          
+            }));
+
+
+            return new ExcelResult(HeadersActivityMaster, ColunmTypesActivityMaster, data, "SalesHierachy.xlsx", "SalesHierachy");
+        }
+        private static readonly string[] HeadersActivityMaster = {
+               "userName","NodeName","reportingTo","IsActive"
+            };
+        private static readonly DataForExcel.DataType[] ColunmTypesActivityMaster = { 
+                
+                DataForExcel.DataType.String,
+                DataForExcel.DataType.String ,
+                DataForExcel.DataType.String,
+                DataForExcel.DataType.String ,
+                                              
+            };
+
+        public ActionResult ExportSalesHierarchyMasterToPDF()
+        {
+            List<SalesHierachyMasterPDF> userList = new List<SalesHierachyMasterPDF>();
+
+
+            var context = (from a in dcManageUsers.usp_GetSalesHierarchy()
+                           orderby a.PKID
+                           select new
+                           {
+                               a.IsActive,
+                               userName = a.FirstName + " " + a.uMiddleName + " " + a.uLastName,
+                               reportingTo = a.LMN + " " + a.MiddleName + " " + a.LastName,
+                               a.NodeName,
+                               a.PKID
+                           }).ToList();
+
+            foreach (var item in context)
+            {
+                SalesHierachyMasterPDF user = new SalesHierachyMasterPDF();
+
+               // user.PKID = item.PKID.ToString() == null ? "" : item.PKID.ToString();
+                user.userName = item.userName == null ? "" : item.userName;
+                user.NodeName = item.NodeName == null ? "" : item.NodeName;
+                user.reportingTo = item.reportingTo == null ? "" : item.reportingTo;
+                user.IsActive = item.IsActive.ToString();
+
+
+
+
+                userList.Add(user);
+
+            }
+            var customerList = userList;
+
+            var result = new
+            {
+                total = 1,
+                page = 1,
+                records = customerList.Count(),
+                rows = (
+                    customerList.Select(e =>
+                        new
+                        {
+                            cell = new string[]{
+                            //e.PKID,
+                            e.userName,
+                            e.NodeName,
+                            e.reportingTo,
+                            e.IsActive,
+                           
+                        }
+                        })
+                ).ToArray()
+            };
+
+            pdf.ExportPDF(customerList, new string[] {"userName", "NodeName", "reportingTo", "IsActive", }, path);
+            return File(path, "application/pdf", "SalesHierachy.pdf");
+        }
+        public ActionResult ExportSalesHierarchyMasterPDFToCsv()
+        {
+
+
+            var model = (from a in dcManageUsers.usp_GetSalesHierarchy()
+                         orderby a.PKID
+                         select new
+                         {
+                             a.IsActive,
+                             userName = a.FirstName + " " + a.uMiddleName + " " + a.uLastName,
+                             reportingTo = a.LMN + " " + a.MiddleName + " " + a.LastName,
+                             a.NodeName,
+                             a.PKID
+                         }).ToList();
+            var sb = new StringBuilder();
+            sb.AppendLine("userName, NodeName, reportingTo, IsActive");
+            foreach (var record in model)
+            {
+                sb.AppendFormat("{0},{1},{2},{3}",
+
+
+                    //record.PKID == null ? "" : record.PKID.ToString(),
+                    record.userName == null ? "" : record.userName,
+                    record.NodeName == null ? "" : record.NodeName.ToString(),
+                    record.reportingTo == null ? "" : record.reportingTo,
+                    record.IsActive
+
+                 );
+                sb.AppendLine();
+            }
+            string data = sb.ToString();
+            var csvBytes = Encoding.ASCII.GetBytes(data);
+
+            return File(csvBytes, "text/csv", "SalesHierachyMaster.txt");
+        }
+        public class SalesHierachyMasterPDF
+        {
+
+            //public string PKID { get; set; }
+            public string userName { get; set; }
+            public string NodeName { get; set; }
+            public string reportingTo { get; set; }
+            public string IsActive { get; set; }
+
+        }
+        public ActionResult LoadIsLower(string rowId, string type)
+        {
+            dynamic query = "";
+            ViewBag.Type = type;
+            ViewBag.Selected = "";
+
+
+            if (rowId != "null" && rowId != "")
+            {
+                var rslt = (from a in dcManageUsers.GetSalesHierrachy(Convert.ToDecimal(rowId)) select new { a.Islower }).FirstOrDefault();
+                ViewBag.Selected = rslt.Islower.ToString();
+            }
+
+            return PartialView("PVLoadNodeType");
+        }
+        public ActionResult LoadNodeFunc(string rowId, string type)
+        {
+            dynamic query = "";
+            ViewBag.Type = type;
+            ViewBag.Selected = "";
+
+
+            if (rowId != "null" && rowId != "")
+            {
+                var rslt = (from a in dcManageUsers.GetSalesHierrachy(Convert.ToDecimal(rowId)) select new { a.NodeFunctionFKID }).FirstOrDefault();
+                ViewBag.Selected = rslt.NodeFunctionFKID.ToString();
+            }
+
+            return PartialView("PVLoadNodeType");
+        }
+
+        public ActionResult LoadForum(string rowId, string type)
+        {
+            dynamic query = "";
+            ViewBag.Type = type;
+            ViewBag.Selected = "";
+
+
+            if (rowId != "null" && rowId != "")
+            {
+                var rslt = (from a in dcManageUsers.GetSalesHierrachy(Convert.ToDecimal(rowId)) select new { a.ForumCreator }).FirstOrDefault();
+                ViewBag.Selected = rslt.ForumCreator.ToString();
+            }
+
+            return PartialView("PVLoadNodeType");
+        }
+
+        public JsonResult JsonLoadNodeDesc(string id)
+        {
+            string NodeDesc = "";
+
+            var query = dcManageUsers.GetSalesHierrachy(Convert.ToDecimal(id)).Select(x => new { x.NodeDesc }).FirstOrDefault();
+            return Json(new
+            {
+                NodeDesc = query.NodeDesc == null ? string.Empty : query.NodeDesc,
+
+            }, JsonRequestBehavior.AllowGet);
+
+        }
+
+        public JsonResult JsonLoadLocationDesc(string id)
+        {
+            string LocDesc = "";
+
+            var query = dcManageUsers.GetSalesHierrachy(Convert.ToDecimal(id)).Select(x => new { x.LocationDesc }).FirstOrDefault();
+            return Json(new
+            {
+                LocDesc = query.LocationDesc == null ? string.Empty : query.LocationDesc,
+
+            }, JsonRequestBehavior.AllowGet);
+
+        }
 
         public ActionResult LoadNodeType(string rowId, string type)
         {
             dynamic query = "";
+            dynamic edit = "";
             ViewBag.Type = type;
-            if (rowId == "null")
-                query = (from a in dcManageUsers.GetNodeTypeByXML() select new { a.NodeTypeFKID, a.NodeName }).ToDictionary(f => Convert.ToInt32(f.NodeTypeFKID), f => f.NodeName.ToString());
+            ViewBag.Selected = 0;
+
+            query = (from a in dcManageUsers.GetNodeTypeByXML() select new { a.NodeTypeFKID, a.NodeName }).ToDictionary(f => Convert.ToInt32(f.NodeTypeFKID), f => f.NodeName.ToString());
+
+            if (rowId != "null" && rowId != "")
+            {
+                var rslt = (from a in dcManageUsers.GetSalesHierrachy(Convert.ToDecimal(rowId)) select new { a.NodeTypeFKID }).FirstOrDefault();
+                ViewBag.Selected = rslt.NodeTypeFKID;
+            }
 
             return PartialView("PVLoadNodeType", query);
         }
@@ -381,9 +877,13 @@ namespace Pfizer.Controllers
         {
             dynamic query = "";
             ViewBag.Type = type;
-            if (rowId == "null")
-                query = (from a in dcManageUsers.GetDivisonMasterByPkid() select new { a.PKID, a.DivName }).ToDictionary(f => Convert.ToInt32(f.PKID), f => f.DivName.ToString());
-
+            ViewBag.Selected = 0;
+            query = (from a in dcManageUsers.GetDivisonMasterByPkid() select new { a.PKID, a.DivName }).ToDictionary(f => Convert.ToInt32(f.PKID), f => f.DivName.ToString());
+            if (rowId != "null" && rowId != "")
+            {
+                var rslt = (from a in dcManageUsers.GetSalesHierrachy(Convert.ToDecimal(rowId)) select new { a.DivFKID }).FirstOrDefault();
+                ViewBag.Selected = rslt.DivFKID;
+            }
             return PartialView("PVLoadNodeType", query);
         }
 
@@ -391,9 +891,13 @@ namespace Pfizer.Controllers
         {
             dynamic query = "";
             ViewBag.Type = type;
-            if (rowId == "null")
-                query = (from a in dcManageUsers.GetReportingByXml() select new { a.PKID, a.LoginName }).ToDictionary(f => Convert.ToInt32(f.PKID), f => f.LoginName.ToString());
-
+            ViewBag.Selected = 0;
+            query = (from a in dcManageUsers.GetReportingByXml() select new { a.PKID, a.LoginName }).ToDictionary(f => Convert.ToInt32(f.PKID), f => f.LoginName.ToString());
+            if (rowId != "null" && rowId != "")
+            {
+                var rslt = (from a in dcManageUsers.GetSalesHierrachy(Convert.ToDecimal(rowId)) select new { a.UserFKID }).FirstOrDefault();
+                ViewBag.Selected = rslt.UserFKID;
+            }
             return PartialView("PVLoadNodeType", query);
         }
 
@@ -402,10 +906,17 @@ namespace Pfizer.Controllers
         {
             dynamic query = "";
             ViewBag.Type = type;
-            if (rowId == "null")
-                query = (from a in dcManageUsers.GetLocatioNameByXml() select new { a.PKID, a.LocationName }).ToDictionary(f => Convert.ToInt32(f.PKID), f => f.LocationName.ToString());
+            ViewBag.Selected = 0;
 
-            return PartialView("PVLoadReportValue", query);
+            query = (from a in dcManageUsers.GetLocatioNameByXml() select new { a.PKID, a.LocationName }).ToDictionary(f => Convert.ToInt32(f.PKID), f => f.LocationName.ToString());
+
+
+            if (rowId != "null" && rowId != "")
+            {
+                var rslt = (from a in dcManageUsers.GetSalesHierrachy(Convert.ToDecimal(rowId)) select new { a.LocationFKID }).FirstOrDefault();
+                ViewBag.Selected = rslt.LocationFKID;
+            }
+            return PartialView("PVLoadNodeType", query);
         }
 
 
@@ -413,59 +924,128 @@ namespace Pfizer.Controllers
         {
             dynamic query = "";
             ViewBag.Type = type;
-            if (rowId == "null")
-                query = (from a in dcManageUsers.GetHQNameByXML() select new { a.HQFKID, a.HQName }).ToDictionary(f => Convert.ToInt32(f.HQFKID), f => f.HQName.ToString());
+            ViewBag.Selected = 0;
+            query = (from a in dcManageUsers.GetHQNameByXML() select new { a.HQFKID, a.HQName }).ToDictionary(f => Convert.ToInt32(f.HQFKID), f => f.HQName.ToString());
+            if (rowId != "null" && rowId != "")
+            {
+                var rslt = (from a in dcManageUsers.GetSalesHierrachy(Convert.ToDecimal(rowId)) select new { a.HQFKID }).FirstOrDefault();
+                ViewBag.Selected = rslt.HQFKID;
+            }
+
+            return PartialView("PVLoadNodeType", query);
+        }
+
+
+        public ActionResult LoadTeam(string type, string DivFKID)
+        {
+
+            dynamic query = "";
+            ViewBag.Type = type;
+            query = (from a in dcManageUsers.GetTeamMasterByXML_New(Convert.ToDecimal(DivFKID)) select new { a.PKID, a.TeamName }).ToDictionary(f => Convert.ToInt32(f.PKID), f => f.TeamName.ToString());
 
             return PartialView("PVLoadReportValue", query);
         }
-
 
         public ActionResult LoadTeamType(string rowId, string type, string fkId)
         {
             dynamic query = "";
             ViewBag.Type = type;
             if (rowId == "null")
-                query = (from a in dcManageUsers.GetTeamMasterByXML_New(Convert.ToDecimal(0)) select new { a.PKID, a.TeamName }).ToDictionary(f => Convert.ToInt32(f.PKID), f => f.TeamName.ToString());
+                query = (from a in dcManageUsers.GetTeamMasterByXML_New(Convert.ToDecimal(1)) select new { a.PKID, a.TeamName }).ToDictionary(f => Convert.ToInt32(f.PKID), f => f.TeamName.ToString());
+            else
+                query = (from a in dcManageUsers.GetTeamMasterByXML_New(Convert.ToDecimal(1)) select new { a.PKID, a.TeamName }).ToDictionary(f => Convert.ToInt32(f.PKID), f => f.TeamName.ToString());
 
             return PartialView("PVLoadReportValue", query);
         }
+        public ActionResult LoadSelectedTeam(string rowId, string type)
+        {
+            ViewBag.Type = type;
+            dynamic query = "";
+            ViewBag.Selected = "";
+            if (rowId != "null")
+            {
+                query = (from a in dcManageUsers.GetSalesTeamByXml(Convert.ToDecimal(rowId)) select new { a.TeamFKID, a.TeamName }).ToDictionary(f => Convert.ToInt32(f.TeamFKID), f => f.TeamName.ToString());
+                return PartialView("PVLoadReportValue", query);
+            }
+            else
+            {
+                //query = (from a in dcManageUsers.GetTeamMasterByXML_New(Convert.ToDecimal(1)) select new { a.PKID, a.TeamName }).ToDictionary(f => Convert.ToInt32(f.PKID), f => f.TeamName.ToString());
+                ViewBag.Selected = rowId;
 
+                return PartialView("PVLoadReportValue");
+            }
+        }
         public ActionResult LoadRegionType(string rowId, string type)
         {
             dynamic query = "";
             ViewBag.Type = type;
-            if (rowId == "null")
-                query = (from a in dcManageUsers.getRegionNameNew() where a.RegionCode != "" select new { a.PKID, a.RegionName }).ToDictionary(f => Convert.ToInt32(f.PKID), f => f.RegionName.ToString());
+            ViewBag.Selected = 0;
+
+            query = (from a in dcManageUsers.getRegionNameNew() where a.RegionCode != "" && a.RegionCode != null select new { a.PKID, a.RegionCode }).ToDictionary(f => Convert.ToInt32(f.PKID), f => f.RegionCode.ToString());
+            if (rowId != "null" && rowId != "")
+            {
+                var rslt = (from a in dcManageUsers.GetSalesHierrachy(Convert.ToDecimal(rowId)) select new { a.RegionFKID }).FirstOrDefault();
+                ViewBag.Selected = rslt.RegionFKID;
+            }
 
             return PartialView("PVLoadReportValue", query);
         }
 
 
 
-        public ActionResult LoadDistrictCodeType(string rowId, string type)
+        public ActionResult LoadDistrictCodeType(string rowId, string pkid, string type)
+        {
+            dynamic query = "";
+            ViewBag.Type = type;
+            ViewBag.Selected = 0;
+            query = (from a in dcManageUsers.getDistrictNameWSNew() where a.DistrictCode != "" && a.DistrictCode != null select new { a.PKID, a.DistrictCode }).ToDictionary(f => Convert.ToInt32(f.PKID), f => f.DistrictCode.ToString());
+            if (rowId != "null" && rowId != "")
+            {
+                var rslt = (from a in dcManageUsers.GetSalesHierrachy(Convert.ToDecimal(rowId)) select new { a.DistrictFKID }).FirstOrDefault();
+                ViewBag.Selected = rslt.DistrictFKID;
+            }
+
+            return PartialView("PVLoadReportValue", query);
+        }
+        public ActionResult LoadTerritoryType(string rowId, string pkid, string type)
+        {
+            dynamic query = "";
+            ViewBag.Type = type;
+            ViewBag.Selected = 0;
+            int District = 0;
+            if (rowId != "null" && rowId != "")
+            {
+                var rslt = (from a in dcManageUsers.GetSalesHierrachy(Convert.ToDecimal(rowId)) select new { a.DistrictFKID }).FirstOrDefault();
+                District = Convert.ToInt32(rslt.DistrictFKID);
+                query = (from a in dcManageUsers.GetAllTerritoryCodeXmlByDistrictFKID(District) where a.TerritoryName != "" && a.TerritoryName != null select new { a.TerritoryId, a.TerritoryName }).ToDictionary(f => Convert.ToInt32(f.TerritoryId), f => f.TerritoryName.ToString());
+
+                var rslt1 = (from a in dcManageUsers.GetSalesHierrachy(Convert.ToDecimal(rowId)) select new { a.TerritoryFKID }).FirstOrDefault();
+                ViewBag.Selected = rslt1.TerritoryFKID;
+            }
+
+            return PartialView("PVLoadNodeType", query);
+        }
+        public ActionResult LoadDistrictByRegion(string pkid, string type)
         {
             dynamic query = "";
             ViewBag.Type = type;
 
-            if (rowId == "null")
-                query = (from a in dcManageUsers.getRegionNameNew() where a.RegionCode != "" select new { a.RegionCode, a.RegionName }).ToDictionary(f => Convert.ToInt32(f.RegionCode), f => f.RegionName.ToString());
+            query = (from a in dcManageUsers.GetAllDistrictMasterXMLByRegionFKID(Convert.ToInt32(pkid)) where a.DistrictCode != null select new { a.PKID, a.DistrictCode }).ToDictionary(f => Convert.ToInt32(f.PKID), f => f.DistrictCode.ToString());
 
             return PartialView("PVLoadReportValue", query);
         }
 
 
-
-        public ActionResult LoadTerritoryType(string rowId, string type)
+        public ActionResult LoadTerritoryByDistrict(string pkid, string type)
         {
             dynamic query = "";
             ViewBag.Type = type;
 
-            if (rowId == "null")
-                query = (from a in dcManageUsers.GetTerritoryByXml(Convert.ToInt32(0)) where a.TerritoryCode != "" select new { a.TerritoryCode, a.TerritoryName }).ToDictionary(f => Convert.ToInt32(f.TerritoryCode), f => f.TerritoryName.ToString());
+            //if (rowId == "null")
+            query = (from a in dcManageUsers.GetAllTerritoryCodeXmlByDistrictFKID(Convert.ToInt32(pkid)) where a.TerritoryName != "" && a.TerritoryName != null select new { a.TerritoryId, a.TerritoryName }).ToDictionary(f => Convert.ToInt32(f.TerritoryId), f => f.TerritoryName.ToString());
 
             return PartialView("PVLoadReportValue", query);
         }
-
 
         #endregion
         /* Holiday Group Master starts */
@@ -3181,6 +3761,29 @@ namespace Pfizer.Controllers
             }
         }
 
+        public JsonResult EditUserTeamLinks(string id, string oper, string Status, string TeamName, string SelUserName, string NodeName)
+        {
+            try
+            {
+                string msg = string.Empty;
+                if (oper == "del")
+                {
+                    int result = dcManageUsers.USerTeamLinkDelete(Convert.ToDecimal(id));
+
+                    if (result == 1)
+                    {
+                        msg = "User Team Link deleted Successfully.";
+                    }
+                }
+
+                return Json(msg);
+            }
+            catch (Exception ex)
+            {
+                return Json(new { error = ex.Message }); 
+            }
+        }
+
         public JsonResult EditUserTeamLink(string id, string oper, string Status, string TeamName, string SelUserName, string NodeName)
         {
             string str = "";
@@ -3198,7 +3801,7 @@ namespace Pfizer.Controllers
                 string msg = string.Empty;
 
                 int createdby = Convert.ToInt32(Session["USER_FKID"] == null ? "0" : Session["USER_FKID"].ToString());
-                
+
                 if (oper == "edit")
                 {
 
@@ -3251,7 +3854,7 @@ namespace Pfizer.Controllers
 
         }
         // public ActionResult GetNodeType(string Type, string rowId, string TeamFKID, string NodeTypeFKID)
-        
+
         public ActionResult GetNodeType(string Type)
         {
             ViewBag.Type = Type;
@@ -3276,7 +3879,7 @@ namespace Pfizer.Controllers
 
         public ActionResult GetUserName(string Type, string PKID, string TeamFKID, string NodeTypeFKID)
         {
-             ViewBag.Type = Type;
+            ViewBag.Type = Type;
             dynamic query;
             NodeTypeFKID = (NodeTypeFKID == "undefined" || NodeTypeFKID == null || NodeTypeFKID == "") ? "0" : NodeTypeFKID;
             try
@@ -3284,7 +3887,7 @@ namespace Pfizer.Controllers
                 if (PKID == "undefined" || PKID == null)
                 {
                     query = (from e in dcManageUsers.GetEmpNameByNodeTypeFKIDXml(Convert.ToInt32(NodeTypeFKID)) select new { e.EmpFKID, e.EmpName }).ToDictionary(f => Convert.ToInt32(f.EmpFKID), f => f.EmpName);
-                return PartialView("PVUserTeam", query);
+                    return PartialView("PVUserTeam", query);
                 }
                 else
                 {
@@ -3296,7 +3899,7 @@ namespace Pfizer.Controllers
             { return Json(new { error = ex.Message }); }
         }
 
-      
+
 
         public ActionResult GetUser(string NodeTypeFKID, string Type, string TeamFKID)
         {
@@ -3347,7 +3950,7 @@ namespace Pfizer.Controllers
             { return Json(new { error = ex.Message }); }
         }
 
-        public ActionResult SelectedUserName(string Type,string id)
+        public ActionResult SelectedUserName(string Type, string id)
         {
             ViewBag.Type = Type;
             dynamic query = "";//GetLinkUserTeamMasterforDrpuserfillByXml
@@ -3374,7 +3977,7 @@ namespace Pfizer.Controllers
                 var context = (from q in dcManageUsers.getUserTeamLink() select q).ToList();
 
                 foreach (var item in context)
-                {                   
+                {
                     clsUserTeamLink user = new clsUserTeamLink();
                     user.TeamFkid = item.TeamFKID.ToString() == null ? "" : item.TeamFKID.ToString();
                     user.TeamName = item.TeamName == null ? "" : item.TeamName;
@@ -3603,10 +4206,9 @@ namespace Pfizer.Controllers
                 string msg = string.Empty;
                 if (oper == "edit")
                 {
-                    DateTime dob = DateTime.ParseExact(DOB, "dd/MM/yyyy", CultureInfo.InvariantCulture);
-                    DateTime hdate = DateTime.ParseExact(DOJ, "dd/MM/yyyy", CultureInfo.InvariantCulture);
-                    //DateTime dob = DateTime.Parse(DOB);
-                    //DateTime hdate = DateTime.Parse(DOJ);
+                    
+                    DateTime dob = DateTime.Parse(DOB);
+                    DateTime hdate = DateTime.Parse(DOJ);
                     Decimal ePKID = Convert.ToDecimal(id);
 
                     EmpCode = EmpCode.TrimStart();

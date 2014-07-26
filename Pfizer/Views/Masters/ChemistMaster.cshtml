@@ -1,0 +1,938 @@
+﻿@{
+    ViewBag.Title = "ChemistMaster";
+    Layout = "~/Views/Shared/MasterLayout.cshtml";
+}
+
+<body>
+    @using (Html.BeginForm(FormMethod.Post))
+    {
+
+        <div class="inner_tbldiv" style="margin-top:0px">
+            <div class="man_field">* Mandatory Field</div><label id="lblError" name="lblError" style=" color:red"> </label>
+            <table width="100%" border="0" cellspacing="0" cellpadding="0" align="left" class="inner_tb">
+                <tr>
+                    <th colspan="7">Chemist Master</th>
+                </tr>
+
+                <tr>
+                    <td width="10%" class="tb-r2">Territory<span class="star">*</span></td>
+                    <td width="20%" class="tb-r2">
+                        @Html.DropDownList("ddlTerritoryCode", PfizerEntity.UsefulLink.GetTerritoryCodeForDoctor(), "Select")
+                    </td>
+                    <td width="15%" class="tb-r2"><input class="blue_button add_btn" type="button" width="5%" id="btnFetch" value="Fetch"></td>
+                </tr>
+
+            </table>
+        </div>
+
+        <div>
+            <table>
+                <tr><td>&nbsp;</td></tr>
+            </table>
+
+        </div>
+        <div>
+            <table border="0" style="width: 100%">
+                <tr>
+                    <td>
+                        <!--JqGrid Starts-->
+                        <table style="margin-top: 7px; width :100%" border="0">
+                            <tr><td align="center"><span style="font-weight:bold"><label id="lblmsg" style="color:black" /></span></td></tr>
+                            <tr><td>&nbsp;</td></tr>
+                            <tr>
+                                <td>
+                                    <table id="ChemistMasterAdmin" style="width: 100%" border="0"></table>
+                                    <div id="ChemistMasterAdminPager">
+                                    </div>
+                                </td>
+                            </tr>
+                        </table>
+                        <!--Ends-->
+                        <input type="hidden" id="hdnPager" name="hdnPager" />
+
+                    </td>
+                </tr>
+            </table>
+
+        </div>
+    }
+
+    <script type="text/javascript">
+
+    $('#btnFetch').click(function () {
+        if ($('#ddlTerritoryCode').val() == '') {
+            $('[id$=lblError]').text("Please Select Territory Code");
+            $("#ddlTerritoryCode").css("background-color", "#FFE8E8").css("border", "1px solid #FF6666");
+            $('#ddlTerritoryCode').focus();
+            return false;
+        }
+        else {
+            $("#ddlTerritoryCode").css("background-color", "#FFE8E8").css("border", "1px solid #d5d5d5");
+            lblError.textContent = "";
+        }
+
+        initGrid();
+
+    });
+
+    function initGrid() {
+        $('#ChemistMasterAdmin').jqGrid('GridUnload');
+        jQuery("#ChemistMasterAdmin").jqGrid({
+            url: '@Url.Action("GetChemistMasterAdmin")?PKID=' + $('#ddlTerritoryCode').val(),
+            datatype: "json",
+            jsonReader: { repeatitems: false, id: "PKID" },
+            colNames: ['PKID', 'AreaFKID', 'Chemist Name', 'Proprietors FirstName', 'MiddleName', 'LastName', 'Address', 'Street', 'Select First Charctor Of the CityName', 'CityName', 'Area', 'ZipCode', 'Phone Number', 'Mobile', 'Fax', 'E-Mail', 'Prescription PerMonth', 'Average No.Of CustomerMet/Day', 'No.Of Customer By Medicines with Prescription', 'OTC Sales Percentage Contribution', 'Status', 'TerritoryLink Status'],
+            colModel: [
+                        //{ name: 'SLNo', index: 'SLNo', align: 'left' },
+                        { name: 'PKID', index: 'PKID', align: 'left', viewable: true, hidden: true, editrules: { edithidden: true } },
+                         { name: 'AreaFKID', index: 'AreaFKID', align: 'left', viewable: true, hidden: true, editrules: { edithidden: true } },
+                        {
+                            name: 'ChemistName', index: 'ChemistName', align: 'left', editable: true, editrules: { edithidden: true, required: false }, formoptions: { elmsuffix: "<span style='align:left;color:red'>*</span>&nbsp;" }, searchoptions: { sopt: ['eq', 'bw', 'ew', 'cn'] }, searchrules: { required: true },
+                            search: true, editoptions: {
+                                //size: 35,
+                                maxlength: 30,
+                                dataEvents: [
+                                    {
+                                        type: 'keyup', // blur
+                                        fn: function (e) {
+                                            CharacterAndNumber(this);
+                                        }
+                                    }
+                                ]
+                            }
+                        },
+
+                        {
+                            name: 'FirstName', index: 'FirstName', align: 'left', viewable: true, hidden: true, editable: true, formoptions: { elmsuffix: "<span style='align:left;color:red'>*</span>&nbsp;", rowpos: 1, colpos: 2 }, editrules: { edithidden: true, required: false },
+                            editoptions: {
+                                // size: 35,
+                                maxlength: 50,
+                                dataEvents: [
+                                    {
+                                        type: 'keyup', // blur
+                                        fn: function (e) {
+                                            CharacterAndNumber(this);
+                                        }
+                                    }
+                                ]
+                            }
+                        },
+                        {
+                            name: 'MiddleName', index: 'MiddleName', align: 'left', hidden: true, editable: true, formoptions: { rowpos: 2, colpos: 1 }, editrules: { edithidden: true },
+                            editoptions: {
+                                // size: 35,
+                                maxlength: 50,
+                                dataEvents: [
+                                    {
+                                        type: 'keyup', // blur
+                                        fn: function (e) {
+                                            CharacterAndNumber(this);
+                                        }
+                                    }
+                                ]
+                            }
+                        },
+                       {
+                           name: 'LastName', index: 'LastName', align: 'left', hidden: true, editable: true, editrules: { edithidden: true, required: false }, editoptions: {
+                               //size: 35,
+                               maxlength: 50,
+                               dataEvents: [
+                                   {
+                                       type: 'keyup', // blur
+                                       fn: function (e) {
+                                           CharacterAndNumber(this);
+                                       }
+                                   }
+                               ]
+                           }, formoptions: { rowpos: 2, colpos: 2 }
+                       },
+
+                       {
+                           name: 'Address', index: 'Address', align: 'left', viewable: true, hidden: true, editable: true, editoptions: {
+                               //size: 35,
+                               maxlength: 30,
+                               dataEvents: [
+                                   {
+                                       type: 'keyup', // blur
+                                       fn: function (e) {
+                                           CharacterAndNumber(this);
+                                       }
+                                   }
+                               ]
+                           }, formoptions: { elmsuffix: "<span style='align:left;color:red'>*</span>&nbsp;", rowpos: 3, colpos: 1 }, editrules: { edithidden: true, required: false }
+                       },
+                        {
+                            name: 'Street', index: 'Street', align: 'left', viewable: true, hidden: true, editable: true, editoptions: {
+                                //size: 35,
+                                maxlength: 30,
+                                dataEvents: [
+                                    {
+                                        type: 'keyup', // blur
+                                        fn: function (e) {
+                                            CharacterAndNumber(this);
+                                        }
+                                    }
+                                ]
+                            },
+                            formoptions: { elmsuffix: "<span style='align:left;color:red'>*</span>&nbsp;", rowpos: 3, colpos: 2 }, editrules: { edithidden: true, required: false }
+                        },
+                         {
+                             name: 'FirstChaCityName', index: 'FirstChaCityName', align: 'left', editable: true, hidden: true, edittype: 'select', editoptions: {
+                                 dataUrl: function () {
+                                     var row_id = $('#ChemistMasterAdmin').getGridParam('selrow');
+                                     var AreaFKID = $('#ChemistMasterAdmin').jqGrid('getCell', row_id, 'AreaFKID');
+                                     return 'Getselectcharactorcityname?AreaFKID=' + AreaFKID + '&type=' + "LoadFCCityName";
+                                 },
+
+                                 //DropDown Load For CityName
+                                 dataEvents: [{
+                                     type: 'change',
+                                     fn: function (e) {
+                                         var postData = e.currentTarget.value;
+
+                                         jQuery.ajax({
+                                             type: 'POST',
+                                             url: '@Url.Action("GetselFCcitynameForChemist")?Type=' + 'LoadCityName',
+                                             data: { FCcityname: postData },
+                                             success: function (data) {
+                                                 //alert(data);
+                                                 jQuery('#tr_FirstChaCityName  td:nth-child(4)').html(data);
+
+                                             }
+                                         });
+
+                                     }
+                                 }]
+
+                             }, editrules: { edithidden: true, required: false }, formoptions: { elmsuffix: "<span style='align:left;color:red'>*</span>&nbsp;", rowpos: 4, colpos: 1 },
+                         },
+
+
+                         {
+                             name: 'CityName', index: 'CityName', align: 'left', editable: true, hidden: true, edittype: 'select', editoptions: {
+                                 dataUrl: function () {
+                                     var row_id = $('#ChemistMasterAdmin').getGridParam('selrow');
+                                     var FCCName = $('#ChemistMasterAdmin').jqGrid('getCell', row_id, 'FirstChaCityName');
+                                     return 'GetselCityForFirstChaCityName?Type=' + 'LoadselectedCityName';
+                                 },
+
+                             }, editrules: { edithidden: true, required: false }, formoptions: { elmsuffix: "<span style='align:left;color:red'>*</span>&nbsp;", rowpos: 4, colpos: 2 },
+                         },
+
+                      {
+                          name: 'AreaName', index: 'AreaName', align: 'left', editable: true, search: false, hidden: false, edittype: 'select', editoptions: {
+
+                              dataUrl: function () {
+                                  var row_id = $('#ChemistMasterAdmin').getGridParam('selrow');
+                                  var CityFKID = $('#ChemistMasterAdmin').jqGrid('getCell', row_id, 'CityName');
+                                  return 'GetselAreaForChemist?Type=' + 'LoadselectedAreaName';
+                              },
+                          }, editrules: { edithidden: true, required: false }, formoptions: { elmsuffix: "<span style='align:left;color:red'>*</span>&nbsp;", rowpos: 5, colpos: 1 },
+                      },
+                      {
+                          name: 'Zip', index: 'Zip', align: 'left', viewable: true, hidden: true, editable: true, editoptions: {
+
+                              maxlength: 6,
+                              dataEvents: [
+                                  {
+                                      type: 'keyup', // blur
+                                      fn: function (e) {
+                                          OnlyNumber(this);
+                                      }
+                                  }
+                              ]
+                          },
+                          formoptions: { elmsuffix: "<span style='align:left;color:red'>*</span>&nbsp;", rowpos: 5, colpos: 2 }, editrules: { edithidden: true, required: false }
+                      },
+
+                      {
+                          name: 'PhoneNo', index: 'PhoneNo', align: 'left', viewable: true, hidden: true, editable: true, editoptions: {
+
+                              maxlength: 10,
+                              dataEvents: [
+                                  {
+                                      type: 'keyup', // blur
+                                      fn: function (e) {
+                                          OnlyNumber(this);
+                                      }
+                                  }
+                              ]
+                          }, formoptions: { rowpos: 6, colpos: 1 }, editrules: { edithidden: true, required: false }
+                      },
+                    {
+                        name: 'Mobile', index: 'Mobile', align: 'left', viewable: true, hidden: true, editable: true, editoptions: {
+
+                            maxlength: 10,
+                            dataEvents: [
+                                {
+                                    type: 'keyup', // blur
+                                    fn: function (e) {
+                                        OnlyNumber(this);
+                                    }
+                                }
+                            ]
+                        },
+                        formoptions: { rowpos: 6, colpos: 2 }, editrules: { edithidden: true, required: false }
+                    },
+
+                    {
+                        name: 'Fax', index: 'Fax', align: 'left', viewable: true, hidden: true, editable: true, editoptions: {
+                            //size: 35,
+                            maxlength: 30,
+                            dataEvents: [
+                                {
+                                    type: 'keyup', // blur
+                                    fn: function (e) {
+                                        CharacterAndNumber(this);
+                                    }
+                                }
+                            ]
+                        }, formoptions: { rowpos: 7, colpos: 1 }, editrules: { edithidden: true, required: false }
+                    },
+                    {
+                        name: 'Email', index: 'Email', align: 'left', viewable: true, hidden: true, editable: true, editoptions: {
+
+                            maxlength: 30,
+                            dataEvents: [
+                                {
+                                    type: 'keyup', // blur
+                                    fn: function (e) {
+                                        email(this);
+                                    }
+                                }
+                            ]
+                        },
+                        formoptions: { rowpos: 7, colpos: 2 }, editrules: { edithidden: true, required: false }
+                    },
+
+                    {
+                        name: 'PrescriptionPerMonth', index: 'PrescriptionPerMonth', align: 'left', viewable: true, hidden: true, editable: true, editoptions: {
+
+                            maxlength: 10,
+                            dataEvents: [
+                                {
+                                    type: 'keyup', // blur
+                                    fn: function (e) {
+                                        OnlyNumber(this);
+                                    }
+                                }
+                            ]
+                        }, formoptions: { rowpos: 8, colpos: 1 }, editrules: { edithidden: true, required: false }
+                    },
+                    {
+                        name: 'AvgCustomers', index: 'AvgCustomers', align: 'left', viewable: true, hidden: true, editable: true, editoptions: {
+
+                            maxlength: 6,
+                            dataEvents: [
+                                {
+                                    type: 'keyup', // blur
+                                    fn: function (e) {
+                                        OnlyNumber(this);
+                                    }
+                                }
+                            ]
+                        },
+                        formoptions: { elmsuffix: "<span style='align:left;color:red'>*</span>&nbsp;", rowpos: 8, colpos: 2 }, editrules: { edithidden: true, required: false }
+                    },
+
+                     {
+                         name: 'NoCustomersMed', index: 'NoCustomersMed', align: 'left', viewable: true, hidden: true, editable: true, editoptions: {
+
+                             maxlength: 5,
+                             dataEvents: [
+                                 {
+                                     type: 'keyup', // blur
+                                     fn: function (e) {
+                                         OnlyNumber(this);
+                                     }
+                                 }
+                             ]
+                         }, formoptions: { elmsuffix: "<span style='align:left;color:red'>*</span>&nbsp;", rowpos: 9, colpos: 1 }, editrules: { edithidden: true, required: false }
+                     },
+                    {
+                        name: 'OTCSales', index: 'OTCSales', align: 'left', viewable: true, hidden: true, editable: true, editoptions: {
+
+                            maxlength: 5,
+                            dataEvents: [
+                                {
+                                    type: 'keyup', // blur
+                                    fn: function (e) {
+                                        OnlyNumber(this);
+                                    }
+                                }
+                            ]
+                        },
+                        formoptions: { elmsuffix: "<span style='align:left;color:red'>*</span>&nbsp;", rowpos: 9, colpos: 2 }, editrules: { edithidden: true, required: false }
+                    },
+
+                    { name: 'IsActive', index: 'IsActive', align: 'left', search: false, editable: true, edittype: 'checkbox', editoptions: { value: "Active:Passive", defaultValue: "Active" } },
+
+                    { name: 'CLMStatus', index: 'CLMStatus', align: 'left', search: false, editable: true, edittype: 'checkbox', editoptions: { value: "Active:Passive", defaultValue: "Active" } }
+
+
+            ],
+            caption: "Chemist Master",
+            gridview: true,
+            sortable: true,
+            hidegrid: false,
+
+            altRows: true,
+            rowTotal: 10,
+            sortname: 'PKID',
+            sortorder: 'asc',
+            rowNum: 10,
+            shrinkToFit: false,
+            viewrecords: true,
+            pager: $('#ChemistMasterAdminPager'),
+            height: 'auto',
+            editable: true,
+            gridComplete: function () {
+
+                if (jQuery("#ChemistMasterAdmin").getGridParam("records") == 0) {
+                    jQuery("#ChemistMasterAdmin").addRowData(
+                    "blankRow", { "ChemistName": "No records to view" });
+                }
+            },
+            editurl: '@Url.Action("EditChemistMasterAdmins")'
+
+        });
+
+
+        jQuery("#ChemistMasterAdmin").jqGrid('navGrid', '#ChemistMasterAdminPager', { add: true, edit: true, del: true, search: true, view: true },
+            {
+
+                closeOnEscape: true, //Closes the popup on pressing escape key
+                reloadAfterSubmit: true,
+                drag: true,
+                modal: true,
+                width: 1000,
+                height: 'auto',
+                afterShowForm: function (form) {
+                    form.closest('div.ui-jqdialog').center();
+                },
+                beforeShowForm: function (form) {
+                    var sel_id = $('#ChemistMasterAdmin').jqGrid('getGridParam', 'selrow');
+                    $('#tr_IsActive', form).hide();
+                    $('#tr_CLMStatus', form).hide();
+                    var ss = "";
+                    var row_id = $('#ChemistMasterAdmin').getGridParam('selrow');
+                    var AreaFKID = $('#ChemistMasterAdmin').jqGrid('getCell', row_id, 'AreaFKID');
+                    $.getJSON('@Url.Action("JsonGetEditFirstNameCity")?AreaFKID=' + AreaFKID, function (data) {
+                        ss = data.cityFkid;
+                        $.getJSON('@Url.Action("JsonLoadCityNameForEdit")?CityName=' + data.genId , function (data) {
+
+
+
+                                for (var i = 0; i < data.countyCount; i++) {
+
+                                    if (ss == data.countyItems[i].Value) {
+                                        $('#CityName').append("<option selected='selected' value='" + data.countyItems[i].Value + "'>" + data.countyItems[i].Text + "</option>");
+                                    }
+                                    else {
+                                        $('#CityName').append("<option value='" + data.countyItems[i].Value + "'>" + data.countyItems[i].Text + "</option>");
+                                    }
+
+
+                                }
+
+                                $.getJSON('@Url.Action("JsonLoadAreaNameForEdit")?CityFkid=' + ss, function (data) {
+
+
+
+                                    for (var i = 0; i < data.countyCount; i++) {
+
+                                        if (AreaFKID == data.countyItems[i].Value) {
+                                            $('#AreaName').append("<option selected='selected' value='" + data.countyItems[i].Value + "'>" + data.countyItems[i].Text + "</option>");
+                                        }
+                                        else {
+                                            $('#AreaName').append("<option value='" + data.countyItems[i].Value + "'>" + data.countyItems[i].Text + "</option>");
+                                        }
+
+
+                                    }
+
+
+                                });
+
+
+                            });
+                        });
+
+
+                    },
+
+                    beforeSubmit: function (response, postdata) {
+                        $('select').css("border", "1px solid #C0C0C0");
+                        $("input[type=text]").css("border", "1px solid #C0C0C0");
+                        var error = " ";
+                        if ($("#ChemistName").val().charAt(0) == ' ' || $("#ChemistName").val().charAt($("#ChemistName").val().length - 1) == ' ' || $("#ChemistName").val() == "") {
+                            $('#TblGrid_ChemistMasterAdmin td.ui-state-highlight').removeClass('ui-state-highlight').addClass('ui-state-error');
+                            $("#ChemistName").css("background-color", "#FFE8E8").css("border", "1px solid #FF6666");
+                            $('#ChemistName').val('');
+                            $('#ChemistName').focus();
+                            return [false, 'Enter Valid Chemist Name'];
+                        }
+                        else if ($("#FirstName").val().charAt(0) == ' ' || $("#FirstName").val().charAt($("#FirstName").val().length - 1) == ' ' || $("#FirstName").val() == "") {
+                            $('#TblGrid_ChemistMasterAdmin td.ui-state-highlight').removeClass('ui-state-highlight').addClass('ui-state-error');
+                            $("#FirstName").css("background-color", "#FFE8E8").css("border", "1px solid #FF6666");
+                            $('#FirstName').val('');
+                            $('#FirstName').focus();
+                            return [false, 'Enter Valid First Name'];
+                        }
+                        else if ($("#Address").val().charAt(0) == ' ' || $("#Address").val().charAt($("#Address").val().length - 1) == ' ' || $("#Address").val() == "") {
+                            $('#TblGrid_ChemistMasterAdmin td.ui-state-highlight').removeClass('ui-state-highlight').addClass('ui-state-error');
+                            $("#Address").css("background-color", "#FFE8E8").css("border", "1px solid #FF6666");
+                            $('#Address').val('');
+                            $('#Address').focus();
+                            return [false, 'Enter Valid Address'];
+                        }
+                        else if ($("#Street").val().charAt(0) == ' ' || $("#Street").val().charAt($("#Street").val().length - 1) == ' ' || $("#Street").val() == "") {
+                            $('#TblGrid_ChemistMasterAdmin td.ui-state-highlight').removeClass('ui-state-highlight').addClass('ui-state-error');
+                            $("#Street").css("background-color", "#FFE8E8").css("border", "1px solid #FF6666");
+                            $('#Street').val('');
+                            $('#Street').focus();
+                            return [false, 'Enter Valid Street'];
+                        }
+                        else if ($("#FirstChaCityName").val() == 0) {
+                            error += "First Charctor Of CityName";
+                            $('#FormError').html("<td class='ui-state-error' colspan='4'>" + error + ":Field is required</td>");
+                            $('#FirstChaCityName').focus();
+                            $("#FirstChaCityName").css("background-color", "#FFE8E8").css("border", "1px solid #FF6666");
+                            return [false, response.responseText];
+                        }
+                        else if ($("#CityName").val() == 0) {
+                            error += "CityName";
+                            $('#FormError').html("<td class='ui-state-error' colspan='4'>" + error + ":Field is required</td>");
+                            $('#CityName').focus();
+                            $("#CityName").css("background-color", "#FFE8E8").css("border", "1px solid #FF6666");
+                            return [false, response.responseText];
+                        }
+                        else if ($("#AreaName").val() == 0) {
+                            error += "AreaName";
+                            $('#FormError').html("<td class='ui-state-error' colspan='4'>" + error + ":Field is required</td>");
+                            $('#AreaName').focus();
+                            $("#AreaName").css("background-color", "#FFE8E8").css("border", "1px solid #FF6666");
+                            return [false, response.responseText];
+                        }
+
+                        else if ($("#Zip").val().charAt(0) == ' ' || $("#Zip").val().charAt($("#Zip").val().length - 1) == ' ' || $("#Zip").val() == "") {
+                            $('#TblGrid_ChemistMasterAdmin td.ui-state-highlight').removeClass('ui-state-highlight').addClass('ui-state-error');
+                            $("#Zip").css("background-color", "#FFE8E8").css("border", "1px solid #FF6666");
+                            $('#Zip').val('');
+                            $('#Zip').focus();
+                            return [false, 'Enter Valid Zip Code'];
+                        }
+                        else if ($("#AvgCustomers").val().charAt(0) == ' ' || $("#AvgCustomers").val().charAt($("#AvgCustomers").val().length - 1) == ' ' || $("#AvgCustomers").val() == "") {
+                            $('#TblGrid_ChemistMasterAdmin td.ui-state-highlight').removeClass('ui-state-highlight').addClass('ui-state-error');
+                            $("#AvgCustomers").css("background-color", "#FFE8E8").css("border", "1px solid #FF6666");
+                            $('#AvgCustomers').val('');
+                            $('#AvgCustomers').focus();
+                            return [false, 'Enter Valid Averege Customer '];
+                        }
+
+                        else if ($("#NoCustomersMed").val().charAt(0) == ' ' || $("#NoCustomersMed").val().charAt($("#NoCustomersMed").val().length - 1) == ' ' || $("#NoCustomersMed").val() == "") {
+                            $('#TblGrid_ChemistMasterAdmin td.ui-state-highlight').removeClass('ui-state-highlight').addClass('ui-state-error');
+                            $("#NoCustomersMed").css("background-color", "#FFE8E8").css("border", "1px solid #FF6666");
+                            $('#NoCustomersMed').val('');
+                            $('#NoCustomersMed').focus();
+                            return [false, 'Enter Valid Customer By Madicine with Prescriptions'];
+                        }
+
+                        else if ($("#OTCSales").val().charAt(0) == ' ' || $("#OTCSales").val().charAt($("#OTCSales").val().length - 1) == ' ' || $("#OTCSales").val() == "") {
+                            $('#TblGrid_ChemistMasterAdmin td.ui-state-highlight').removeClass('ui-state-highlight').addClass('ui-state-error');
+                            $("#OTCSales").css("background-color", "#FFE8E8").css("border", "1px solid #FF6666");
+                            $('#OTCSales').val('');
+                            $('#OTCSales').focus();
+                            return [false, 'Enter Valid OTC Sales'];
+                        }
+                        else {
+                            return [true, response.responseText];
+                        }
+                    },
+
+                    onclickSubmit: function (params, posdata) {
+                        var row_id = $('#ChemistMasterAdmin').getGridParam('selrow');
+                        var PKID = $('#ChemistMasterAdmin').jqGrid('getCell', row_id, 'PKID');
+                        alert(PKID);
+                        params.url = '@Url.Action("EditChemistMasterAdmin")?PKID=' + PKID + '&ChemistName=' + $('#ChemistName').val() + '&FirstName=' + $('#FirstName').val()
+                    + '&MiddleName=' + $('#MiddleName').val() + '&LastName=' + $('#LastName').val() + '&Address=' + $('#Address').val() + '&Street=' + $('#Street').val()
+                    + '&AreaName=' + $('#AreaName').val() + '&Zip=' + $('#Zip').val() + '&PhoneNo=' + $('#PhoneNo').val() + '&Mobile=' + $('#Mobile').val()
+                    + '&Fax=' + $('#Fax').val() + '&Email=' + $('#Email').val() + '&PrescriptionPerMonth=' + $('#PrescriptionPerMonth').val() + '&IsActive=' + $('#IsActive').val()
+                    + '&AvgCustomers=' + $('#AvgCustomers').val() + '&NoCustomersMed=' + $('#NoCustomersMed').val() + '&OTCSales=' + $('#OTCSales').val();
+                },
+
+                afterSubmit: function (response, postdata) {
+                    $("#ChemistMasterAdmin").jqGrid('setGridParam', { datatype: 'json' }).trigger('reloadGrid');
+                    $('#TblGrid_ChemistMasterAdmin td.ui-state-error').removeClass('ui-state-error').addClass('ui-state-highlight');
+                    $('#ddlTerritoryCode').val(0);
+                    $('select').val(0);
+                    $("input[type=text]").val('');
+                    return [false, response.responseText];
+                },
+                editData: {
+                    Parentid: function () {
+                        var sel_id = $('#ChemistMasterAdmin').jqGrid('getGridParam', 'selrow');
+                        var value = $('#ChemistMasterAdmin').jqGrid('getCell', sel_id, '_id');
+                        return value;
+                    }
+                }
+            },
+
+        {
+            //Add Portion
+            closeOnEscape: true,
+            width: 900,
+            modal: true,
+            height: 'auto',
+            //closeAfterAdd: true,
+            afterShowForm: function (form) {
+                form.closest('div.ui-jqdialog').center();
+            },
+            beforeShowForm: function (form) {
+                var sel_id = $('#ChemistMasterAdmin').jqGrid('getGridParam', 'selrow');
+                $('#tr_IsActive', form).hide();
+                $('#tr_CLMStatus', form).hide();
+
+            },
+
+            beforeSubmit: function (response, postdata) {
+                $('select').css("border", "1px solid #C0C0C0");
+                $("input[type=text]").css("border", "1px solid #C0C0C0");
+                var error = " ";
+                if ($("#ChemistName").val().charAt(0) == ' ' || $("#ChemistName").val().charAt($("#ChemistName").val().length - 1) == ' ' || $("#ChemistName").val() == "") {
+                    $('#TblGrid_ChemistMasterAdmin td.ui-state-highlight').removeClass('ui-state-highlight').addClass('ui-state-error');
+                    $("#ChemistName").css("background-color", "#FFE8E8").css("border", "1px solid #FF6666");
+                    $('#ChemistName').val('');
+                    $('#ChemistName').focus();
+                    return [false, 'Enter Valid Chemist Name'];
+                }
+                else if ($("#FirstName").val().charAt(0) == ' ' || $("#FirstName").val().charAt($("#FirstName").val().length - 1) == ' ' || $("#FirstName").val() == "") {
+                    $('#TblGrid_ChemistMasterAdmin td.ui-state-highlight').removeClass('ui-state-highlight').addClass('ui-state-error');
+                    $("#FirstName").css("background-color", "#FFE8E8").css("border", "1px solid #FF6666");
+                    $('#FirstName').val('');
+                    $('#FirstName').focus();
+                    return [false, 'Enter Valid First Name'];
+                }
+                else if ($("#Address").val().charAt(0) == ' ' || $("#Address").val().charAt($("#Address").val().length - 1) == ' ' || $("#Address").val() == "") {
+                    $('#TblGrid_ChemistMasterAdmin td.ui-state-highlight').removeClass('ui-state-highlight').addClass('ui-state-error');
+                    $("#Address").css("background-color", "#FFE8E8").css("border", "1px solid #FF6666");
+                    $('#Address').val('');
+                    $('#Address').focus();
+                    return [false, 'Enter Valid Address'];
+                }
+                else if ($("#Street").val().charAt(0) == ' ' || $("#Street").val().charAt($("#Street").val().length - 1) == ' ' || $("#Street").val() == "") {
+                    $('#TblGrid_ChemistMasterAdmin td.ui-state-highlight').removeClass('ui-state-highlight').addClass('ui-state-error');
+                    $("#Street").css("background-color", "#FFE8E8").css("border", "1px solid #FF6666");
+                    $('#Street').val('');
+                    $('#Street').focus();
+                    return [false, 'Enter Valid Street'];
+                }
+                else if ($("#FirstChaCityName").val() == 0) {
+                    error += "First Charctor Of CityName";
+                    $('#FormError').html("<td class='ui-state-error' colspan='4'>" + error + ":Field is required</td>");
+                    $('#FirstChaCityName').focus();
+                    $("#FirstChaCityName").css("background-color", "#FFE8E8").css("border", "1px solid #FF6666");
+                    return [false, response.responseText];
+                }
+                else if ($("#CityName").val() == 0) {
+                    error += "CityName";
+                    $('#FormError').html("<td class='ui-state-error' colspan='4'>" + error + ":Field is required</td>");
+                    $('#CityName').focus();
+                    $("#CityName").css("background-color", "#FFE8E8").css("border", "1px solid #FF6666");
+                    return [false, response.responseText];
+                }
+                else if ($("#AreaName").val() == 0) {
+                    error += "AreaName";
+                    $('#FormError').html("<td class='ui-state-error' colspan='4'>" + error + ":Field is required</td>");
+                    $('#AreaName').focus();
+                    $("#AreaName").css("background-color", "#FFE8E8").css("border", "1px solid #FF6666");
+                    return [false, response.responseText];
+                }
+
+                else if ($("#Zip").val().charAt(0) == ' ' || $("#Zip").val().charAt($("#Zip").val().length - 1) == ' ' || $("#Zip").val() == "") {
+                    $('#TblGrid_ChemistMasterAdmin td.ui-state-highlight').removeClass('ui-state-highlight').addClass('ui-state-error');
+                    $("#Zip").css("background-color", "#FFE8E8").css("border", "1px solid #FF6666");
+                    $('#Zip').val('');
+                    $('#Zip').focus();
+                    return [false, 'Enter Valid Zip Code'];
+                }
+                else if ($("#AvgCustomers").val().charAt(0) == ' ' || $("#AvgCustomers").val().charAt($("#AvgCustomers").val().length - 1) == ' ' || $("#AvgCustomers").val() == "") {
+                    $('#TblGrid_ChemistMasterAdmin td.ui-state-highlight').removeClass('ui-state-highlight').addClass('ui-state-error');
+                    $("#AvgCustomers").css("background-color", "#FFE8E8").css("border", "1px solid #FF6666");
+                    $('#AvgCustomers').val('');
+                    $('#AvgCustomers').focus();
+                    return [false, 'Enter Valid Averege Customer '];
+                }
+
+                else if ($("#NoCustomersMed").val().charAt(0) == ' ' || $("#NoCustomersMed").val().charAt($("#NoCustomersMed").val().length - 1) == ' ' || $("#NoCustomersMed").val() == "") {
+                    $('#TblGrid_ChemistMasterAdmin td.ui-state-highlight').removeClass('ui-state-highlight').addClass('ui-state-error');
+                    $("#NoCustomersMed").css("background-color", "#FFE8E8").css("border", "1px solid #FF6666");
+                    $('#NoCustomersMed').val('');
+                    $('#NoCustomersMed').focus();
+                    return [false, 'Enter Valid Customer By Madicine with Prescriptions'];
+                }
+
+                else if ($("#OTCSales").val().charAt(0) == ' ' || $("#OTCSales").val().charAt($("#OTCSales").val().length - 1) == ' ' || $("#OTCSales").val() == "") {
+                    $('#TblGrid_ChemistMasterAdmin td.ui-state-highlight').removeClass('ui-state-highlight').addClass('ui-state-error');
+                    $("#OTCSales").css("background-color", "#FFE8E8").css("border", "1px solid #FF6666");
+                    $('#OTCSales').val('');
+                    $('#OTCSales').focus();
+                    return [false, 'Enter Valid OTC Sales'];
+                }
+                else {
+                    return [true, response.responseText];
+                }
+            },
+
+            afterSubmit: function (response, postdata) {
+                $("#ChemistMasterAdmin").jqGrid('setGridParam', { datatype: 'json' }).trigger('reloadGrid');
+                var errorId = " ";
+                if (response.responseText == "\"Chemist Name added Successfully.\"") {
+                    errorId += "Chemist Master Admin added Successfully";
+                    $('#FormError').html("<td class='ui-state-error' colspan='4'>" + errorId + "</td>");
+                    $('#TblGrid_ChemistMasterAdmin td.ui-state-error').removeClass('ui-state-error').addClass('ui-state-highlight');
+                    $('select').val(0);
+                    $("input[type=text]").val('');
+                    return [false, response.responseText]
+                }
+                else {
+                    errorId += "Chemist Name already Exists";
+                    $('#FormError').html("<td class='ui-state-error' colspan='4'>" + errorId + "</td>");
+                    $('#TblGrid_ChemistMasterAdmin td.ui-state-error').removeClass('ui-state-highlight').addClass('ui-state-error');
+                    $('select').val(0);
+                    $("input[type=text]").val('');
+                    return [false, response.responseText]
+                }
+            },
+
+
+            onclickSubmit: function (params, posdata) {
+                
+                params.url = '@Url.Action("AddChemistAdminMaster")?ChemistName=' + $('#ChemistName').val() + '&FirstName=' + $('#FirstName').val()
+                + '&MiddleName=' + $('#MiddleName').val() + '&LastName=' + $('#LastName').val() + '&Address=' + $('#Address').val() + '&Street=' + $('#Street').val()
+                + '&AreaName=' + $('#AreaName').val() + '&Zip=' + $('#Zip').val() + '&PhoneNo=' + $('#PhoneNo').val() + '&Mobile=' + $('#Mobile').val()
+                + '&Fax=' + $('#Fax').val() + '&Email=' + $('#Email').val() + '&PrescriptionPerMonth=' + $('#PrescriptionPerMonth').val() + '&IsActive=' + $('#IsActive').val()
+                + '&AvgCustomers=' + $('#AvgCustomers').val() + '&NoCustomersMed=' + $('#NoCustomersMed').val() + '&OTCSales=' + $('#OTCSales').val();
+            },
+        },
+       //Delete
+            {
+                closeOnEscape: true,
+                recreateForm: true,
+                width: 600,
+                modal: true,
+                beforeShowForm: function (form) {
+
+                    var thisForm = $("#delmod" + jQuery("#ChemistMasterAdmin")[0].id);
+                    var dialogHeight = $(thisForm).height();
+                    var dialogWidth = $(thisForm).width();
+                    var windowHeight = $(window).height();
+                    var windowWidth = $(window).width();
+                    $(thisForm).css('position', 'fixed');
+                    $(thisForm).css('top', ((windowHeight - dialogHeight) / 2));
+                    $(thisForm).css('left', ((windowWidth - dialogWidth) / 2));
+
+
+                    var col1 = $('#ChemistMasterAdmin').jqGrid('getGridParam', 'selrow');
+
+
+                    $('tr td.delmsg').html('Delete selected record(s)?');
+
+                    $('#ChemistMasterAdmin').jqGrid('getGridParam', 'selrow');
+                    var IsActive = $('#ChemistMasterAdmin').jqGrid('getCell', col1, 'IsActive');
+                    if (IsActive == "In Active") {
+                        $('tr td.delmsg').html('Record Already Deleted');
+                        $('#dData').hide();
+                    }
+                    else
+                        $('#dData').show();
+
+
+                },
+
+                onclickSubmit: function (params, posdata) {
+                    var row_id = $('#ChemistMasterAdmin').getGridParam('selrow');
+                    var PKID = $('#ChemistMasterAdmin').jqGrid('getCell', row_id, 'PKID');
+                    params.url = '@Url.Action("DeleteChemistAdminMaster")?PKID=' + PKID;
+                },
+
+                afterSubmit: function (response, postdata) {
+                    $('tr td.delmsg').html('');
+                    $('#dData').hide();
+                    $("#ChemistMasterAdmin").jqGrid('setGridParam', { datatype: 'json' }).trigger('reloadGrid');
+                    $('#DelTbl_ChemistMasterAdmin td.ui-state-error').removeClass('ui-state-error').addClass('ui-state-highlight');
+                    return [false, response.responseText];
+                }
+            },
+           {
+               //Search
+
+               closeOnEscape: true,
+               modal: true,
+               recreateForm: true,
+               width: 600,
+               caption: "Search",
+               searchOnEnter: true,
+               beforeShowSearch: function (form) {
+
+                   $('#jqg1').val('');
+                   $('#fbox_ChemistMasterAdmin_reset').click();
+
+                   var dialogHeight = $("#searchmodfbox_ChemistMasterAdmin").height();
+                   var dialogWidth = $("#searchmodfbox_ChemistMasterAdmin").width();
+                   var windowHeight = $(window).height();
+                   var windowWidth = $(window).width();
+                   $("#searchmodfbox_ChemistMasterAdmin").css('position', 'fixed');
+                   $("#searchmodfbox_ChemistMasterAdmin").css('top', ((windowHeight - dialogHeight) / 2));
+                   $("#searchmodfbox_ChemistMasterAdmin").css('left', ((windowWidth - dialogWidth) / 2));
+
+                   return [true, ""];
+               }
+
+           },
+
+           {
+               //View :
+               closeOnEscape: true,
+               recreateForm: true,
+               width: 800,
+
+               beforeShowForm: function (form) {
+
+
+                   var thisForm = $("#viewmod" + jQuery("#ChemistMasterAdmin")[0].id);
+                   var dialogHeight = $(thisForm).height();
+                   var dialogWidth = $(thisForm).width();
+                   var windowHeight = $(window).height();
+                   var windowWidth = $(window).width();
+                   $(thisForm).css('position', 'fixed');
+                   $(thisForm).css('top', ((windowHeight - dialogHeight) / 2));
+                   $(thisForm).css('left', ((windowWidth - dialogWidth) / 2));
+
+                   $('#tr_IsActive', form).hide();
+                   $('#tr_CLMStatus', form).hide();
+
+               }
+
+           }
+                );
+        // setMethod('LocationMaster', 'LocationMasterPager', 'Customer Grid', 'ManageUsers', 'LocationMaster.cshtml');
+
+        setMethod('ChemistMasterAdmin', 'ChemistMasterAdminPager', 'Customer Grid');
+
+    }
+    //Center Popup
+    jQuery.fn.center = function () {
+        this.css("position", "absolute");
+        this.css("top", ($(window).height() - this.height()) / 2 + $(window).scrollTop() + "px");
+        this.css("left", ($(window).width() - this.width()) / 2 + $(window).scrollLeft() + "px");
+        return this;
+
+    }
+    function validSpecial(objElement) {
+
+        var re = /^[a-zA-Z0-9-/\s.:]*/gi;
+        if (objElement.value.match(re) != objElement.value) {
+            alert('Special Characters are Not Allowed');
+            objElement.value = '';
+
+            return false;
+        }
+
+    }
+
+    function setMethod(gid, id, pgTitle) {
+        // alert(1);
+        var btnTitle = 'Export to Excel';
+        $('#' + gid).jqGrid('navSeparatorAdd', '#' + id, { sepclass: "ui-separator" });
+        $('#' + gid).jqGrid('navButtonAdd', '#' + id, { caption: '', title: btnTitle, position: 'last', buttonicon: 'ui-icon-calculator', onClickButton: function () { ExcelExport(); } });
+
+        var btnTitle = 'Export to PDF';
+        $('#' + gid).jqGrid('navSeparatorAdd', '#' + id, { sepclass: "ui-separator" });
+        $('#' + gid).jqGrid('navButtonAdd', '#' + id, { caption: '', title: btnTitle, position: 'last', buttonicon: 'ui-icon-bookmark', onClickButton: function () { PDFExport(); } });
+
+        var btnTitle = 'Export to CSV';
+        $('#' + gid).jqGrid('navSeparatorAdd', '#' + id, { sepclass: "ui-separator" });
+        $('#' + gid).jqGrid('navButtonAdd', '#' + id, { caption: '', title: btnTitle, position: 'last', buttonicon: 'ui-icon-note', onClickButton: function () { CSVExport(); } });
+
+
+        var btnTitle = 'Print Grid';
+        $('#' + gid).jqGrid('navSeparatorAdd', '#' + id, { sepclass: "ui-separator" });
+        $('#' + gid).jqGrid('navButtonAdd', '#' + id, { caption: '', title: btnTitle, position: 'last', buttonicon: 'ui-icon-print', onClickButton: function () { PrintGrid(gid); } });
+    }
+    function ExcelExport() {
+        window.location = '@Url.Action("ExportChemistMasterAdminToExcel")?PKID=' + $('#ddlTerritoryCode').val();
+    }
+    function PDFExport() {
+        window.location = '@Url.Action("ExportChemistMasterAdminToPDF")?PKID=' + $('#ddlTerritoryCode').val();
+    }
+    function CSVExport() {
+
+        window.location = '@Url.Action("ExportChemistMasterAdminToCsv")?PKID=' + $('#ddlTerritoryCode').val();
+
+    }
+    function PrintGrid(gid) {
+
+
+
+        // empty the print div container.
+        var rows = $('#ChemistMasterAdmin').jqGrid('getRowData');
+        for (var i = 0; i < rows.length; i++) {
+            var row = rows[i];
+            $('#Table1').append("<tr><td>" + row.ChemistName + "</td><td>" + row.AreaName + "</td><td>" + row.IsActive + "</td><td>" + row.CLMStatus + "</td></tr>");
+
+        }
+        $(function () { printChrome('prt-container') });
+    }
+
+    function printChrome(divContainer) {
+
+        //  alert(9);
+        var printContent = document.getElementById(divContainer);
+        // alert(printContent.innerHTML);
+        window.document.body.innerHTML = printContent.innerHTML;
+        window.print();
+        window.location.reload();
+    }
+
+    function LoadArea(id) {
+        //alert(id.value);
+
+        var row_id = $('#ChemistMasterAdmin').getGridParam('selrow');
+        var CityFKID = $('#ChemistMasterAdmin').jqGrid('getCell', row_id, 'CityName');
+
+
+        jQuery.ajax({
+            //type: 'POST',
+
+            url: '@Url.Action("GetLoadAreaForChemist")?Type=' + 'LoadAreaForCityBased' + '&CityFKID=' + id.value + '&CityFKIDS=' + CityFKID,
+            data: { CityFKID: id.value },
+            success: function (data) {
+                //alert(data);
+                jQuery('#tr_AreaName  td:nth-child(2)').html(data);
+
+            }
+        });
+
+
+
+    }
+
+
+    </script>
+    <div id='prt-container' style="display:none">
+        <table id="Table1" border="1" width="100%">
+            <thead>
+                <tr>
+                    <td><b>ChemistName</b></td>
+                    <td><b>Area</b></td>
+                    <td><b>Status</b></td>
+                    <td><b>TerritotyLinkStatus</b></td>
+                    </tr>
+
+            </thead>
+            <tbody></tbody>
+
+        </table>
+    </div>
+</body>

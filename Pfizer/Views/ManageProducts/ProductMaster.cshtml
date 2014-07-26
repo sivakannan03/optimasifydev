@@ -2,10 +2,6 @@
     ViewBag.Title = "ProductMaster";
     Layout = "~/Views/Shared/MasterLayout.cshtml";
 }
-
-<h2>ProductMaster</h2>
-
-
 <body>
     @using (Html.BeginForm(FormMethod.Post))
     {
@@ -26,6 +22,13 @@
                         <!--Ends-->
                     </td>
                 </tr>
+                <tr>
+                    <td>
+                        <input type="hidden" name="hdnProductPack" id="hdnProductPack" />
+                        <input type="hidden" name="hdnProductEditPack" id="hdnProductEditPack" />
+                    </td>
+
+                </tr>
             </table>
         </div>
     }
@@ -44,98 +47,139 @@
         }
 
     }
+    function OnTeamSelect() {
+        var TM = $('#Team option:selected').text();
+        if (TM == 'RESPI + C' || TM == 'RESPI' || TM == 'PFZ NEUROSCIENCE' || TM == 'PAIN & INFLAMATION') {
+            $("#METISProductName").attr("disabled", false);
+          }
+        else {
+            $("#METISProductName").attr("disabled", true);
+        }
+    }
 
     jQuery(document).ready(function () {
 
-        initGrid();
+        ProductMaster();
     });
 
 
-    function initGrid() {
+    function ProductMaster() {
         jQuery("#ajaxGrid").jqGrid({
-            url: '@Url.Action("GridDataProductMaster")' ,
-
+            url: '@Url.Action("GridDataProductMaster")',
             datatype: "json",
             jsonReader: { repeatitems: false, id: "PKID" },
-            colNames: ['PKID', 'Product Group', 'Product Code', 'Product Name', 'Node Type', 'Metis Product', 'KDP', 'NodeType', 'Team', 'Status'],
-            colModel: [
-                     { name: 'PKID', index: 'PKID', align: 'left', hidden: true, editable: true },
+            colNames: ['PKID', 'NodeTypeFKID', 'Product Group', 'Product Code', 'Product Name', 'Node Type', 'IMS Code', 'Product Manager', 'Team', 'KDP', 'Metis Product', 'Status'],
+            colModel: [{ name: 'PKID', index: 'PKID', align: 'left', hidden: true, editable: true },
+                       { name: 'NodeTypeFKID', index: 'NodeTypeFKID', align: 'left', hidden: true, },
 
-                     {
-                         name: 'GenName', index: 'GenName', align: 'left', editable: true, editrules: { edithidden: true, required: true }, edittype: 'select', editoptions: { dataUrl: '@Url.Action("GetProductGroup")' }, formoptions: {
-                             size: 35,
-                             elmprefix: "<span style='align:left;color:red'>*</span>&nbsp;"
-                         }, searchoptions: { sopt: ['eq', 'bw', 'ew', 'cn'] }, search: false
-                     },
+                           {
+                               name: 'GenName', index: 'GenName', align: 'left', editable: true, editrules: { edithidden: true, required: true }, edittype: 'select', editoptions: { dataUrl: '@Url.Action("GetProductGroup")' }, formoptions: {
+                                   size: 35,
+                                   elmprefix: "<span style='align:left;color:red'>*</span>&nbsp;"
+                               }, searchoptions: { sopt: ['eq', 'bw', 'ew', 'cn'] }, search: false
+                           },
 
                     {
                         name: 'ProductCode', index: 'ProductCode', align: 'left', hidden: true, editable: true, editrules: { edithidden: true, required: false },
+                        editoptions: { maxlength: 8, dataEvents: [{ type: 'keyup', fn: function (e) { OnlyNumber(this); } }] },
                         formoptions: { rowpos: 3, colpos: 1, elmprefix: "&nbsp;&nbsp;" }, search: false
                     },
                    {
                        name: 'ProductName', index: 'ProductName', align: 'left', hidden: false, editable: true, editrules: { edithidden: true, required: false },
-                       formoptions: {rowpos: 3, colpos: 2, elmprefix: "<span style='align:left;color:red'>*</span>&nbsp;" },
+                       formoptions: { rowpos: 3, colpos: 2, elmprefix: "<span style='align:left;color:red'>*</span>&nbsp;" },
                        searchoptions: { sopt: ['eq', 'bw', 'ew', 'cn'] }, searchrules: { required: true }, search: true, editoptions: {
-                             size: 35,maxlength: 30,
-                             dataEvents: [
-                                 {
-                                     type: 'keyup', // blur
-                                     fn: function (e) {
-                                         validSpecial(this);
-                                     }
-                                 }
-                             ]
-                         }
-                     },
+                           size: 35, maxlength: 30,
+                           dataEvents: [
+                               {
+                                   type: 'keyup', // blur
+                                   fn: function (e) {
+                                       CharacterAndNumber(this);
+                                   }
+                               }
+                           ]
+                       }
+                   },
                       {
-                          name: 'NodeType', index: 'NodeType', align: 'left', hidden: true, editable: true, editrules: { edithidden: true, required: false }, edittype: 'select', editoptions: { dataUrl: '@Url.Action("GetNodeType")' },
-                          formoptions: { rowpos: 4, colpos: 1, elmprefix: "<span style='align:left;color:red'>*</span>&nbsp;" }, search: false
+                          name: 'NodeType', index: 'NodeType', align: 'left', hidden: true, editable: true, editrules: { edithidden: true, required: false }, edittype: 'select',
+                          editoptions: {
+                              dataUrl: function () {
+                                  var row_id = $('#ajaxGrid').getGridParam('selrow');
+                                  return 'GetNodeType?type=' + 'NodeType' + '&data=' + row_id;
+                              },
+                              dataEvents: [{
+                                  type: 'change',
+                                  fn: function (e) {
+                                      var postData = e.currentTarget.value;
+                                      var row_id = $('#ajaxGrid').getGridParam('selrow');
+                                      $.ajax({
+                                          type: 'POST',
+                                          url: '@Url.Action("ProductManagerLoad")?type=' + 'Product',
+                                          data: { NodeTypeFKID: postData },
+                                          success: function (data) {
+                                              $('#tr_ProductManager  td:nth-child(2)').html("<span style='align:left;color:red'>*</span><td class='DataTD'>" + data + "</td>");
+                                          }
+                                      });
+                                  }
+                              }]
+                          },
+
+                          formoptions: { rowpos: 4, colpos: 1, elmprefix: "<span style='align:left;color:red'>*</span>&nbsp;" }, search: false,
                       },
-                      {
-                           name: 'METISProductName', index: 'METISProductName', align: 'left', editable: true, editrules: { edithidden: true, required: true }, edittype: 'select', editoptions: { dataUrl: '@Url.Action("MetisProductName")' }, formoptions: {
-                               size: 35,
-                               elmprefix: "<span style='align:left;color:red'>*</span>&nbsp;"
-                           }, searchoptions: { sopt: ['eq', 'bw', 'ew', 'cn'] }, search: false
+                       {
+                           name: 'IMSCode', index: 'IMSCode', align: 'left', hidden: true, editable: true, editrules: { edithidden: true, required: false },
+                           editoptions: { maxlength: 30, dataEvents: [{ type: 'keyup', fn: function (e) { OnlyNumber(this); } }] },
+                           formoptions: { rowpos: 4, colpos: 2, elmprefix: "&nbsp;&nbsp;" }, search: false
                        },
-                     @*{
-                         name: 'METISProductName', index: 'METISProductName', align: 'left', formoptions: {
-                             size: 35,
-                             elmprefix: "<span style='align:left;color:red'>*</span>&nbsp;"
-                         }, searchoptions: { sopt: ['eq', 'bw', 'ew', 'cn'] }, search: false, editable: true, editrules: { edithidden: true, required: true }, edittype: 'select', editoptions: { dataUrl: '@Url.Action("MetisProductName")' }
-                     },*@
-                     {
-                         name: 'IsKDP', index: 'IsKDP', align: 'left', editable: true, editable: true,edittype: 'select', editoptions: { value: { 1: 'Yes', 0: 'No' } }, formoptions: {
-                             size: 35,
-                             elmprefix: "<span style='align:left;color:red'>*</span>&nbsp;"
-                         }, searchoptions: { sopt: ['eq', 'bw', 'ew', 'cn'] }, search: false, 
-                     },
+
+                        {
+                            name: 'ProductManager', index: 'ProductManager', align: 'left', resizable: false, hidden: true, editable: true, edittype: 'select',
+                            editrules: { edithidden: true, required: false }
+                             , editoptions: {
+                                 multiple: true,
+                                 dataUrl: function () {
+
+                                     var row_id = $('#ajaxGrid').getGridParam('selrow');
+                                     return 'ProductManagerLoads?type=' + 'ProductManager' + '&data=' + row_id;
+                                 }
+                             },
+                            formoptions: { rowpos: 5, colpos: 1, elmprefix: "<span style='align:left;color:red'>*</span>&nbsp;" },
+                        },
 
                          {
-                             name: 'NodeType', index: 'NodeType', align: 'left', resizable: false, hidden: true, editable: true, edittype: 'select',
-                             viewable: true, editrules: { edithidden: true, required: true }
-                             , editoptions: {
+                             name: 'Team', index: 'Team', align: 'left', hidden: true, editable: true, editrules: { edithidden: true, required: false }, edittype: 'select',
+                             editoptions: {
+                                 multiple: true,
                                  dataUrl: function () {
                                      var row_id = $('#ajaxGrid').getGridParam('selrow');
-                                     return 'NodeProductLinkMaster?data=' + row_id;
-                                 }
-                             }, formoptions: {
-                                 size: 35,
-                                 elmprefix: "<span style='align:left;color:red'>*</span>&nbsp;"
-                             }, searchoptions: { sopt: ['eq', 'bw', 'ew', 'cn'] }, search: false
+                                     return 'GetTeamType?type=' + 'Team' + '&data=' + row_id;
+                                 },
+                                 dataEvents: [{
+                                     type: 'change', // blur
+                                     fn: function (e) {
+                                         OnTeamSelect(this);
+                                     }
+                                 }]
+                             },
+                             formoptions: { rowpos: 5, colpos: 2, elmprefix: "<span style='align:left;color:red'>*</span>&nbsp;" }, search: false
                          },
-                           {
-                               name: 'Team', index: 'Team', align: 'left', resizable: false, hidden: true, editable: true, edittype: 'select',
-                               editrules: { edithidden: true, required: true }
-                             , editoptions: {
-                                 multiple: true, dataUrl: function () {
-                                     var row_id = $('#ajaxGrid').getGridParam('selrow');
-                                     return 'TeamProductlinkMaster?data=' + row_id;
-                                 }
-                             }, formoptions: {
-                                 size: 35,
-                                 elmprefix: "<span style='align:left;color:red'>*</span>&nbsp;"
-                             }, searchoptions: { sopt: ['eq', 'bw', 'ew', 'cn'] }, search: false
-                           },
+
+                          {
+                              name: 'IsKDP', index: 'IsKDP', align: 'left', editable: true, editable: true, edittype: 'select', editoptions: { value: {2:'Select', 1: 'Yes', 0: 'No' }, defaultValue: "Select" }, formoptions: {
+                                  size: 35,
+                                  elmprefix: "<span style='align:left;color:red'>*</span>&nbsp;"
+                              }, searchoptions: { sopt: ['eq', 'bw', 'ew', 'cn'] }, search: false,
+                          },
+
+                        {
+                            name: 'METISProductName', index: 'METISProductName', align: 'left', editable: true, editrules: { edithidden: true, required: false }, edittype: 'select',
+                            editoptions: {
+                                disabled: 'disabled', dataUrl: function () {
+                                    var row_id = $('#ajaxGrid').getGridParam('selrow');
+                                    return 'MetisProductLoads?type=' + 'Metis' + '&data=' + row_id;
+                                }
+                            },
+                            formoptions: { elmprefix: "&nbsp;&nbsp;" }, search: false
+                        },
                      {
                          name: 'IsActive', index: 'IsActive', align: 'left', resizable: false, editable: true, edittype: 'checkbox', editoptions: { value: "Active:Passive", defaultValue: "Active" }, formoptions: {
                              elmprefix: "&nbsp;&nbsp;&nbsp;"
@@ -158,7 +202,7 @@
 
                 if (jQuery("#ajaxGrid").getGridParam("records") == 0) {
                     jQuery("#ajaxGrid").addRowData(
-                    "blankRow", { "METISProductName": "No records to view" });
+                    "blankRow", { "ProductName": "No records to view" });
                 }
             },
             viewrecords: true,
@@ -173,9 +217,9 @@
             {
                 // Edit Portion
                 closeOnEscape: true,
-                width: 600,
+                width: 950,
                 recreateForm: true,
-                modal:true,
+                modal: true,
                 checkOnSubmit: true,
                 afterShowForm: function (form_id) {
                     var thisForm = form_id.selector.replace('FrmGrid_', 'editmod')
@@ -187,15 +231,99 @@
                     $(thisForm).css('top', ((windowHeight - dialogHeight) / 2));
                     $(thisForm).css('left', ((windowWidth - dialogWidth) / 2));
                 },
+
                 beforeShowForm: function (form) {
                     var sel_id = $('#ajaxGrid').jqGrid('getGridParam', 'selrow');
                     var value = $('#ajaxGrid').jqGrid('getCell', sel_id, 'IsActive');
-                    $('#tr_IsActive', form).show();
+                    if (value == 'Inactive')
+                    {
+                        $('#tr_IsActive', form).show();
+                    }
+                    else
+                    {
+                        $('#tr_IsActive', form).hide();
+                    }
+
+                    var PKID = $("#ajaxGrid").jqGrid("getCell", sel_id, 'PKID');
+
+                    RetrivalData(PKID);
+
+                   // $('#tr_METISProductName  td:nth-child(3)').html("<a onclick=\"RetrivalData('"+PKID+"');\" style='font-size:12px; color:blue;font-family:Times New Roman;' id='ProductPack'>Product Pack<span style='align:left;color:red'>*</span></a>");
+                },
+
+                beforeSubmit: function (response, postdata) {
+
+                    $('select').css("border", "1px solid #C0C0C0");
+                    $("input[type=text]").css("border", "1px solid #C0C0C0");
+                    var error = " ";
+
+                    if ($.trim($("#GenName").val()) == 0) {
+                        error += "Product Group";
+                        $('#FormError').html("<td class='ui-state-error' colspan='10'>" + error + ":Field is required</td>");
+                        $("#GenName").css("background-color", "#FFE8E8").css("border", "1px solid #FF6666");
+                        return [false, response.responseText];
+                    }
+                    if ($("#ProductName").val().charAt(0) == ' ' || $("#ProductName").val().charAt($("#ProductName").val().length - 1) == ' ' || $("#ProductName").val() == "") {
+                        $('#TblGrid_ajaxGrid td.ui-state-highlight').removeClass('ui-state-highlight').addClass('ui-state-error');
+                        $("#ProductName").css("background-color", "#FFE8E8").css("border", "1px solid #FF6666");
+                        $('#ProductName').val("");
+                        $('#ProductName').focus();
+                        return [false, 'Enter Valid Product Name'];
+
+                    }
+                    else if ($.trim($("#NodeType").val()) == 0) {
+                        error += "Node Type";
+                        $('#FormError').html("<td class='ui-state-error' colspan='10'>" + error + ":Field is required</td>");
+                        $("#NodeType").css("background-color", "#FFE8E8").css("border", "1px solid #FF6666");
+                        return [false, response.responseText];
+                    }
+                    else if (($("#ProductManager").val() == 0) || ($("#ProductManager").val() == null)) {
+                        error += "Product Manager";
+                        $('#FormError').html("<td class='ui-state-error' colspan='10'>" + error + ":Field is required</td>");
+                        $("#ProductManager").css("background-color", "#FFE8E8").css("border", "1px solid #FF6666");
+                        return [false, response.responseText];
+                    }
+                    //else if (($("#Team").val() == 0) || ($("#Team").val() == null)) {
+                    //    error += "Team";
+                    //    $('#FormError').html("<td class='ui-state-error' colspan='10'>" + error + ":Field is required</td>");
+                    //    $("#Team").css("background-color", "#FFE8E8").css("border", "1px solid #FF6666");
+                    //    return [false, response.responseText];
+                    //}
+                    else if ($.trim($("#IsKDP").val()) == 2) {
+                        error += "KDP";
+                        $('#FormError').html("<td class='ui-state-error' colspan='10'>" + error + ":Field is required</td>");
+                        $("#IsKDP").css("background-color", "#FFE8E8").css("border", "1px solid #FF6666");
+                        return [false, response.responseText];
+                    }
+
+                    //else if ($("#hdnProductPack1").val() != "") {
+                    //    $("#ProductPack").css("border", "1px solid #C0C0C0");
+                    //    return [true, ""]
+                    //}
+                    //else if ($("#ProductPack").val() == "") {
+                    //    error += "Product Pack";
+                    //    $('#FormError').html("<td class='ui-state-error' colspan='10'>" + error + ":Field is required</td>");
+                    //    $("#ProductPack").css("background-color", "#FFE8E8").css("border", "1px solid #FF6666");
+                    //    return [false, response.responseText];
+                    //}
+                    else {
+                      
+                        return [true, response.responseText];
+                    }
+
                 },
                 afterSubmit: function (response, postdata) {
 
                     $("#ajaxGrid").jqGrid('setGridParam', { datatype: 'json' }).trigger('reloadGrid');
+                    $('#TblGrid_ajaxGrid td.ui-state-error').removeClass('ui-state-error').addClass('ui-state-highlight');
                     return [false, response.responseText];
+                },
+
+                onclickSubmit: function (params, posdata)
+                {
+                    EditRecords();
+                    //string oper, string NodeType, string Team, string ActivityName, string Defaultflag, string Specialflag, string Fieldwork, string id, string IsActive
+                    params.url = '@Url.Action("EditProductMaster1")?ProductGroup=' + $("#GenName").val() + '&ProductCode' + $("#ProductCode").val() + '&ProductName=' + $("#ProductName").val() + '&NodeType=' + $("#NodeType").val() + '&IMSCode=' + $("#IMSCode").val() + '&ProductManager=' + $("#ProductManager").val() + '&Team=' + $("#Team").val() + '&IsKDP=' + $("#IsKDP").val() + '&METISProductName=' + $("#METISProductName").val() + '&ProductPackDetails=' + $("#hdnProductEditPack").val() + '&Status=' + $("#IsActive").val();
                 },
             },
 
@@ -205,7 +333,7 @@
             closeAfterAdd: true,
             recreateForm: true,
             modal: true,
-            width: 650,
+            width: 950,
             afterShowForm: function (form_id) {
                 var thisForm = form_id.selector.replace('FrmGrid_', 'editmod');
                 var dialogHeight = $(thisForm).height();
@@ -215,21 +343,110 @@
                 $(thisForm).css('position', 'fixed');
                 $(thisForm).css('top', ((windowHeight - dialogHeight) / 2));
                 $(thisForm).css('left', ((windowWidth - dialogWidth) / 2));
+
             },
             beforeShowForm: function (form) {
-                $('#tr_IsActive', form).show();
-            },
-            afterSubmit: function (response, postdata) {
+              
+                // $('#tr_METISProductName  td:nth-child(3)').html("<a onclick=\"FormTable();\" style='font-size:12px; color:blue;font-family:Times New Roman;' id='ProductPack'>Product Pack<span style='align:left;color:red'>*</span></a>");
+                $('#tr_IsActive', form).hide();
 
-                if (response.responseText == "already Exists") {
-                    return [false, response.responseText];
+                FormTable();
+            },
+            beforeSubmit: function (response, postdata) {
+
+                    $('select').css("border", "1px solid #C0C0C0");
+                    $("input[type=text]").css("border", "1px solid #C0C0C0");
+                   
+                    var error = "";
+
+                   if ($.trim($("#GenName").val()) == 0) {
+                        error += "Product Group";
+                        $('#FormError').html("<td class='ui-state-error' colspan='10'>" + error + ":Field is required</td>");
+                        $("#GenName").css("background-color", "#FFE8E8").css("border", "1px solid #FF6666");
+                        return [false, response.responseText];
+                    }
+                    if ($("#ProductName").val().charAt(0) == ' ' || $("#ProductName").val().charAt($("#ProductName").val().length - 1) == ' ' || $("#ProductName").val() == "") {
+                        $('#TblGrid_ajaxGrid td.ui-state-highlight').removeClass('ui-state-highlight').addClass('ui-state-error');
+                        $("#ProductName").css("background-color", "#FFE8E8").css("border", "1px solid #FF6666");
+                        $('#ProductName').val("");
+                        $('#ProductName').focus();
+                        return [false, 'Enter Valid Product Name'];
+
+                    }
+                    else if ($.trim($("#NodeType").val()) == 0) {
+                        error += "Node Type";
+                        $('#FormError').html("<td class='ui-state-error' colspan='10'>" + error + ":Field is required</td>");
+                        $("#NodeType").css("background-color", "#FFE8E8").css("border", "1px solid #FF6666");
+                        return [false, response.responseText];
+                    }
+                  else if (($("#ProductManager").val() == 0) || ($("#ProductManager").val() == null)) {
+                        error += "Product Manager";
+                        $('#FormError').html("<td class='ui-state-error' colspan='10'>" + error + ":Field is required</td>");
+                        $("#ProductManager").css("background-color", "#FFE8E8").css("border", "1px solid #FF6666");
+                        return [false, response.responseText];
+                  }
+                  else if (($("#Team").val() == 0) || ($("#Team").val() == null))
+                  {
+                      error += "Team";
+                      $('#FormError').html("<td class='ui-state-error' colspan='10'>" + error + ":Field is required</td>");
+                      $("#Team").css("background-color", "#FFE8E8").css("border", "1px solid #FF6666");
+                      return [false, response.responseText];
+                  }
+
+                  else if ($.trim($("#IsKDP").val()) == 2) {
+                      error += "KDP";
+                      $('#FormError').html("<td class='ui-state-error' colspan='10'>" + error + ":Field is required</td>");
+                      $("#IsKDP").css("background-color", "#FFE8E8").css("border", "1px solid #FF6666");
+                      return [false, response.responseText];
+                  }
+                  else if ($("#hdnProductPack").val() == "")
+                  {
+                        SaveRecords();
+                        return [false, response.responseText];
+                    }
+               
+                 else
+                  {
+                       
+                        return [true, response.responseText];
+                     }
+                    
+                },
+
+
+            afterSubmit: function (response, postdata) {
+                $("#ajaxGrid").jqGrid('setGridParam', { datatype: 'json' }).trigger('reloadGrid');
+
+                var errorId = " ";
+
+                if (response.responseText == "\"Product Master added Successfully.\"") {
+                    errorId += "Product Master added Successfully";
+                    $('#FormError').html("<td class='ui-state-error' colspan='10'>" + errorId + "</td>");
+                    $('#TblGrid_ajaxGrid td.ui-state-error').removeClass('ui-state-error').addClass('ui-state-highlight');
+                    $("input[type=text]").val("");
+                    $("#ProductName").val("");
+                    $("#ProductManager option:selected").remove();
+                    $("#ProductManager option:selected").remove();
+                    $("#Team option:selected").remove();
+                    $("select").val(0);
+                   return [false, response.responseText];
                 }
                 else {
-                    $("#ajaxGrid").jqGrid('setGridParam', { datatype: 'json' }).trigger('reloadGrid');
+
                     return [false, response.responseText];
+
                 }
 
-            }
+            },
+
+            onclickSubmit: function (params, posdata)
+            {
+
+                //string oper, string NodeType, string Team, string ActivityName, string Defaultflag, string Specialflag, string Fieldwork, string id, string IsActive
+
+                params.url = '@Url.Action("AddProductMaster")?ProductGroup=' + $("#GenName").val() + '&ProductCode' + $("#ProductCode").val() + '&ProductName=' + $("#ProductName").val() + '&NodeType=' + $("#NodeType").val() + '&IMSCode=' + $("#IMSCode").val() + '&ProductManager=' + $("#ProductManager").val() + '&Team=' + $("#Team").val() + '&IsKDP=' + $("#IsKDP").val() + '&METISProductName=' + $("#METISProductName").val() + '&ProductPackDetails=' + $("#hdnProductPack").val();
+            },
+
         },
         {
             //Delete
@@ -255,7 +472,7 @@
                 //var RegionCode = $('#ajaxGrid').jqGrid('getCell', col1, 'RegionCode');
                 //var RegionName = $('#ajaxGrid').jqGrid('getCell', col1, 'RegionName');
                 var Statusfield = $('#ajaxGrid').jqGrid('getCell', col1, 'IsActive');
-                               
+
                 $('tr td.delmsg').html('Delete selected record(s)?');
                 // alert(IsActive);
                 if (Statusfield == "Inactive") {
@@ -265,7 +482,7 @@
                 else
                     $('#dData').show();
 
-          
+
 
 
                 //var html = "<form><table><tr><td class='CaptionTD'>Region Code</td><td class=='DataTD'>&nbsp;&nbsp;<input type='text' class='FormElement ui-widget-content ui-corner-all' readonly='true'  value='" + RegionCode + "'/></td> </tr>";
@@ -286,9 +503,9 @@
             afterSubmit: function (response, postdata) {
                 $('tr td.delmsg').html('');
                 $("#ajaxGrid").jqGrid('setGridParam', { datatype: 'json' }).trigger('reloadGrid');
-                $('#DelTbl_Productgroup td.ui-state-error').removeClass('ui-state-error').addClass('ui-state-highlight');
+                $('#DelTbl_ajaxGrid td.ui-state-error').removeClass('ui-state-error').addClass('ui-state-highlight');
                 return [false, response.responseText];
-               
+
             }
         },
             {
@@ -335,9 +552,285 @@
                     $(thisForm).css('left', ((windowWidth - dialogWidth) / 2));
                 }
 
+            });
+
+        setMethod('ajaxGrid', 'ajaxGridPager', 'Product Master');
+
+    }
+    function setMethod(gid, id, pgTitle) {
+        var btnTitle = 'Export to Excel';
+        $('#' + gid).jqGrid('navSeparatorAdd', '#' + id, { sepclass: "ui-separator" });
+        $('#' + gid).jqGrid('navButtonAdd', '#' + id, { caption: '', title: btnTitle, position: 'last', buttonicon: 'ui-icon-calculator', onClickButton: function () { ExcelExport(); } });
+
+        var btnTitle = 'Export to PDF';
+        $('#' + gid).jqGrid('navSeparatorAdd', '#' + id, { sepclass: "ui-separator" });
+        $('#' + gid).jqGrid('navButtonAdd', '#' + id, { caption: '', title: btnTitle, position: 'last', buttonicon: 'ui-icon-bookmark', onClickButton: function () { PDFExport(); } });
+
+        var btnTitle = 'Export to CSV';
+        $('#' + gid).jqGrid('navSeparatorAdd', '#' + id, { sepclass: "ui-separator" });
+        $('#' + gid).jqGrid('navButtonAdd', '#' + id, { caption: '', title: btnTitle, position: 'last', buttonicon: 'ui-icon-note', onClickButton: function () { CSVExport(); } });
+
+
+        var btnTitle = 'Print Grid';
+        $('#' + gid).jqGrid('navSeparatorAdd', '#' + id, { sepclass: "ui-separator" });
+        $('#' + gid).jqGrid('navButtonAdd', '#' + id, { caption: '', title: btnTitle, position: 'last', buttonicon: 'ui-icon-print', onClickButton: function () { PrintGrid(gid); } });
+    }
+    function ExcelExport() {
+        window.location = '@Url.Action("ExportProductMasterToExcel")';
+    }
+    function PDFExport() {
+        window.location = '@Url.Action("ExportProductMasterToPDF")';
+    }
+    function CSVExport() {
+
+        window.location = '@Url.Action("ExportProductMasterToCsv")';
+    }
+    function PrintGrid(gid) {
+
+        // empty the print div container.
+        var rows = $('#ajaxGrid').jqGrid('getRowData');
+        for (var i = 0; i < rows.length; i++) {
+            var row = rows[i];
+            $('#Table1').append("<tr><td>" + row.GenName + "</td><td>" + row.ProductName + "</td><td>" + row.METISProductName + "</td><td>" + row.IsKDP + "</td><td>" + row.IsActive + "</td></tr>");
+
+        }
+        $(function () { printChrome('prt-container') });
+    }
+
+    function printChrome(divContainer) {
+        var printContent = document.getElementById(divContainer);
+        window.document.body.innerHTML = printContent.innerHTML;
+        window.print();
+        window.location.reload();
+    }
+
+    //ProductPack Add ProductPack Details
+    function FormTable()
+    {
+        $('#TblGrid_ajaxGrid').append("<tr rowpos='12'><td></td></tr>");
+        $('#TblGrid_ajaxGrid').append("<tr rowpos='13'><td colspan='10'style='color:#2f72c3;text-decoration: none;font-weight:bold;background-color:pink;'>Product Pack</td></tr>");
+        $.ajax({
+            type: 'POST',
+            url: '@Url.Action("PackFrmLoad")?type=' + 'drpForm' + '&Dynamics=1',
+            success: function (result) {
+                $('#TblGrid_ajaxGrid').append("<tr rowpos='14'><td colspan='4'><br/><table id='tblBrand' border='1' cellspacing='1' cellpadding='0' width='945px' height='25px' align='center'><thead><tr style='background-color:#00AADA;color:white;height:30px;'><td>Sl.No<font style='color:red'> *</font></td><td>Product Pack<font style='color:red'> *</font></td><td>Form<font style='color:red'> *</font></td><td>IBIS Code</td><td>Sample<font style='color:red'> *</font></td><td>Non Sample Flag<font style='color:red'> *</font></td><td>Delete</td></tr></thead><tbody><tr id='tr_form'><td>1</td><td><input id='txtProductPack_1'  maxlength='45' size='40' name='txtProductPack'/></td><td>" + result + "</td><td><input id='txtIBIS_1' maxlength='20' size='40' name='txtIBIS'></td><td><input id='chkSample_1' type='checkbox' name='chkSample'></td><td><input id='chkNonSampleFlag_1' type='checkbox' name='chkNonSampleFlag'></td><td><input id='chkDelete' type='checkbox' name='chkDelete'disabled><input id='hdnProdSamFKID' value='0' type='hidden' name='hdnProdSamFKID'></td></tr></tbody><tr><td valign='top' colspan='5' align='right'>&nbsp;</td><td valign='top' align='right'><input id='btnAddNew' onclick='dceAddRow();' value=' + ' type='submit' name='btnAddNew'style='background-color:#00AADA;color:white'></td><td><input id='btnDelete' onclick='dceDeleteRows();' value=' - ' type='button' name='btnDelete'style='background-color:#00AADA;color:white'></td></tr></table><table align='center'></table></td></tr>");
+               
             }
-                );
+        });
+    }
+
+
+    //ProductPack Add Event
+    function dceAddRow() {
+       var Count = $('#tblBrand tr').length - 1;
+
+         $.ajax({
+            type: 'POST',
+            url: '@Url.Action("PackFrmLoad")?type=' + 'drpForm' + '&Dynamics='+Count,
+            success: function (result) {
+                $("#tblBrand").append("<tr id='row" + Count + "'><td>" + Count + "</td><td><input id='txtProductPack_"+ Count +"'  maxlength='45' size='40' name='txtProductPack'/></td><td>" + result + "</td><td><input id='txtIBIS_" + Count + "' maxlength='20' size='40' name='txtIBIS'></td><td><input id='chkSample_" + Count + "' type='checkbox' name='chkSample'></td><td><input id='chkNonSampleFlag_" + Count + "' type='checkbox' name='chkNonSampleFlag'></td><td><input id='chkDel' type='checkbox'><input id='hdnProdSamFKID' value='0' type='hidden' name='hdnProdSamFKID'></td></tr>");
+            }
+        });
+    }
+
+
+    //ProductPack Delete Event
+    function dceDeleteRows() {
+        $('#tblBrand').find('tr').each(function () {
+            var chkrow = $(this);
+            if (chkrow.find('input:checkbox:last').is(':checked')) {
+                $(this).remove();
+            }
+        });
+    }
+
+
+    //ProductPack Xml File Generator
+
+    function SaveRecords()
+    {
+       
+        var tblValue = "";
+
+        var Count = $('#tblBrand tr').length - 1;
+
+        for (var i = 1; i <= Count - 1; i++)
+        {
+            $('select').css("border", "1px solid #C0C0C0");
+            $("input[type=text]").css("border", "1px solid #C0C0C0");
+            $("#txtProductPack_"+i).css("border", "1px solid #C0C0C0");
+            var error = "";
+
+            if ($("#txtProductPack_" + i).val().charAt(0) == ' ' || $("#txtProductPack_" + i).val().charAt($("#txtProductPack_" + i).val().length - 1) == ' ' || $("#txtProductPack_" + i).val() == "")
+            {
+               // error += "Productpack";
+              //  $('#FormError').html("<td class='ui-state-error' colspan='10'>" + error + ":Field is required</td>");
+                $("#txtProductPack_" + i).css("background-color", "#FFE8E8").css("border", "1px solid #FF6666");
+                $("#txtProductPack_" + i).focus();
+                return [false, response.responseText];
+            }
+           else if ($("#drpForm_" + i).val()== 0)
+           {
+               // error += "Form";
+               // $('#FormError').html("<td class='ui-state-error' colspan='10'>" + error + ":Field is required</td>");
+                $("#drpForm_" + i).css("background-color", "#FFE8E8").css("border", "1px solid #FF6666");
+                $("#drpForm_" + i).focus();
+                return [false, response.responseText];
+           }
+           else if ((!$("#chkSample_" + i).is(":checked")) && (!$("#chkNonSampleFlag_" + i).is(":checked")))
+           {
+              // error += "Sample/Non Sample";
+               //$('#FormError').html("<td class='ui-state-error' colspan='10'>" + error + ":Field is required</td>");
+               $("#chkSample_" + i).css("background-color", "#FFE8E8").css("border", "1px solid #FF6666");
+               return [false, response.responseText];
+           }
+
+           else
+           {
+              //return [true, response.responseText];
+           }
+            if ($("#chkSample_" + i).val() == 'on')
+            {
+              var chkSample = '1';
+            }
+            if ($("#chkNonSampleFlag_" + i).val() == 'on')
+            {
+              var chkNonSampleFlag = '1';
+           }
+
+            tblValue += $("#hdnProdSamFKID").val() + "," + $("#txtProductPack_" + i).val() + "," + $("#drpForm_" + i + " option:selected").val() + "," + $("#txtIBIS_" + i).val() + "," + chkSample + "," + chkNonSampleFlag + "|";
+
+        }
+        $("#hdnProductPack").val(tblValue);
+       
+    }
+    //Edit Records 
+
+    function EditRecords()
+    {
+        var tblValue1 = "";
+        var Count = $('#tblBrand tr').length - 1;
+        for (var i = 0; i <= Count - 1; i++)
+        {
+            $('select').css("border", "1px solid #C0C0C0");
+            $("input[type=text]").css("border", "1px solid #C0C0C0");
+            $("#txtProductPack_" + i).css("border", "1px solid #C0C0C0");
+
+            var error = "";
+
+            if ($("#txtProductPack_" + i).val().charAt(0) == ' ' || $("#txtProductPack_" + i).val().charAt($("#txtProductPack_" + i).val().length - 1) == ' ' || $("#txtProductPack_" + i).val() == "") {
+                error += "Productpack";
+                $('#FormError').html("<td class='ui-state-error' colspan='10'>" + error + ":Field is required</td>");
+                $("#txtProductPack_" + i).css("background-color", "#FFE8E8").css("border", "1px solid #FF6666");
+                $("#txtProductPack_" + i).focus();
+                return [false, response.responseText];
+            }
+            else if ($("#drpForm_" + i).val() == 0) {
+                error += "Form";
+                $('#FormError').html("<td class='ui-state-error' colspan='10'>" + error + ":Field is required</td>");
+                $("#drpForm_" + i).css("background-color", "#FFE8E8").css("border", "1px solid #FF6666");
+                $("#drpForm_" + i).focus();
+                return [false, response.responseText];
+            }
+            else if ((!$("#chkSample_" + i).is(":checked")) && (!$("#chkNonSampleFlag_" + i).is(":checked"))) {
+                error += "Sample/Non Sample";
+                $('#FormError').html("<td class='ui-state-error' colspan='10'>" + error + ":Field is required</td>");
+                $("#chkSample_" + i).css("background-color", "#FFE8E8").css("border", "1px solid #FF6666");
+                return [false, response.responseText];
+            }
+
+            else {
+                //return [true, response.responseText];
+            }
+
+            if ($("#chkSample_" + i).val() == 'on') {
+                var chkSample = '1';
+            }
+            if ($("#chkNonSampleFlag_" + i).val() == 'on') {
+                var chkNonSampleFlag = '1';
+            }
+
+            tblValue1 += $("#hdnProdSamFKID").val() + "," + $("#txtProductPack_" + i).val() + "," + $("#drpForm_" + i + " option:selected").val() + "," + $("#txtIBIS_" + i).val() + "," + chkSample + "," + chkNonSampleFlag + "|";
+
+        }
+       $("#hdnProductEditPack").val(tblValue1);
+
+
+    }
+  
+
+    //RetrivalDate Event
+    function RetrivalData(PKID)
+    {
+
+        $('#TblGrid_ajaxGrid').append("<tr rowpos='13'><td colspan='10'style='color:#2f72c3;text-decoration: none;font-weight:bold;background-color:pink;'>Product Pack</td></tr>");
+        $('#TblGrid_ajaxGrid').append("<tr rowpos='14'><td colspan='4'><br/><table id='tblBrand' border='1' cellspacing='1' cellpadding='0' width='945px' height='25px' align='center'><tr style='background-color:#00AADA;color:white;height:30px;'><td>Sl.No<font style='color:red'> *</font></td><td>Product Pack<font style='color:red'> *</font></td><td>Form<font style='color:red'> *</font></td><td>IBIS Code</td><td>Sample<font style='color:red'> *</font></td><td>Non Sample Flag<font style='color:red'> *</font></td><td>Delete</td></tr>");
+
+        $.ajax({
+            type: 'POST',
+            url: '@Url.Action("ProductMasRetriverRecords")?PKID=' + PKID,
+            success: function (rec) {
+
+               for (var i = 0; i <= rec.length; i++)
+               {
+                   $("#tblBrand").append("<tr><td>" + rec[i].ROWID + "</td><td><input id='txtProductPack_" + i + "'  maxlength='45' size='40' value=" + rec[i].Productpack + " /></td><td><select id='drpForm_" + i + "' style='width: 100px;'><option  value=" + rec[i].FormFKID + ">" + rec[i].FormName + "</option></select></td><td><input id='txtIBIS_" + i + "' maxlength='20' size='40' value=" + rec[i].IBISCode + " /></td><td><input id='chkSample_" + i + "' type='checkbox' /></td><td><input id='chkNonSampleFlag_" + i + "' type='checkbox'></td><td><input id='chkDel' type='checkbox'><input id='hdnProdSamFKID' value='0' type='hidden' name='hdnProdSamFKID'></td></tr>");
+                   if (rec[i].SampleFlag == true)
+                   {
+                     $("#chkSample_" + i).prop("checked", true);
+                   }
+                   else
+                   {
+                       $("#chkSample_" + i).prop("checked", false);
+                   }
+                   if (rec[i].NonSampleFlag == true)
+                   {
+                     $("#chkNonSampleFlag_" + i).prop('checked', true);
+                   }
+                   else
+                   {
+                    $("#chkNonSampleFlag_" + i).prop('checked', false);
+                   }
+
+               }
+               //$("#tblBrand").append("<tr><td colspan='5'align='right'>&nbsp;</td><td align='right'><input id='btnAddNew' onclick='dceAddRow();' value=' + ' type='submit' name='btnAddNew'style='background-color:#00AADA;color:white'></td><td><input id='btnDelete' onclick='dceDeleteRows();' value=' - ' type='button' name='btnDelete'style='background-color:#00AADA;color:white'></td></tr></table></td></tr>");
+            }
+
+        });
+
+
+        $("#TblGrid_ajaxGrid").append("<table align='center'><tr><td colspan='5'align='right'>&nbsp;</td><td align='right'><input id='btnAddNew' onclick='dceEditRow();' value=' + ' type='submit' name='btnAddNew'style='background-color:#00AADA;color:white'></td><td><input id='btnDelete' onclick='dceDeleteRows();' value=' - ' type='button' name='btnDelete'style='background-color:#00AADA;color:white'></td></tr></table></td></tr></table>");
 
     }
 
+  
+     function dceEditRow() {
+        var Count = $('#tblBrand tr').length - 1;
+
+        $.ajax({
+            type: 'POST',
+            url: '@Url.Action("PackFrmLoad")?type=' + 'drpForm' + '&Dynamics=' + Count,
+            success: function (result) {
+                $("#tblBrand").append("<tr id='row" + Count + "'><td>" + Count + "</td><td><input id='txtProductPack_" + Count + "'  maxlength='45' size='40' name='txtProductPack'/></td><td>" + result + "</td><td><input id='txtIBIS_" + Count + "' maxlength='20' size='40' name='txtIBIS'></td><td><input id='chkSample_" + Count + "' type='checkbox' name='chkSample'></td><td><input id='chkNonSampleFlag_" + Count + "' type='checkbox' name='chkNonSampleFlag'></td><td><input id='chkDel' type='checkbox'><input id='hdnProdSamFKID' value='0' type='hidden' name='hdnProdSamFKID'></td></tr>");
+            }
+        });
+    }
+
 </script>
+<div id='prt-container' style="display:none;">
+    <table id="Table1" border="1" width="100%">
+        <thead>
+            <tr>
+                <td><b>Product Group</b></td>
+                <td><b>Product Name</b></td>
+                <td><b>Metis Product</b></td>
+                <td><b>KDP</b></td>
+                <td><b>Status</b></td>
+            </tr>
+
+        </thead>
+        <tbody></tbody>
+
+    </table>
+</div>
+
+

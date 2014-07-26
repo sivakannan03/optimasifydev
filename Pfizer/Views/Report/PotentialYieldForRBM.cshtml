@@ -1,0 +1,588 @@
+﻿@{
+    ViewBag.Title = "PotentialYieldForRBM";
+    Layout = "~/Views/Shared/MasterLayout.cshtml";
+}
+
+<h2>PotentialYieldForRBM</h2>
+<body>
+
+    @using (Html.BeginForm(FormMethod.Post))
+{
+        <div>
+            <table width="100%" border="0" cellspacing="0" class="inner_tb" cellpadding="0" align="left">
+                <tr>
+                    <th colspan="8" style="margin-top: 10px; background-color: #00AADA; color: white;height:20px;">FilterOn</th>
+                </tr>
+                <tr>
+                    <td width="30%" valign="middle" class="tb-r2">
+                        <table border="1" width="100%">
+                            <tbody>
+                                <tr>
+
+                                    <td class="tb-r2">Year<span style="color:red">*</span></td>
+                                    <td class="tb-r2">
+                                        &nbsp;&nbsp;&nbsp;
+                                        @Html.DropDownList("drpSelectYear", new[]{
+
+                                            new SelectListItem { Text="Select", Value=""} })
+
+                                    </td>
+                                    <td class="tb-r2">Month<span style="color:red">*</span></td>
+                                    <td class="tb-r2">
+                                        &nbsp;&nbsp;&nbsp;
+                                        @Html.DropDownList("drpSelectMonth", new[]{
+
+                                            new SelectListItem { Text="Select", Value=""} })
+
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="tb-r2">Products<span style="color:red">*</span></td>
+                                    <td class="tb-r2">
+                                        &nbsp;&nbsp;&nbsp;
+                                        @Html.ListBox("lstProductsName", new[]{
+
+                                            new SelectListItem { Text="", Value=""} }, new { @class = "listboxRpt", size = "4" })
+
+                                    </td>
+                                    <td class="tb-r2">DMName<span style="color:red">*</span></td>
+                                    <td class="tb-r2">
+                                        &nbsp;&nbsp;&nbsp;
+                                        @Html.ListBox("lstDMName", new[]{
+
+                                            new SelectListItem { Text="", Value=""} }, new { @class = "listboxRpt", size = "4" })
+
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="tb-r2">PSOName<span style="color:red">*</span></td>
+                                    <td class="tb-r2">
+                                        &nbsp;&nbsp;&nbsp;
+                                       
+                                        <select name="lstPSOName" id="lstPSOName" size="5">
+                                            <option value="0">Select</option>
+
+                                        </select>
+
+                                    </td>
+                                    <td class="tb-r2">
+
+                                        <input type="radio" id="rdbSummery" name="rdbPSO" value="S" checked="checked" />Summery
+                                        <input type="radio" id="rdbDetail" name="rdbPSO" value="D" />Details
+                                    </td>
+                                    <td class="tb-r2">
+
+                                        <input class="blue_button add_btn" type="button" width="5%" id="btnGO" value="GO">
+
+                                        <input class="blue_button add_btn" type="button" width="5%" id="btnReset" value="Reset">
+
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+
+                    </td>
+                </tr>
+            </table>
+        </div>
+        <div id="testDiv">
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+        <table id="tabStatus" style="margin-top: 30px; width :100%" border="0">
+
+            <tr>
+                <td></td>
+            </tr>
+        </table>
+        <table border="0" style="width: 100%">
+            <tr>
+                <td>
+                    <!--JqGrid Starts-->
+                    <table style="margin-top: 40px; width :100%" border="0">
+                        <tr>
+                            <td>
+                                <table id="ajaxGrid" style="width: 100%" border="0"></table>
+                                <div id="ajaxGridPager">
+                                </div>
+                            </td>
+                        </tr>
+                    </table>
+                    <!--Ends-->
+                </td>
+            </tr>
+        </table>
+    </div>
+    }
+    </body>
+<script type="text/javascript">
+
+    function LoadYear() {
+        var today = new Date(); // Initialize Date in raw form
+        var Currentyear = today.getFullYear(); // Get the year
+        var CurrentDate = today.getDate();
+        //Year binding into year ComboBox
+        var cPreviousYear = today.getFullYear() - 5;
+
+        var cNextYear = today.getFullYear() + 3;
+        var iSelected = 0;
+        for (var iCount = cPreviousYear; iCount < cNextYear; iCount++) {
+
+            document.getElementById("drpSelectYear").options.add(new Option(iCount, "0"))
+            if (document.getElementById("drpSelectYear").options[iSelected].innerText == Currentyear) {
+                document.getElementById("drpSelectYear").selectedIndex = iSelected;
+            }
+            iSelected++;
+        }
+    }
+
+    function LoadMonth() {
+        var today = new Date(); // Initialize Date in raw form
+        var currentMonth = today.getMonth() + 1; // Get the month
+
+        var months = ["", "January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
+        var option = '';
+        for (var i = 0; i < months.length; i++) {
+            if (i == 0)
+                continue;
+            if (currentMonth != i) {
+                option += '<option value="' + i + '">' + months[i] + '</option>';
+                continue;
+            }
+            option += '<option value="' + i + '" selected="selected">' + months[i] + '</option>';
+        }
+        $('#drpSelectMonth').append(option);
+    }
+    $('#lstProductsName').change(function () {
+
+        if ($('#lstProductsName').val() == 0) {
+            $("#lstProductsName option").prop("selected", true);
+            $("#lstProductsName option:first").removeAttr('selected');
+
+        }
+    });
+    $('#lstDMName').change(function () {
+
+        if ($('#lstDMName').val() == 0) {
+            $("#lstDMName option").prop("selected", true);
+            $("#lstDMName option:first").removeAttr('selected');
+
+        }
+    });
+   
+    $("#btnReset").click(function () {
+
+        $('input:radio[name=rdbPSO]')[0].checked = true;
+        $("#drpSelectYear").val('');
+        $("#drpSelectMonth").val('');
+        $('#lstProductsName').val(0);
+        $('#lstPSOName').val(0);
+        $('#lstDMName').val(0);
+        $('#lstPSOName').attr('disabled', 'disabled');
+    });
+    $(":radio").change(function () {
+           
+   
+        if ($('#rdbSummery').prop('checked') == true) {
+            $('#lstPSOName').attr('disabled', 'disabled');
+           
+        }
+        else 
+        {
+            $('#lstPSOName').removeAttr('disabled');
+           
+
+        }
+
+    });
+    $("#btnGO").click(function () {
+       
+        $("#lstPSOName").css("border", "1px solid #d5d5d5").css("background-color", "white");
+        $("#lstProductsName").css("border", "1px solid #d5d5d5").css("background-color", "white");
+        $("#drpSelectYear").css("border", "1px solid #d5d5d5").css("background-color", "white");
+        $("#drpSelectMonth").css("border", "1px solid #d5d5d5").css("background-color", "white");
+        $('#lstDMName').css("border", "1px solid #d5d5d5").css("background-color", "white");
+        if ($('#drpSelectYear').val() == '') {
+
+            $("#drpSelectYear").css("background-color", "#FFE8E8").css("border", "1px solid #FF6666");
+            $('#drpSelectYear').focus();
+            return false;
+        }
+        else if ($('#drpSelectMonth').val() == '') {
+
+            $("#drpSelectMonth").css("background-color", "#FFE8E8").css("border", "1px solid #FF6666");
+            $('#drpSelectMonth').focus();
+            return false;
+        }
+        else if ($('#lstProductsName').val() == 0 || $('#lstProductsName').val() == null) {
+            $("#lstProductsName").css("background-color", "#FFE8E8").css("border", "1px solid #FF6666");
+            $('#lstProductsName').focus();
+            return false;
+        }
+        else if ($('#lstDMName').val() == 0 || $('#lstDMName').val() == null) {
+            $("#lstDMName").css("background-color", "#FFE8E8").css("border", "1px solid #FF6666");
+            $('#lstDMName').focus();
+            return false;
+        }
+        if ($('#rdbSummery').prop('checked') != true && ($('#lstPSOName').val() == 0 || $('#lstPSOName').val() == null))
+        {
+            $("#lstPSOName").css("background-color", "#FFE8E8").css("border", "1px solid #FF6666");
+           $('#lstPSOName').focus();
+             return false;
+
+        }
+        
+        var productsFKID = "";
+        $('#lstProductsName :selected').each(function (i, selected) {
+
+            if ($(selected).val() != "0") {
+                if ($(this).not('selected')) {
+
+                    productsFKID += +$(this).val() + ",";
+                }
+
+
+            }
+        });
+        var DMName = "";
+        $('#lstDMName :selected').each(function (i, selected) {
+
+            if ($(selected).val() != "0") {
+                if ($(this).not('selected')) {
+
+                    DMName += +$(this).val() + ",";
+                }
+
+            }
+        });
+        var Year = $("#drpSelectYear").val();
+        var Month = $("#drpSelectMonth").val();
+
+        if ($('input:radio[name=rdbPSO]')[0].checked == true) {
+            var Type = $("#rdbSummery").val();
+            summeryGrid(Year, Month, productsFKID,DMName, Type);
+
+        }
+        else if ($('input:radio[name=rdbPSO]')[1].checked == true) {
+            var Type = $("#rdbDetail").val();
+            var PSOName = $("#lstPSOName").val();
+            detailsGrid(Year, Month, productsFKID,PSOName, Type);
+               
+
+        }
+
+    });
+    function Today(Type) {
+
+        var today = new Date();
+        var dd = today.getDate();
+        var mm = today.getMonth() + 1; //January is 0!
+        var yyyy = today.getFullYear();
+
+        if (dd < 10) {
+            dd = '0' + dd
+        }
+
+        if (mm < 10) {
+            mm = '0' + mm
+        }
+
+        today = dd + '/' + mm + '/' + yyyy;
+        if (Type == "S") {
+            $("#tabStatus").html("<tr ><td><font size='4'>Summery:-PotentialYieldReport OF <b>" + '@Session["Emp_Name"]' + "</b> As On <b>" + today + "</b></font></td></tr>")
+        }
+        else {
+
+            $("#tabStatus").html("<tr ><td><font size='4'>Details:-PotentialYieldReport OF <b>" + '@Session["Emp_Name"]' + "</b> As On <b>" + today + "</b></font></td></tr>")
+
+
+        }
+
+    }
+    function summeryGrid(Year, Month, productsFKID, DMName, Type) {
+        $('#ajaxGrid').jqGrid('GridUnload');
+        var test = "";
+        Today(Type);
+        jQuery("#ajaxGrid").jqGrid({
+            url: '@Url.Action("GridPotentialYieldForRBMS")?Products=' + productsFKID + '&Year=' + Year + '&Month=' + Month + '&Type=' + Type + '&DMName=' + DMName,
+
+            datatype: "json",
+            jsonReader: { repeatitems: false, id: "Element" },
+            colNames: ['ProductName', 'Potential', 'Yield'],
+            colModel: [
+
+            { name: 'ProductName', index: 'ProductName', align: 'left' },
+            { name: 'Potential', index: 'Potential', align: 'left' },
+            { name: 'Yield', index: 'Yield', align: 'left' },
+
+            ],
+            autowidth: true,
+            gridview: true,
+            caption: 'PotentialYieldForRBMSummery',
+            align: 'center',
+            sortable: true,
+            hidegrid: true,
+            altRows: true,
+            sortname: 'ProductName',
+            sortorder: 'asc',
+            rowTotal: 10,
+            rowNum: 10,
+            gridComplete: function () {
+
+                if (jQuery("#ajaxGrid").getGridParam("records") == 0) {
+
+                    jQuery("#ajaxGrid").addRowData(
+                    "blankRow", { "Potential": "No records to view" });
+                }
+            },
+            viewrecords: true,
+            pager: $('#ajaxGridPager'),
+            height: 'auto',
+
+
+
+        });
+        jQuery("#ajaxGrid").jqGrid('navGrid', '#ajaxGridPager', { edit: false, add: false, del: false, search: false, view: false },
+        {
+
+
+        });
+        setMethodForSummery('ajaxGrid', 'ajaxGridPager', 'Customer Grid', Year, Month, productsFKID, DMName, Type);
+    }
+    function setMethodForSummery(gid, id, pgTitle, Year, Month, productsFKID, DMName, Type) {
+
+        var btnTitle = 'Export to Excel';
+        $('#' + gid).jqGrid('navSeparatorAdd', '#' + id, { sepclass: "ui-separator" });
+        $('#' + gid).jqGrid('navButtonAdd', '#' + id, { caption: '', title: btnTitle, position: 'last', buttonicon: 'ui-icon-calculator', onClickButton: function () { ExcelExportSummery(Year, Month, productsFKID, DMName, Type); } });
+
+        var btnTitle = 'Export to PDF';
+        $('#' + gid).jqGrid('navSeparatorAdd', '#' + id, { sepclass: "ui-separator" });
+        $('#' + gid).jqGrid('navButtonAdd', '#' + id, { caption: '', title: btnTitle, position: 'last', buttonicon: 'ui-icon-bookmark', onClickButton: function () { PDFExportSummery(Year, Month, productsFKID, DMName, Type); } });
+
+        var btnTitle = 'Print Grid';
+        $('#' + gid).jqGrid('navSeparatorAdd', '#' + id, { sepclass: "ui-separator" });
+        $('#' + gid).jqGrid('navButtonAdd', '#' + id, { caption: '', title: btnTitle, position: 'last', buttonicon: 'ui-icon-print', onClickButton: function () { PrintGridSummery(gid); } });
+    }
+    function ExcelExportSummery(Year, Month, productsFKID, DMName, Type) {
+        window.location = '@Url.Action("ExportPotentialYieldForDMSToExcel")?Products=' + productsFKID + '&Year=' + Year + '&Month=' + Month + '&Type=' + Type + '&PSOName=' + DMName+'&Flag='+2;
+    }
+    function PDFExportSummery(Year, Month, productsFKID, DMName, Type) {
+        window.location = '@Url.Action("ExportPotentialYieldForDMSToPDF")?Products=' + productsFKID + '&Year=' + Year + '&Month=' + Month + '&Type=' + Type + '&PSOName=' + DMName + '&Flag=' + 2;
+    }
+
+    function PrintGridSummery(gid) {
+
+
+        var rows = $('#ajaxGrid').jqGrid('getRowData');
+        for (var i = 0; i < rows.length; i++) {
+            var row = rows[i];
+            $('#Table2').append("<tr><td>" + row.ProductName + "</td><td>" + row.Potential + "</td><td>" + row.Yield + "</td></tr>");
+
+        }
+        $(function () { printChromeSummery('prt-containerSummery') });
+
+
+    }
+
+    function printChromeSummery(divContainer) {
+
+        var printContent = document.getElementById(divContainer);
+        window.document.body.innerHTML = printContent.innerHTML;
+        window.print();
+        window.location.reload();
+    }
+    function detailsGrid(Year, Month, productsFKID, PSOName, Type) {
+        $('#ajaxGrid').jqGrid('GridUnload');
+        var test = "";
+        Today(Type);
+        jQuery("#ajaxGrid").jqGrid({
+            url: '@Url.Action("GridPotentialYieldForRBMDDetails")?Products=' + productsFKID + '&Year=' + Year + '&Month=' + Month + '&Type=' + Type + '&PSOName=' + PSOName,
+
+            datatype: "json",
+            jsonReader: { repeatitems: false, id: "Element" },
+            colNames: ['DrName', 'segment', 'ProductName', 'TerCode', 'TerName', 'DistrictCode', 'DistrictName', 'RegionCode', 'RegionName', 'Potential', 'Yield'],
+            colModel: [
+
+            { name: 'DoctorName', index: 'DoctorName', align: 'left' },
+            { name: 'segment', index: 'segment', align: 'left' },
+            { name: 'ProductName', index: 'ProductName', align: 'left' },
+            { name: 'TerCode', index: 'TerCode', align: 'left' },
+            { name: 'TerName', index: 'TerName', align: 'left' },
+            { name: 'DistrictCode', index: 'DistrictCode', align: 'left' },
+            { name: 'DistrictName', index: 'DistrictName', align: 'left' },
+            { name: 'RegionCode', index: 'RegionCode', align: 'left' },
+            { name: 'RegionName', index: 'RegionName', align: 'left' },
+            { name: 'Potential', index: 'Potential', align: 'left' },
+            { name: 'Yield', index: 'Yield', align: 'left' }
+            ],
+            autowidth: true,
+            gridview: true,
+            caption: 'PotentialYieldForRBMDDetails',
+            align: 'center',
+            sortable: true,
+            hidegrid: true,
+            altRows: true,
+            sortname: 'DoctorName',
+            sortorder: 'asc',
+            rowTotal: 10,
+            rowNum: 10,
+            gridComplete: function () {
+
+                if (jQuery("#ajaxGrid").getGridParam("records") == 0) {
+
+                    jQuery("#ajaxGrid").addRowData(
+                    "blankRow", { "ProductName": "No records to view" });
+                }
+            },
+            viewrecords: true,
+            pager: $('#ajaxGridPager'),
+            height: 'auto',
+
+
+
+        });
+        jQuery("#ajaxGrid").jqGrid('navGrid', '#ajaxGridPager', { edit: false, add: false, del: false, search: false, view: false },
+        {
+
+
+        });
+        setMethodForDetails('ajaxGrid', 'ajaxGridPager', 'Customer Grid', Year, Month, productsFKID, PSOName, Type);
+
+    }
+    function setMethodForDetails(gid, id, pgTitle, Year, Month, productsFKID, PSOName, Type) {
+
+        var btnTitle = 'Export to Excel';
+        $('#' + gid).jqGrid('navSeparatorAdd', '#' + id, { sepclass: "ui-separator" });
+        $('#' + gid).jqGrid('navButtonAdd', '#' + id, { caption: '', title: btnTitle, position: 'last', buttonicon: 'ui-icon-calculator', onClickButton: function () { ExcelExportDetails(Year, Month, productsFKID, PSOName, Type); } });
+
+        var btnTitle = 'Export to PDF';
+        $('#' + gid).jqGrid('navSeparatorAdd', '#' + id, { sepclass: "ui-separator" });
+        $('#' + gid).jqGrid('navButtonAdd', '#' + id, { caption: '', title: btnTitle, position: 'last', buttonicon: 'ui-icon-bookmark', onClickButton: function () { PDFExportDetails(Year, Month, productsFKID, PSOName, Type); } });
+
+        var btnTitle = 'Print Grid';
+        $('#' + gid).jqGrid('navSeparatorAdd', '#' + id, { sepclass: "ui-separator" });
+        $('#' + gid).jqGrid('navButtonAdd', '#' + id, { caption: '', title: btnTitle, position: 'last', buttonicon: 'ui-icon-print', onClickButton: function () { PrintGridDetails(gid); } });
+    }
+    function ExcelExportDetails(Year, Month, productsFKID, PSOName, Type) {
+        window.location = '@Url.Action("ExportPotentialYieldForPSODToExcel")?Name=' + productsFKID + '&Year=' + Year + '&Month=' + Month + '&Type=' + Type + '&PSOName=' + PSOName + '&Flag=' + 3;
+    }
+    function PDFExportDetails(Year, Month, productsFKID, PSOName, Type) {
+        window.location = '@Url.Action("ExportPotentialYieldForPSODToPDF")?Name=' + productsFKID + '&Year=' + Year + '&Month=' + Month + '&Type=' + Type + '&PSOName=' + PSOName + '&Flag=' + 3;
+    }
+
+    function PrintGridDetails(gid) {
+
+
+        var rows = $('#ajaxGrid').jqGrid('getRowData');
+        for (var i = 0; i < rows.length; i++) {
+            var row = rows[i];
+            $('#Table1').append("<tr><td>" + row.DoctorName + "</td><td>" + row.segment + "</td><td>" + row.ProductName + "</td><td>" + row.TerCode + "</td><td>" + row.TerName + "</td><td>" + row.DistrictCode + "</td><td>" + row.DistrictName + "</td><td>" + row.RegionCode + "</td><td>" + row.RegionName + "</td><td>" + row.Potential + "</td><td>" + row.Yield + "</td></tr>");
+        }
+        $(function () { printChromeDetails('prt-containerDetails') });
+
+
+    }
+
+    function printChromeDetails(divContainer) {
+
+        var printContent = document.getElementById(divContainer);
+        window.document.body.innerHTML = printContent.innerHTML;
+        window.print();
+
+        window.location.reload();
+
+    }
+
+    $(document).ready(function () {
+
+        $('#lstPSOName').attr('disabled', 'disabled');
+        $('#lstProductsName').empty();
+        $('#lstPSOName').empty();
+        $('#lstDMName').empty();
+        $('#lstPSOName').append("<option value='0'>Select</option>");
+        $.getJSON('@Url.Action("JsonLoadlstProducts")', function (data) {
+            $('#lstProductsName').append("<option value='0'>SelectAll</option>")
+            for (var i = 0; i < data.countyCount; i++) {
+
+                $('#lstProductsName').append("<option  value='" + data.countyItems[i].Value.split("-")[0] + "'>" + data.countyItems[i].Text + "</option>");
+            }
+
+        });
+        $.getJSON('@Url.Action("JsonLoadlstDM")', function (data) {
+            $('#lstDMName').append("<option value='0'>SelectAll</option>")
+            for (var i = 0; i < data.countyCount; i++) {
+
+                $('#lstDMName').append("<option  value='" + data.countyItems[i].Value.split("-")[0] + "'>" + data.countyItems[i].Text + "</option>");
+            }
+
+        });
+        LoadYear();
+        LoadMonth();
+        @*$.ajax({
+            type: 'POST',
+            url: '@Url.Action("LoadSelectPSOYear")',
+            success: function (data) {
+
+                $.ajax({
+                    type: 'POST',
+                    url: '@Url.Action("LoadSelectPSOMonth")',
+                    success: function (data1) {
+                        $('#drpSelectYear').html(data);
+                        $('#drpSelectMonth').html(data1);
+                    }
+                });
+            }
+        });*@
+
+        $("#lstDMName").change(function () {
+            $("#lstPSOName").empty();
+            $('#lstPSOName').append("<option value='0'>Select</option>");
+
+            $.getJSON('@Url.Action("JsonLoadPSONameByDM")?DMName=' + $("#lstDMName").val(), function (data) {
+
+                for (var i = 0; i < data.countyCount; i++) {
+                    $('#lstPSOName').append("<option value='" + data.countyItems[i].Value + "'>" + data.countyItems[i].Text + "</option>");
+                }
+               
+            });
+
+        });
+
+    });
+    </script>
+    <div id='prt-containerSummery' style="display:none">
+              <table id="Table2" border="1" width="100%">
+                  <thead>
+                      <tr>
+                          <td><b>ProductName</b></td>
+                          <td><b>Potential</b></td>
+                          <td><b>Yield</b></td>
+
+                      </tr>
+
+                  </thead>
+                  <tbody></tbody>
+
+              </table>
+          </div>
+          <div id='prt-containerDetails' style="display:none">
+              <table id="Table1" border="1" width="100%">
+                  <thead>
+                      <tr>
+                          <td><b>DoctorName</b></td>
+                          <td><b>segment</b></td>
+                          <td><b>ProductName</b></td>
+                          <td><b>TerCode</b></td>
+                          <td><b>TerName</b></td>
+                          <td><b>DistrictCode</b></td>
+                          <td><b>DistrictName</b></td>
+                          <td><b>RegionCode</b></td>
+                          <td><b>RegionName</b></td>
+                          <td><b>Potential</b></td>
+                          <td><b>Yield</b></td>
+
+                      </tr>
+
+                  </thead>
+                  <tbody></tbody>
+
+              </table>
+          </div>

@@ -1,0 +1,441 @@
+﻿@{
+    ViewBag.Title = "ReminderReportPSO";
+    Layout = "~/Views/Shared/MasterLayout.cshtml";
+}
+
+<body>
+
+    @using (Html.BeginForm(FormMethod.Post))
+    {
+
+         <div class="man_field">* Mandatory Field</div><label id="lblError" name="lblError" style=" color:red"> </label>
+        <div>
+            <table width="100%" border="1" cellspacing="0" cellpadding="0" align="left" class="inner_tb">
+                <tr>
+                    <th colspan="10">Reminder Plan Vs Actual Report - PSO</th>
+                </tr>
+                <tr>
+                    <td width="50%" valign="top" class="tb-r1">
+                        <table border="0" width="100%" class="inner_tb">
+                            <tbody>
+                                <tr>
+                                    <td class="tb-r1">Product Name<span class="star">*</span></td>
+                                    <td class="tb-r1">
+                                        @Html.DropDownList("drpSelectProductName", new[]{
+
+                                            new SelectListItem { Text="Select", Value="0"} })
+
+                                    </td>
+                                </tr>
+
+
+                            </tbody>
+                        </table>
+                    </td>
+                    <td valign="top" class="tb-r1">
+                        <table class="inner_tb">
+                            <tbody>
+                                <tr>
+                                    <td class="tb-r1">Year<span class="star">*</span></td>
+                                    <td class="tb-r1">
+                                        &nbsp;&nbsp;&nbsp;
+
+                                        @Html.DropDownList("drpSelectYear", new[]{
+
+                                            new SelectListItem { Text="Select", Value="0"} })
+
+
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </td>
+                </tr>
+
+                <tr>
+                    <td width="50%" valign="top" class="tb-r1">
+                        <table border="0" width="100%" class="inner_tb">
+                            <tbody>
+                                <tr>
+                                    <td class="tb-r1">Cycle</td>
+                                    <td style="margin-left:100px;" class="tb-r1">
+                                        @Html.DropDownList("drpSelectCycle", new[]{
+
+                                            new SelectListItem { Text="Select", Value="0"} })
+
+                                    </td>
+                                </tr>
+
+
+                            </tbody>
+                        </table>
+                    </td>
+                    <td valign="top" class="tb-r1">
+                        <table class="inner_tb">
+                            <tbody>
+                                <tr>
+                                    <td class="tb-r1">Month</td>
+                                    <td class="tb-r1">
+                                        &nbsp;&nbsp;&nbsp;
+                                        @Html.DropDownList("drpSelectMonth", new[]{
+
+                                            new SelectListItem { Text="Select", Value="0"} })
+
+
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </td>
+                </tr>
+
+                <tr>
+                    <td class="tb-r1">
+                        <table class="inner_tb">
+                            <tr>
+                                <td class="tb-r1">Speciality<span class="star">*</span></td>
+                                <td class="tb-r1">
+                                    &nbsp;&nbsp;&nbsp;
+                                    @Html.ListBox("lstGetSpeciality", new[]{
+
+                                            new SelectListItem { Text="", Value=""} }, new { @class = "listboxRpt" })
+                                </td>
+                            </tr>
+                        </table>
+                    </td>
+                    <td align="center" class="tb-r1">
+                        <input class="blue_button add_btn" type="button" width="5%" id="btnFetch" value="Fetch">
+                    </td>
+                </tr>
+            </table>
+        </div>
+
+        <div>
+            <table border="0" style="width: 100%">
+                <tr>
+                    <td>
+                        <!--JqGrid Starts-->
+                        <table style="margin-top: 7px; width :100%" border="0">
+                            <tr><td align="center"><span style="font-weight:bold"><label id="lblmsg" style="color:black" /></span></td></tr>
+                            <tr>
+                                <td>
+                                    <table id="RRPSOGrid" style="width: 100%" border="0"></table>
+                                    <div id="RRPSOGridPager">
+                                    </div>
+                                </td>
+                            </tr>
+                        </table>
+                        <!--Ends-->
+                    </td>
+                </tr>
+            </table>
+        </div>
+
+        <script type="text/javascript">
+
+            $('#lstGetSpeciality').change(function () {
+
+                if ($('#lstGetSpeciality').val() == 0) {
+                    $("#lstGetSpeciality option").prop("selected", true);
+                    $("#lstGetSpeciality option:first").removeAttr('selected');
+
+                }
+            });
+            function initGrid(UserFkid, ProductName, Year, Cycle, Month, Speciality) {
+
+                $('#RRPSOGrid').jqGrid('GridUnload');
+
+                jQuery("#RRPSOGrid").jqGrid({
+                    url: '@Url.Action("JsPostRRReportPSO")?strUserFkid=' + UserFkid + '&strProductName=' + ProductName + '&strYear=' + Year + '&strCycle=' + Cycle + '&strMonth=' + Month + '&strSpeciality=' + Speciality,
+                    datatype: "json",
+                    jsonReader: { repeatitems: false },
+                    colNames: ['Doctor Name', 'Speciality', 'Plan', 'Actual', 'Plan', 'Actual', 'Plan', 'Actual', 'Plan', 'Actual', 'Plan', 'Actual', 'Plan', 'Actual'],
+                    colModel: [
+                         { name: 'DrName', index: 'DrName', align: 'left' },
+                         { name: 'Specialization', index: 'Specialization', align: 'left' },
+
+                          //D1
+                         { name: 'P1', index: 'P1', align: 'left' },
+                         { name: 'A1', index: 'A1', align: 'left' },
+
+                           //D2
+                         { name: 'P2', index: 'P2', align: 'left' },
+                         { name: 'A2', index: 'A2', align: 'left' },
+
+                           //D3
+                         { name: 'P3', index: 'P3', align: 'left' },
+                         { name: 'A3', index: 'A3', align: 'left' },
+
+                           //D4
+                         { name: 'P4', index: 'P4', align: 'left' },
+                         { name: 'A4', index: 'A4', align: 'left' },
+
+                            //R1
+                         { name: 'R1', index: 'R1', align: 'left' },
+                         { name: 'AR1', index: 'RA1', align: 'left' },
+
+                           //R2
+                         { name: 'R2', index: 'R2', align: 'left' },
+                         { name: 'AR2', index: 'RA2', align: 'left' },
+
+
+                    ],
+                    autowidth: true,
+                    gridview: true,
+                    caption: 'Reminder Report PSO',
+                    jqModal: true,
+                    align: 'center',
+                    sortable: true,
+                    hidegrid: true,
+                    altRows: true,
+                    rowTotal: 10,
+                    rowNum: 10,
+                    gridComplete: function () {
+
+                        if (jQuery("#RRPSOGrid").getGridParam("records") == 0) {
+                            jQuery("#RRPSOGrid").addRowData(
+                            "blankRow", { "DrName": "No records to view" });
+                        }
+                    },
+
+                    viewrecords: true,
+                    pager: $('#RRPSOGridPager'),
+                    height: 'auto',
+                    editable: true,
+                });
+
+                jQuery("#RRPSOGrid").jqGrid('setGroupHeaders', {
+                    useColSpanStyle: true,
+                    groupHeaders: [
+                      { startColumnName: 'P1', numberOfColumns: 2, titleText: '<center>D1</center>' },
+                      { startColumnName: 'P2', numberOfColumns: 2, titleText: '<center>D2</center>' },
+                      { startColumnName: 'P3', numberOfColumns: 2, titleText: '<center>D3</center>' },
+                      { startColumnName: 'P4', numberOfColumns: 2, titleText: '<center>D4</center>' },
+                      { startColumnName: 'R1', numberOfColumns: 2, titleText: '<center>R1</center>' },
+                      { startColumnName: 'R2', numberOfColumns: 2, titleText: '<center>R2</center>' },
+                    ]
+                });
+
+                jQuery("#RRPSOGrid").jqGrid('navGrid', '#RRPSOGridPager', { edit: false, add: false, del: false, search: false, view: false }),
+               
+                setMethod('RRPSOGrid', 'RRPSOGridPager', 'Reminder Report PSO', UserFkid, ProductName, Year, Cycle, Month, Speciality);
+            }
+
+            function setMethod(gid, id, pgTitle, UserFkid, ProductName, Year, Cycle, Month, Speciality) {
+
+                var btnTitle = 'Export to Excel';
+                $('#' + gid).jqGrid('navSeparatorAdd', '#' + id, { sepclass: "ui-separator" });
+                $('#' + gid).jqGrid('navButtonAdd', '#' + id, { caption: '', title: btnTitle, position: 'last', buttonicon: 'ui-icon-calculator', onClickButton: function () { ExcelExport(UserFkid, ProductName, Year, Cycle, Month, Speciality); } });
+
+                var btnTitle = 'Export to PDF';
+                $('#' + gid).jqGrid('navSeparatorAdd', '#' + id, { sepclass: "ui-separator" });
+                $('#' + gid).jqGrid('navButtonAdd', '#' + id, { caption: '', title: btnTitle, position: 'last', buttonicon: 'ui-icon-bookmark', onClickButton: function () { PDFExport(UserFkid, ProductName, Year, Cycle, Month, Speciality); } });
+
+                var btnTitle = 'Print Grid';
+                $('#' + gid).jqGrid('navSeparatorAdd', '#' + id, { sepclass: "ui-separator" });
+                $('#' + gid).jqGrid('navButtonAdd', '#' + id, { caption: '', title: btnTitle, position: 'last', buttonicon: 'ui-icon-print', onClickButton: function () { PrintGrid(gid); } });
+            }
+            function ExcelExport(UserFkid, ProductName, Year, Cycle, Month, Speciality) {                
+                window.location = '@Url.Action("ExportSRRReportPSOToExcel")?strUserFkid=' + UserFkid + '&strProductName=' + ProductName + '&strYear=' + Year + '&strCycle=' + Cycle + '&strMonth=' + Month + '&strSpeciality=' + Speciality;
+            }
+            function PDFExport(UserFkid, ProductName, Year, Cycle, Month, Speciality) {
+                window.location = '@Url.Action("ExportRRReportPSOToPDF")?strUserFkid=' + UserFkid + '&strProductName=' + ProductName + '&strYear=' + Year + '&strCycle=' + Cycle + '&strMonth=' + Month + '&strSpeciality=' + Speciality;
+            }
+
+            function PrintGrid(gid) {
+               
+                // empty the print div container.
+                var rows = $('#RRPSOGrid').jqGrid('getRowData');
+                for (var i = 0; i < rows.length; i++) {
+                    var row = rows[i];
+                    $('#Table1').append("<tr><td>" + row.DrName + "</td><td>" + row.Specialization + "</td><td>" + row.P1 + "</td><td>" + row.A1 + "</td><td>" + row.P2 + "</td><td>" + row.A2 + "</td><td>" + row.P3 + "</td><td>" + row.A3 + "</td><td>" + row.P4 + "</td><td>" + row.A4 + "</td><td>" + row.R1 + "</td><td>" + row.AR1 + "</td><td>" + row.R2 + "</td><td>" + row.AR2 + "</td></tr>");
+
+                }
+                $(function () { printChrome('prt-container') });
+
+            }
+
+            function printChrome(divContainer) {
+
+                var printContent = document.getElementById(divContainer);
+                window.document.body.innerHTML = printContent.innerHTML;
+                window.print();
+                window.location.reload();
+            }
+
+
+
+            $('#btnFetch').click(function () {
+
+                //alert($('#drpSelectCycle').val());
+                //alert($('#drpSelectMonth').val());
+
+                $('label[id*="lblError"]').text('');
+                $('#drpSelectProductName').css("border", "1px solid #D5D5D5");
+                $('#drpSelectYear').css("background-color", "#FFE8E8").css("border", "1px solid #D5D5D5");
+                $("#lstGetSpeciality").css("background-color", "#FFE8E8").css("border", "1px solid #D5D5D5");
+
+                var error = " ";
+                if ($('#drpSelectProductName').val() == "0") {
+                    error = "Select Product Name";
+                    $('#FormError').html("<td class='ui-state-error' colspan='12'>" + error + ":Field is required</td>");
+                    $('#drpSelectProductName').focus();
+                    $('#drpSelectProductName').css("background-color", "#FFE8E8").css("border", "1px solid #FF6666");
+                    return [false, response.responseText];
+                }
+                else if ($("#drpSelectYear :selected").text() == "Select") {
+                    error = "Select Product Name";
+                    $('#FormError').html("<td class='ui-state-error' colspan='12'>" + error + ":Field is required</td>");
+                    $('#drpSelectYear').focus();
+                    $('#drpSelectYear').css("background-color", "#FFE8E8").css("border", "1px solid #FF6666");
+                    return [false, response.responseText];
+                }
+                else if ($('#lstGetSpeciality').val() == "0" || $('#lstGetSpeciality').val() == null) {
+                    error += "Selected UserName";
+                    $('#FormError').html("<td class='ui-state-error' colspan='12'>" + error + ":Field is required</td>");
+                    $('#lstGetSpeciality').focus();
+                    $("#lstGetSpeciality").css("background-color", "#FFE8E8").css("border", "1px solid #FF6666");
+                    return [false, response.responseText];
+                }
+
+                else if ($('#drpSelectCycle').val() != "0" && $('#drpSelectMonth').val() != "0") {
+                    //error += "Please select either Cycle or Month";
+                    $('[id$=lblError]').text("Please select either Cycle or Month");
+                    $('#FormError').html("<td class='ui-state-error' colspan='12'>" + error + ":Field is required</td>");
+                    //$('#lstGetSpeciality').focus();
+                    //$("#lstGetSpeciality").css("background-color", "#FFE8E8").css("border", "1px solid #FF6666");
+                    return [false, response.responseText];
+                }
+
+
+                var ProductName = $('#drpSelectProductName').val();
+
+                var Year = $("#drpSelectYear :selected").text();
+
+                var Cycle = $('#drpSelectCycle').val();
+
+                var Month = $('#drpSelectMonth').val();
+
+                var Speciality = $('#lstGetSpeciality').val();
+
+                var UserFkid = '@Session["USER_FKID"]';              
+
+                var d = new Date();
+                var today1 = d.getDate() + "/" + (d.getMonth() + 1) + "/" + d.getFullYear();
+
+
+                $.getJSON('@Url.Action("JsonLoadHeader")?strUserFkid=' + UserFkid + '&strProductName=' + ProductName + '&strYear=' + Year + '&strCycle=' + Cycle + '&strMonth=' + Month, function (data) {
+
+                    lblmsg.textContent = "Reminder Report Summary of " + data.uName + " , Product Name : " + data.pName + " as on " + today1 + " ( " + data.sDate + " To " + data.eDate + " ) "
+
+                });
+
+
+                initGrid(UserFkid, ProductName, Year, Cycle, Month, Speciality);
+
+            });
+
+
+            $("#drpSelectYear").change(function () {
+
+                $("#drpSelectCycle").empty();
+                $('#drpSelectCycle').append("<option value='0'>All</option>");
+                $.getJSON('@Url.Action("JsonLoadSelectedCycle")?SelectedYear=' + $("#drpSelectYear :selected").text(), function (data) {
+
+                    for (var i = 0; i < data.countyCount; i++) {
+                        $('#drpSelectCycle').append("<option  value='" + data.countyItems[i].Value + "'>" + data.countyItems[i].Text + "</option>");
+                    }
+
+                });
+
+            });
+
+            function LoadYear() {
+                var today = new Date(); // Initialize Date in raw form
+                var Currentyear = today.getFullYear(); // Get the year
+                var CurrentDate = today.getDate();
+                //Year binding into year ComboBox
+                var cPreviousYear = today.getFullYear() - 6;
+
+                var cNextYear = today.getFullYear() + 3;
+                var iSelected = 0;
+                for (var iCount = cPreviousYear; iCount < cNextYear; iCount++) {
+
+                    document.getElementById("drpSelectYear").options.add(new Option(iCount, "0"))
+                    //if (document.getElementById("drpSelectYear").options[iSelected].innerText == Currentyear) {
+                    //    document.getElementById("drpSelectYear").selectedIndex = iSelected;
+                    //}
+                    iSelected++;
+                }
+            }
+
+
+            $(document).ready(function () {
+
+                LoadYear();
+
+
+
+                $("#drpSelectProductName").empty();
+                $("#lstGetSpeciality").empty();
+                $('#drpSelectProductName').append("<option selected='selected' value='0'>Select</option>");
+                $('#lstGetSpeciality').append("<option  value='0'>All</option>");
+
+                $.getJSON('@Url.Action("JsonLoadPSOProductName")', function (data) {
+
+                    for (var i = 0; i < data.countyCount; i++) {
+                        $('#drpSelectProductName').append("<option  value='" + data.countyItems[i].Value + "'>" + data.countyItems[i].Text + "</option>");
+                    }
+
+                });
+
+                $.getJSON('@Url.Action("JsonLoadSpeciality")', function (data) {
+
+                    for (var i = 0; i < data.countyCount; i++) {
+                        $('#lstGetSpeciality').append("<option value='" + data.countyItems[i].Value + "'>" + data.countyItems[i].Text + "</option>");
+                    }
+
+                });
+
+
+                $.getJSON('@Url.Action("JsonLoadMonth")', function (data) {
+
+                    for (var i = 0; i < data.countyCount; i++) {
+                        $('#drpSelectMonth').append("<option value='" + data.countyItems[i].Value + "'>" + data.countyItems[i].Text + "</option>");
+                    }
+
+                });
+
+            });
+
+        </script>
+
+        //'Doctor Name', 'Speciality', 'Plan', 'Actual', 'Plan', 'Actual', 'Plan', 'Actual', 'Plan', 'Actual', 'Plan', 'Actual', 'Plan', 'Actual'
+
+        <div id='prt-container' style="display:none">
+            <table id="Table1" border="1" width="100%">
+                <thead>                    
+                    <tr><td></td><td></td><td colspan="2" align="center"><b>D1</b></td><td colspan="2" align="center"><b>D2</b></td><td colspan="2" align="center"><b>D3</b></td><td colspan="2" align="center"><b>D4</b></td><td colspan="2" align="center"><b>R1</b></td><td colspan="2" align="center"><b>R2</b></td></tr>
+                    <tr>
+                        <td align="center"><b>Doctor Name</b></td>
+                        <td align="center"><b>Speciality</b></td>
+                        <td align="center"><b>Plan</b></td>
+                        <td align="center"><b>Actual</b></td>
+                        <td align="center"><b>Plan</b></td>
+                        <td align="center"><b>Actual</b></td>
+                        <td align="center"><b>Plan</b></td>
+                        <td align="center"><b>Actual</b></td>
+                        <td align="center"><b>Plan</b></td>
+                        <td align="center"><b>Actual</b></td>
+                        <td align="center"><b>Plan</b></td>
+                        <td align="center"><b>Actual</b></td>
+                        <td align="center"><b>Plan</b></td>
+                        <td align="center"><b>Actual</b></td>
+                    </tr>
+                </thead>
+                <tbody></tbody>
+            </table>
+        </div>
+
+    }
+</body>

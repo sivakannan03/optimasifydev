@@ -1,0 +1,261 @@
+﻿@{
+    ViewBag.Title = "SampleAcknowledgementReportforAdmin";
+    Layout = "~/Views/Shared/MasterLayout.cshtml";
+}
+
+@using (Html.BeginForm(FormMethod.Post))
+{
+
+    <div class="inner_tbldiv" style="margin-top:0px">
+        <div class="man_field">* Mandatory Field</div><label id="lblError" name="lblError" style=" color:red"> </label>
+        <table width="100%" border="0" cellspacing="0" cellpadding="0" align="left" class="inner_tb">
+            <tr>
+                <th colspan="7">Filter On </th>
+            </tr>
+
+            <tr>
+                <td width="15%" class="tb-r1">Allocation Date :<span class="star">*</span> </td>
+                <td width="10%" class="tb-r1">From Date<span class="star">*</span></td>
+                <td width="20%" class="tb-r1">
+                    <input type="text" class="tbox" id="txtFrmdate" name="txtFromdate" value="" readonly onclick="$(function () { $('#txtFrmdate').datepicker({ changeMonth: true, changeYear: true, yearRange: '1900:myDate', dateFormat: 'dd/mm/yy', maxDate: 0 ,});});" />
+
+                </td>
+                <td class="tb-r1" width="10%">To Date<span class="star">*</span></td>
+                <td class="tb-r1" width="25%">
+                    &nbsp;  <input type="text" class="tbox" id="txtTodate" name="txtTodate" value="" readonly onclick="$(function () { $('#txtTodate').datepicker({ changeMonth: true, changeYear: true, yearRange: '1900:myDate', dateFormat: 'dd/mm/yy', maxDate: 0 }); });" />
+
+                </td>
+                <td  width="25%" class="tb-r1">
+                    <table class="inner_tb">
+                        <tr><td class="tb-r1"><input type="radio" name="FetchDate" value="1" checked="checked">  Pending Acknowledgement</td></tr>
+                        <tr><td class="tb-r1"><input type="radio" name="FetchDate" value="2">  All Allocations</td></tr>
+                    </table>
+                </td>
+                <td width="15%" class="tb-r1"><input class="blue_button add_btn" type="button" width="5%" id="btnGo" value="GO"></td>
+            </tr>
+        </table>
+
+
+    </div>
+
+    <div>
+        <table border="0" style="width: 100%">
+            <tr>
+                <td>
+                    <!--JqGrid Starts-->
+                    <table style="margin-top: 7px; width :100%" border="0">
+                        <tr>
+                            <td>
+                                <table id="SampleAckAdminGrid" style="width: 100%" border="0"></table>
+                                <div id="SampleAckAdminGridPager">
+                                </div>
+                            </td>
+                        </tr>
+                    </table>
+                    <!--Ends-->
+                </td>
+            </tr>
+        </table>
+    </div>
+
+    <script type="text/javascript">
+
+        $('#btnGo').click(function () {
+
+            //alert($("#lblError").val());
+
+            $('label[id*="lblError"]').text('');
+
+            $("#txtFrmdate").css("border", "1px solid #d5d5d5");
+            $("#txtTodate").css("border", "1px solid #d5d5d5");
+
+            if ($('#txtFrmdate').val() == '') {
+                $('[id$=lblError]').text("Please Enter From Date");
+                $("#txtFrmdate").css("background-color", "#FFE8E8").css("border", "1px solid #FF6666");
+                $('#txtFrmdate').focus();
+                return false;
+            }
+            else if ($('#txtTodate').val() == '') {
+                $('[id$=lblError]').text("Please Enter Todate");
+                $("#txtTodate").css("background-color", "#FFE8E8").css("border", "1px solid #FF6666");
+                $('#txtTodate').focus();
+                return false;
+            }
+
+
+            if ($('#txtFrmdate').val() != '' && $('#txtTodate').val() != '') {
+
+
+                var date1 = $('#txtFrmdate').val().split('/')[1] + '/' + $('#txtFrmdate').val().split('/')[0] + '/' + $('#txtFrmdate').val().split('/')[2];
+                var date2 = $('#txtTodate').val().split('/')[1] + '/' + $('#txtTodate').val().split('/')[0] + '/' + $('#txtTodate').val().split('/')[2];
+                var startDate = new Date(date1);
+                var endDate = new Date(date2);
+
+                if (startDate > endDate) {
+                    $("#lblError").text('End date should be greater than Start date');
+                    $('#txtTodate').focus();
+                    $("#txtTodate").css("background-color", "#FFE8E8").css("border", "1px solid #FF6666");
+                    return false;
+                }
+            }
+
+
+            var Pending = "";
+            var All = "";
+            var From = $("#txtFrmdate").val();
+            var strFrmdate = From.split("/");
+            var FromDate = strFrmdate[1] + "/" + strFrmdate[0] + "/" + strFrmdate[2];
+            //alert(FromDate);
+            var To = $("#txtTodate").val();
+            var strTodate = To.split("/");
+            var Todate = strTodate[1] + "/" + strTodate[0] + "/" + strTodate[2];
+            //alert(Todate);
+
+
+            var Fetchdate = $('input:radio[name=FetchDate]:checked').val();
+
+            if (Fetchdate == "1") {
+                Pending = "1";
+                All = "0";
+            }
+            else {
+                All = "1";
+                Pending = "0";
+            }
+
+
+
+            @*$.getJSON('@Url.Action("JsPostSampleAcknowledgementReportforAdmin")?strFrmdate=' + FromDate + '&strTodate=' + Todate + '&strPending=' + Pending + '&strAll=' + All);*@
+
+            initGrid(FromDate, Todate, Pending, All);
+        });
+
+        $(document).ready(function () {
+
+
+            $("#txtFrmdate").datepicker({ changeMonth: true, changeYear: true, yearRange: '1900:myDate', dateFormat: 'dd/mm/yy', maxDate: 0 });
+            $("#txtTodate").datepicker({ changeMonth: true, changeYear: true, yearRange: '1900:myDate', dateFormat: 'dd/mm/yy', maxDate: 0 });
+            $("#txtFrmdate").val($.datepicker.formatDate("dd/mm/yy", new Date()));
+            $("#txtTodate").val($.datepicker.formatDate("dd/mm/yy", new Date()));
+
+
+
+
+        });
+
+
+        function initGrid(FromDate, Todate, Pending, All) {
+
+            $('#SampleAckAdminGrid').jqGrid('GridUnload');
+
+            jQuery("#SampleAckAdminGrid").jqGrid({
+                url: '@Url.Action("JsPostSampleAcknowledgementReportforAdmin")?strFrmdate=' + FromDate + '&strTodate=' + Todate + '&strPending=' + Pending + '&strAll=' + All,
+                datatype: "json",
+                jsonReader: { repeatitems: false },
+
+                colNames: ['Date', 'PSO Name', 'Territory', 'Product', 'Sample pack', 'Allocated Qty', 'Acknowledged Qty', 'Reason for Shortfall'],
+                colModel: [
+                     { name: 'SBDate', index: 'SBDate', align: 'left' },
+                      { name: 'EmpName', index: 'EmpName', align: 'left' },
+                       { name: 'TerName', index: 'TerName', align: 'left' },
+                        { name: 'productname', index: 'productname', align: 'left' },
+                         { name: 'Productpack', index: 'Productpack', align: 'left' },
+                          { name: 'AllocatedQty', index: 'AllocatedQty', align: 'left' },
+                           { name: 'AcknowledgeQty', index: 'AcknowledgeQty', align: 'left' },
+                            { name: 'ReasonForShortFall', index: 'ReasonForShortFall', align: 'left' }
+
+                ],
+                autowidth: true,
+                gridview: true,
+                caption: 'Sample Acknowledgement Report - for Admin',
+                jqModal: true,
+                align: 'center',
+                sortable: true,
+                hidegrid: true,
+                altRows: true,
+                rowTotal: 10,
+                rowNum: 10,
+                gridComplete: function () {
+
+                    if (jQuery("#SampleAckAdminGrid").getGridParam("records") == 0) {
+                        jQuery("#SampleAckAdminGrid").addRowData(
+                        "blankRow", { "EmpName": "No records to view" });
+                    }
+                },
+
+                viewrecords: true,
+                pager: $('#SampleAckAdminGridPager'),
+                height: 'auto',
+                editable: true,
+            });
+           
+            jQuery("#SampleAckAdminGrid").jqGrid('navGrid', '#SampleAckAdminGridPager', { edit: false, add: false, del: false, search: false, view: false }),
+                 
+
+            setMethod('SampleAckAdminGrid', 'SampleAckAdminGridPager', 'Sample Acknowledgement Report - for Admin', FromDate, Todate, Pending, All);
+        }
+
+        function setMethod(gid, id, pgTitle, FromDate, Todate, Pending, All) {
+
+            var btnTitle = 'Export to Excel';
+            $('#' + gid).jqGrid('navSeparatorAdd', '#' + id, { sepclass: "ui-separator" });
+            $('#' + gid).jqGrid('navButtonAdd', '#' + id, { caption: '', title: btnTitle, position: 'last', buttonicon: 'ui-icon-calculator', onClickButton: function () { ExcelExport(FromDate, Todate, Pending, All); } });
+
+            var btnTitle = 'Export to PDF';
+            $('#' + gid).jqGrid('navSeparatorAdd', '#' + id, { sepclass: "ui-separator" });
+            $('#' + gid).jqGrid('navButtonAdd', '#' + id, { caption: '', title: btnTitle, position: 'last', buttonicon: 'ui-icon-bookmark', onClickButton: function () { PDFExport(FromDate, Todate, Pending, All); } });
+            
+            var btnTitle = 'Print Grid';
+            $('#' + gid).jqGrid('navSeparatorAdd', '#' + id, { sepclass: "ui-separator" });
+            $('#' + gid).jqGrid('navButtonAdd', '#' + id, { caption: '', title: btnTitle, position: 'last', buttonicon: 'ui-icon-print', onClickButton: function () { PrintGrid(gid); } });
+        }
+        function ExcelExport(FromDate, Todate, Pending, All) {
+          
+           window.location = '@Url.Action("ExportSampleAckToExcel")?strFrmdate=' + FromDate + '&strTodate=' + Todate + '&strPending=' + Pending + '&strAll=' + All; 
+             
+        }
+        function PDFExport(FromDate, Todate, Pending, All) {
+            window.location = '@Url.Action("ExportSampleAckToPDF")?strFrmdate=' + FromDate + '&strTodate=' + Todate + '&strPending=' + Pending + '&strAll=' + All; 
+        }
+       
+        function PrintGrid(gid) {
+
+            // empty the print div container.
+            var rows = $('#SampleAckAdminGrid').jqGrid('getRowData');
+            for (var i = 0; i < rows.length; i++) {
+                var row = rows[i];
+                $('#Table1').append("<tr><td>" + row.SBDate + "</td><td>" + row.EmpName + "</td><td>" + row.TerName + "</td><td>" + row.productname + "</td><td>" + row.Productpack + "</td><td>" + row.AllocatedQty + "</td><td>" + row.AcknowledgeQty + "</td><td>" + row.ReasonForShortFall + "</td></tr>");
+
+            }
+            $(function () { printChrome('prt-container') });
+
+        }
+
+        function printChrome(divContainer) {
+
+            var printContent = document.getElementById(divContainer);
+            window.document.body.innerHTML = printContent.innerHTML;
+            window.print();
+            window.location.reload();
+        }
+
+    </script>
+    
+     <div id='prt-container' style="display:none">
+        <table id="Table1" border="1" width="100%">
+            <thead>
+                <tr>                   
+                    <td><b>Date</b></td>
+                    <td><b>PSO Name</b></td>
+                    <td><b>Territory</b></td>
+                    <td><b>Product</b></td>
+                    <td><b>Sample pack</b></td>
+                    <td><b>Allocated Qty</b></td>
+                    <td><b>Acknowledged Qty</b></td>
+                    <td><b>Reason for Shortfall</b></td>
+                </tr>
+            </thead>
+            <tbody></tbody>
+        </table>
+    </div>
+}

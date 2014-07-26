@@ -79,15 +79,19 @@
                  
                    {
                        name: 'DateofBegining', index: 'DateofBegining', align: 'left', editable: true, hidden: false, editrules: { edithidden: true, required: false }, search: false, formatter: "date",
-                       formatoptions: { dateFormat: "d/m/yy" }, edittype: 'text',
+                       edittype: 'text',
                         editoptions: {
                            size: 10, maxlengh: 10,
                            dataInit: function (element) {
                                $(element).datepicker({
-                                   dateFormat: 'dd/mm/yy',
-                                   changeMonth: true,
-                               changeYear: true
+                                   changeMonth: true, changeYear: true, yearRange: '1900:myDate', dateFormat: 'dd/mm/yy', maxDate: 0
                                })
+
+                               //$(element).datepicker({
+                               //    dateFormat: 'dd/mm/yy',
+                               //    changeMonth: true,
+                               //changeYear: true
+                               //})
                            }
                        },formoptions: {elmprefix: "<span style='align:left;color:red'>*</span>&nbsp;", rowpos: 3, colpos: 1 },
                    },

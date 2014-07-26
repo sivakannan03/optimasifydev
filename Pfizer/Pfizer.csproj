@@ -39,7 +39,10 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="App_Data\PfizerBL.cs" />
+    <Compile Include="App_Data\PfizerDAL.cs" />
     <Compile Include="Controllers\AdminSettingController.cs" />
+    <Compile Include="Controllers\AuditTrialController.cs" />
     <Compile Include="Controllers\ContentController.cs" />
     <Compile Include="Controllers\GeneralMasterController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
@@ -48,6 +51,8 @@
     <Compile Include="Controllers\ManageUsersController.cs" />
     <Compile Include="Controllers\MastersController.cs" />
     <Compile Include="Controllers\OtherMastersController.cs" />
+    <Compile Include="Controllers\ReportController.cs" />
+    <Compile Include="Controllers\TransactionsController.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
@@ -61,6 +66,7 @@
     <Content Include="Content\css\flipcountdown.css" />
     <Content Include="Content\css\reset.css" />
     <Content Include="Content\css\style.css" />
+    <Content Include="Content\custom.js\DSAR.js" />
     <Content Include="Content\custom.js\Validation.js" />
     <Content Include="Content\dashboard.html" />
     <Content Include="Content\Grid\css\jquery-ui-1.9.2.custom.css" />
@@ -168,6 +174,7 @@
     <Content Include="Content\Popup\jquery-ui.css" />
     <Content Include="Global.asax" />
     <Content Include="maintenance.html" />
+    <Content Include="Views\Report\ExcelDownload.aspx" />
     <Content Include="Web.config" />
     <Content Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
@@ -176,26 +183,40 @@
       <DependentUpon>Web.config</DependentUpon>
     </Content>
     <Content Include="Views\Web.config" />
-    <None Include="_bin_deployableAssemblies\x86\sqlcese40.dll" />
-    <None Include="_bin_deployableAssemblies\x86\sqlceqp40.dll" />
-    <None Include="_bin_deployableAssemblies\x86\sqlceme40.dll" />
-    <None Include="_bin_deployableAssemblies\x86\sqlceer40EN.dll" />
-    <None Include="_bin_deployableAssemblies\x86\sqlcecompact40.dll" />
-    <None Include="_bin_deployableAssemblies\x86\sqlceca40.dll" />
-    <None Include="_bin_deployableAssemblies\x86\Microsoft.VC90.CRT\README_ENU.txt" />
-    <None Include="_bin_deployableAssemblies\x86\Microsoft.VC90.CRT\msvcr90.dll" />
-    <None Include="_bin_deployableAssemblies\amd64\sqlcese40.dll" />
-    <None Include="_bin_deployableAssemblies\amd64\sqlceqp40.dll" />
-    <None Include="_bin_deployableAssemblies\amd64\sqlceme40.dll" />
-    <None Include="_bin_deployableAssemblies\amd64\sqlceer40EN.dll" />
-    <None Include="_bin_deployableAssemblies\amd64\sqlcecompact40.dll" />
-    <None Include="_bin_deployableAssemblies\amd64\sqlceca40.dll" />
-    <None Include="_bin_deployableAssemblies\amd64\Microsoft.VC90.CRT\README_ENU.txt" />
-    <None Include="_bin_deployableAssemblies\amd64\Microsoft.VC90.CRT\msvcr90.dll" />
-    <None Include="_bin_deployableAssemblies\x86\Microsoft.VC90.CRT\Microsoft.VC90.CRT.manifest" />
+    <Content Include="XSL\CallVolumesReport.xsl" />
+    <Content Include="XSL\ChemistHistorySummeryReoport.xsl" />
+    <Content Include="XSL\CycleplanCoverageRptDM_PSO.xsl" />
+    <Content Include="XSL\CycleplanCoverageRptNation_PSO.xsl" />
+    <Content Include="XSL\CycleplanCoverageRptPsoWise.xsl" />
+    <Content Include="XSL\CycleplanCoverageRptRBM_PSO.xsl" />
+    <Content Include="XSL\CycleplanCoverageRpt_PSO.xsl" />
+    <Content Include="XSL\CyclePlanDetails.xsl" />
+    <Content Include="XSL\DailyReportAtAGlanceforPSO.xsl" />
+    <Content Include="XSL\DailyReportAtAGlanceForRBM.xsl" />
+    <Content Include="XSL\DailyReportatDlanceRGDisp.xsl" />
+    <Content Include="XSL\DailyReportatDlanceRGDispFTM.xsl" />
+    <Content Include="XSL\DailyReportatDlanceRGDispRBM.xsl" />
+    <Content Include="XSL\HistorySummeryReoport.xsl" />
+    <Content Include="XSL\InputStatusReportforPSO.xsl" />
+    <Content Include="XSL\InputStatusRptDM.xsl" />
+    <Content Include="XSL\InputStatusRptDMPsoWise.xsl" />
+    <Content Include="XSL\InputStatusRptPSORec.xsl" />
+    <Content Include="XSL\LeaveReportApproved.xsl" />
+    <Content Include="XSL\LeaveReportPending.xsl" />
+    <Content Include="XSL\LeaveReportRejected.xsl" />
+    <Content Include="XSL\PagingTemplate.xsl" />
+    <Content Include="XSL\PrescriptionTrackerReport.xsl" />
+    <Content Include="XSL\PsoWiseReportSubmission.xsl" />
+    <Content Include="XSL\SampleStatusReportforPSO.xsl" />
+    <Content Include="XSL\SampleStatusRptDMPsoWise.xsl" />
+    <Content Include="XSL\SampleStatusRptPSODisbursed.xsl" />
+    <Content Include="XSL\SampleStatusRptPSORec.xsl" />
+    <Content Include="XSL\SampleStatusRptRBM.xsl" />
+    <Content Include="XSL\SampleStatusRptRBM_DMwise.xsl" />
+    <Content Include="XSL\SampleStatusRptRBM_PsoWise.xsl" />
+    <Content Include="XSL\SpecialtyProductLinkMasterNew.xsl" />
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="App_Data\" />
     <Folder Include="PDF\" />
   </ItemGroup>
   <ItemGroup>
@@ -262,9 +283,6 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="Views\Shared\ErrorLayout.cshtml" />
-  </ItemGroup>
-  <ItemGroup>
-    <Content Include="Views\AdminSetting\RelocateMenu.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Views\TemplateView.cshtml" />
@@ -350,9 +368,6 @@
     <Content Include="Views\ManageProducts\SampleAcknowledgement.cshtml" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="Views\ManageProducts\ProductMaster.cshtml" />
-  </ItemGroup>
-  <ItemGroup>
     <Content Include="Views\Masters\CFSAMaster.cshtml" />
     <Content Include="Views\Masters\ChemistMasterAdmin.cshtml" />
   </ItemGroup>
@@ -427,7 +442,6 @@
     <Content Include="Views\ManageUsers\PVUserTeamLink.cshtml" />
     <Content Include="Views\ManageUsers\RoleMaster.cshtml" />
     <Content Include="Views\ManageUsers\RoleTypeMaster.cshtml" />
-    <Content Include="Views\ManageUsers\SalesHierarchy.cshtml" />
     <Content Include="Views\ManageUsers\Teammaster.cshtml" />
     <Content Include="Views\ManageUsers\UserTeamLink.cshtml" />
   </ItemGroup>
@@ -445,14 +459,123 @@
     <Content Include="Views\ManageUsers\PVUserTeam.cshtml" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\PfizerEntity\PfizerEntity.csproj">
-      <Project>{d7c47dcf-cfa1-4497-ba68-6719a54df34c}</Project>
-      <Name>PfizerEntity</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\SifyGrid\SifyGrid.csproj">
-      <Project>{8b02f544-c4d0-4120-834e-3df5087514da}</Project>
-      <Name>SifyGrid</Name>
-    </ProjectReference>
+    <Content Include="Views\Report\NewCustomerReportPSO.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Views\Report\DailyReportAtGlanceforManagerNew.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Views\Masters\DoctorTransferCopy.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Views\Masters\ChemistTransferCopy.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Views\Report\DailyReportAtGlanceNew.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Views\Report\InputStatusReportforPSO.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Views\Report\CycleplanCoverageRptPSO.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Views\Report\DailyRptatGlanceRegularVisit.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Views\Report\CallVolumesReport.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Views\Report\InputStatusReportforDM.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Views\AdminSetting\DefaultUserQuestionLinkMaster.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Views\Report\CFSAPSOReport.cshtml" />
+    <Content Include="Views\Report\CustomerMetNotMet.cshtml" />
+    <Content Include="Views\Report\UsageReport.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Views\AuditTrial\AuditTrial.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Views\Masters\ChemistMaster.cshtml" />
+    <Content Include="Views\Masters\PVChemistMasterAdmin.cshtml" />
+    <Content Include="Views\Masters\PVForLoadFCCityNameForChemist.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Views\Masters\CFSA.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Views\Report\CyclePlan.cshtml" />
+    <Content Include="Views\Report\CycleplanCoverageRptDM.cshtml" />
+    <Content Include="Views\Report\CyclePlanCoverageRptNation.cshtml" />
+    <Content Include="Views\Report\CycleplanCoverageRptRBM.cshtml" />
+    <Content Include="Views\Report\LeaveReport.cshtml" />
+    <Content Include="Views\Report\ReminderReportPSO.cshtml" />
+    <Content Include="Views\Report\ReportSubmission.cshtml" />
+    <Content Include="Views\Report\SampleAcknowledgementReportforAdmin.cshtml" />
+    <Content Include="Views\Report\SummeryReportDM.cshtml" />
+    <Content Include="Views\Report\SummeryReportPSO.cshtml" />
+    <Content Include="Views\Report\SummeryReportRBM.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Views\Report\HistoryReportSummery.cshtml" />
+    <Content Include="Views\Report\PotentialYieldForDM.cshtml" />
+    <Content Include="Views\Report\PotentialyieldForPSO.cshtml" />
+    <Content Include="Views\Report\PotentialYieldForRBM.cshtml" />
+    <Content Include="Views\Report\PotentialYieldForSM.cshtml" />
+    <Content Include="Views\Report\PrescriptionTracker.cshtml" />
+    <Content Include="Views\Report\SampleStatusReportForDM.cshtml" />
+    <Content Include="Views\Report\SampleStatusReportForRBM.cshtml" />
+    <Content Include="Views\Report\Tracksheet.cshtml" />
+    <Content Include="Views\Report\TracksheetReportForDM.cshtml" />
+    <Content Include="Views\Report\TrackSheetReportForFTM.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Views\OtherMasters\PrescriptionTracker.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Views\ManageUsers\SalesHierarchy.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Views\Transactions\IncludeCustomer.cshtml" />
+    <Content Include="Views\Transactions\PVSelectSpeci.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Views\Report\ChemistPrescriptionTracker.cshtml" />
+    <Content Include="Views\Report\ChemistPrescriptionTrackerForRBM.cshtml" />
+    <Content Include="Views\Report\NewCustomerALLPSOReportByDM.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Views\Masters\CustomerDeletion.cshtml" />
+    <Content Include="Views\Masters\UnlockCyclePlan.cshtml" />
+    <Content Include="Views\Masters\UnlockCyclePlanRetailer.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Views\ManageProducts\ProductMaster.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Views\ManageProducts\PVProductMaster.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Views\Report\SamplestatusReportForPSO.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Views\AdminSetting\Reallocatemenu.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Views\Report\PSOWisePrescriptionTracker.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Views\Masters\SpecialtyMappingMaster.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Views\Transactions\DailyReport.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Views\Masters\LeaveApproval.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="EntityFramework, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
@@ -463,8 +586,7 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\packages\EntityFramework.6.1.1\lib\net45\EntityFramework.SqlServer.dll</HintPath>
     </Reference>
-    <Reference Include="EntityFramework.SqlServerCompact, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
+    <Reference Include="EntityFramework.SqlServerCompact">
       <HintPath>..\packages\EntityFramework.SqlServerCompact.6.1.1\lib\net45\EntityFramework.SqlServerCompact.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.CSharp" />
@@ -480,6 +602,7 @@
     <Reference Include="System.ComponentModel.DataAnnotations" />
     <Reference Include="System.Configuration" />
     <Reference Include="System.Data" />
+    <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="System.Data.Linq" />
     <Reference Include="System.Data.SqlServerCe, Version=4.0.0.0, Culture=neutral, PublicKeyToken=89845dcd8080cc91, processorArchitecture=MSIL">
       <Private>True</Private>
@@ -508,8 +631,7 @@
       <Private>True</Private>
       <HintPath>..\packages\Microsoft.AspNet.Mvc.4.0.30506.0\lib\net40\System.Web.Mvc.dll</HintPath>
     </Reference>
-    <Reference Include="System.Web.Mvc.Extensions, Version=1.0.9.0, Culture=neutral, PublicKeyToken=17e35335fc9f8fc8, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
+    <Reference Include="System.Web.Mvc.Extensions">
       <HintPath>..\packages\System.Web.Mvc.Extensions.Mvc.4.1.0.9\lib\net40\System.Web.Mvc.Extensions.dll</HintPath>
     </Reference>
     <Reference Include="System.Web.Razor, Version=2.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
@@ -532,7 +654,14 @@
     <Reference Include="System.Xml.Linq" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="_bin_deployableAssemblies\amd64\Microsoft.VC90.CRT\Microsoft.VC90.CRT.manifest" />
+    <ProjectReference Include="..\PfizerEntity\PfizerEntity.csproj">
+      <Project>{d7c47dcf-cfa1-4497-ba68-6719a54df34c}</Project>
+      <Name>PfizerEntity</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\SifyGrid\SifyGrid.csproj">
+      <Project>{8b02f544-c4d0-4120-834e-3df5087514da}</Project>
+      <Name>SifyGrid</Name>
+    </ProjectReference>
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>

@@ -1,0 +1,249 @@
+﻿@{
+    ViewBag.Title = "LeaveApproval";
+    Layout = "~/Views/Shared/MasterLayout.cshtml";
+}
+
+<body>
+    @using (Html.BeginForm(FormMethod.Post))
+    {
+        <div>
+            <table border="0" style="width: 100%">
+                <tr>
+                    <td colspan="9" align="center">
+                        <div style="text-align:center;">
+                            <label id="lblSuccessfully" style=" color:red"></label>
+                        </div>
+                    </td>
+
+                </tr>
+                <tr>
+                    <td>
+                        <!--JqGrid Starts-->
+                        <table style="margin-top: 7px; width :100%" border="0">
+                            <tr>
+                                <td>
+                                    <table id="ajaxLeaveApproval" style="width: 100%" border="0"></table>
+                                    <div id="ajaxLeaveApprovalPager">
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td align="center" style="padding-top:20px; ">
+                                    <table>
+                                        <tr>
+                                            <td style="padding-right:10px;">
+                                                <input type="button" class="blue_button" id="bntSubmit" title="Submit" value="Submit" />
+                                            </td>
+                                            <td>
+                                                <input type="button" class="orange_button" id="bntCancel" title="Cancel" value="Cancel" />
+                                            </td>
+
+                                        </tr>
+                                    </table>
+                                </td>
+
+                            </tr>
+                        </table>
+                        <!--Ends-->
+                    </td>
+                </tr>
+            </table>
+        </div>
+        <div class="inner_tbldiv" id="DivReason" style="display: none; margin-top:10px !important;">
+            <table border="0" style="width: 600px">
+                <tr id="tr_Reason">
+                    <td class="tb-r1"> </td>
+                </tr>
+
+            </table>
+        </div>
+        // <div id="DivAppRej" style="display:none;"></div>
+        <div id="openDiv" style="display:none;"></div>
+
+
+    }
+</body>
+<script type="text/javascript">
+    function DisplayError(type) {
+        alert(type);
+        $("#openDiv").css('display', 'block');
+        if (type == 'notselect')
+            $('#openDiv').html('Please Select atleast one row');
+        else if(type=='NoRejectApproval')
+            $('#openDiv').html('Please Select atleast one Reason for Approval or Rejected');
+        else
+            $('#openDiv').html('Under Construction');
+
+        $('#openDiv').dialog({
+            title: 'Alert Message',
+            height: 78,
+            width: 308,
+            show: { effect: 'drop', direction: "up" },
+            modal: true,
+            open: function (event, ui) {
+            },
+
+        });
+
+    }
+
+    $("#bntSubmit").click(function () {
+        jQuery('#ajaxLeaveApproval').jqGrid('saveRow', lastsel);
+        var gridData = jQuery("#ajaxLeaveApproval").getRowData();
+        var postData = JSON.stringify(gridData);
+        alert(postData)
+         $.ajax({
+            url: '@Url.Action("LeaveApprovalDetails")',
+            type: 'POST',
+            dataType: 'json',
+            data: { gridData: postData },
+            success: function (result) {
+                if (result.msg == "notselect") {
+                    DisplayError(result.msg);
+                }
+                else if (result.msg == 'NoRejectApproval')
+                {
+                    DisplayError(result.msg);
+                }
+                else {
+                    $("#lblSuccessfully").text(result.msg);
+                    $("#ajaxLeaveApproval").setGridParam({ datatype: 'json', page: 1 }).trigger('reloadGrid');
+                    return true;
+                }
+
+            }
+        });
+    });
+
+    $("#bntCancel").click(function () {
+        LeaveApproval();
+    });
+    jQuery(document).ready(function () {
+        LeaveApproval();
+    });
+
+    function RasonProfile(UserPKID) {
+        $.ajax({
+            type: 'POST',
+            url: '@Url.Action("GetLeaveReasonGrid")?Reason=' + UserPKID,
+            success: function (rec) {
+                $('#tr_Reason').html(rec);
+
+            }
+        });
+
+        $('#DivReason').dialog({
+            title: 'Leave Reason',
+            width: 300,
+            height: 100,
+            show: { effect: 'drop', direction: "up" },
+            modal: true,
+            open: function (event, ui) {
+
+            },
+
+        });
+
+    }
+
+    var lastsel;
+    function LeaveApproval() {
+        $("#ajaxLeaveApproval").jqGrid("GridUnload");
+        jQuery("#ajaxLeaveApproval").jqGrid({
+            url: '@Url.Action("GridDataLeaveApproval")',
+            datatype: "json",
+            jsonReader: { repeatitems: false, id: "PKID" },
+            colNames: ['PKID', 'Name', 'Location', 'Req.Date', 'LeaveType', 'From Date', 'To Date', 'Balance', 'OnProcess', 'Reason', 'Approved', 'Rejected', 'Comments / Reason'],
+            colModel: [
+                                 { name: 'PKID', index: 'PKID', align: 'left', hidden: true },
+                                 { name: 'UserName', index: 'UserName', align: 'left', formoptions: { size: 35 } },
+                                 { name: 'CityName', index: 'CityName', align: 'left', formoptions: { size: 35 } },
+                                 { name: 'CreatedDate', index: 'CreatedDate', align: 'left', formoptions: { size: 35 } },
+                                 { name: 'GenName', index: 'GenName', align: 'left', formoptions: { size: 35 } },
+                                 { name: 'FromDate', index: 'FromDate', align: 'left', formoptions: { size: 35 } },
+                                 { name: 'ToDate', index: 'ToDate', align: 'left', formoptions: { size: 35 } },
+                                 { name: 'LeaveBalance', index: 'LeaveBalance', align: 'left', formoptions: { size: 35 } },
+                                 { name: 'OnProcess', index: 'OnProcess', align: 'left', formoptions: { size: 35 } },
+                                 { name: 'Res', index: 'Res', align: 'center', formoptions: { size: 35 },hidden:false, formatter: 'showlink' },
+                                 {
+                                     name: 'Approved', index: 'Approved', width: 50, align: "center", editable: true,
+                                     edittype: "checkbox", editoptions: { value: "A:No" }, formatter: "checkbox", formatoptions: { disabled: false }
+                                 },
+                                  {
+                                      name: 'Rejected', index: 'Rejected', width: 50, align: "center", editable: true,
+                                      edittype: "checkbox", editoptions: { value: "R:No" }, formatter: "checkbox", formatoptions: { disabled: false }
+                                  },
+                                 {
+                                     name: 'Comments', index: 'Comments', align: 'left', editable: true, edittype: 'text', sortable: true, sorttype: 'text',
+                                     editoptions: { maxlength: 100, dataEvents: [{ type: 'keyup', fn: function (e) { SingleCharacter(this); } }] },
+                                     sorttype: function (value) { return value; }
+                                 }, ],
+
+            caption: "Leave Approval",
+            autowidth: true,
+            gridview: true,
+            hidegrid: true,
+            altRows: true,
+            sortname: 'PKID',
+            sortorder: 'asc',
+            rowTotal: 10,
+            rowNum: 10,
+            viewrecords: true,
+            pager: $('#ajaxLeaveApprovalPager'),
+            height: 'auto',
+
+            onSelectRow: function (id, selected) {
+                //var ch = jQuery(this).find('#' + id + ' input[type=checkbox]').attr('checked');
+                //if (ch) {
+                //    jQuery(this).find('#' + id + ' input[type=checkbox]').attr('checked', false);
+                //}
+                //else {
+                //    jQuery(this).find('#' + id + ' input[type=checkbox]').attr('checked', true);
+                //}
+                //rowChecked = 1;
+                //currentrow = id;
+               
+                if (!$("input[type=checkbox]").is(':checked') && !$("#chks").is(':checked')) {
+                    jQuery('#ajaxLeaveApproval').jqGrid('saveRow', id);
+
+                }
+                else {
+                    jQuery("#ajaxLeaveApproval").jqGrid('editRow', id);
+                }
+
+                if (id != lastsel) {
+                    jQuery('#ajaxLeaveApproval').saveRow(lastsel);
+                    lastsel = id;
+                }
+
+                jQuery('#ajaxLeaveApproval').editRow(id, true);
+
+            },
+            loadComplete: function () {
+                var ids = $('#ajaxLeaveApproval').jqGrid('getDataIDs');
+                var UserPKID = "", Res = "";
+                if (jQuery("#ajaxLeaveApproval").getGridParam("records") == 0) {
+                    jQuery("#ajaxLeaveApproval").addRowData(
+                    "blankRow", { "UserName": "No records to view" });
+                }
+
+                for (var i = 0; i < ids.length; i++)
+                {
+                    UserPKID = jQuery('#ajaxLeaveApproval').jqGrid('getCell', ids[i], 0);
+                    Res = jQuery('#ajaxLeaveApproval').jqGrid('getCell', ids[i], 9);
+                                     
+                    popUp = "<a onclick=\"javascript:RasonProfile('" + UserPKID + "');\"  style=\"color:#2f72c3;font-weight:bold;cursor:pointer\">" + Res + "</a>";
+                    jQuery("#ajaxLeaveApproval").jqGrid('setRowData', ids[i], { Res: popUp });
+
+                  
+
+                }
+            },
+          editable: true
+       });
+
+    }
+
+    
+</script>
+

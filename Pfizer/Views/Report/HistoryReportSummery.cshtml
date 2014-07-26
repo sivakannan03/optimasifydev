@@ -1,0 +1,204 @@
+﻿@{
+    ViewBag.Title = "HistoryReportSummery";
+    Layout = "~/Views/Shared/MasterLayout.cshtml";
+}
+
+<h2>HistoryReportSummery</h2>
+
+
+<body>
+
+    @using (Html.BeginForm(FormMethod.Post))
+    {
+        <div>
+            <table width="100%" border="0" cellspacing="0" class="inner_tb" cellpadding="0" align="left">
+                <tr>
+                    <th colspan="8" style="margin-top: 10px; background-color: #00AADA; color: white;height:20px;">FilterOn</th>
+                </tr>
+                <tr>
+                    <td width="30%" valign="middle" class="tb-r2">
+                        <table border="0" width="100%" class="inner_tb">
+                            <tbody>
+                                <tr>
+                                    <td class="tb-r2">PSONAME<span style="color:red">*</span></td>
+                                    <td class="tb-r2">
+                                        &nbsp;&nbsp;&nbsp;
+                                        @Html.DropDownList("drpSelectPSOName", new[]{
+
+                                            new SelectListItem { Text="Select", Value="0"} })
+
+                                    </td>
+                                    <td class="tb-r2">Year<span style="color:red">*</span></td>
+                                    <td class="tb-r2">
+                                        &nbsp;&nbsp;&nbsp;
+                                        @Html.DropDownList("drpSelectYear", new[]{
+
+                                            new SelectListItem { Text="Select", Value="0"} })
+
+                                    </td>
+
+                                </tr>
+                                <tr>
+                                    <td class="tb-r2">Month<span style="color:red">*</span></td>
+                                    <td class="tb-r2">
+                                        &nbsp;&nbsp;&nbsp;
+                                        @Html.DropDownList("drpSelectMonth", new[]{
+
+                                            new SelectListItem { Text="Select", Value="0"} })
+
+                                    </td>
+                                    <td class="tb-r2">CustomerType<span style="color:red">*</span></td>
+                                    <td class="tb-r2">
+                                        &nbsp;&nbsp;&nbsp;
+                                        <select id="drpCType">
+                                            <option value="2" selected>Doctor</option>
+                                            <option value="3">Chemist</option>
+                                        </select>
+                                    </td>
+                                    <td class="tb-r2"><input class="blue_button add_btn" type="button" width="5%" id="btnSubmit" value="GO"></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </td>
+                </tr>
+            </table>
+        </div>
+        <div id="testDiv">
+             &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+             <table id="tabStatus" style="margin-top: 30px; width :100%" border="0">
+                
+                 <tr>
+                     <td></td>
+                 </tr>
+             </table>
+            <table border="0" style="width: 100%">
+                <tr>
+                    <td>
+                        <!--JqGrid Starts-->
+                        <table style="margin-top: 40px; width :100%" border="0">
+                            <tr>
+                                <td>
+                                    <table id="ajaxGrid" style="width: 100%" border="0"></table>
+                                    <div id="ajaxGridPager">
+                                    </div>
+                                </td>
+                            </tr>
+                        </table>
+                        <!--Ends-->
+                    </td>
+                </tr>
+            </table>
+        </div>
+    <div id="DivReport">
+
+
+
+    </div>
+       
+    }
+</body>
+
+<script type="text/javascript">
+    function Today() {
+
+        var today = new Date();
+        var dd = today.getDate();
+        var mm = today.getMonth() + 1; //January is 0!
+        var yyyy = today.getFullYear();
+
+        if (dd < 10) {
+            dd = '0' + dd
+        }
+
+        if (mm < 10) {
+            mm = '0' + mm
+        }
+
+        today = dd + '/' + mm + '/' + yyyy;
+
+        return today;
+
+    }
+    $(document).ready(function () {
+
+
+        $.getJSON('@Url.Action("JsonLoadSelectPSOName")', function (data) {
+
+                for (var i = 0; i < data.countyCount; i++) {
+
+                    $('#drpSelectPSOName').append("<option value='" + data.countyItems[i].Value + "'>" + data.countyItems[i].Text + "</option>");
+                }
+
+
+            });
+
+        $.ajax({
+            type: 'POST',
+            url: '@Url.Action("LoadSelectPSOYear")',
+            success: function (data) {
+
+                $.ajax({
+                    type: 'POST',
+                    url: '@Url.Action("LoadSelectPSOMonth")',
+                    success: function (data1) {
+                        $('#drpSelectYear').html(data);
+                        $('#drpSelectMonth').html(data1);
+
+                    }
+                });
+
+            }
+        });
+
+
+    });
+    function DownloadExcel() {
+        var win = window.open('@Url.Action("ExcelDownload")?fileName=' + 'HistoryReportSummeryForDoctor', 'showwin', 'width=550,height=400,top=0,left=0,toolbar=yes,location=no,directories=no,status=no,menubar=no,scrollbars=yes,resizeable=yes');
+
+        return false;
+    }
+    $("#btnSubmit").click(function () {
+        $("#drpSelectPSOName").css("background-color", "white").css("border", "2px solid #C0C0C0");
+        $("#drpSelectYear").css("background-color", "white").css("border", "2px solid #C0C0C0");
+        $("#drpSelectMonth").css("background-color", "white").css("border", "2px solid #C0C0C0");
+        if ($("#drpSelectPSOName").val() == 0 || $("#drpSelectYear").val() == 0||$("#drpSelectMonth").val() == 0) {
+           
+            if ($("#drpSelectPSOName").val() == 0)
+                $("#drpSelectPSOName").css("background-color", "#FFE8E8").css("border", "2px solid #FF6666");
+            else if ($("#drpSelectYear").val() == 0)
+                $("#drpSelectYear").css("background-color", "#FFE8E8").css("border", "2px solid #FF6666");
+            else if ($("#drpSelectMonth").val() == 0)
+                $("#drpSelectMonth").css("background-color", "#FFE8E8").css("border", "2px solid #FF6666");
+
+
+        }
+        else {
+
+            var PSO = $("#drpSelectPSOName").val();
+            var YEAR = $("#drpSelectYear").val();
+            var Month = $("#drpSelectMonth").val();
+            var CType = $("#drpCType").val();
+            $.getJSON('@Url.Action("JsontestForHistoryRS")?PSO=' + PSO + '&YEAR=' + YEAR + '&Month=' + Month, '&CType=' + CType,
+           function (data) {
+               
+               
+               $('#DivReport').dialog({
+                   height: 350,
+                   width: 780,
+                   title: 'History Report Summery Of '+ $("#drpSelectPSOName option:selected").text()+' As On'+Today(),
+                   show: { effect: 'drop', direction: "up" },
+                   modal: true,
+                   open: function (event, ui) {
+                      
+                       $('#DivReport').html(data.rslt);
+                   },
+
+               });
+
+           });
+           
+        }
+               
+    });
+    
+    </script>

@@ -87,7 +87,7 @@
             gridview: true,
             caption: 'Question Master',
             jqModal: true,
-            rownumbers: true,
+            //rownumbers: true,
             rowTotal: 10,
             rowNum: 10,
             align: 'center',
@@ -224,7 +224,7 @@
                     var errorId = " ";
                     if (response.responseText == "\"QuestionMaster added successfully\"") {
                         errorId += "QuestionMaster added successfully";
-                        $('#FormError').html("<td class='ui-state-error' colspan='2'>" + errorId + "</td>");
+                        //$('#FormError').html("<td class='ui-state-error' colspan='2'>" + errorId + "</td>");
                         $('#TblGrid_QuestionGrid td.ui-state-error').removeClass('ui-state-error').addClass('ui-state-highlight');
                         $("#Question").val('');
                         $("#IsActive").prop("checked", false);

@@ -26,8 +26,10 @@ namespace Pfizer.Controllers
         public ActionResult Index()
         {
             return View();
-        } 
+        }
 
+        //Product Master .
+        #region Nagarajan
         //Product Master .
 
         public ActionResult ProductMaster()
@@ -43,7 +45,7 @@ namespace Pfizer.Controllers
                 var searchOper = gridQueryModel.searchOper;
                 var searchField = gridQueryModel.searchField;
 
-                var query = (from a in genData.USP_GET_PRODUCTMASTER()  select a).ToList();
+                var query = (from a in genData.USP_GET_PRODUCTMASTER() select a).ToList();
                 var count = query.Count();
                 var pageData = query.OrderBy(x => x.ProductName).Skip((gridQueryModel.page - 1) * gridQueryModel.rows).Take(gridQueryModel.rows);
 
@@ -53,7 +55,7 @@ namespace Pfizer.Controllers
                     {
                         if (searchOper == "bw")//begins with
                         {
-                            var q = (from sq in query where sq.ProductName!=null && sq.ProductName.ToUpper().StartsWith(searchString, StringComparison.CurrentCultureIgnoreCase) select sq).ToList();
+                            var q = (from sq in query where sq.ProductName != null && sq.ProductName.ToUpper().StartsWith(searchString, StringComparison.CurrentCultureIgnoreCase) select sq).ToList();
                             count = q.Count();
                             pageData = q.OrderBy(x => x.ProductName).Skip((gridQueryModel.page - 1) * gridQueryModel.rows).Take(gridQueryModel.rows);
                         }
@@ -65,13 +67,13 @@ namespace Pfizer.Controllers
                         }
                         else if (searchOper == "ew") // ends with
                         {
-                            var q = (from sq in query where sq.ProductName != null && sq.ProductName.ToUpper().EndsWith(searchString, StringComparison.CurrentCultureIgnoreCase)select sq).ToList();
+                            var q = (from sq in query where sq.ProductName != null && sq.ProductName.ToUpper().EndsWith(searchString, StringComparison.CurrentCultureIgnoreCase) select sq).ToList();
                             count = q.Count();
                             pageData = q.OrderBy(x => x.ProductName).Skip((gridQueryModel.page - 1) * gridQueryModel.rows).Take(gridQueryModel.rows);
                         }
                         else if (searchOper == "cn")//contains
                         {
-                            var q = (from sq in query where sq.ProductName != null && sq.ProductName.ToUpper().Contains(searchString)select sq).ToList();
+                            var q = (from sq in query where sq.ProductName != null && sq.ProductName.ToUpper().Contains(searchString) select sq).ToList();
                             count = q.Count();
                             pageData = q.OrderBy(x => x.ProductName).Skip((gridQueryModel.page - 1) * gridQueryModel.rows).Take(gridQueryModel.rows);
                         }
@@ -128,69 +130,151 @@ namespace Pfizer.Controllers
             }
         }
 
-        public JsonResult EditProductMaster(string id, string oper, string RegionCode, string RegionName, string IsActive)
+        public string ReturnProdMgeXml(string ProductManager)
         {
+
+            string[] arrayUser = ProductManager.Split(',');
+            string xml = "<root>";
+            for (int i = 0; i < arrayUser.Count(); i++)
+            {
+                xml += "<CompBrand";
+                xml += " ManagerFKID='" + arrayUser[i] + "'";
+                xml += "/>";
+            }
+            xml += "</root>";
+            return xml;
+        }
+
+        public string ReturnsXmlTeam(string Team)
+        {
+
+            string[] arrayUser = Team.Split(',');
+            string xml = "<root>";
+            for (int i = 0; i < arrayUser.Count(); i++)
+            {
+                xml += "<CompBrand";
+                xml += " TeamFKID='" + arrayUser[i] + "'";
+                xml += "/>";
+            }
+            xml += "</root>";
+            return xml;
+        }
+        public string ProductPackXml(string ProductPackDetails)
+        {
+            string Xml = "";
+            string[] ProductpackDetails1 = ProductPackDetails.Split('|');
+            Xml = "<Root>";
+            for (int i = 0; i < ProductpackDetails1.Length - 1; i++)
+            {
+                string[] temp = ProductpackDetails1[i].Split(',');
+
+                Xml += "<ProductPack ";
+                Xml += " ProdSamFKID='" + temp[0] + "'";
+                Xml += " Productpack='" + temp[1] + "'";
+                Xml += " FormFKID='" + temp[2] + "'";
+                Xml += " IBISCode='" + temp[3] + "'";
+                Xml += " SampleFlag='" + temp[4] + "'";
+                Xml += " NonSampleFlag='" + temp[5] + "'";
+                Xml += "/>";
+
+
+            }
+            Xml += "</Root>";
+            return Xml;
+        }
+        public JsonResult ProductMasRetriverRecords(string Pkid)
+        {
+            dynamic query = (from a in genData.GetProductPackDetails(Convert.ToDecimal(Pkid)) select a).ToList();
+            return Json(query);
+
+        }
+        public JsonResult AddProductMaster(string ProductGroup, string ProductCode, string ProductName, string NodeType, string IMSCode, string ProductManager, string Team, string IsKDP, string METISProductName, string ProductPackDetails)
+        {
+            string msg = "";
+            string xmlProductManager = "";
+            string xmlTeam = "";
+            string ProdXml = "";
+            decimal CreatedBy;
+            string Metisprod;
+            try
+            {
+                xmlProductManager = ReturnProdMgeXml(ProductManager);
+                xmlTeam = ReturnsXmlTeam(Team);
+                ProdXml = ProductPackXml(ProductPackDetails);
+                CreatedBy = Convert.ToDecimal(Session["USER_FKID"] == null ? "0" : Session["USER_FKID"].ToString());
+                Metisprod = (METISProductName == null || METISProductName == "") ? "0" : METISProductName;
+                genData.AddProductmaster(ProductCode, ProductName, Convert.ToDecimal(ProductGroup), Convert.ToDecimal(NodeType), Convert.ToDecimal(Metisprod), IMSCode, Convert.ToInt32(IsKDP), xmlProductManager, xmlTeam, ProdXml, Convert.ToInt32(CreatedBy));
+              
+                    msg = "Product Master added Successfully.";
+              
+              
+
+                return Json(msg);
+            }
+
+            catch (Exception ex)
+            {
+                 return Json("Product Master already Exists");
+              //  return Json(new { error = ex.Message });
+
+            }
+        }
+
+     
+        //Edit Control
+        public JsonResult EditProductMaster1(string id, string oper, string ProductGroup, string ProductCode, string ProductName, string NodeType, string IMSCode, string ProductManager, string Team, string IsKDP, string METISProductName, string ProductPackDetails, string Status)
+        {
+            string msg ="";
+            string xmlProductManager = "";
+            string xmlTeam = "";
+            string ProdXml = "";
+            decimal CreatedBy;
+            string Metisprod;
+            int Statusfid;
             try
             {
                 if (oper == "edit")
                 {
-
-                    int ePKID = Convert.ToInt32(id);
-                    var qry = (from a in genData.RegionMasters where a.PKID == ePKID select a).Single();
-                    qry.RegionCode = RegionCode;
-                    qry.RegionName = RegionName;
-
-                    if (IsActive == "Active")
-                        qry.IsActive = true;
-
-                    if (IsActive == "Passive")
-                        qry.IsActive = false;
-
-                    qry.ModifiedDate = DateTime.Now;
-                    qry.ModifiedBy = Convert.ToDecimal(Session["USER_FKID"] == null ? "0" : Session["USER_FKID"].ToString());
-
-                    genData.SaveChanges();
-
-                    id = "Region Master modified Successfully.";
-
-                }
-                if (oper == "add")
-                {
-
-                    var rslt = (from a in genData.RegionMasters where a.RegionName == RegionName select a).ToList();
-                    if (rslt.Count() > 0)
-                        id = "Region Name already Exists";
+                    if (Status == "Active")
+                    {
+                        Statusfid = 1;
+                    }
                     else
                     {
-
-                        RegionMaster gm = new RegionMaster();
-                        gm.RegionCode = RegionCode;
-                        gm.RegionName = RegionName;
-
-                        if (IsActive == "Passive")
-                            gm.IsActive = false;
-                        if (IsActive == "Active")
-                            gm.IsActive = true;
-
-                        gm.CreatedDate = DateTime.Now;
-                        gm.CreatedBy = Convert.ToDecimal(Session["USER_FKID"] == null ? "0" : Session["USER_FKID"].ToString());
-                        genData.RegionMasters.Add(gm);
-                        genData.SaveChanges();
-                        id = "Region Master added Successfully.";
+                        Statusfid = 0;
                     }
-                }
-                if (oper == "del")
-                {
-                    var quote = Convert.ToInt32(id);
-                    var delete_quote = (from a in genData.RegionMasters where a.PKID == quote select a).Single();
-                    delete_quote.IsActive = false;
-                    genData.SaveChanges();
-                    id = "Region Master deleted Successfully.";
-                }
+                    xmlProductManager = ReturnProdMgeXml(ProductManager);
+                    xmlTeam = ReturnsXmlTeam(Team);
+                    ProdXml = ProductPackXml(ProductPackDetails);
+                    CreatedBy = Convert.ToDecimal(Session["USER_FKID"] == null ? "0" : Session["USER_FKID"].ToString());
+                    Metisprod = Convert.ToDecimal((METISProductName == null || METISProductName == "") ? "0" : METISProductName).ToString();
 
-                return Json(id);
+           
+                   
+                     genData.EditProductmaster(ProductCode, ProductName, Convert.ToDecimal(ProductGroup), Convert.ToDecimal(NodeType), Convert.ToDecimal(Metisprod), IMSCode, Convert.ToInt32(IsKDP), xmlProductManager, xmlTeam, ProdXml, Convert.ToInt32(CreatedBy), Statusfid, Convert.ToDecimal(id));
+                     msg = "Product Master modified Successfully.";
+                }
+                 return Json(msg);
             }
-            catch(Exception ex)
+            catch (Exception ex)
+            {
+                return Json(new { error = ex.Message });
+            }
+        }
+
+        public JsonResult EditProductMaster(string id, string oper, string ProductGroup, string ProductCode, string ProductName, string NodeType, string IMSCode, string ProductManager, string Team, string IsKDP, string METISProductName, string ProductPackDetails, string Status)
+        {
+            string msg = "";
+               try
+                {
+                    if (oper == "del")
+                    {
+                        var Result = genData.DeleteProductMaster(Convert.ToDecimal(id));
+                        msg = "Product Master deleted Successfully.";
+                    }
+                   return Json(msg);
+            }
+          catch (Exception ex)
             {
                 return Json(new { error = ex.Message });
             }
@@ -198,36 +282,244 @@ namespace Pfizer.Controllers
 
 
         //Product master Partial View on NodeTypeMaster & TeamMaster .
+
+        public ActionResult GetNodeType(string type, string data)
+        {
+            dynamic query = "";
+            dynamic edit = "";
+            ViewBag.Type = type;
+            ViewBag.Selected = 0;
+
+            query = (from a in genData.GetNodeTypeByXML() select new { a.NodeTypeFKID, a.NodeName }).ToDictionary(f => f.NodeTypeFKID, f => f.NodeName.ToString());
+            if (data != "null" && data != "")
+            {
+                var rslt = (from a in genData.GetProductByPKIDXml(Convert.ToDecimal(data)) select new { a.NodeTypeFKID }).FirstOrDefault();
+                ViewBag.Selected = rslt.NodeTypeFKID;
+
+            }
+            return PartialView("PVProductMaster", query);
+        }
+        public ActionResult GetTeamType(string type, string data)
+        {
+            dynamic query = "";
+            ViewBag.Type = type;
+
+            query = (from a in genData.GetTeamByXML() select new { a.TeamFKID, a.TeamName }).ToDictionary(f => f.TeamFKID, f => f.TeamName.ToString());
+            if (data != "null" && data != "")
+            {
+                query = (from a in genData.GetTeamforProductByXml(Convert.ToDecimal(data)) select new { a.TeamFKID, a.TeamName }).ToDictionary(f => Convert.ToDecimal(f.TeamFKID), f => f.TeamName.ToString());
+            }
+            //if (data == null || data == "null")
+            //{
+            //    query = (from a in genData.GetProductMgrByXml(0) where 1 == 2 select new { a.PKID, a.ProductManger }).ToDictionary(f => Convert.ToDecimal(f.PKID), f => f.ProductManger.ToString());
+            //    query = (from a in genData.GetTeamByXML() where 1==2 select new { a.TeamFKID, a.TeamName }).ToDictionary(f => f.TeamFKID, f => f.TeamName.ToString());
+            //    return PartialView("PVProductMaster", query);
+            //}
+            //else
+            //{
+            //    query = (from a in genData.GetTeamforProductByXml(Convert.ToDecimal(data)) select new { a.TeamFKID, a.TeamName }).ToDictionary(f => Convert.ToDecimal(f.TeamFKID), f => f.TeamName.ToString());
+
+            //}
+
+            return PartialView("PVProductMaster", query);
+
+        }
+
+        public ActionResult ProductManagerLoad(string type, string NodeTypeFKID)
+        {
+            ViewBag.Type = type;
+            dynamic query = "";
+            if (NodeTypeFKID == "undefined")
+            {
+                query = (from a in genData.GetProductMgrByXml(0) where 1 == 2 select new { a.PKID, a.ProductManger }).ToDictionary(f => Convert.ToDecimal(f.PKID), f => f.ProductManger.ToString());
+                return PartialView("PVProductMaster", query);
+            }
+            else
+            {
+                ViewBag.Type = type;
+                query = (from a in genData.GetProductMgrByXml(Convert.ToDecimal(NodeTypeFKID)) select new { a.PKID, a.ProductManger }).ToDictionary(f => Convert.ToDecimal(f.PKID), f => f.ProductManger.ToString());
+                return PartialView("PVProductMaster", query);
+            }
+
+        }
+        public ActionResult ProductManagerLoads(string type, string data)
+        {
+            dynamic query;
+            ViewBag.Type = type;
+
+            if (data == null || data == "null")
+            {
+                query = (from a in genData.GetProductMgrByXml(0) where 1 == 2 select new { a.PKID, a.ProductManger }).ToDictionary(f => Convert.ToDecimal(f.PKID), f => f.ProductManger.ToString());
+                return PartialView("PVProductMaster", query);
+            }
+            else
+            {
+                query = (from a in genData.GetProductManagerByXml(Convert.ToDecimal(data)) select new { a.PKID, a.ProductManger }).ToDictionary(f => Convert.ToDecimal(f.PKID), f => f.ProductManger.ToString());
+
+            }
+
+            return PartialView("PVProductMaster", query);
+
+
+        }
+
+        public ActionResult MetisProductLoads(string type, string data)
+        {
+            dynamic query = "";
+            ViewBag.Type = type;
+
+            query = (from e in genData.GetAllMetisProductName() select new { e.PKID, e.MPName }).ToDictionary(f => Convert.ToDecimal(f.PKID), f => f.MPName.ToString());
+
+            if (data != "null" && data != "")
+            {
+                query = (from a in genData.GetMappedMetisProductName(Convert.ToDecimal(data)) select new { a.PKID, a.ProductName }).ToDictionary(f => Convert.ToDecimal(f.PKID), f => f.ProductName.ToString());
+            }
+            return PartialView("PVProductMaster", query);
+
+        }
+
+        public ActionResult PackFrmLoad(string type, int Dynamics)
+        {
+            ViewBag.Type = type;
+            ViewBag.id = Convert.ToString("drpForm_" + Dynamics);
+            var query = (from e in genData.GetFormforProductByXML() select new { e.formFKID, e.FormName }).ToDictionary(f => Convert.ToDecimal(f.formFKID), f => f.FormName.ToString());
+            return PartialView("PVProductMaster", query);
+
+        }
+
         public ActionResult NodeProductLinkMaster(string data)
-        {          
-            var query = (from a in genData.USP_GET_PROD_NODETYPEMASTER(Convert.ToInt32(data)) select new { a.NodeTypeFKID, a.NodeName}).ToDictionary(f => Convert.ToInt32(f.NodeTypeFKID), f => f.NodeName.ToString());             
-            return PartialView("NodeTypeMaster", query);           
+        {
+
+            dynamic query = "";
+            if (data == "undefined" || data == null)
+            {
+                query = (from a in genData.USP_GET_PROD_NODETYPEMASTER(0) where 1 == 2 select new { a.NodeTypeFKID, a.NodeName }).ToDictionary(f => Convert.ToInt32(f.NodeTypeFKID), f => f.NodeName.ToString());
+                return PartialView("NodeTypeMaster", query);
+            }
+            else
+            {
+                query = (from a in genData.USP_GET_PROD_NODETYPEMASTER(Convert.ToInt32(data)) select new { a.NodeTypeFKID, a.NodeName }).ToDictionary(f => Convert.ToInt32(f.NodeTypeFKID), f => f.NodeName.ToString());
+                return PartialView("NodeTypeMaster", query);
+            }
+
         }
 
         public ActionResult TeamProductlinkMaster(string data)
-        {          
+        {
             var query = (from e in genData.USP_GET_PROD_TEAMMASTER(Convert.ToInt32(data)) select new { e.TEAMFKID, e.TEAMNAME }).ToDictionary(f => Convert.ToInt32(f.TEAMFKID), f => f.TEAMNAME.ToString());
-            return PartialView("NodeTypeMaster", query);           
+            return PartialView("NodeTypeMaster", query);
         }
 
 
         public ActionResult GetProductGroup(string data)
         {
-            var query = (from e in genData.GetProductNameByXml() select new { e.PKID,e.ProductName}).ToDictionary(f => Convert.ToDecimal(f.PKID), f => f.ProductName.ToString());
+            var query = (from e in genData.GetProductNameByXml() select new { e.PKID, e.ProductName }).ToDictionary(f => Convert.ToDecimal(f.PKID), f => f.ProductName.ToString());
             return PartialView("PVProductGroup", query);
         }
-
-        //public ActionResult GetNodeType(string data)
-        //{ 
-           
-        //}
 
         public ActionResult MetisProductName(string data)
         {
             var query = (from e in genData.GetAllMetisProductName() select new { e.PKID, e.MPName }).ToDictionary(f => Convert.ToDecimal(f.PKID), f => f.MPName.ToString());
             return PartialView("NodeTypeMaster", query);
         }
+        //Product Master Excel,PDF and CSV File download
+        public ActionResult ExportProductMasterToExcel()
+        {
+            try
+            {
+                var context = (from q in genData.USP_GET_PRODUCTMASTER() where q.ProductName != null select q).ToList();
+                if (context.Count == 0)
+                    return new EmptyResult();
+                var data = new List<string[]>(context.Count);
+                data.AddRange(context.Select(item => new[] {
+                    item.GenName,
+                    item.ProductName,
+                    item.IsKDP,
+                    item.METISProductName,
+                    item.IsActive
+                     }));
+                return new ExcelResult(HeadersProductMaster, ColunmTypesProductMaster, data, "ProductMasters.xlsx", "ProductMasters");
+            }
+            catch (Exception ex)
+            {
+                return Json(new { error = ex.Message });
+            }
 
+        }
+        private static readonly string[] HeadersProductMaster =
+        {
+          "Product Group","Product Name","KDP","Metis Product","Status"
+        };
+
+        private static readonly DataForExcel.DataType[] ColunmTypesProductMaster =
+       {
+        DataForExcel.DataType.String,
+        DataForExcel.DataType.String,
+        DataForExcel.DataType.String,                                        
+        DataForExcel.DataType.String,                                        
+        DataForExcel.DataType.String,                                        
+                                
+        };
+        public ActionResult ExportProductMasterToPDF()
+        {
+            try
+            {
+                List<ProductMasters> userList = new List<ProductMasters>();
+                var context = (from q in genData.USP_GET_PRODUCTMASTER() where q.ProductName != null select q).ToList();
+                foreach (var item in context)
+                {
+                    ProductMasters user = new ProductMasters();
+                    user.ProductGroup = item.GenName == null ? "" : item.GenName.ToString();
+                    user.ProductName = item.ProductName == null ? "" : item.ProductName.ToString();
+                    user.KDP = item.IsKDP == null ? "" : item.IsKDP.ToString();
+                    user.MetisProduct = item.METISProductName == null ? "" : item.METISProductName.ToString();
+                    user.Status = item.IsActive == null ? "" : item.IsActive.ToString();
+                    userList.Add(user);
+
+                }
+                var customerList = userList;
+
+                pdf.ExportPDF(customerList, new string[] { "ProductGroup", "ProductName", "KDP", "MetisProduct", "Status" }, path);
+                return File(path, "application/pdf", "ProductMasters.pdf");
+            }
+            catch (Exception ex)
+            {
+                return Json(new { error = ex.Message });
+            }
+        }
+        public class ProductMasters
+        {
+            public string ProductGroup { get; set; }
+            public string ProductName { get; set; }
+            public string KDP { get; set; }
+            public string MetisProduct { get; set; }
+            public string Status { get; set; }
+        }
+        public ActionResult ExportProductMasterToCsv()
+        {
+            try
+            {
+                var model = (from q in genData.USP_GET_PRODUCTMASTER() where q.ProductName != null select q).ToList();
+                var sb = new StringBuilder();
+                sb.AppendLine("ProductGroup,ProductName,KDP,MetisProduct,Status");
+                foreach (var record in model)
+                {
+                    sb.AppendFormat("{0},{1},{2},{3},{4}", record.GenName, record.ProductName, record.IsKDP, record.METISProductName, record.IsActive);
+                    sb.AppendLine();
+                }
+                string data = sb.ToString();
+                var csvBytes = Encoding.ASCII.GetBytes(data);
+                return File(csvBytes, "text/csv", "ProductMasters.txt");
+
+
+            }
+            catch (Exception ex)
+            {
+                return Json(new { error = ex.Message });
+            }
+        }
+
+        #endregion
 
         /* Anand Starts */
 
@@ -259,8 +551,8 @@ namespace Pfizer.Controllers
                     {
                         if (searchOper == "bw")//begins with
                         {
-                            var q = (from sq in query where sq.FormName!="" && sq.FormName.ToUpper().StartsWith(searchString, StringComparison.CurrentCultureIgnoreCase) select sq).ToList();
-                            count = q.Count(); 
+                            var q = (from sq in query where sq.FormName != "" && sq.FormName.ToUpper().StartsWith(searchString, StringComparison.CurrentCultureIgnoreCase) select sq).ToList();
+                            count = q.Count();
                             pageData = q.OrderBy(x => x.FormName).Skip((gridQueryModel.page - 1) * gridQueryModel.rows).Take(gridQueryModel.rows);
                         }
                         else if (searchOper == "eq") //equal
@@ -328,10 +620,10 @@ namespace Pfizer.Controllers
                 string msg = string.Empty;
                 var rslt = (from a in genData.FormMasters where a.FormName == FormName select a).ToList();
                 if (rslt.Count() > 0)
-                {                       
+                {
                     msg = "Form Master already Exists";
                 }
-               else
+                else
                 {
                     FormMaster formMas = new FormMaster();
                     formMas.FormName = FormName.TrimStart();
@@ -387,7 +679,7 @@ namespace Pfizer.Controllers
                     }
 
                 }
-               
+
                 if (oper == "del")
                 {
                     var quote = Convert.ToInt32(id);
@@ -471,8 +763,8 @@ namespace Pfizer.Controllers
                             })
                     ).ToArray()
                 };
-                
-                pdf.ExportPDF(customerList, new string[] {"FormName", "Status" }, path);
+
+                pdf.ExportPDF(customerList, new string[] { "FormName", "Status" }, path);
                 return File(path, "application/pdf", "FormMaster.pdf");
             }
             catch (Exception ex)
@@ -533,25 +825,26 @@ namespace Pfizer.Controllers
                         if (searchOper == "bw")//begins with
                         {
                             var q = (from sq in query
-                                     where sq.MoleculeName != null && sq.MoleculeName.ToUpper().StartsWith(searchString, StringComparison.CurrentCultureIgnoreCase)select sq).ToList();
+                                     where sq.MoleculeName != null && sq.MoleculeName.ToUpper().StartsWith(searchString, StringComparison.CurrentCultureIgnoreCase)
+                                     select sq).ToList();
                             count = q.Count();
                             pageData = q.OrderBy(x => x.MoleculeName).Skip((gridQueryModel.page - 1) * gridQueryModel.rows).Take(gridQueryModel.rows);
                         }
                         else if (searchOper == "eq") //equal
                         {
-                            var q = (from sq in query where sq.MoleculeName!=null && sq.MoleculeName.ToUpper().Equals(searchString, StringComparison.CurrentCultureIgnoreCase) select sq).ToList();
+                            var q = (from sq in query where sq.MoleculeName != null && sq.MoleculeName.ToUpper().Equals(searchString, StringComparison.CurrentCultureIgnoreCase) select sq).ToList();
                             count = q.Count();
                             pageData = q.OrderBy(x => x.MoleculeName).Skip((gridQueryModel.page - 1) * gridQueryModel.rows).Take(gridQueryModel.rows);
                         }
                         else if (searchOper == "ew") // ends with
                         {
-                            var q = (from sq in query where sq.MoleculeName != null && sq.MoleculeName.ToUpper().EndsWith(searchString, StringComparison.CurrentCultureIgnoreCase)select sq).ToList();
+                            var q = (from sq in query where sq.MoleculeName != null && sq.MoleculeName.ToUpper().EndsWith(searchString, StringComparison.CurrentCultureIgnoreCase) select sq).ToList();
                             count = q.Count();
                             pageData = q.OrderBy(x => x.MoleculeName).Skip((gridQueryModel.page - 1) * gridQueryModel.rows).Take(gridQueryModel.rows);
                         }
                         else if (searchOper == "cn")//contains
                         {
-                            var q = (from sq in query where sq.MoleculeName != null && sq.MoleculeName.ToUpper().Contains(searchString)select sq).ToList();
+                            var q = (from sq in query where sq.MoleculeName != null && sq.MoleculeName.ToUpper().Contains(searchString) select sq).ToList();
                             count = q.Count();
                             pageData = q.OrderBy(x => x.MoleculeName).Skip((gridQueryModel.page - 1) * gridQueryModel.rows).Take(gridQueryModel.rows);
                         }
@@ -589,7 +882,8 @@ namespace Pfizer.Controllers
 
         public JsonResult AddMoleculeMaster(string MoleculeName1, string Status1)
         {
-            try {
+            try
+            {
                 string msg = string.Empty;
                 if (Status1 == "Active")
                 {
@@ -604,7 +898,8 @@ namespace Pfizer.Controllers
                 {
                     msg = "Molecule Master already Exists";
                 }
-                else {
+                else
+                {
                     MoleculeMaster MoleculeMas = new MoleculeMaster();
                     MoleculeMas.MoleculeName = MoleculeName1.TrimStart();
                     MoleculeMas.IsActive = Convert.ToBoolean(Status1);
@@ -619,9 +914,10 @@ namespace Pfizer.Controllers
                 }
                 return Json(msg);
             }
-            catch (Exception ex) {
+            catch (Exception ex)
+            {
                 return Json(new { error = ex.Message });
-                
+
             }
         }
 
@@ -661,7 +957,7 @@ namespace Pfizer.Controllers
                     }
 
                 }
-                   if (oper == "del")
+                if (oper == "del")
                 {
                     var quote = Convert.ToInt32(id);
                     var delete_quote = (from a in genData.MoleculeMasters where a.PKID == quote select a).Single();
@@ -744,9 +1040,9 @@ namespace Pfizer.Controllers
                             })
                     ).ToArray()
                 };
-              //  var path = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.Personal), "Sample2.pdf");
-               // pdf.ExportPDF(customerList, new string[] {"MoleculeName", "Status" }, path);
-               // return File(path, "application/pdf", "FormMaster.pdf");
+                //  var path = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.Personal), "Sample2.pdf");
+                // pdf.ExportPDF(customerList, new string[] {"MoleculeName", "Status" }, path);
+                // return File(path, "application/pdf", "FormMaster.pdf");
                 pdf.ExportPDF(customerList, new string[] { "MoleculeName", "Status" }, path);
                 return File(path, "application/pdf", "MoleculeMaster.pdf");
 
@@ -820,7 +1116,7 @@ namespace Pfizer.Controllers
             {
 
                 //   decimal QrygeneralFKID = Convert.ToDecimal(fkId);
-                var searchString = gridQueryModel.searchString == null ? "": gridQueryModel.searchString.ToUpper();
+                var searchString = gridQueryModel.searchString == null ? "" : gridQueryModel.searchString.ToUpper();
                 var searchOper = gridQueryModel.searchOper;
                 var searchField = gridQueryModel.searchField;
                 string GeneralFKID = Session["GeneralFKID"].ToString();
@@ -836,7 +1132,8 @@ namespace Pfizer.Controllers
                     {
                         if (searchOper == "bw")//begins with
                         {
-                            var q = (from sq in query where sq.GenName!=null && sq.GenName.ToUpper().StartsWith(searchString, StringComparison.CurrentCultureIgnoreCase)  
+                            var q = (from sq in query
+                                     where sq.GenName != null && sq.GenName.ToUpper().StartsWith(searchString, StringComparison.CurrentCultureIgnoreCase)
                                      select sq).ToList();
                             count = q.Count();
                             pageData = q.OrderBy(x => x.GenName).Skip((gridQueryModel.page - 1) * gridQueryModel.rows).Take(gridQueryModel.rows);
@@ -894,13 +1191,13 @@ namespace Pfizer.Controllers
             try
             {
                 int Result = genData.DeleteGeneralMaster(Convert.ToDecimal(id));
-                
+
                 if (Result == 1)
                 {
 
                     id = "ProductType deleted Successfully.";
-                     
-                     
+
+
                 }
                 return Json(id);
             }
@@ -909,7 +1206,7 @@ namespace Pfizer.Controllers
                 return Json(msg);
             }
         }
-        public JsonResult AddProductGroupMaster(string TableName1, string GenCode1,string GenName1, string Status1)
+        public JsonResult AddProductGroupMaster(string TableName1, string GenCode1, string GenName1, string Status1)
         {
             try
             {
@@ -921,39 +1218,39 @@ namespace Pfizer.Controllers
                 {
                     Status1 = "False";
                 }
-                   string msg = string.Empty;
-                    var rslt = (from a in genData.GeneralMasters where a.GenName == GenName1 select a).ToList();
-                    if (rslt.Count() > 0)
-                    {                       // msg = "ProductGroup Master already Exists";
-                        if (TableName1 == "ProductTypeMaster")
-                            msg = "ProductType Master already Exists";
-                        else
-                            msg = "ProductGroup Master already Exists";
+                string msg = string.Empty;
+                var rslt = (from a in genData.GeneralMasters where a.GenName == GenName1 select a).ToList();
+                if (rslt.Count() > 0)
+                {                       // msg = "ProductGroup Master already Exists";
+                    if (TableName1 == "ProductTypeMaster")
+                        msg = "ProductType Master already Exists";
+                    else
+                        msg = "ProductGroup Master already Exists";
+                }
+                else
+                {
+                    GeneralMaster gm = new GeneralMaster();
+                    gm.GenFKID = Convert.ToDecimal(Session["GeneralFKID"] == null ? "0" : Session["GeneralFKID"].ToString());//24;
+                    gm.GenCode = GenCode1.TrimStart();
+                    gm.GenName = GenName1.TrimStart();
+                    gm.IsActive = true;
+                    gm.CreatedDate = DateTime.Now;
+                    gm.CreatedBy = Convert.ToDecimal(Session["USER_FKID"] == null ? "0" : Session["USER_FKID"].ToString());
+                    genData.GeneralMasters.Add(gm);
+                    genData.SaveChanges();
+
+                    if (TableName1 == "ProductTypeMaster")
+                    {
+                        msg = "ProductType added Successfully.";
                     }
                     else
                     {
-                        GeneralMaster gm = new GeneralMaster();
-                        gm.GenFKID = Convert.ToDecimal(Session["GeneralFKID"] == null ? "0" : Session["GeneralFKID"].ToString());//24;
-                        gm.GenCode = GenCode1.TrimStart();
-                        gm.GenName = GenName1.TrimStart();
-                        gm.IsActive = true;
-                        gm.CreatedDate = DateTime.Now;
-                        gm.CreatedBy = Convert.ToDecimal(Session["USER_FKID"] == null ? "0" : Session["USER_FKID"].ToString());
-                        genData.GeneralMasters.Add(gm);
-                        genData.SaveChanges();
-
-                        if (TableName1 == "ProductTypeMaster")
-                        {
-                            msg = "ProductType added Successfully.";
-                        }
-                        else
-                        {
-                            msg = "ProductGroup added Successfully.";
-                        }
+                        msg = "ProductGroup added Successfully.";
                     }
+                }
 
                 return Json(msg);
-           }
+            }
             catch (Exception ex)
             {
                 return Json(new { error = ex.Message });
@@ -965,9 +1262,9 @@ namespace Pfizer.Controllers
         {
             try
             {
-              
-             //   Decimal ModifiedBy = Convert.ToDecimal(Session["USER_FKID"] == null ? "0" : Session["USER_FKID"].ToString());
-              //  Decimal GeneralFKID = Convert.ToDecimal(Session["GeneralFKID"] == null ? "0" : Session["GeneralFKID"].ToString());
+
+                //   Decimal ModifiedBy = Convert.ToDecimal(Session["USER_FKID"] == null ? "0" : Session["USER_FKID"].ToString());
+                //  Decimal GeneralFKID = Convert.ToDecimal(Session["GeneralFKID"] == null ? "0" : Session["GeneralFKID"].ToString());
                 string msg = string.Empty;
                 if (oper == "edit")
                 {
@@ -996,14 +1293,14 @@ namespace Pfizer.Controllers
                         msg = "ProductGroup Updated Successfully.";
                     }
                 }
-               if (oper == "del")
+                if (oper == "del")
                 {
 
                     int Result = genData.DeleteGeneralMaster(Convert.ToDecimal(id));
                     if (Result == 1)
                     {
                         msg = "ProductGroup deleted Successfully.";
-                       
+
                     }
 
                 }
@@ -1052,7 +1349,7 @@ namespace Pfizer.Controllers
             {
                 List<ProductTypeMas> userList = new List<ProductTypeMas>();
                 string GeneralFKID = Session["GeneralFKID"].ToString();
-                var context = (from q in genData.GetProductType(GeneralFKID)where q.GenName!=null orderby q.GenName ascending select q ).ToList();
+                var context = (from q in genData.GetProductType(GeneralFKID) where q.GenName != null orderby q.GenName ascending select q).ToList();
 
                 foreach (var item in context)
                 {
@@ -1148,13 +1445,13 @@ namespace Pfizer.Controllers
                     {
                         if (searchOper == "bw")//begins with
                         {
-                            var q = (from sq in query where sq.ProductName!=null &&sq.ProductName.ToUpper().StartsWith(searchString, StringComparison.CurrentCultureIgnoreCase) || sq.MoleculeName.StartsWith(searchString, StringComparison.CurrentCultureIgnoreCase) select sq).ToList();
+                            var q = (from sq in query where sq.ProductName != null && sq.ProductName.ToUpper().StartsWith(searchString, StringComparison.CurrentCultureIgnoreCase) || sq.MoleculeName.StartsWith(searchString, StringComparison.CurrentCultureIgnoreCase) select sq).ToList();
                             count = q.Count();
                             pageData = q.OrderBy(x => x.ProductName).Skip((gridQueryModel.page - 1) * gridQueryModel.rows).Take(gridQueryModel.rows);
                         }
                         else if (searchOper == "eq") //equal
                         {
-                            var q = (from sq in query where sq.ProductName!=null &&sq.ProductName.ToUpper().Equals(searchString, StringComparison.CurrentCultureIgnoreCase) || sq.MoleculeName.Equals(searchString, StringComparison.CurrentCultureIgnoreCase) select sq).ToList();
+                            var q = (from sq in query where sq.ProductName != null && sq.ProductName.ToUpper().Equals(searchString, StringComparison.CurrentCultureIgnoreCase) || sq.MoleculeName.Equals(searchString, StringComparison.CurrentCultureIgnoreCase) select sq).ToList();
                             count = q.Count();
                             pageData = q.OrderBy(x => x.ProductName).Skip((gridQueryModel.page - 1) * gridQueryModel.rows).Take(gridQueryModel.rows);
                         }
@@ -1341,7 +1638,7 @@ namespace Pfizer.Controllers
                             })
                     ).ToArray()
                 };
-                
+
                 pdf.ExportPDF(customerList, new string[] { "PKID", "ProductFKID", "MoleculeFKID", "ProductName", "MoleculeName", "Status" }, path);
                 return File(path, "application/pdf", "ProductMoleculeLink.pdf");
             }
@@ -1502,7 +1799,7 @@ namespace Pfizer.Controllers
                     {
                         if (searchOper == "bw")//begins with
                         {
-                            var q = (from sq in query where sq.ProductName!=null && sq.ProductName.ToUpper().StartsWith(searchString, StringComparison.CurrentCultureIgnoreCase)select sq).ToList();
+                            var q = (from sq in query where sq.ProductName != null && sq.ProductName.ToUpper().StartsWith(searchString, StringComparison.CurrentCultureIgnoreCase) select sq).ToList();
                             count = q.Count();
                             pageData = q.OrderBy(x => x.ProductName).Skip((gridQueryModel.page - 1) * gridQueryModel.rows).Take(gridQueryModel.rows);
                         }
@@ -1520,7 +1817,7 @@ namespace Pfizer.Controllers
                         }
                         else if (searchOper == "cn")//contains
                         {
-                            var q = (from sq in query where sq.ProductName!=null && sq.ProductName.ToUpper().Contains(searchString)select sq).ToList();
+                            var q = (from sq in query where sq.ProductName != null && sq.ProductName.ToUpper().Contains(searchString) select sq).ToList();
                             count = q.Count();
                             pageData = q.OrderBy(x => x.ProductName).Skip((gridQueryModel.page - 1) * gridQueryModel.rows).Take(gridQueryModel.rows);
                         }
@@ -1573,7 +1870,7 @@ namespace Pfizer.Controllers
                 string str = "";
                 decimal StrcreatedBy;
                 string StrProductName = "";
-                
+
                 StrcreatedBy = Convert.ToDecimal(Session["USER_FKID"] == null ? "0" : Session["USER_FKID"].ToString());
 
                 StrProductName = ProductName;
@@ -1593,12 +1890,12 @@ namespace Pfizer.Controllers
                 msg = "Product Detailing Matrix Master Added Successfully.";
                 return Json(msg);
             }
-             catch (Exception ex)
+            catch (Exception ex)
             {
                 return Json("Product Detailing Matrix Master already Exists");
             }
         }
-      public JsonResult EditProductDetailingMatrix(string id, string oper, string ProductFKID, string ProductName, string SelSpecialization, string SpecialityFKID, string IsActive)
+        public JsonResult EditProductDetailingMatrix(string id, string oper, string ProductFKID, string ProductName, string SelSpecialization, string SpecialityFKID, string IsActive)
         {
 
             string str = string.Empty;
@@ -1632,7 +1929,7 @@ namespace Pfizer.Controllers
                 id = "Product Detailing Matrix Master modified Successfully.";
 
             }
-           
+
             if (oper == "del")
             {
                 if (Session["ProductFKID"] != null)
@@ -1775,8 +2072,8 @@ namespace Pfizer.Controllers
             foreach (var item in context)
             {
                 ProductDetailingMatrixTypes user = new ProductDetailingMatrixTypes();
-                user.ProductName = item.ProductName==null?"":item.ProductName;
-                user.Specialization = item.Specialization==null?"":item.Specialization;
+                user.ProductName = item.ProductName == null ? "" : item.ProductName;
+                user.Specialization = item.Specialization == null ? "" : item.Specialization;
                 user.Status = item.IsActive;
                 userList.Add(user);
             }
@@ -1857,7 +2154,7 @@ namespace Pfizer.Controllers
                     {
                         if (searchOper == "bw")//begins with
                         {
-                            var q = (from sq in query where sq.ProductName!=null && sq.ProductName.ToUpper().StartsWith(searchString, StringComparison.CurrentCultureIgnoreCase) select sq).ToList();
+                            var q = (from sq in query where sq.ProductName != null && sq.ProductName.ToUpper().StartsWith(searchString, StringComparison.CurrentCultureIgnoreCase) select sq).ToList();
                             count = q.Count();
                             pageData = q.OrderBy(x => x.ProductName).Skip((gridQueryModel.page - 1) * gridQueryModel.rows).Take(gridQueryModel.rows);
                         }
@@ -1869,7 +2166,7 @@ namespace Pfizer.Controllers
                         }
                         else if (searchOper == "ew") // ends with
                         {
-                            var q = (from sq in query where sq.ProductName!=null && sq.ProductName.ToUpper().EndsWith(searchString, StringComparison.CurrentCultureIgnoreCase) select sq).ToList();
+                            var q = (from sq in query where sq.ProductName != null && sq.ProductName.ToUpper().EndsWith(searchString, StringComparison.CurrentCultureIgnoreCase) select sq).ToList();
                             count = q.Count();
                             pageData = q.OrderBy(x => x.ProductName).Skip((gridQueryModel.page - 1) * gridQueryModel.rows).Take(gridQueryModel.rows);
                         }
@@ -1979,7 +2276,7 @@ namespace Pfizer.Controllers
         #endregion
 
         #region Add MoleculeLink
-        
+
         public JsonResult AddProductMoleculelink(string ProductName, string SelMoleculeName)
         {
             try
@@ -1989,29 +2286,29 @@ namespace Pfizer.Controllers
 
                 Decimal ModifiedBy = Convert.ToDecimal(Session["USER_FKID"] == null ? "0" : Session["USER_FKID"].ToString());
 
-                    str = "<root>";
-                    string StrSelectedSelMolecule = SelMoleculeName;
-                    string[] SelectedSelMoleculevalues = StrSelectedSelMolecule.Split(',');
-                   
+                str = "<root>";
+                string StrSelectedSelMolecule = SelMoleculeName;
+                string[] SelectedSelMoleculevalues = StrSelectedSelMolecule.Split(',');
+
                 for (int i = 0; i < SelectedSelMoleculevalues.Length; i++)
-                    {
-                        str += "<CompBrand";
-                        str += " MoleculeFKID ='" + SelectedSelMoleculevalues[i] + "'";
-                        str += "/>";
-                    }
-                
+                {
+                    str += "<CompBrand";
+                    str += " MoleculeFKID ='" + SelectedSelMoleculevalues[i] + "'";
+                    str += "/>";
+                }
+
                 str += "</root>";
 
                 genData.AddProductMoleculeLinkMaster(Convert.ToDecimal(ProductName), str, Convert.ToInt32(ModifiedBy));
                 msg = "Product Molecule Link Master Added Successfully.";
                 return Json(msg);
-               
+
             }
             catch (Exception ex)
             {
                 return Json("Product Molecule Link Master already Exists");
             }
-           
+
         }
         #endregion
 
@@ -2061,7 +2358,7 @@ namespace Pfizer.Controllers
 
 
                 }
-                
+
                 //if (oper == "del")
                 //{
 
@@ -2093,7 +2390,7 @@ namespace Pfizer.Controllers
                 x.ProductName,
                 x.MoleculeName,
                 IsActive = x.IsActive == "1" ? "Active" : "In Active",
-            }).OrderBy(o=>o.ProductName) .ToList();
+            }).OrderBy(o => o.ProductName).ToList();
             if (context.Count == 0)
                 return new EmptyResult();
             var data = new List<string[]>(context.Count);
@@ -2129,7 +2426,7 @@ namespace Pfizer.Controllers
                 x.ProductName,
                 x.MoleculeName,
                 IsActive = x.IsActive == "1" ? "Active" : "In Active",
-            }).OrderBy(o=>o.ProductName).ToList();
+            }).OrderBy(o => o.ProductName).ToList();
 
 
             foreach (var item in context)
@@ -2178,7 +2475,7 @@ namespace Pfizer.Controllers
                 x.ProductName,
                 x.MoleculeName,
                 IsActive = (x.IsActive == "1") ? "Active" : "In Active",
-            }).OrderBy(o=>o.ProductName).ToList();
+            }).OrderBy(o => o.ProductName).ToList();
             var sb = new StringBuilder();
             sb.AppendLine("ProductName,MoleculeName,Status");
             foreach (var record in model)

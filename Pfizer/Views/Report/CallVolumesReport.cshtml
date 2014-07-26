@@ -1,0 +1,251 @@
+﻿@{
+    ViewBag.Title = "CallVolumesReport";
+    Layout = "~/Views/Shared/MasterLayout.cshtml";
+}
+
+ 
+<style type="text/css">
+    #lstUsers  {
+        width: 220px;
+    }
+    
+</style>
+
+<body>
+    @using (Html.BeginForm(FormMethod.Post))
+    {
+
+        <div class="inner_tbldiv" style=" margin-top:0">
+        
+            <table style="width:85% !important;" border="1" cellspacing="0" cellpadding="0" align="center" class="inner_tb">
+                <tr>
+                    <th colspan="5">
+                        Call Volumes Report
+                    </th>
+                </tr>
+                <tr>
+                    <td></td>
+                </tr> 
+
+                <tr>
+                    <td colspan="5" align="center">
+                        <div style="text-align:center;"><label id="lblError" style=" color:red"></label></div>
+                    </td>
+
+                </tr>
+                <tr>
+                   
+                    <th colspan="5">Filter On </th>
+                </tr>
+
+                <tr>
+                    <td width="15%" valign="middle" align="left" class="tb-r2"></td>
+                    <td width="10%" valign="middle" align="left" class="tb-r2">Team<span class="star">*</span></td>
+                    <td width="15%" class="tb-r2">
+                        &nbsp;&nbsp;
+                        @Html.DropDownList("ddlTeam", new[] { new SelectListItem { Text = "Select", Value = "" } })
+                   
+                        &nbsp;
+                    </td>
+                    <td width="10%" valign="middle" align="left" class="tb-r2">    &nbsp;&nbsp;Users<span class="star">*</span></td>
+                    <td width="60%" class="tb-r2">
+                        &nbsp;&nbsp;
+                        @Html.ListBox("lstUsers", new[]{
+
+                                            new SelectListItem { Text="Select", Value=""} }, new { @class = "listboxnew", @size = "5" })
+                        &nbsp;
+                    </td> 
+                </tr> 
+
+                <tr>
+                    <td width="15%" valign="middle" align="left" class="tb-r2"></td>
+                    <td width="10%" valign="middle" align="left" class="tb-r2">Year<span class="star">*</span></td>
+                    <td width="15%" class="tb-r2">
+                        &nbsp;&nbsp;
+                        @Html.DropDownList("ddlYear", new[] { new SelectListItem { Text = "Select", Value = "" } })
+
+                        &nbsp;
+                    </td>
+                    <td width="10%" valign="middle" align="left" class="tb-r2">    &nbsp;&nbsp;Month<span class="star">*</span></td>
+                    <td width="60%" class="tb-r2">
+                        &nbsp;&nbsp;
+                        @Html.DropDownList("ddlMonth", new[] { new SelectListItem { Text = "Select", Value = "" } })
+
+                        &nbsp;
+                    </td> 
+                </tr>
+                <tr>
+                    <td colspan="5" >
+                        <table width="93%" align="center" border="1">
+                            <tr>
+                                <td align="center">
+                                    <input type="button" class="orange_button" id="btnGo" value="Go" /> &nbsp; &nbsp;
+                                    <input type="button" class="orange_button" id="btnReset" value="Reset" />
+                                </td>
+                            </tr>
+                        </table>
+                    </td>
+                    
+                </tr> 
+
+            </table>
+
+        </div>
+
+
+        <div id="DivReport">
+        </div>
+    }
+
+    <script>
+    $(document).ready(function () {
+        $("#lblError").text('');
+        $("#lblError").css("color", "red");
+        LoadTeam();
+        LoadYear();
+        LoadMonth();
+
+    });
+
+    function LoadTeam() {
+        $('#ddlTeam').empty();
+        $('#ddlTeam').append("<option value=''>Select</option>");
+        $.getJSON('@Url.Action("JsonLoadTeamName")', function (data) {
+
+            for (var i = 0; i < data.count; i++) {
+                $('#ddlTeam').append("<option value='" + data.teamItems[i].Value + "'>" + data.teamItems[i].Text + "</option>");
+            }
+        });
+    }
+
+
+    $('#ddlTeam').change(function () {
+        $('#lstUsers').empty();
+        $('#lstUsers').append("<option value=''>Select</option>");
+        $.getJSON('@Url.Action("JsonLoadPSOUser")?teamfkid=' + $('#ddlTeam').val(), function (data) {
+
+            for (var i = 0; i < data.count; i++) {
+                $('#lstUsers').append("<option value='" + data.userItems[i].Value + "'>" + data.userItems[i].Text + "</option>");
+            }
+        });
+    });
+
+    $('#lstUsers').change(function () {
+        if ($('#lstUsers').val() == '') {
+ 
+            $("#lstUsers option:first").removeAttr('selected');
+
+        }
+    });
+    function LoadYear() {
+        var today = new Date(); // Initialize Date in raw form
+        var Currentyear = today.getFullYear(); // Get the year
+        var CurrentDate = today.getDate();
+        //Year binding into year ComboBox
+        var cPreviousYear = today.getFullYear() - 5;
+
+        var cNextYear = today.getFullYear() + 3;
+        var iSelected = 0;
+        for (var iCount = cPreviousYear; iCount < cNextYear; iCount++) {
+
+            document.getElementById("ddlYear").options.add(new Option(iCount, "0"))
+            if (document.getElementById("ddlYear").options[iSelected].innerText == Currentyear) {
+                document.getElementById("ddlYear").selectedIndex = iSelected;
+            }
+            iSelected++;
+        }
+    }
+
+    function LoadMonth() {
+        var today = new Date(); // Initialize Date in raw form
+        var currentMonth = today.getMonth() + 1; // Get the month
+
+        var months = ["", "January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
+        var option = '';
+        for (var i = 0; i < months.length; i++) {
+            if (i == 0)
+                continue;
+            if (currentMonth != i) {
+                option += '<option value="' + i + '">' + months[i] + '</option>';
+                continue;
+            }
+            option += '<option value="' + i + '" selected="selected">' + months[i] + '</option>';
+        }
+        $('#ddlMonth').append(option);
+    }
+
+
+
+    $('#btnGo').click(function () {
+        
+        $('select').css("border", "1px solid #C0C0C0");
+        $("#lblError").text('');
+
+
+        if ($('#ddlTeam').val() == '') {
+            $("#lblError").text('Please select Team Name');
+            $('#ddlTeam').focus();
+            $("#ddlTeam").css("background-color", "#FFE8E8").css("border", "1px solid #FF6666");
+
+            return false;
+        }
+
+        if ($('#lstUsers').val() == '' || $('#lstUsers').val() == null) {
+            $("#lblError").text('Please select User Name');
+            $('#lstUsers').focus();
+            $("#lstUsers").css("background-color", "#FFE8E8").css("border", "1px solid #FF6666");
+            return false;
+        }
+
+        if ($('#ddlYear').val() == '') {
+            $("#lblError").text('Please select Year');
+            $('#ddlYear').focus();
+            $("#ddlYear").css("background-color", "#FFE8E8").css("border", "1px solid #FF6666");
+
+            return false;
+        }
+        if ($('#ddlMonth').val() == '') {
+            $("#lblError").text('Please select Month');
+            $('#ddlMonth').focus();
+            $("#ddlMonth").css("background-color", "#FFE8E8").css("border", "1px solid #FF6666");
+            return false;
+        }
+
+        $.getJSON('@Url.Action("JsonVolumeRpt")?year=' + $('#ddlYear option:selected').text() + '&month=' + $("#ddlMonth").val() + '&users=' + $("#lstUsers").val(), function (data) {
+
+                $('#DivReport').html(data.rslt);
+                $('#DivReport').dialog({
+                    title: 'Call Volumes Report',
+                    width: 850,
+                    height: 450,
+                    align:'center',
+                    show: { effect: 'drop', direction: "up" },
+                    modal: true,
+                    close: Reload
+                });
+
+            });
+
+    });
+
+
+    $('#btnReset').click(function () {
+        $("#ddlTeam option:first").attr('selected');
+        $('#lstUsers').empty();
+        $('#lstUsers').append("<option value=''>Select</option>");
+    });
+
+    function DownloadExcel() {
+
+        var win = window.open('@Url.Action("ExcelDownload")?fileName=' + 'CallVolumesReport', 'showwin', 'width=550,height=400,top=0,left=0,toolbar=yes,location=no,directories=no,status=no,menubar=no,scrollbars=yes,resizeable=yes');
+        win.history.go(0);
+        return true;
+    }
+        function Reload() {
+        
+        window.location.reload();
+    }
+
+        </script>
+
+    </body>

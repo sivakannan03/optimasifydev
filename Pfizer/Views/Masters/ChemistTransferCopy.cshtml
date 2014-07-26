@@ -1,0 +1,458 @@
+﻿@{
+    ViewBag.Title = "ChemistTransferCopy";
+    Layout = "~/Views/Shared/MasterLayout.cshtml";
+}
+
+ <style type="text/css">
+    select {
+        width: 160px;
+    }
+</style>
+<body>
+    @using (Html.BeginForm(FormMethod.Post))
+    {
+
+        <div class="inner_tbldiv" style=" margin-top:0; vertical-align:top">
+            <div style="text-align:center;"><label id="lblError" style=" color:red"></label></div>
+            <table style="width:85% !important; height:95%" border="1" cellspacing="0" cellpadding="0" class="inner_tb">
+                <tr>
+                    <th colspan="4" style=" width:50%" align="center" valign="middle">Chemist Transfer / Copy </th>
+
+                </tr>
+                <tr>
+                    <td width="20%" valign="middle" align="left" class="tb-r2"></td>
+                    <td width="30%" valign="middle" align="left" class="tb-r2">Source </td>
+                    <td width="20%" valign="middle" align="left" class="tb-r2"></td>
+                    <td width="30%" valign="middle" align="left" class="tb-r2">Destination</td>
+
+                </tr>
+
+                <tr>
+
+                    <td width="20%" valign="middle" align="left" class="tb-r1">Division<span class="star">*</span></td>
+                    <td width="30%" valign="middle" align="left" class="tb-r1">
+                        @Html.DropDownList("ddlSDivision", PfizerEntity.UsefulLink.GetSDivision(), "Select")
+
+                    </td>
+                    <td width="20%" valign="middle" align="left" class="tb-r1">Division<span class="star">*</span></td>
+                    <td width="30%" valign="middle" align="left" class="tb-r1">
+                        @Html.DropDownList("ddlDDivision", PfizerEntity.UsefulLink.GetSDivision(), "Select")
+
+                    </td>
+
+
+                </tr>
+
+                <tr>
+
+                    <td width="20%" valign="middle" align="left" class="tb-r2">Territory<span class="star">*</span></td>
+                    <td width="30%" valign="middle" align="left" class="tb-r2">
+                        @Html.DropDownList("ddlSTerritory", new[] { new SelectListItem { Text = "Select", Value = "" } })
+
+                    </td>
+                    <td width="20%" valign="middle" align="left" class="tb-r2">Territory<span class="star">*</span></td>
+                    <td width="30%" valign="middle" align="left" class="tb-r2">
+                        @Html.DropDownList("ddlDTerritory", new[] { new SelectListItem { Text = "Select", Value = "" } })
+                    </td>
+                </tr>
+
+
+                <tr>
+
+                    <td width="20%" valign="middle" align="left" class="tb-r1">Area<span class="star">*</span></td>
+                    <td width="30%" valign="middle" align="left" class="tb-r1">
+
+                        @Html.ListBox("lstArea", new[]{
+
+                                            new SelectListItem { Text="All", Value=""} }, new { @size = 6 })
+
+
+                    </td>
+                    <td width="20%" class="tb-r1" align="left">&nbsp;&nbsp;&nbsp;<input type="button" class="blue_button" value="Fetch" id="btnFetch" /></td>
+                    <td width="30%" class="tb-r1"></td>
+                </tr>
+
+                <tr>
+
+                    <td width="20%" valign="middle" align="left" class="tb-r2">Chemist</td>
+                    <td width="30%" valign="middle" align="left" class="tb-r2">
+
+                        @Html.ListBox("lstChemistry", new[]{
+
+                                            new SelectListItem { Text="Select", Value=""} }, new { @size = 9 })
+
+                    </td>
+                    <td width="20%" align="left" class="tb-r2">
+
+                        <table align="left">
+                            <tr>
+                                <td align="left">
+                                    <br />
+                                    <input type="button" class=" blue_button" value="Transfer >>" id="btnTransfer" name="btnTransfer" />
+                                    <input type="button" class="blue_button" value="<< Remove" id="btnRemove" name="btnRemove" />
+                                </td>
+                            </tr>
+
+                            <tr>
+                                <td></td>
+                            </tr>
+
+                            <tr>
+                                <td>
+                                    <br />
+                                    <input type="button" class="blue_button" value="Copy >>" id="btnCopy" name="btnCopy" />
+                                    <input type="button" class="blue_button" value="<< Remove" id="btnRemoveCopy" name="btnRemoveCopy" />
+                                </td>
+                            </tr>
+
+                            <tr>
+                                <td></td>
+                            </tr>
+                        </table>
+
+
+                    </td>
+                    <td width="30%" class="tb-r2">
+                        @Html.ListBox("lstChemTranster", new[]{
+
+                                            new SelectListItem { Text="Select", Value=""} }, new { @size = 4 })
+                        <br />
+                        <br />
+                        @Html.ListBox("lstChemCopy", new[]{
+
+                                            new SelectListItem { Text="Select", Value=""} }, new { @size = 4 })
+
+                    </td>
+                </tr>
+
+
+
+                <tr>
+
+
+                    <td class="tb-r1" align="center" colspan="4">
+                        <input type="button" class="orange_button" value="Submit" id="btnSubmit" name="btnSubmit" />&nbsp;
+                        <input type="button" class="orange_button" value="Cancel" id="btnCancel" name="btnCancel" />
+
+                         
+
+                    </td>
+                </tr>
+
+
+
+
+            </table>
+
+        </div>
+
+    }
+    <script type="text/javascript">
+
+
+    $(document).ready(function () {
+        $("#lblError").text('');
+        $("#lblError").css("color", "red");
+    });
+
+    $('#lstArea').change(function () {
+
+        if ($('#lstArea').val()=='')
+        {
+            $("#lstArea option").prop("selected", true);
+            $("#lstArea option:first").removeAttr('selected');
+        }
+
+    });
+
+
+    function Validate(value) {
+
+        if ($('#ddlSDivision').val() == "") {
+
+            $("#lblError").text("Please Select Valid Source Side Division");
+            $('#ddlSDivision').focus();
+            $("#ddlSDivision").css("background-color", "#FFE8E8").css("border", "1px solid #FF6666");
+            return "0";
+        }
+        if ($('#ddlSTerritory').val() == "") {
+            $('#ddlSDivision').css("border", "1px solid #C0C0C0");
+            $("#lblError").text("Please Select Valid Source Side Territory");
+            $('#ddlSTerritory').focus();
+            $("#ddlSTerritory").css("background-color", "#FFE8E8").css("border", "1px solid #FF6666");
+            return "0";
+        }
+
+        if (($('#lstArea').val() == null || $('#lstArea').val() == '')) {
+            $('#ddlSTerritory').css("border", "1px solid #C0C0C0");
+            $("#lblError").text("Please Select Valid Area Name");
+            $('#lstArea').focus();
+            $("#lstArea").css("background-color", "#FFE8E8").css("border", "1px solid #FF6666");
+            return "0";
+        }
+        if (value == 'submit') {
+
+
+            if ($('#ddlDDivision').val() == "") {
+                $('#lstArea').css("border", "1px solid #C0C0C0");
+                $("#lblError").text("Please Select Valid Destination Side Division");
+                $('#ddlDDivision').focus();
+                $("#ddlDDivision").css("background-color", "#FFE8E8").css("border", "1px solid #FF6666");
+                return "0";
+            }
+            if ($('#ddlDTerritory').val() == "") {
+                $('#ddlDDivision').css("border", "1px solid #C0C0C0");
+                $("#lblError").text("Please Select Valid Destination Side Territory");
+                $('#ddlDTerritory').focus();
+                $("#ddlDTerritory").css("background-color", "#FFE8E8").css("border", "1px solid #FF6666");
+                return "0";
+            }
+            if (($('#lstChemTranster').val() == "" || $('#lstChemTranster').val() == null) && ($('#lstChemCopy').val() == "" || $('#lstChemCopy').val() == null)) {
+                $('#ddlDTerritory').css("border", "1px solid #C0C0C0");
+                $("#lblError").text("Please Select atleast one valid Chemist");
+                $('#lstChemistry').focus();
+                $("#lstChemistry").css("background-color", "#FFE8E8").css("border", "1px solid #FF6666");
+                return "0";
+            }
+
+            
+            var transfer = $('#lstChemTranster').val();
+            var copy =$('#lstChemCopy').val();
+
+            //Check Same Chemist found in both Copy and Transfer
+            if (""+transfer+"" == ""+copy+"") {
+            
+                $('#lstChemistry').css("border", "1px solid #C0C0C0");
+                $("#lblError").text("Same Chemist available in Transfer and Copy in the List");
+                $('#lstChemTranster').focus();
+                $("#lstChemTranster").css("background-color", "#FFE8E8").css("border", "1px solid #FF6666");
+                $("#lstChemCopy").css("background-color", "#FFE8E8").css("border", "1px solid #FF6666");
+                return "0";
+            }
+
+        }
+
+    }
+
+
+
+    $('#btnSubmit').click(function () {
+
+        $("#lblError").css("color", "red");
+        
+                var err = Validate('submit');
+                if (err == "0")
+                    return false;
+                else
+                { 
+                    
+                        $("#lblError").text("");
+                        //Final Submit 
+
+                        if ($("#lstChemTranster").val() != "" && $("#lstChemTranster").val() != null) {
+                            $.getJSON('@Url.Action("JsonChemistSubmit")?TerritoryDFKID=' + $("#ddlDTerritory").val() + '&TerritorySFKID=' + $("#ddlSTerritory").val() + '&xml=' + $("#lstChemTranster").val() + '&cond=' + 'transfer', function (data) {
+
+                                $("#lblError").text(data.msg);
+
+                            });
+                        }
+                    if ($("#lstChemCopy").val() != "" && $("#lstChemCopy").val() != null) {
+                        $.getJSON('@Url.Action("JsonChemistSubmit")?TerritoryDFKID=' + $("#ddlDTerritory").val() + '&TerritorySFKID=' + $("#ddlSTerritory").val() + '&xml=' + $("#lstChemCopy").val() + '&cond=' + 'copy', function (data) {
+
+                                $("#lblError").text(data.msg);
+                                $("#lblError").css("color", "green");
+
+                            });
+                        }
+
+                    /*clear Selection */
+                    $('select').css("border", "1px solid #C0C0C0");
+                        $('select').val('');
+                        $('#lstChemistry').empty();
+                        $('#lstChemistry').append("<option value=''>Select</option>");
+                        $('#lstChemTranster').empty();
+                        $('#lstChemTranster').append("<option value=''>Select</option>");
+                        $('#lstChemCopy').empty();
+                        $('#lstChemCopy').append("<option value=''>Select</option>");
+                        $('#lstArea').empty();
+                        $('#lstArea').append("<option value=''>Select</option>"); 
+
+    }
+    });
+    $('#btnCancel').click(function () {
+        $('select').css("border", "1px solid #C0C0C0");
+        $("#lblError").text("");
+        $('#ddlDDivision').val('');
+        $('#ddlDTerritory').empty();
+        $('#ddlDTerritory').append("<option value=''>Select</option>");
+        ReverseTransferSelected();
+        ReverseCopySelected();
+    });
+
+    $('#btnCopy').click(function () {
+
+        MoveCopySelected();
+    });
+
+    $('#btnRemoveCopy').click(function () {
+
+        ReverseCopySelected();
+    });
+
+
+    $('#btnTransfer').click(function () {
+
+        MoveTransferSelected();
+    });
+
+    $('#btnRemove').click(function () {
+
+        ReverseTransferSelected();
+    });
+
+
+    function MoveTransferSelected() {
+
+        $('#lstChemistry :selected').each(function (i, selected) {
+            $('#lstChemTranster')
+                 .append($('<option selected="selected" value=' + $(selected).val() + '>')
+                 .text($(selected).text()));
+            $('#lstChemistry :selected').remove();
+        });
+    }
+
+    function ReverseTransferSelected() {
+
+        $('#lstChemTranster :selected').each(function (i, selected) {
+            $('#lstChemistry')
+                 .append($('<option>', { value: $(selected).val() })
+                 .text($(selected).text()));
+            $('#lstChemTranster :selected').remove();
+
+        });
+    }
+
+    function MoveCopySelected() {
+
+        $('#lstChemistry :selected').each(function (i, selected) {
+            $('#lstChemCopy')
+                 .append($('<option selected="selected" value=' + $(selected).val() + '>')
+                 .text($(selected).text()));
+
+        });
+    }
+
+    function ReverseCopySelected() {
+
+        $('#lstChemCopy :selected').each(function (i, selected) {
+
+            $('#lstChemCopy :selected').remove();
+
+        });
+    }
+
+
+
+    $('#btnFetch').click(function () {
+
+        var err = Validate('fetch');
+        if (err == "0")
+            return false;
+        else {
+
+
+
+            $("#lblError").text("");
+            $('#lstChemTranster').empty();
+            $('#lstChemTranster').append("<option value=''>Select</option>");
+            $('#lstChemCopy').empty();
+            $('#lstChemCopy').append("<option value=''>Select</option>");
+
+            $('select').css("border", "1px solid #C0C0C0");
+            $("#lblError").text("");
+            $('#lstChemistry').empty();
+            $('#lstChemistry').append("<option value=''>Select</option>");
+            $.getJSON('@Url.Action("JsonLoadChemist")?TerPKID=' + $('#ddlSTerritory').val() + '&DivFKID=' + $('#ddlSDivision').val() + '&AreaFKID=' + $('#lstArea').val(), function (data) {
+                for (var i = 0; i < data.count; i++) {
+                    $('#lstChemistry').append("<option value='" + data.chemistItems[i].Value + "'>" + data.chemistItems[i].Text + "</option>");
+                }
+            });
+        }
+    });
+
+
+    $('#ddlSDivision').change(function () {
+        $('#ddlSTerritory').empty();
+        $('#ddlSTerritory').append("<option value=''>Select</option>");
+        $('#ddlDDivision').val('');
+        $('#ddlDTerritory').empty();
+        $('#ddlDTerritory').append("<option value=''>Select</option>");
+        $.getJSON('@Url.Action("JsonLoadTerritory")?fkId=' + $('#ddlSDivision').val(), function (data) {
+            for (var i = 0; i < data.count; i++) {
+                $('#ddlSTerritory').append("<option value='" + data.territoryItems[i].Value + "'>" + data.territoryItems[i].Text + "</option>");
+            }
+        });
+    });
+
+
+    $('#ddlDDivision').change(function () {
+        $('#ddlDTerritory').empty();
+        $('#ddlDTerritory').append("<option value=''>Select</option>");
+        if (($('#ddlSDivision').val() == $('#ddlDDivision').val()) && $('#ddlSTerritory').val()!="") {
+
+            $.getJSON('@Url.Action("JsonLoadDTerritory")?TerPKID=' + $('#ddlSTerritory').val() + '&DivFKID=' + $('#ddlDDivision').val(), function (data) {
+                for (var i = 0; i < data.count; i++) {
+                    $('#ddlDTerritory').append("<option value='" + data.territoryItems[i].Value + "'>" + data.territoryItems[i].Text + "</option>");
+                }
+            });
+        }
+        else if ($('#ddlSTerritory').val() != "" && $('#ddlSDivision').val() !="") {
+            $.getJSON('@Url.Action("JsonLoadTerritory")?fkId=' + $('#ddlDDivision').val(), function (data) {
+                for (var i = 0; i < data.count; i++) {
+                    $('#ddlDTerritory').append("<option value='" + data.territoryItems[i].Value + "'>" + data.territoryItems[i].Text + "</option>");
+                }
+            });
+        }
+
+    });
+
+
+    $('#ddlSTerritory').change(function () {
+
+        $('#lstArea').empty();
+        $('#lstArea').append("<option value=''>All</option>");
+        $.getJSON('@Url.Action("JsonLoadAreaName")?fkId=' + $('#ddlSTerritory').val(), function (data) {
+            for (var i = 0; i < data.count; i++) {
+                $('#lstArea').append("<option value='" + data.areaItems[i].Value + "'>" + data.areaItems[i].Text + "</option>");
+            }
+        });
+        $('#ddlDTerritory').empty();
+        $('#ddlDTerritory').append("<option value=''>Select</option>");
+        if ($('#ddlSDivision').val() == $('#ddlDDivision').val()) {
+
+            $.getJSON('@Url.Action("JsonLoadDTerritory")?TerPKID=' + $('#ddlSTerritory').val() + '&DivFKID=' + $('#ddlDDivision').val(), function (data) {
+                for (var i = 0; i < data.count; i++) {
+                    $('#ddlDTerritory').append("<option value='" + data.territoryItems[i].Value + "'>" + data.territoryItems[i].Text + "</option>");
+                }
+            });
+
+        }
+        else if ($('#ddlDDivision').val() != "" && ($('#ddlSDivision').val() != $('#ddlDDivision').val())) {
+            $.getJSON('@Url.Action("JsonLoadDTerritory")?TerPKID=' + '' + '&DivFKID=' + $('#ddlDDivision').val(), function (data) {
+                for (var i = 0; i < data.count; i++) {
+                    $('#ddlDTerritory').append("<option value='" + data.territoryItems[i].Value + "'>" + data.territoryItems[i].Text + "</option>");
+                }
+            });
+
+        }
+        else {
+            $('#ddlDTerritory').empty();
+            $('#ddlDTerritory').append("<option value=''>Select</option>");
+        }
+    });
+
+
+
+    </script>
+
+</body>

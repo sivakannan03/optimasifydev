@@ -1,0 +1,720 @@
+﻿@{
+    ViewBag.Title = "IncludeCustomer";
+    Layout = "~/Views/Shared/MasterLayout.cshtml";
+}
+
+<body>
+    @using (Html.BeginForm(FormMethod.Post))
+    {
+        <div>
+            <table border="0" style="margin-top: 7px;width: 100%" class="inner_tb">
+                <tr>
+                    <td colspan="8" align="center">
+                        <div style="text-align:center;">
+                            <label id="lblSuccessfully" style=" color:red"></label>
+                        </div>
+                    </td>
+
+                </tr>
+                <tr>
+                    <th colspan="8">Include Customer</th>
+                </tr>
+                <tr style="margin-top: 10px;">
+                    <td class="tb-r1">Search</td>
+                    <td class="tb-r1">Brick</td>
+                  
+                    <td class="tb-r1">
+                        &nbsp;&nbsp;&nbsp;
+                        @Html.ListBox("lstBrickName", new[]{
+                         new SelectListItem { Text="", Value=""} }, new { @class = "listboxRpt" })
+                   </td>
+
+                    <td class="tb-r1"></td>
+                    <td class="tb-r1">Customer Type</td>
+                    <td class="tb-r1">
+                       <select class="LstCustomerType" id="drpCustomerType" multiple style="width:140px;">
+                           <option value="All">All</option>
+                            <option value="Doctor">Doctor</option>
+                            <option value="Chemist">Chemist</option>
+                            <option value="Nurse">Nurse</option>
+                            <option value="Patient">Patient</option>
+                            <option value="Stockiest">Stockiest</option>
+                        </select>
+                    </td>
+                    <td class="tb-r1">
+                        <input type="button" id="btnFetch" class="blue_button" style="height:30px; width:70px;border-radius:7px" value="Fetch" />
+                    </td>
+                    <td class="tb-r1">
+                        <input type="button" id="btnMainPage" class="blue_button" style="height:30px; width:120px;border-radius:7px" value="Add Customer" />
+                    </td>
+                </tr>
+            </table>
+        </div>
+        <br /><br />
+         <div>
+            <table border="0" style="width: 100%">
+                <tr>
+                    <td>
+                        <!--JqGrid Starts-->
+                        <table style="margin-top: 7px; width :100%" border="0">
+                            <tr>
+                                <td>
+                                    <table id="ajaxIncludeCust" style="width: 100%" border="0"></table>
+                                    <div id="ajaxGridIncludeCustPager">
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td align="center" style="padding-top:20px; ">
+                                    <table>
+                                        <tr>
+                                            <td style="padding-right:10px;">
+                                                <input type="button" class="blue_button" id="bntSubmit" title="Submit" value="Submit" />
+                                            </td>
+                                            <td>
+                                                <input type="button" class="orange_button" id="bntCancel" title="Cancel" value="Cancel" />
+                                           </td>
+                                          
+                                        </tr>
+                                    </table>
+                                </td>
+
+                            </tr>
+                        </table>
+                        <!--Ends-->
+                    </td>
+                </tr>
+            </table>
+         </div>
+           <div id="openDiv" style="display:none">
+            
+             
+        </div>
+        
+           <!-- Doctor Profile Start-->
+        
+        <div class="inner_tbldiv" id="DoctorDiv" style="display: none; margin-top:10px !important;" >
+        <table border="0" style="width: 600px"> 
+
+
+            <tr style=" vertical-align:top" id="trDoctor">
+                <td width="2%"></td>
+                <td> 
+                    <table class="inner_tb" id="tblHeader" width="100%" cellpadding="0" cellspacing="0">
+                        <tr id="tr_Name">
+                            <td class="tb-r1">FirstName :</td>
+                            <td class="tb-r1"> </td>
+                            <td class="tb-r1">MiddleName :</td>
+                            <td class="tb-r1"></td>
+                            <td class="tb-r1">LastName :</td>
+                            <td class="tb-r1"></td>
+                        </tr>
+                        <tr id="tr_Address">
+                            <td class="tb-r2">Address :</td>
+                            <td class="tb-r2"> </td>
+                            <td class="tb-r2">Specialization :</td>
+                            <td class="tb-r2" colspan="3"></td>
+                        </tr>
+
+                        <tr id="tr_Street">
+                            <td class="tb-r1">Street :</td>
+                            <td class="tb-r1"> </td>
+                            <td class="tb-r1">Class :</td>
+                            <td colspan="3" class="tb-r1"></td>
+                        </tr>
+                        <tr id="tr_Area">
+                            <td class="tb-r2">Area :</td>
+                            <td colspan="5" class="tb-r2"> </td>
+
+                        </tr>
+
+                        <tr id="tr_Zip">
+                            <td class="tb-r1">Zip :</td>
+                            <td colspan="5" class="tb-r1"> </td>
+                        </tr>
+                        <tr id="tr_Phone">
+                            <td class="tb-r2">Phone(R) :</td>
+                            <td class="tb-r2"> </td>
+                            <td class="tb-r2">Phone(Clinic) :</td>
+                            <td class="tb-r2" colspan="3"></td>
+                        </tr>
+                        <tr id="tr_Mobile">
+                            <td class="tb-r1">Mobile :</td>
+                            <td class="tb-r1"> </td>
+                            <td class="tb-r1">e-Mail :</td>
+                            <td colspan="3" class="tb-r1"></td>
+                        </tr>
+                    </table>
+
+                </td>
+                <td></td>
+                <td width="2%"></td>
+
+            </tr>
+            <!-- Chemist Profile Starts-->
+            <tr id="trChemist">
+                <td width="2%"></td>
+                <td>
+                    <table class="inner_tb" id="tblChemist" width="100%" cellpadding="0" cellspacing="0">
+                        <tr id="tr_CheName">
+                            <td class="tb-r1">FirstName :</td>
+                            <td class="tb-r1"> </td>
+                            <td class="tb-r1">MiddleName :</td>
+                            <td class="tb-r1"></td>
+                            <td class="tb-r1">LastName :</td>
+                            <td class="tb-r1"></td>
+                        </tr>
+                        <tr id="tr_CheAddress">
+                            <td class="tb-r2">Address :</td>
+                            <td class="tb-r2"> </td>
+                            <td class="tb-r2">Street :</td>
+                            <td class="tb-r2" colspan="3"></td>
+                        </tr>
+
+
+                        <tr id="tr_CheArea">
+                            <td class="tb-r2">Area :</td>
+                            <td colspan="5" class="tb-r2"> </td>
+
+                        </tr>
+
+                        <tr id="tr_CheZip">
+                            <td class="tb-r1">Zip :</td>
+                            <td colspan="5" class="tb-r1"> </td>
+                        </tr>
+                        <tr id="tr_ChePhone">
+                            <td class="tb-r2">Phone(R) :</td>
+                            <td class="tb-r2"> </td>
+                            <td class="tb-r2">Mobile :</td>
+                            <td class="tb-r2" colspan="3"></td>
+                        </tr>
+                        <tr id="tr_CheMail">
+                            <td class="tb-r2">e-Mail :</td>
+                            <td colspan="5" class="tb-r1"> </td>
+
+                        </tr>
+                    </table>
+
+                </td>
+                <td width="2%"></td>
+
+            </tr>
+
+            <tr>
+                <td width="2%"></td>
+                <td>
+
+                   
+                    <table style="margin-top: 7px; width :600px" border="0">
+                        <tr>
+                            <td>
+                                <table id="DoctorInfoGrid" style="width: 600px;" border="0"></table>
+                                <div id="DoctorPager">
+                                </div>
+                            </td>
+                        </tr>
+                    </table>
+                   
+                </td>
+                <td width="2%"></td>
+            </tr>
+
+
+
+        </table>
+    </div>
+          
+    }
+</body>
+<script type="text/javascript">
+
+    $("#btnFetch").click(function () {
+
+        if ($("#lstBrickName").val() == "All" || $("#lstBrickName").val() == null) {
+            $('#lstBrickName').focus();
+             return false;
+        }
+        else if ($("#drpCustomerType").val() == "All" || $("#drpCustomerType").val() == null)
+        {
+            $('#drpCustomerType').focus();
+            return false;
+
+        }
+        var Bricktype = $("#lstBrickName").val();
+        var Customertype = $("#drpCustomerType").val();
+       if ($("#drpCustomerType").val() == "Doctor")
+        {
+           IncludeCustomer(Bricktype, Customertype);
+           $("#bntSubmit").show();
+           $("#bntCancel").show();
+        }
+        else
+        {
+           ChemistIncludecust(Bricktype, Customertype);
+            $("#bntSubmit").show();
+            $("#bntCancel").show();
+         }
+    });
+
+    $("#lstBrickName").on('change', function ()
+    {
+        if ($(this).val() == "All") {
+            $("#lstBrickName option").prop("selected", true);
+            $("#lstBrickName  option:first").removeAttr('selected');
+        }
+    });
+
+    $("#drpCustomerType").on('change', function ()
+    {
+
+        if ($(this).val() == "All") {
+            $("#drpCustomerType option").prop("selected", true);
+            $("#drpCustomerType option:first").removeAttr('selected');
+        }
+    });
+
+    $("#bntCancel").click(function () {
+        $("#lstBrickName").val(0);
+        $("#drpCustomerType").val(0);
+        $("#ajaxIncludeCust").setGridParam({ datatype: 'json', page: 1 }).trigger('reloadGrid');
+        return true;
+     });
+
+    function DisplayError(type) {
+
+        $('#openDiv').css('display', 'block');
+        if (type == 'notselect')
+            $('#openDiv').html('Please Select atleast one row');
+        else
+            $('#openDiv').html('Under Construction');
+
+
+        $('#openDiv').dialog({
+            title: 'Alert Message',
+            height: 78,
+            width: 308,
+            show: { effect: 'drop', direction: "up" },
+            modal: true,
+            open: function (event, ui) {
+
+            },
+
+        });
+
+
+    }
+
+    @*//Submit for Approval
+    $("#bntSubmit").click(function ()
+    {
+        $("#lblSuccessfully").text('');
+        jQuery('#ajaxIncludeCust').jqGrid('saveRow', lastsel);
+        var gridData = jQuery("#ajaxIncludeCust").getRowData();
+        var postData = JSON.stringify(gridData);
+       
+
+        $.ajax({
+            url: '@Url.Action("IncludeCustomerDetails")?CustomerType=' + $("#drpCustomerType").val(),
+            type: 'POST',
+            dataType: 'json',
+            data: { gridData: postData },
+            success: function (result)
+            {
+                if (result.msg == "notselect") {
+                    DisplayError(result.msg);
+                }
+
+                else {
+                    $("#lblSuccessfully").text(result.msg);
+                    $("#ajaxIncludeCust").setGridParam({ datatype: 'json', page: 1 }).trigger('reloadGrid');
+                    return true;
+                }
+
+
+            }
+        });
+
+
+    });*@
+
+
+    $("#bntSubmit").click(function () {
+
+       
+        jQuery('#ajaxIncludeCust').jqGrid('saveRow', lastsel);
+        var gridData = jQuery("#ajaxIncludeCust").getRowData();
+        var postData = JSON.stringify(gridData);
+        alert(postData);
+       $.ajax({
+            url: '@Url.Action("IncludeCustomerDetails")?CustomerType='+ $("#drpCustomerType").val(),
+            type: 'POST',
+            dataType: 'json',
+            data: { gridData: postData },
+            success: function (result) {
+                if (result.msg == "notselect") {
+                    DisplayError(result.msg);
+                }
+
+                else {
+                    $("#lblSuccessfully").text(result.msg);
+                    $("#ajaxIncludeCust").setGridParam({ datatype: 'json', page: 1 }).trigger('reloadGrid');
+                    return true;
+                }
+            }
+        });
+       
+
+    });
+
+
+    jQuery(document).ready(function () {
+        $('#lstBrickName').empty();
+
+        $('#lstBrickName').append("<option value='All'>All</option>");
+
+        $.getJSON('@Url.Action("JsonGetBrick")', function (data) {
+            for (var i = 0; i < data.countyCount; i++) {
+                $('#lstBrickName').append("<option value='" + data.countyItems[i].Value + "'>" + data.countyItems[i].Text + "</option>");
+            }
+            $("#lstBrickName option:first").prop("selected", true);
+            $("#drpCustomerType option:first").prop("selected", true);
+            $("#bntSubmit").hide();
+            $("#bntCancel").hide();
+
+        });
+
+    });
+
+    function DoctorProfile(MASPKID, Type) {
+
+        if ((Type == "Nurse") || (Type == "Patient") || (Type == "Stockiest")) {
+
+            DisplayError('Under Construction');
+
+        }
+        else {
+
+            //Get Doctor Information :
+
+            if (Type == 'Doctor') {
+                $.getJSON('@Url.Action("GetDoctorDetailsforinccust")?MASPKID=' + MASPKID + '&Type=' + Type + '&flag=' + 'header', function (data) {
+                    $("#trDoctor").show();
+                    $("#trChemist").hide();
+                    jQuery('#tr_Name  td:nth-child(2)').html(data.FName);
+                    jQuery('#tr_Name  td:nth-child(4)').html(data.MName);
+                    jQuery('#tr_Name  td:nth-child(6)').html(data.LName);
+
+                    jQuery('#tr_Address  td:nth-child(2)').html(data.Address);
+                    jQuery('#tr_Address  td:nth-child(4)').html(data.Specialization);
+
+
+                    jQuery('#tr_Street  td:nth-child(2)').html(data.Street);
+                    jQuery('#tr_Street  td:nth-child(4)').html(data.AreaFKID);
+
+                    jQuery('#tr_Area  td:nth-child(2)').html(data.AreaName);
+
+                    jQuery('#tr_Zip  td:nth-child(2)').html(data.Zipcode);
+                    jQuery('#tr_Phone  td:nth-child(2)').html(data.TelRoles);
+                    jQuery('#tr_Phone  td:nth-child(4)').html(data.TelClinic);
+
+                    jQuery('#tr_Mobile  td:nth-child(2)').html(data.Mobile);
+                    jQuery('#tr_Mobile  td:nth-child(4)').html(data.Email);
+
+                });
+
+
+            }
+            else if (Type == 'Chemist') {
+                $.getJSON('@Url.Action("GetDoctorDetailsforinccust")?MASPKID=' + MASPKID + '&Type=' + Type + '&flag=' + 'header', function (data) {
+                    $("#trChemist").show();
+                    $("#trDoctor").hide();
+                    jQuery('#tr_CheName  td:nth-child(2)').html(data.FName);
+                    jQuery('#tr_CheName  td:nth-child(4)').html(data.MName);
+                    jQuery('#tr_CheName  td:nth-child(6)').html(data.LName);
+
+                    jQuery('#tr_CheAddress  td:nth-child(2)').html(data.Address);
+                    jQuery('#tr_CheAddress  td:nth-child(4)').html(data.Street);
+                    jQuery('#tr_CheArea  td:nth-child(2)').html(data.AreaName);
+
+                    jQuery('#tr_CheZip  td:nth-child(2)').html(data.Zipcode);
+                    jQuery('#tr_ChePhone  td:nth-child(2)').html(data.PhoneNo);
+                    jQuery('#tr_ChePhone  td:nth-child(4)').html(data.Mobile);
+                    jQuery('#tr_CheMail  td:nth-child(2)').html(data.Email);
+                });
+            }
+            $('#DoctorDiv').css('display', 'block');
+
+            $('#DoctorInfoGrid').jqGrid('GridUnload');
+            jQuery("#DoctorInfoGrid").jqGrid({
+                url: '@Url.Action("GetDoctorDetailsforIncCustGrid")?MASPKID=' + MASPKID + '&Type=' + Type,
+                datatype: "json",
+                jsonReader: { repeatitems: false, id: "Name" },
+                colNames: ['Name', 'Date'],
+                colModel: [
+
+                    { name: 'LoginName', index: 'LoginName', align: 'left' },
+                    { name: 'Date', index: 'Date', align: 'left' }
+                ],
+
+                caption: 'Call History',
+                gridview: true,
+                jqModal: true,
+                rowTotal: 10,
+                rowNum: 5,
+                width: 600,
+                align: 'center',
+                sortable: true,
+                hidegrid: true,
+                altRows: true,
+                viewrecords: true,
+                pager: $('#DoctorPager'),
+                height: 'auto'
+
+            });
+
+
+            $('#DoctorDiv').dialog({
+                title: 'Daily Plan',
+                width: 630,
+                height: 500,
+                show: { effect: 'drop', direction: "up" },
+                modal: true,
+                open: function (event, ui) {
+
+                },
+
+            });
+
+
+        }
+    }
+
+
+
+    //Doctor List
+    var lastsel;
+    function IncludeCustomer(Bricktype, Customertype) {
+
+        $("#ajaxIncludeCust").jqGrid("GridUnload");
+        jQuery("#ajaxIncludeCust").jqGrid({
+            url: '@Url.Action("GridIncludeCustomer")?Brick=' + Bricktype + '&Specialization=' + Customertype,
+            jsonReader: { repeatitems: false, id: "pkid" },
+            datatype: "json",
+            colNames: ['PKID', '', 'Customer Name', 'Customer Type', 'Speciality', '', 'Brick', 'Pract.Speciality', 'KOL'],
+            colModel: [
+                         { name: 'pkid', index: 'pkid', align: 'left', hidden: true },
+                         {
+                             name: 'chks', index: 'chks', id: 'chks', width: "20px", align: "center", editable: true,
+                             edittype: "checkbox", editoptions: { value: "Yes:No" }, formatter: "checkbox", formatoptions: { disabled: false }
+                         },
+                         { name: 'CustomerName', index: 'CustomerName', align: 'left', formoptions: { size: 35 }, formatter: 'showlink' },
+                         { name: 'Type', index: 'Type', align: 'left', formoptions: { size: 35 } },
+                         { name: 'Specialization', index: 'Specialization', align: 'left', formoptions: { size: 35 } },
+                         { name: 'AMPKID', index: 'AMPKID', align: 'left', hidden: true },
+                         { name: 'AreaName', index: 'AreaName', align: 'left', formoptions: { size: 35 } },
+                         {
+                             name: 'PractSpeciality', index: 'PractSpeciality', id: 'PractSpeciality', align: 'left', editable: true, width: "120px", edittype: 'select',
+                             editoptions: {
+                                 dataUrl: function () {
+                                     return 'PVLoadSpecialization';
+                                 }
+                             }
+                         },
+                  {
+                      name: 'KOL', index: 'KOL', width: "30px", align: "center", editable: true,
+                      edittype: "checkbox", editoptions: { value: "1:0" }, formatter: "checkbox", formatoptions: { disabled: false }
+                  },
+
+
+            ],
+
+            caption: "Incluce Customer",
+            autowidth: true,
+            hidegrid: false,
+            gridview: true,
+            altRows: true,
+            rowTotal: 10,
+            rowNum:10,
+            loadonce: true,
+            sortname: 'CustomerName',
+            sortorder: 'asc',
+            viewrecords: true,
+            pager: $('#ajaxGridIncludeCustPager'),
+            height: 'auto',
+            onSelectRow: function (id, selected) {
+
+                var ch = jQuery(this).find('#' + id + ' input[type=checkbox]').attr('checked');
+                if (ch) {
+                    jQuery(this).find('#' + id + ' input[type=checkbox]').attr('checked', false);
+                    jQuery(this).find("#PractSpeciality").jqGrid("saveRow", id);
+                } else {
+                    jQuery(this).find('#' + id + ' input[type=checkbox]').attr('checked', true);
+                    jQuery(this).find("#PractSpeciality").jqGrid("editRow", id);
+
+                }
+                rowChecked = 1;
+                currentrow = id;
+
+                if (!$("input[type=checkbox]").is(':checked') && !$("#chks").is(':checked')) {
+                    jQuery('#ajaxIncludeCust').jqGrid('saveRow', id);
+
+                }
+                else {
+                    jQuery("#ajaxIncludeCust").jqGrid('editRow', id);
+
+                }
+
+
+                if (id != lastsel) {
+                    jQuery('#ajaxIncludeCust').saveRow(lastsel);
+                    lastsel = id;
+                }
+                jQuery('#ajaxIncludeCust').editRow(id, true);
+
+            },
+
+
+            afterInsertRow: function (rowid, rowData, rowelem) {
+                var detail = rowData["Type"];
+                if (detail == "Doctor" || detail == "Chemist") {
+                    $("#ajaxIncludeCust").jqGrid('setRowData', rowid, false, { color: "#2f72c3" });
+                }
+                else if (detail == "Patient" || detail == "Hospital" || detail == "Nurse" || detail == "Stockist") {
+                    $("#ajaxIncludeCust").jqGrid('setRowData', rowid, false, { color: "#E77471" });
+                }
+            },
+
+            loadComplete: function () {
+
+                var ids = jQuery("#ajaxIncludeCust").jqGrid('getDataIDs');
+                var c1 = "", c2 = ""; c3 = "";
+
+                if (jQuery("#ajaxIncludeCust").getGridParam("records") == 0) {
+                    jQuery("#ajaxIncludeCust").addRowData(
+                    "blankRow", { "Type": "No records to view" });
+                }
+
+                for (var i = 0; i <= ids.length; i++) {
+
+                    c1 = jQuery('#ajaxIncludeCust').jqGrid('getCell', ids[i], 0);
+                    c2 = jQuery('#ajaxIncludeCust').jqGrid('getCell', ids[i], 3);
+                    c3 = jQuery('#ajaxIncludeCust').jqGrid('getCell', ids[i], 2);
+
+                    if (c2 != "Hospital" && c2 != "Stockist" && c2 != "Nurse" && c2 != "Patient")
+                    {
+                        popUp1 = "<a onclick=\"javascript:DoctorProfile('" + c1 + "','" + c2 + "');\"  style=\"color:#2f72c3;font-weight:bold;cursor:pointer\">" + c3 + "</a>";
+                        jQuery("#ajaxIncludeCust").jqGrid('setRowData', ids[i], { CustomerName: popUp1 });
+                    }
+                    else if (c2 == "Hospital" || c2 == "Stockist" || c2 == "Nurse" || c2 == "Patient")
+                    {
+                        popUp2 = "<a style=\"color:#E77471 !important;font-weight:bold; text-decoration:none; outline-style: none;\">" + c3 + "</a>";
+                        jQuery("#ajaxIncludeCust").jqGrid('setRowData', ids[i], { CustomerName: popUp2 });
+                    }
+
+                }
+
+
+            },
+
+            editable: true,
+
+        });
+    }
+
+    //Chemist list
+    function ChemistIncludecust(Bricktype, Customertype) {
+
+        $("#ajaxIncludeCust").jqGrid("GridUnload");
+        jQuery("#ajaxIncludeCust").jqGrid({
+            url: '@Url.Action("GridIncludeCustomer")?Brick=' + Bricktype + '&Specialization=' + Customertype,
+            jsonReader: { repeatitems: false, id: "pkid" },
+            datatype: "json",
+            colNames: ['PKID', '', 'Customer Name', 'Customer Type', 'Speciality', '', 'Brick'],
+            colModel: [
+                         { name: 'pkid', index: 'pkid', align: 'left', hidden: true },
+                         {
+                             name: 'chks', index: 'chks', id: 'chks', width: "20px", align: "center", editable: true,
+                             edittype: "checkbox", editoptions: { value: "Yes:No" }, formatter: "checkbox", formatoptions: { disabled: false }
+                         },
+                         { name: 'CustomerName', index: 'CustomerName', align: 'left', formoptions: { size: 35 }, formatter: 'showlink' },
+                         { name: 'Type', index: 'Type', align: 'left', formoptions: { size: 35 } },
+                         { name: 'Specialization', index: 'Specialization', align: 'left', formoptions: { size: 35 } },
+                         { name: 'AMPKID', index: 'AMPKID', align: 'left', hidden: true },
+                         { name: 'AreaName', index: 'AreaName', align: 'left', formoptions: { size: 35 } },
+            ],
+            caption: "Chemist Customer",
+            autowidth: true,
+            gridview: true,
+            hidegrid: true,
+            altRows: true,
+            rowTotal: 10,
+            rowNum: 10,
+            editable: true,
+            viewrecords: true,
+            pager: $('#ajaxGridIncludeCustPager'),
+            height: 'auto',
+            onSelectRow: function (id, selected) {
+
+                var ch = jQuery(this).find('#' + id + ' input[type=checkbox]').attr('checked');
+                if (ch) {
+                    jQuery(this).find('#' + id + ' input[type=checkbox]').attr('checked', false);
+                    jQuery(this).find("#PractSpeciality").jqGrid("saveRow", id);
+                } else {
+                    jQuery(this).find('#' + id + ' input[type=checkbox]').attr('checked', true);
+
+
+                }
+                rowChecked = 1;
+                currentrow = id;
+
+                if (!$("input[type=checkbox]").is(':checked') && !$("#chks").is(':checked')) {
+                    jQuery('#ajaxIncludeCust').jqGrid('saveRow', id);
+
+                }
+                else {
+                    jQuery("#ajaxIncludeCust").jqGrid('editRow', id);
+
+                }
+
+
+                if (id != lastsel) {
+                    jQuery('#ajaxIncludeCust').saveRow(lastsel);
+                    lastsel = id;
+                }
+                jQuery('#ajaxIncludeCust').editRow(id, true);
+
+            },
+            loadComplete: function () {
+
+                var ids = jQuery("#ajaxIncludeCust").jqGrid('getDataIDs');
+                var c1 = "", c2 = ""; c3 = "";
+
+                if (jQuery("#ajaxIncludeCust").getGridParam("records") == 0) {
+                    jQuery("#ajaxIncludeCust").addRowData(
+                    "blankRow", { "Type": "No records to view" });
+                }
+
+                for (var i = 0; i <= ids.length; i++) {
+
+                    c1 = jQuery('#ajaxIncludeCust').jqGrid('getCell', ids[i], 0);
+                    c2 = jQuery('#ajaxIncludeCust').jqGrid('getCell', ids[i], 3);
+                    c3 = jQuery('#ajaxIncludeCust').jqGrid('getCell', ids[i], 2);
+                    if (c2 != "Hospital" && c2 != "Stockist" && c2 != "Nurse" && c2 != "Patient") {
+                        popUp1 = "<a onclick=\"javascript:DoctorProfile('" + c1 + "','" + c2 + "');\"  style=\"color:#2f72c3;font-weight:bold;cursor:pointer\">" + c3 + "</a>";
+                        jQuery("#ajaxIncludeCust").jqGrid('setRowData', ids[i], { CustomerName: popUp1 });
+                    }
+                    else if (c2 == "Hospital" || c2 == "Stockist" || c2 == "Nurse" || c2 == "Patient") {
+                        popUp2 = "<a style=\"color:#E77471 !important;font-weight:bold; text-decoration:none; outline-style: none;\">" + c3 + "</a>";
+                        jQuery("#ajaxIncludeCust").jqGrid('setRowData', ids[i], { CustomerName: popUp2 });
+                    }
+
+                }
+
+
+            },
+            editable: true,
+
+        });
+    }
+
+</script>

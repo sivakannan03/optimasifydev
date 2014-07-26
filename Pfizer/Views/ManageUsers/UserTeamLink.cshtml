@@ -75,8 +75,6 @@
 
 
 
-
-
     function initGrid() {
         jQuery("#UserTeamLink").jqGrid({
 
@@ -131,7 +129,7 @@
                             editrules: { required: false }, formoptions: { elmsuffix: "<span style='align:left;color:red'>*</span>&nbsp;" }
                             },
                             {
-                                name: 'UserName', index: 'UserName',hidden:true, align: 'left', editable: true, edittype: 'select', search:false, editrules: { required: false,edithidden:true }, editoptions: {
+                                name: 'UserName', index: 'UserName',hidden:false, align: 'left', editable: true, edittype: 'select', search:false, editrules: { required: false,edithidden:true }, editoptions: {
                                 multiple: true,
 
                                 dataUrl: function () {
@@ -217,6 +215,8 @@
                 pager: $('#UserTeamLinkPager'),
                 height: 'auto',
                 editable: true,
+
+                editurl: '@Url.Action("EditUserTeamLinks")'
               
         });
 
@@ -361,23 +361,31 @@
             },
 
             afterSubmit: function (response, postdata) {
-                if (response.responseText != "\"User Team Link Added Successfully.\"") {
-                    $('#TblGrid_UserTeamLink td.ui-state-highlight').removeClass('ui-state-highlight').addClass('ui-state-error');
-                    return [false, response.responseText];
-                }
-                else {
-                    $("#UserTeamLink").jqGrid('setGridParam', { datatype: 'json' }).trigger('reloadGrid');
+                $("#UserTeamLink").jqGrid('setGridParam', { datatype: 'json' }).trigger('reloadGrid');
+                var errorId = " ";
+                if (response.responseText == "\"User Team Link Added Successfully.\"") {
+                    errorId += "User Team Link Added Successfully.";
+                    $('#FormError').html("<td class='ui-state-error' colspan='10'>" + errorId + "</td>");
                     $('#TblGrid_UserTeamLink td.ui-state-error').removeClass('ui-state-error').addClass('ui-state-highlight');
-
-                    $("#SelUserName option:selected").remove();
                     $('select').val(0);
                     $("#IsActive").prop('checked', false);
                     return [false, response.responseText];
                 }
-            },
+                else {
+                    errorId += "User Team Link already Exists";
+                    $('#FormError').html("<td class='ui-state-error' colspan='10'>" + errorId + "</td>");
+                    $('#TblGrid_UserTeamLink td.ui-state-error').removeClass('ui-state-highlight').addClass('ui-state-error');
+                    $('select').val(0);
+                    $("#IsActive").prop('checked', false);
+                    return [false, response.responseText];
 
+                }
+
+            },
          
         },
+
+        
         {
             //DELETE
             closeOnEscape: true,
@@ -387,43 +395,46 @@
             drag: true,
             width: 400,
             modal: true,
-            afterShowForm: function (form) {
-                form.closest('div.ui-jqdialog').center();
-            },
+         
+            beforeShowForm: function (form) 
+            {
 
-
-
-
-            beforeShowForm: function (form) {
-
-                $('tr td.delmsg').html('Delete selected record(s)?');
-
+                //POP UP Screen Fit Screen
+                var thisForm = $("#delmod" + jQuery("#UserTeamLink")[0].id);
+                var dialogHeight = $(thisForm).height();
+                var dialogWidth = $(thisForm).width();
+                var windowHeight = $(window).height();
+                var windowWidth = $(window).width();
+                $(thisForm).css('position', 'fixed');
+                $(thisForm).css('top', ((windowHeight - dialogHeight) / 2));
+                $(thisForm).css('left', ((windowWidth - dialogWidth) / 2));
+              
                 var col1 = $('#UserTeamLink').jqGrid('getGridParam', 'selrow');
-                var IsActive = $('#UserTeamLink').jqGrid('getCell', col1, 'Status');
-               // alert(IsActive);
-                if (IsActive == "InAcitve") {
+
+                var Statusfield = $('#UserTeamLink').jqGrid('getCell', col1, 'Status');
+                $('tr td.delmsg').html('Delete selected record(s)?');
+                if (Statusfield == "InAcitve") {
                     $('tr td.delmsg').html('Record Already Deleted');
                     $('#dData').hide();
                 }
-                else {
+                else
                     $('#dData').show();
-                }
-            },           
 
+            },
+          
             afterSubmit: function (response, postdata) {
-
+                $('tr td.delmsg').html('');
                 $("#UserTeamLink").jqGrid('setGridParam', { datatype: 'json' }).trigger('reloadGrid');
+                $('#DelTbl_UserTeamLink td.ui-state-error').removeClass('ui-state-error').addClass('ui-state-highlight');
+                $('#dData').hide();
                 return [false, response.responseText];
             },
-            delData: {
-                PKID: function () {
-                    var sel_id = $('#UserTeamLink').jqGrid('getGridParam', 'selrow');
-                    var value = $('#UserTeamLink').jqGrid('getCell', sel_id, '_id');
-                    return value;
-                }
-            }
-
         },
+
+        
+
+
+
         {
             //search
             closeOnEscape: true,

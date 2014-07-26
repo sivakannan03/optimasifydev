@@ -1837,8 +1837,8 @@ namespace Pfizer.Controllers
                     TeamName=x.TeamName,
                     x.TeamFKID
                 }).ToList();
-
                 var count = result.Count();
+
                 var pageData = result.OrderBy(x => x.DateofBegining).Skip((gridQueryModel.page - 1) * gridQueryModel.rows).Take(gridQueryModel.rows);
 
 
@@ -2068,7 +2068,7 @@ namespace Pfizer.Controllers
                 //}).ToList();
                 var context = (from a in genData.usp_ReconcileSettings()
                                
-                               select new { DateofBegining=a.DateofBegining.ToShortDateString(),TeamName= a.TeamName }).ToList();
+                               select new { DateofBegining=a.DateofBegining,TeamName= a.TeamName }).ToList();
 
                 foreach (var item in context)
                 {
@@ -2142,7 +2142,282 @@ namespace Pfizer.Controllers
         //    end 
 
         /* ends */
-  
-    
+
+
+        #region Mathan
+
+        #region Default User QuestionLink Master
+
+
+        #region Action Controller Class
+
+        public ActionResult DefaultUserQuestionLinkMaster()
+        {
+
+            return View();
+        }
+
+        #endregion
+
+        #region Load Grid Data
+
+        public JsonResult GetUserQuestionLinkMaster(GridQueryModel gridQueryModel)
+        {
+            try
+            {
+
+                var searchString = gridQueryModel.searchString == null ? "" : gridQueryModel.searchString.ToUpper();
+                var searchOper = gridQueryModel.searchOper;
+                var searchField = gridQueryModel.searchField;
+                var query = (from q in genData.GetUserDefault() select q).ToList();
+                var count = query.Count();
+                var pageData = query.Skip((gridQueryModel.page - 1) * gridQueryModel.rows).Take(gridQueryModel.rows);
+
+
+                if (gridQueryModel._search == true && searchString != "")
+                {
+                    if ((searchField == "Question"))
+                    {
+                        if (searchOper == "bw")//begins with
+                        {
+                            var q = (from sq in query
+                                     where sq.Question != null && sq.Question.ToUpper().StartsWith(searchString, StringComparison.CurrentCultureIgnoreCase)
+                                     select sq).ToList();
+                            count = q.Count();
+                            pageData = q.OrderBy(x => x.Question).Skip((gridQueryModel.page - 1) * gridQueryModel.rows).Take(gridQueryModel.rows);
+                        }
+                        else if (searchOper == "eq") //equal
+                        {
+                            var q = (from sq in query where sq.Question != null && sq.Question.ToUpper().Equals(searchString, StringComparison.CurrentCultureIgnoreCase) select sq).ToList();
+                            count = q.Count();
+                            pageData = q.OrderBy(x => x.Question).Skip((gridQueryModel.page - 1) * gridQueryModel.rows).Take(gridQueryModel.rows);
+                        }
+                        else if (searchOper == "ew") // ends with
+                        {
+                            var q = (from sq in query where sq.Question != null && sq.Question.ToUpper().EndsWith(searchString, StringComparison.CurrentCultureIgnoreCase) select sq).ToList();
+                            count = q.Count();
+                            pageData = q.OrderBy(x => x.Question).Skip((gridQueryModel.page - 1) * gridQueryModel.rows).Take(gridQueryModel.rows);
+                        }
+                        else if (searchOper == "cn")//contains
+                        {
+                            var q = (from sq in query where sq.Question != null && sq.Question.ToUpper().Contains(searchString) select sq).ToList();
+                            count = q.Count();
+                            pageData = q.OrderBy(x => x.Question).Skip((gridQueryModel.page - 1) * gridQueryModel.rows).Take(gridQueryModel.rows);
+                        }
+
+                    }
+
+                }
+                else
+                {
+                    count = query.Count();
+                    if (gridQueryModel.sidx == "Question" && gridQueryModel.sord == "asc")
+                        pageData = (from cust in query orderby cust.Question descending select cust).Skip((gridQueryModel.page - 1) * gridQueryModel.rows).Take(gridQueryModel.rows);
+                    else
+                        if (gridQueryModel.sidx == "Question" && gridQueryModel.sord == "desc")
+                            pageData = (from cust in query orderby cust.Question ascending select cust).Skip((gridQueryModel.page - 1) * gridQueryModel.rows).Take(gridQueryModel.rows);
+                }
+
+                return Json(new
+                {
+                    page = gridQueryModel.page,
+                    records = count,
+                    rows = pageData,
+
+                    total = Math.Ceiling((decimal)count / gridQueryModel.rows)
+                }, JsonRequestBehavior.AllowGet);
+
+
+            }
+            catch (Exception ex)
+            {
+                return Json(new { error = ex.Message });
+            }
+        }
+
+        #endregion
+
+        #region Upadate the Default User QuestionLink Master
+
+        public ActionResult UpdateTeamReminderLinkMaster(string gridData)
+        {
+            try
+            {
+                JavaScriptSerializer objJavaScriptSerializer = new JavaScriptSerializer();
+
+                UserQuestionLinkMaster[] objStatus = objJavaScriptSerializer.Deserialize<UserQuestionLinkMaster[]>(gridData);
+                string msg = string.Empty;
+
+                string s = string.Empty;
+                StringBuilder sb = new StringBuilder();
+                string Flag = string.Empty;
+                sb.Append("<Root>");
+                foreach (UserQuestionLinkMaster val in objStatus)
+                {
+                    sb.Append("<CampaignDtls ");
+                    sb.Append("QuestionFKID= '" + val.PKID + "' ");
+                    sb.Append("Answer= '" + val.Answer + "' ");
+                    sb.Append("/> ");
+
+                }
+                sb.Append("</Root>");
+
+                string strxml = sb.ToString();
+                decimal userfkid = Convert.ToDecimal(Session["USER_FKID"]);
+                decimal createtdby = Convert.ToDecimal(Session["USER_FKID"]);
+                int save = genData.AddUserMaster3(userfkid, createtdby, strxml);
+
+                msg = "Question Link Master Updated Successfully.";
+
+                return Json(msg);
+            }
+            catch (Exception ex)
+            { return Json(new { error = ex.Message }); }
+        }
+
+        public class UserQuestionLinkMaster
+        {
+            public string PKID { get; set; }
+            public string Question { get; set; }
+            public string Answer { get; set; }
+        }
+
+
+        #endregion
+
+        #endregion
+
+        #endregion
+
+     
+        #region Nagarajan
+
+        public JsonResult GetRoleBasedmenuItem(string RoleId)
+        {
+            dynamic query = (from a in genData.getRoleBasedmenu(RoleId) select new { a.RoleID, a.MenuFKID }).ToList();
+            return Json(query);
+
+        }
+
+        //Relocation Menu
+        public ActionResult Reallocatemenu()
+        {
+
+            return View();
+        }
+
+
+        public string MenuRightid(string Right)
+        {
+
+            string[] arrayUser = Right.Split(',');
+
+            string xml = "<root>";
+
+            for (int i = 0; i < arrayUser.Count(); i++)
+            {
+
+                xml += "<row";
+                xml += " MenuID='" + arrayUser[i] + "'";
+                xml += "/>";
+
+
+            }
+            xml += "</root>";
+            return xml;
+
+
+        }
+
+        public ActionResult UseMenuRight(string RoleId, string Right)
+        {
+            string xml = "";
+            string msg = "";
+            xml = MenuRightid(Right);
+            genData.insertRoleBasedMenu(RoleId, xml);
+            msg = "Reallocation Menu Rights Added Successfully.";
+
+            return Json(new
+            {
+                msg
+            }, JsonRequestBehavior.AllowGet);
+
+
+        }
+
+        //Menu Heading
+
+        public JsonResult JsonLoadRole()
+        {
+            string str = string.Empty;
+            string str1 = string.Empty;
+            var RoleDate = (from a in genData.GetMenuForRole(Convert.ToString(Session["USER_FKID"] == null ? "0" : Session["USER_FKID"].ToString())) select new { a.MenuID, a.MenuHeading, a.MenuSequence, a.Element }).ToList();
+
+            foreach (var item in RoleDate)
+            {
+                str += "<h3>" + item.MenuHeading + "</h3><div><p>";
+                str += "<table border='0' align='left'>";
+                if (item.Element == "MenuHead")
+                {
+                    //str += " <tr><td width='1%'><input type='checkbox'id='" + item.MenuID + "'></td>";
+                    //  str += "<tr><td align='left' width='75%' style='font-family:Times New Roman;font-weight:bold;'>" + item.MenuHeading + "</td></tr></p>";
+                    str1 = ChileMenu(item.MenuID);
+
+                }
+                str += str1 + "</table></div>";
+
+            }
+
+            return Json(new
+            {
+                str
+            }, JsonRequestBehavior.AllowGet);
+
+        }
+        //Child Heading
+        public string ChileMenu(decimal ParentID)
+        {
+            string str = string.Empty;
+            var MenuChild = (from a in genData.GetMenuForChile(Convert.ToInt32(ParentID)) select new { a.MasterID, a.MenuHeading, a.ParentMenuID, a.MenuSequence, a.Element }).ToList();
+            foreach (var child in MenuChild)
+            {
+                str += "<table id='ChildCheckboxid'>";
+                if (child.Element == "MenuMaster")
+                {
+                    str += "<tr><td><input type='checkbox' class='checkbox' id='" + child.MasterID + "'/></td>";
+                    str += " <td class='text_style_bd'>" + child.MenuHeading + "</td></tr>";
+                }
+                str += "</table>";
+            }
+            return str;
+
+        }
+
+
+        //Get Roles
+        public JsonResult GetRoles()
+        {
+            List<SelectListItem> UseRoles = new List<SelectListItem>();
+            UseRoles.Clear();
+            var item = (from a in genData.GetRoles() select new { a.RoleCode, a.RoleName, a.PKID }).ToList();
+            if (item.Count() > 0)
+            {
+                UseRoles = item.Select(x => new System.Web.Mvc.SelectListItem()
+                {
+                    Text = x.RoleName,
+                    Value = x.PKID.ToString()
+                }).ToList();
+            }
+            return Json(new
+            {
+                RoleItem = UseRoles,
+                RoleCount = UseRoles.Count,
+            }, JsonRequestBehavior.AllowGet);
+
+        }
+        #endregion
+      
+      
+
     }
 }

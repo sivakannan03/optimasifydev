@@ -1,0 +1,68 @@
+﻿@model Dictionary<int, string>
+
+@if (ViewBag.Type == "LoadFCCityName")
+{
+    <select id="FirstChaCityName" name="FirstChaCityName">
+        <option value='0'>Select</option>
+        @foreach (KeyValuePair<int, string> value in Model)
+        {
+            <option value='@value.Key.ToString()' selected>@value.Value</option>
+        }
+    </select>
+}
+
+@if (ViewBag.Type == "LoadCityName")
+{
+    <select id="CityName" onchange="LoadArea(this);">
+        <option value='0'>Select</option>
+        @foreach (KeyValuePair<int, string> value in Model)
+{
+            <option value='@value.Key.ToString()'>@value.Value</option>
+}
+    </select>
+}
+
+@if (ViewBag.Type == "LoadAreaForCityBased")
+{
+    <select id="AreaName" name="AreaName">
+        <option value='0'>Select</option>
+        @foreach (KeyValuePair<int, string> value in Model)
+        {
+            <option value='@value.Key.ToString()'>@value.Value</option>
+        }
+    </select>
+}
+
+@if (ViewBag.Type == "LoadAreaName")
+{
+    <select id="AreaFKID" name="AreaFKID">
+        <option value='0'>Select</option>
+        @foreach (KeyValuePair<int, string> value in Model)
+{
+    <option value='@value.Key.ToString()'>@value.Value</option>
+}
+    </select>
+}
+
+@if (ViewBag.Type == "LoadselectedCityName")
+{
+    <select id="CityName" name="CityName">
+        <option value='0'>Select</option>
+        @foreach (KeyValuePair<int, string> value in Model)
+        {
+            <option value='@value.Key.ToString()' selected>@value.Value</option>
+        }
+    </select>
+}
+
+@if (ViewBag.Type == "LoadselectedAreaName")
+{
+    <select id="AreaName" name="AreaName">
+        <option value='0'>Select</option>
+        @foreach (KeyValuePair<int, string> value in Model)
+        {
+            <option value='@value.Key.ToString()' selected>@value.Value</option>
+        }
+    </select>
+}
+

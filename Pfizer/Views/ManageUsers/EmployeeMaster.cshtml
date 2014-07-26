@@ -148,7 +148,7 @@
                                 name: 'DOB', index: 'DOB', align: 'left', viewable: true, hidden: true, editable: true, formoptions: { elmsuffix: "<span style='align:left;color:red'>*</span>&nbsp;", rowpos: 4, colpos: 1 }, editrules: { edithidden: true, required: false },
                                 editoptions: {
                                     dataInit: function (elem) {
-                                        $(elem).datepicker({ changeMonth: true, changeYear: true, yearRange: '1900:myDate', dateFormat: 'dd/mm/yy',maxDate:0 });
+                                        $(elem).datepicker({ changeMonth: true, changeYear: true, yearRange: '1900:myDate', dateFormat: 'mm/dd/yy',maxDate:0 });
                                     }
                                 }
                             },
@@ -157,7 +157,7 @@
                                 editoptions: {
                                     dataInit: function (elem) {
                                         $(elem).datepicker({
-                                            changeMonth: true, changeYear: true, yearRange: '1900:myDate', dateFormat: 'dd/mm/yy',maxDate:0
+                                            changeMonth: true, changeYear: true, yearRange: '1900:myDate', dateFormat: 'mm/dd/yy',maxDate:0
                                         });
                                     }
                                 }

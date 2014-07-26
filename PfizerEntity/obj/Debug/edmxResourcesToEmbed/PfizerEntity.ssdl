@@ -31,6 +31,38 @@
     <Property Name="ModifiedDate" Type="datetime" />
     <Property Name="ModifiedBy" Type="numeric" Precision="10" Scale="0" />
   </EntityType>
+  <EntityType Name="ChemistMaster">
+    <Key>
+      <PropertyRef Name="PKID" />
+    </Key>
+    <Property Name="PKID" Type="numeric" Precision="10" Scale="0" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="ChemistName" Type="varchar" MaxLength="50" />
+    <Property Name="FirstName" Type="varchar" MaxLength="100" />
+    <Property Name="MiddleName" Type="varchar" MaxLength="20" />
+    <Property Name="LastName" Type="varchar" MaxLength="20" />
+    <Property Name="Address" Type="varchar" MaxLength="150" />
+    <Property Name="Street" Type="varchar" MaxLength="100" />
+    <Property Name="AreaFKID" Type="numeric" Precision="10" Scale="0" />
+    <Property Name="Zip" Type="int" />
+    <Property Name="PhoneNo" Type="varchar" MaxLength="20" />
+    <Property Name="Mobile" Type="varchar" MaxLength="20" />
+    <Property Name="Fax" Type="varchar" MaxLength="20" />
+    <Property Name="Email" Type="varchar" MaxLength="30" />
+    <Property Name="PrescriptionPerMonth" Type="int" />
+    <Property Name="IsActive" Type="bit" />
+    <Property Name="CreatedDate" Type="datetime" />
+    <Property Name="CreatedBy" Type="numeric" Precision="10" Scale="0" />
+    <Property Name="ModifiedDate" Type="datetime" />
+    <Property Name="ModifiedBy" Type="numeric" Precision="10" Scale="0" />
+    <Property Name="ChemistCode" Type="numeric" Precision="13" Scale="0" />
+    <Property Name="ReasonForPSODeletion" Type="varchar" MaxLength="250" />
+    <Property Name="IsDeletion" Type="bit" />
+    <Property Name="PhoneNoISDCode" Type="varchar" MaxLength="10" />
+    <Property Name="PhoneNoSTDCode" Type="varchar" MaxLength="10" />
+    <Property Name="AvgCustomers" Type="int" />
+    <Property Name="NoCustomersMed" Type="int" />
+    <Property Name="OTCSales" Type="int" />
+  </EntityType>
   <EntityType Name="CityMaster">
     <Key>
       <PropertyRef Name="PKID" />
@@ -572,11 +604,58 @@ warning 6002: The table/view 'pfizer.dbo.vw_MeetingReminderReadstatus' does not 
       </Dependent>
     </ReferentialConstraint>
   </Association>
+  <Function Name="AddChemistCopy" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+    <Parameter Name="TerritoryDFKID" Type="numeric" Mode="In" />
+    <Parameter Name="TerritorySFKID" Type="numeric" Mode="In" />
+    <Parameter Name="CreatedBy" Type="numeric" Mode="In" />
+    <Parameter Name="xml" Type="varchar" Mode="In" />
+  </Function>
+  <Function Name="AddChemistMaster" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+    <Parameter Name="ChemistName" Type="varchar" Mode="In" />
+    <Parameter Name="FirstName" Type="varchar" Mode="In" />
+    <Parameter Name="MiddleName" Type="varchar" Mode="In" />
+    <Parameter Name="LastName" Type="varchar" Mode="In" />
+    <Parameter Name="Address" Type="varchar" Mode="In" />
+    <Parameter Name="Street" Type="varchar" Mode="In" />
+    <Parameter Name="AreaFKID" Type="numeric" Mode="In" />
+    <Parameter Name="Zip" Type="varchar" Mode="In" />
+    <Parameter Name="ISDCode" Type="varchar" Mode="In" />
+    <Parameter Name="STDCode" Type="varchar" Mode="In" />
+    <Parameter Name="PhoneNo" Type="varchar" Mode="In" />
+    <Parameter Name="Mobile" Type="varchar" Mode="In" />
+    <Parameter Name="Fax" Type="varchar" Mode="In" />
+    <Parameter Name="Email" Type="varchar" Mode="In" />
+    <Parameter Name="PrescriptionPerMonth" Type="int" Mode="In" />
+    <Parameter Name="IsActive" Type="bit" Mode="In" />
+    <Parameter Name="CreatedBy" Type="numeric" Mode="In" />
+    <Parameter Name="IsDeletion" Type="bit" Mode="In" />
+    <Parameter Name="AvgCustomers" Type="int" Mode="In" />
+    <Parameter Name="NoCustomersMed" Type="int" Mode="In" />
+    <Parameter Name="OTCSales" Type="int" Mode="In" />
+  </Function>
+  <Function Name="AddChemistTransfer" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+    <Parameter Name="TerritoryDFKID" Type="numeric" Mode="In" />
+    <Parameter Name="TerritorySFKID" Type="numeric" Mode="In" />
+    <Parameter Name="CreatedBy" Type="numeric" Mode="In" />
+    <Parameter Name="xml" Type="varchar" Mode="In" />
+  </Function>
   <Function Name="AddDistrictTerritorylinkMaster" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
     <Parameter Name="DistrictFKID" Type="numeric" Mode="In" />
     <Parameter Name="xml" Type="ntext" Mode="In" />
     <Parameter Name="IsActive" Type="bit" Mode="In" />
     <Parameter Name="CreatedBy" Type="numeric" Mode="In" />
+  </Function>
+  <Function Name="addDoctorCopy" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+    <Parameter Name="TerritoryDFKID" Type="numeric" Mode="In" />
+    <Parameter Name="TerritorySFKID" Type="numeric" Mode="In" />
+    <Parameter Name="CreatedBy" Type="numeric" Mode="In" />
+    <Parameter Name="xml" Type="varchar" Mode="In" />
+  </Function>
+  <Function Name="addDoctorTranster" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+    <Parameter Name="TerritoryDFKID" Type="numeric" Mode="In" />
+    <Parameter Name="TerritorySFKID" Type="numeric" Mode="In" />
+    <Parameter Name="CreatedBy" Type="numeric" Mode="In" />
+    <Parameter Name="xml" Type="varchar" Mode="In" />
   </Function>
   <Function Name="AddEmployeeMaster" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
     <Parameter Name="EmpCode" Type="varchar" Mode="In" />
@@ -672,6 +751,26 @@ warning 6002: The table/view 'pfizer.dbo.vw_MeetingReminderReadstatus' does not 
     <Parameter Name="Option5" Type="varchar" Mode="In" />
     <Parameter Name="IsActive" Type="numeric" Mode="In" />
   </Function>
+  <Function Name="AddPrescriptionTrackermaster" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+    <Parameter Name="DoctorFKID" Type="numeric" Mode="In" />
+    <Parameter Name="SpecializationID" Type="numeric" Mode="In" />
+    <Parameter Name="PSOFKID" Type="numeric" Mode="In" />
+    <Parameter Name="TerritoryFKID" Type="numeric" Mode="In" />
+    <Parameter Name="xmlProductPack" Type="nvarchar" Mode="In" />
+  </Function>
+  <Function Name="AddProductmaster" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+    <Parameter Name="ProductCode" Type="varchar" Mode="In" />
+    <Parameter Name="ProductName" Type="varchar" Mode="In" />
+    <Parameter Name="ProdGroupFKID" Type="numeric" Mode="In" />
+    <Parameter Name="NodeTypeFKID" Type="numeric" Mode="In" />
+    <Parameter Name="MetisProductID" Type="numeric" Mode="In" />
+    <Parameter Name="IMSCode" Type="varchar" Mode="In" />
+    <Parameter Name="IsKDP" Type="int" Mode="In" />
+    <Parameter Name="xmlMgrFkid" Type="nvarchar" Mode="In" />
+    <Parameter Name="xmlTeamFkid" Type="nvarchar" Mode="In" />
+    <Parameter Name="xmlProductPack" Type="nvarchar" Mode="In" />
+    <Parameter Name="CreatedBy" Type="int" Mode="In" />
+  </Function>
   <Function Name="AddProductMoleculeLinkMaster" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
     <Parameter Name="ProductFKID" Type="numeric" Mode="In" />
     <Parameter Name="xmlMoleculeFKID" Type="nvarchar" Mode="In" />
@@ -691,6 +790,24 @@ warning 6002: The table/view 'pfizer.dbo.vw_MeetingReminderReadstatus' does not 
     <Parameter Name="xml" Type="varchar" Mode="In" />
     <Parameter Name="IsActive" Type="bit" Mode="In" />
     <Parameter Name="CreatedBy" Type="numeric" Mode="In" />
+  </Function>
+  <Function Name="AddSalesMaster2" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+    <Parameter Name="Islower" Type="int" Mode="In" />
+    <Parameter Name="NodeTypeFKID" Type="int" Mode="In" />
+    <Parameter Name="DivFKID" Type="numeric" Mode="In" />
+    <Parameter Name="UserFKID" Type="numeric" Mode="In" />
+    <Parameter Name="TerritoryFKID" Type="numeric" Mode="In" />
+    <Parameter Name="ReportingUserFKID" Type="numeric" Mode="In" />
+    <Parameter Name="NodeFunctionFKID" Type="int" Mode="In" />
+    <Parameter Name="NodeDesc" Type="varchar" Mode="In" />
+    <Parameter Name="LocationFKID" Type="numeric" Mode="In" />
+    <Parameter Name="LocationDesc" Type="varchar" Mode="In" />
+    <Parameter Name="ForumCreator" Type="int" Mode="In" />
+    <Parameter Name="xmLTeamFkid" Type="nvarchar" Mode="In" />
+    <Parameter Name="CreatedBy" Type="int" Mode="In" />
+    <Parameter Name="HQFKID" Type="numeric" Mode="In" />
+    <Parameter Name="DistrictFKID" Type="numeric" Mode="In" />
+    <Parameter Name="RegionFKId" Type="numeric" Mode="In" />
   </Function>
   <Function Name="AddSampleInputReconcileSettings" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
     <Parameter Name="StartDate" Type="varchar" Mode="In" />
@@ -743,10 +860,22 @@ warning 6002: The table/view 'pfizer.dbo.vw_MeetingReminderReadstatus' does not 
     <Parameter Name="CreatedBy" Type="numeric" Mode="In" />
     <Parameter Name="XmlStr" Type="varchar" Mode="In" />
   </Function>
-  <Function Name="AllPendingCustomer" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+  <Function Name="AddUserMaster3" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+    <Parameter Name="UserFKID" Type="numeric" Mode="In" />
+    <Parameter Name="CreatedBy" Type="numeric" Mode="In" />
+    <Parameter Name="XmlStr" Type="varchar" Mode="In" />
+  </Function>
+  <Function Name="AllNewCustomerRequest" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
     <Parameter Name="PSOFKID" Type="numeric" Mode="In" />
     <Parameter Name="AreaFKID" Type="varchar" Mode="In" />
+    <Parameter Name="TerritoryFKID" Type="numeric" Mode="In" />
     <Parameter Name="XMLCusCode" Type="varchar" Mode="In" />
+  </Function>
+  <Function Name="AreaSearch" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+    <Parameter Name="AreaFKID" Type="int" Mode="In" />
+    <Parameter Name="SpecialityFKID" Type="int" Mode="In" />
+    <Parameter Name="TerritoryFKID" Type="int" Mode="In" />
+    <Parameter Name="PSOFKID" Type="int" Mode="In" />
   </Function>
   <Function Name="AuthenticateUser" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
     <Parameter Name="Loginname" Type="varchar" Mode="In" />
@@ -758,7 +887,20 @@ warning 6002: The table/view 'pfizer.dbo.vw_MeetingReminderReadstatus' does not 
   <Function Name="BuildMenu" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
     <Parameter Name="RoleFKID" Type="numeric" Mode="In" />
   </Function>
+  <Function Name="CFSAActivateORInActivateByXML" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+    <Parameter Name="intActive" Type="varchar" Mode="In" />
+    <Parameter Name="UserId" Type="varchar" Mode="In" />
+  </Function>
   <Function Name="DefaultAnswer" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo" />
+  <Function Name="DeleteChemistMaster" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+    <Parameter Name="PKID" Type="numeric" Mode="In" />
+    <Parameter Name="ReasonForPSODeletion" Type="varchar" Mode="In" />
+    <Parameter Name="IsDeletion" Type="bit" Mode="In" />
+    <Parameter Name="ModifiedBy" Type="numeric" Mode="In" />
+  </Function>
+  <Function Name="DeleteChemistMaster1" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+    <Parameter Name="PKID" Type="numeric" Mode="In" />
+  </Function>
   <Function Name="DeleteDistrictTerritoryLinkMaster" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
     <Parameter Name="PKID" Type="numeric" Mode="In" />
   </Function>
@@ -799,6 +941,9 @@ warning 6002: The table/view 'pfizer.dbo.vw_MeetingReminderReadstatus' does not 
   <Function Name="DeleteOpinionPoll" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
     <Parameter Name="PKID" Type="numeric" Mode="In" />
   </Function>
+  <Function Name="DeleteProductMaster" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+    <Parameter Name="PKID" Type="numeric" Mode="In" />
+  </Function>
   <Function Name="DeleteProductSpecialityLinkMaster" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
     <Parameter Name="ProductFKID" Type="numeric" Mode="In" />
     <Parameter Name="SpecialityFKID" Type="numeric" Mode="In" />
@@ -808,6 +953,10 @@ warning 6002: The table/view 'pfizer.dbo.vw_MeetingReminderReadstatus' does not 
   </Function>
   <Function Name="DeleteRegionDistrictLinkMaster" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
     <Parameter Name="PKID" Type="numeric" Mode="In" />
+  </Function>
+  <Function Name="DeleteSalesHierarchy_New" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+    <Parameter Name="PKID" Type="numeric" Mode="In" />
+    <Parameter Name="USERID" Type="numeric" Mode="In" />
   </Function>
   <Function Name="DeleteSampleInputReconcileSettings" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
     <Parameter Name="PKID" Type="numeric" Mode="In" />
@@ -835,6 +984,32 @@ warning 6002: The table/view 'pfizer.dbo.vw_MeetingReminderReadstatus' does not 
   <Function Name="DeleteTerritoryMaster" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
     <Parameter Name="PKID" Type="numeric" Mode="In" />
     <Parameter Name="ModifiedBy" Type="numeric" Mode="In" />
+  </Function>
+  <Function Name="EditChemistMaster" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+    <Parameter Name="PKID" Type="numeric" Mode="In" />
+    <Parameter Name="ChemistName" Type="varchar" Mode="In" />
+    <Parameter Name="FirstName" Type="varchar" Mode="In" />
+    <Parameter Name="MiddleName" Type="varchar" Mode="In" />
+    <Parameter Name="LastName" Type="varchar" Mode="In" />
+    <Parameter Name="Address" Type="varchar" Mode="In" />
+    <Parameter Name="Street" Type="varchar" Mode="In" />
+    <Parameter Name="AreaFKID" Type="numeric" Mode="In" />
+    <Parameter Name="Zip" Type="varchar" Mode="In" />
+    <Parameter Name="ISDCode" Type="varchar" Mode="In" />
+    <Parameter Name="STDCode" Type="varchar" Mode="In" />
+    <Parameter Name="PhoneNo" Type="varchar" Mode="In" />
+    <Parameter Name="Mobile" Type="varchar" Mode="In" />
+    <Parameter Name="Fax" Type="varchar" Mode="In" />
+    <Parameter Name="Email" Type="varchar" Mode="In" />
+    <Parameter Name="PrescriptionPerMonth" Type="int" Mode="In" />
+    <Parameter Name="IsActive" Type="bit" Mode="In" />
+    <Parameter Name="ModifiedBy" Type="numeric" Mode="In" />
+    <Parameter Name="AvgCustomers" Type="int" Mode="In" />
+    <Parameter Name="NoCustomersMed" Type="int" Mode="In" />
+    <Parameter Name="OTCSales" Type="int" Mode="In" />
+  </Function>
+  <Function Name="EditCustomDeletions" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+    <Parameter Name="hdnXML" Type="ntext" Mode="In" />
   </Function>
   <Function Name="EditEmployeeMaster" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
     <Parameter Name="PKID" Type="numeric" Mode="In" />
@@ -929,11 +1104,47 @@ warning 6002: The table/view 'pfizer.dbo.vw_MeetingReminderReadstatus' does not 
     <Parameter Name="IsActive" Type="numeric" Mode="In" />
     <Parameter Name="PKID" Type="numeric" Mode="In" />
   </Function>
+  <Function Name="EditProductmaster" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+    <Parameter Name="ProductCode" Type="varchar" Mode="In" />
+    <Parameter Name="ProductName" Type="varchar" Mode="In" />
+    <Parameter Name="ProdGroupFKID" Type="numeric" Mode="In" />
+    <Parameter Name="NodeTypeFKID" Type="numeric" Mode="In" />
+    <Parameter Name="MetisProductID" Type="numeric" Mode="In" />
+    <Parameter Name="IMSCode" Type="varchar" Mode="In" />
+    <Parameter Name="IsKDP" Type="int" Mode="In" />
+    <Parameter Name="xmlMgrFkid" Type="nvarchar" Mode="In" />
+    <Parameter Name="xmlTeamFkid" Type="nvarchar" Mode="In" />
+    <Parameter Name="xmlProductPack" Type="nvarchar" Mode="In" />
+    <Parameter Name="CreatedBy" Type="int" Mode="In" />
+    <Parameter Name="IsActive" Type="int" Mode="In" />
+    <Parameter Name="PKID" Type="numeric" Mode="In" />
+  </Function>
   <Function Name="EditRBMFTMLinkMaster" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
     <Parameter Name="PKID" Type="numeric" Mode="In" />
     <Parameter Name="RBMFKID" Type="int" Mode="In" />
     <Parameter Name="FTMFKID" Type="int" Mode="In" />
     <Parameter Name="IsActive" Type="bit" Mode="In" />
+  </Function>
+  <Function Name="EditSalesMaster2" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+    <Parameter Name="PKID" Type="numeric" Mode="In" />
+    <Parameter Name="Islower" Type="int" Mode="In" />
+    <Parameter Name="NodeTypeFKID" Type="int" Mode="In" />
+    <Parameter Name="DivFKID" Type="numeric" Mode="In" />
+    <Parameter Name="UserFKID" Type="numeric" Mode="In" />
+    <Parameter Name="TerritoryFKID" Type="numeric" Mode="In" />
+    <Parameter Name="ReportingUserFKID" Type="numeric" Mode="In" />
+    <Parameter Name="NodeFunctionFKID" Type="int" Mode="In" />
+    <Parameter Name="LocationDesc" Type="varchar" Mode="In" />
+    <Parameter Name="ForumCreator" Type="int" Mode="In" />
+    <Parameter Name="xmLTeamFkid" Type="nvarchar" Mode="In" />
+    <Parameter Name="LocationFKID" Type="numeric" Mode="In" />
+    <Parameter Name="NodeDesc" Type="varchar" Mode="In" />
+    <Parameter Name="CreatedBy" Type="int" Mode="In" />
+    <Parameter Name="ModifiedBy" Type="int" Mode="In" />
+    <Parameter Name="IsActive" Type="int" Mode="In" />
+    <Parameter Name="HQFKID" Type="numeric" Mode="In" />
+    <Parameter Name="DistrictFKID" Type="numeric" Mode="In" />
+    <Parameter Name="RegionFKId" Type="numeric" Mode="In" />
   </Function>
   <Function Name="EditSampleInputReconcileSettings" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
     <Parameter Name="StartDate" Type="varchar" Mode="In" />
@@ -987,6 +1198,19 @@ warning 6002: The table/view 'pfizer.dbo.vw_MeetingReminderReadstatus' does not 
     <Parameter Name="xmlTerFKID" Type="ntext" Mode="In" />
     <Parameter Name="ModifiedBy" Type="int" Mode="In" />
   </Function>
+  <Function Name="Get_District_BasedOn_Region_ByXML" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+    <Parameter Name="Id" Type="varchar" Mode="In" />
+  </Function>
+  <Function Name="Get_District_ByXML" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo" />
+  <Function Name="Get_Region_BasedOn_Team_ByXML" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+    <Parameter Name="Id" Type="varchar" Mode="In" />
+  </Function>
+  <Function Name="Get_Region_ByXML" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo" />
+  <Function Name="Get_Team_ByXML" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo" />
+  <Function Name="Get_Territory_BasedOn_District_ByXML" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+    <Parameter Name="Id" Type="varchar" Mode="In" />
+  </Function>
+  <Function Name="Get_Territory_ByXML" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo" />
   <Function Name="GetAlertsByXML" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
     <Parameter Name="PKID" Type="int" Mode="In" />
   </Function>
@@ -999,10 +1223,23 @@ warning 6002: The table/view 'pfizer.dbo.vw_MeetingReminderReadstatus' does not 
   <Function Name="GetAllCityByTerritory" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
     <Parameter Name="PSOFKID" Type="numeric" Mode="In" />
   </Function>
+  <Function Name="GetAllDistrictMasterXMLByRegionFKID" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+    <Parameter Name="RegionFKID" Type="int" Mode="In" />
+  </Function>
   <Function Name="GetAllMetisProductName" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo" />
   <Function Name="GetAllRegionNotAssignedTeamByXml" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo" />
   <Function Name="GetAllTeamRegionLinkByXml" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
     <Parameter Name="TeamFKID" Type="varchar" Mode="In" />
+  </Function>
+  <Function Name="GetAllTerritoryCodeByXml" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo" />
+  <Function Name="GetAllTerritoryCodeXmlByDistrictFKID" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+    <Parameter Name="DistrictFKID" Type="numeric" Mode="In" />
+  </Function>
+  <Function Name="GetAreaByCityFKIDXML" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+    <Parameter Name="CityFKID" Type="numeric" Mode="In" />
+  </Function>
+  <Function Name="GetAreaDetails" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+    <Parameter Name="TerritoryFKID" Type="int" Mode="In" />
   </Function>
   <Function Name="GetAreaDetailsPCL" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
     <Parameter Name="TerritoryFKID" Type="int" Mode="In" />
@@ -1015,8 +1252,14 @@ warning 6002: The table/view 'pfizer.dbo.vw_MeetingReminderReadstatus' does not 
     <Parameter Name="CityFKID" Type="varchar" Mode="In" />
     <Parameter Name="TerritoryFKID" Type="varchar" Mode="In" />
   </Function>
+  <Function Name="GetBVOProductByXml" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo" />
   <Function Name="GetCActivityType" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo" />
   <Function Name="GetCategoryByID" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo" />
+  <Function Name="GetChemistNameByTerritory" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+    <Parameter Name="TerPKID" Type="numeric" Mode="In" />
+    <Parameter Name="AreaFKID" Type="varchar" Mode="In" />
+    <Parameter Name="DivFKID" Type="numeric" Mode="In" />
+  </Function>
   <Function Name="GetCityByXML" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo" />
   <Function Name="GetCityFCforTerritoryByXML" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo" />
   <Function Name="GetCityforTerritoryByXML" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
@@ -1039,10 +1282,19 @@ warning 6002: The table/view 'pfizer.dbo.vw_MeetingReminderReadstatus' does not 
   <Function Name="GetCreateUserByPKID" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
     <Parameter Name="PKID" Type="numeric" Mode="In" />
   </Function>
+  <Function Name="GetCyclePlanSpcialization" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo" />
   <Function Name="GetCycleYearMonth" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo" />
+  <Function Name="GetDailyReportatGlanceAllNew" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+    <Parameter Name="FromDate" Type="datetime" Mode="In" />
+    <Parameter Name="ToDate" Type="datetime" Mode="In" />
+    <Parameter Name="PSOFKID" Type="int" Mode="In" />
+  </Function>
   <Function Name="GetDesignationByXML" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo" />
   <Function Name="GetDesignationMasterDetail" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo" />
   <Function Name="GetDistrictCodeByXml" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo" />
+  <Function Name="GetDistrictMasterByPKID" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+    <Parameter Name="PKID" Type="numeric" Mode="In" />
+  </Function>
   <Function Name="GetDistrictNameExcludeforTerittoryByXml" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
     <Parameter Name="RegionFKID" Type="varchar" Mode="In" />
   </Function>
@@ -1057,6 +1309,25 @@ warning 6002: The table/view 'pfizer.dbo.vw_MeetingReminderReadstatus' does not 
     <Parameter Name="NodeID" Type="varchar" Mode="In" />
     <Parameter Name="DivID" Type="varchar" Mode="In" />
   </Function>
+  <Function Name="GetDMNameByReport" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+    <Parameter Name="UserFKID" Type="numeric" Mode="In" />
+  </Function>
+  <Function Name="GetDoctorNameBYPSO" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+    <Parameter Name="TerPKID" Type="numeric" Mode="In" />
+    <Parameter Name="AreaFKID" Type="varchar" Mode="In" />
+    <Parameter Name="DivFKID" Type="numeric" Mode="In" />
+  </Function>
+  <Function Name="getDoctorPrescriptionTrackerDtls" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+    <Parameter Name="DoctorFKID" Type="numeric" Mode="In" />
+    <Parameter Name="RCnt" Type="int" Mode="In" />
+  </Function>
+  <Function Name="GetDoctorPSOLinkMaster" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+    <Parameter Name="TerritoryFKID" Type="numeric" Mode="In" />
+    <Parameter Name="PSOFKID" Type="int" Mode="In" />
+  </Function>
+  <Function Name="GetDrAreaDetails" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+    <Parameter Name="TerritoryFKID" Type="numeric" Mode="In" />
+  </Function>
   <Function Name="GetEmployeeCreateUserMasterByXml" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo" />
   <Function Name="GetEmployeMaster" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo" />
   <Function Name="GetEmpNameByNodeTypeFKIDXml" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
@@ -1067,6 +1338,7 @@ warning 6002: The table/view 'pfizer.dbo.vw_MeetingReminderReadstatus' does not 
     <Parameter Name="QuestionFKID" Type="numeric" Mode="In" />
     <Parameter Name="Answer" Type="varchar" Mode="In" />
   </Function>
+  <Function Name="GetFormforProductByXML" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo" />
   <Function Name="GetFormMaster" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo" />
   <Function Name="GetFTMName" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo" />
   <Function Name="GetGencodeCount" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
@@ -1094,6 +1366,10 @@ warning 6002: The table/view 'pfizer.dbo.vw_MeetingReminderReadstatus' does not 
     <Parameter Name="PKID" Type="numeric" Mode="In" />
   </Function>
   <Function Name="GetInputNamebyXML" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo" />
+  <Function Name="GetInputNameforDMReport" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo" />
+  <Function Name="GetInputNameforReport" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+    <Parameter Name="psoFKID" Type="numeric" Mode="In" />
+  </Function>
   <Function Name="GetInputProductLinkMaster" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo" />
   <Function Name="GetInputteamlink" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo" />
   <Function Name="getInputTypebyInputMaster" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
@@ -1104,17 +1380,55 @@ warning 6002: The table/view 'pfizer.dbo.vw_MeetingReminderReadstatus' does not 
     <Parameter Name="InputFKID" Type="numeric" Mode="In" />
     <Parameter Name="ActType" Type="varchar" Mode="In" />
   </Function>
+  <Function Name="GetLeaveApprovalNew" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+    <Parameter Name="PSOFKID" Type="numeric" Mode="In" />
+  </Function>
+  <Function Name="GetLeaveMasterReason" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+    <Parameter Name="LMPKID" Type="numeric" Mode="In" />
+  </Function>
+  <Function Name="GetLeaveTypeByLeaveReport" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo" />
   <Function Name="GetLinkUserTeamMasterforDrpuserfillByXml" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
     <Parameter Name="TeamFKID" Type="numeric" Mode="In" />
     <Parameter Name="NodeTypeFKID" Type="numeric" Mode="In" />
   </Function>
   <Function Name="GetLocatioNameByXml" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo" />
   <Function Name="GetLocationMaster" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo" />
+  <Function Name="GetMappedMetisProductName" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+    <Parameter Name="PKID" Type="numeric" Mode="In" />
+  </Function>
+  <Function Name="GetMenuForChile" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+    <Parameter Name="ParentId" Type="int" Mode="In" />
+  </Function>
+  <Function Name="GetMenuForRole" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+    <Parameter Name="UserPKID" Type="varchar" Mode="In" />
+  </Function>
   <Function Name="GetMoleculeforProductByXML" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo" />
   <Function Name="GetMoleculeforProductPKIDByXMLNotInN" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
     <Parameter Name="ProductFKID" Type="int" Mode="In" />
   </Function>
   <Function Name="GetMoleculeMaster" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo" />
+  <Function Name="GetMonthDetails" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo" />
+  <Function Name="GetNamebyIDForFTMTrackSheet" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+    <Parameter Name="UserFKID" Type="numeric" Mode="In" />
+  </Function>
+  <Function Name="GetNamebyRepIDForTrackSheet" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+    <Parameter Name="UserFKID" Type="numeric" Mode="In" />
+    <Parameter Name="NodeTypeFKID" Type="numeric" Mode="In" />
+  </Function>
+  <Function Name="GetNameBySelectedNodeType" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+    <Parameter Name="NodePKID" Type="varchar" Mode="In" />
+    <Parameter Name="UserFKID" Type="int" Mode="In" />
+  </Function>
+  <Function Name="GetNodeByFKID" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+    <Parameter Name="UserFKID" Type="numeric" Mode="In" />
+  </Function>
+  <Function Name="GetNodeByPSOFKID" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+    <Parameter Name="UserFKID" Type="numeric" Mode="In" />
+  </Function>
+  <Function Name="GetNodeByPSOFKIDForRegularVisit" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+    <Parameter Name="UserFKID" Type="numeric" Mode="In" />
+  </Function>
+  <Function Name="GetNodeTypeByLeaveReport" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo" />
   <Function Name="GetNodeTypeByXML" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo" />
   <Function Name="GetNotification" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo" />
   <Function Name="GetNotificationByXML" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo" />
@@ -1135,21 +1449,82 @@ warning 6002: The table/view 'pfizer.dbo.vw_MeetingReminderReadstatus' does not 
   <Function Name="GetPassword" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
     <Parameter Name="LoginId" Type="varchar" Mode="In" />
   </Function>
+  <Function Name="GetPrescriptionBrickDetails" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+    <Parameter Name="TerritoryFKID" Type="int" Mode="In" />
+  </Function>
+  <Function Name="getPrescriptionByPSO" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+    <Parameter Name="PsoFKID" Type="numeric" Mode="In" />
+    <Parameter Name="FromDate" Type="datetime" Mode="In" />
+    <Parameter Name="ToDate" Type="datetime" Mode="In" />
+    <Parameter Name="TerritoryFKID" Type="numeric" Mode="In" />
+    <Parameter Name="ProductFKID" Type="int" Mode="In" />
+    <Parameter Name="BVOStatus" Type="int" Mode="In" />
+  </Function>
+  <Function Name="GetPrescriptionProductNamebyPSO" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+    <Parameter Name="PSOFKID" Type="numeric" Mode="In" />
+  </Function>
+  <Function Name="getProdPackSizeByXML" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+    <Parameter Name="PKID" Type="numeric" Mode="In" />
+  </Function>
+  <Function Name="GetProductByPKIDXml" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+    <Parameter Name="PKID" Type="numeric" Mode="In" />
+  </Function>
+  <Function Name="GetProductByTeamByXML" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+    <Parameter Name="PSOFKID" Type="numeric" Mode="In" />
+  </Function>
   <Function Name="GetProductforProductMatrixByXml" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo" />
   <Function Name="GetProductforSpecialityByXML" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
     <Parameter Name="PKID" Type="numeric" Mode="In" />
   </Function>
+  <Function Name="GetProductManagerByXml" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+    <Parameter Name="PKID" Type="numeric" Mode="In" />
+  </Function>
+  <Function Name="GetProductMgrByXml" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+    <Parameter Name="NodeTypeFKID" Type="numeric" Mode="In" />
+  </Function>
   <Function Name="GetProductMoleculeLink" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo" />
   <Function Name="GetProductNameByXml" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo" />
+  <Function Name="GetProductNameforSampleReport" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+    <Parameter Name="UserFKID" Type="int" Mode="In" />
+  </Function>
   <Function Name="GetProductNamefromInputMaster" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
     <Parameter Name="PKID" Type="numeric" Mode="In" />
     <Parameter Name="ActType" Type="varchar" Mode="In" />
+  </Function>
+  <Function Name="GetProductPackDetails" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+    <Parameter Name="PKID" Type="numeric" Mode="In" />
   </Function>
   <Function Name="GetProductType" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
     <Parameter Name="GenFKID" Type="varchar" Mode="In" />
   </Function>
   <Function Name="GetPSOInputSample" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
     <Parameter Name="UserFKID" Type="numeric" Mode="In" />
+  </Function>
+  <Function Name="GetPsoNameByCFSAReport" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+    <Parameter Name="PSOFKID" Type="numeric" Mode="In" />
+  </Function>
+  <Function Name="GetPSONamebyRepID" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+    <Parameter Name="UserFKID" Type="numeric" Mode="In" />
+  </Function>
+  <Function Name="GetPsoNameByReport" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+    <Parameter Name="UserFKID" Type="numeric" Mode="In" />
+  </Function>
+  <Function Name="GetPsoNameByReportmul" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+    <Parameter Name="UserFKID" Type="varchar" Mode="In" />
+  </Function>
+  <Function Name="GetPsoNameBySampleReport" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+    <Parameter Name="UserFKID" Type="numeric" Mode="In" />
+  </Function>
+  <Function Name="GetPsoNameByUserId" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+    <Parameter Name="UserFKID" Type="numeric" Mode="In" />
+  </Function>
+  <Function Name="GetPSONameDRAtGforRG" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+    <Parameter Name="UserFKID" Type="numeric" Mode="In" />
+    <Parameter Name="NodeTypeFKID" Type="numeric" Mode="In" />
+  </Function>
+  <Function Name="GetPsoNameForAdmin" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo" />
+  <Function Name="GetPSONameforDrRepByXml" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+    <Parameter Name="PSOFKID" Type="int" Mode="In" />
   </Function>
   <Function Name="GetPSOSample" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
     <Parameter Name="UserFKID" Type="numeric" Mode="In" />
@@ -1160,7 +1535,17 @@ warning 6002: The table/view 'pfizer.dbo.vw_MeetingReminderReadstatus' does not 
   <Function Name="GetRegionDistrictLink" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo" />
   <Function Name="getRegionNameNew" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo" />
   <Function Name="GetReportingByXml" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo" />
+  <Function Name="getRoleBasedmenu" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+    <Parameter Name="RoleID" Type="varchar" Mode="In" />
+  </Function>
   <Function Name="GetRoles" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo" />
+  <Function Name="GetSalesHierrachy" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+    <Parameter Name="PKID" Type="numeric" Mode="In" />
+  </Function>
+  <Function Name="GetSalesTeamByXml" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+    <Parameter Name="PKID" Type="numeric" Mode="In" />
+  </Function>
+  <Function Name="GetSampleDivisionByXML" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo" />
   <Function Name="GetSettingMasterTeamWise" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo" />
   <Function Name="GetSpecforProductPKIDByXMLN" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
     <Parameter Name="ProductFKID" Type="int" Mode="In" />
@@ -1171,6 +1556,9 @@ warning 6002: The table/view 'pfizer.dbo.vw_MeetingReminderReadstatus' does not 
   <Function Name="GetSpecializationforProductMatrixByXML" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo" />
   <Function Name="GetSpecializationMasterByPKID" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
     <Parameter Name="PKID" Type="numeric" Mode="In" />
+  </Function>
+  <Function Name="GetSplDoctorName" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+    <Parameter Name="DocPKID" Type="varchar" Mode="In" />
   </Function>
   <Function Name="GetSplSelectedTeamByXml" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
     <Parameter Name="PKID" Type="numeric" Mode="In" />
@@ -1183,12 +1571,19 @@ warning 6002: The table/view 'pfizer.dbo.vw_MeetingReminderReadstatus' does not 
   <Function Name="GetTCodeforTerritoryByXML" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
     <Parameter Name="FCTCode" Type="varchar" Mode="In" />
   </Function>
+  <Function Name="GetTeamByXML" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo" />
+  <Function Name="GetTeamforProductByXml" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+    <Parameter Name="TeamFKID" Type="numeric" Mode="In" />
+  </Function>
   <Function Name="GetTeamMasteByPKIDByXML" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
     <Parameter Name="TeamFKID" Type="int" Mode="In" />
   </Function>
   <Function Name="GetTeamMasterByXML" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo" />
   <Function Name="GetTeamMasterByXML_New" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
     <Parameter Name="DivFKID" Type="numeric" Mode="In" />
+  </Function>
+  <Function Name="GetTeamNameByXml" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+    <Parameter Name="DIVPKID" Type="numeric" Mode="In" />
   </Function>
   <Function Name="GetTeamNameForReconcileByPKID" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
     <Parameter Name="PKID" Type="numeric" Mode="In" />
@@ -1198,11 +1593,21 @@ warning 6002: The table/view 'pfizer.dbo.vw_MeetingReminderReadstatus' does not 
     <Parameter Name="ActType" Type="varchar" Mode="In" />
   </Function>
   <Function Name="GetTeamsByXML" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo" />
+  <Function Name="GetTerNameByReport" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+    <Parameter Name="UserFKID" Type="numeric" Mode="In" />
+  </Function>
+  <Function Name="GetTerritoryByDest" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+    <Parameter Name="TerPKID" Type="numeric" Mode="In" />
+    <Parameter Name="DivFKID" Type="numeric" Mode="In" />
+  </Function>
   <Function Name="GetTerritoryByXml" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
     <Parameter Name="DivFKID" Type="int" Mode="In" />
   </Function>
   <Function Name="GetTerritoryforBrickXml" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
     <Parameter Name="TerritoryFKID" Type="numeric" Mode="In" />
+  </Function>
+  <Function Name="GetTerritoryName" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+    <Parameter Name="DivFKID" Type="numeric" Mode="In" />
   </Function>
   <Function Name="GetTerritoryNameExcludeforDistrictByXml" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
     <Parameter Name="DistrictFKID" Type="varchar" Mode="In" />
@@ -1227,9 +1632,16 @@ warning 6002: The table/view 'pfizer.dbo.vw_MeetingReminderReadstatus' does not 
   <Function Name="GetTopOneOpinionByXML" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
     <Parameter Name="UserFKID" Type="numeric" Mode="In" />
   </Function>
+  <Function Name="GetUsageRepbyXML" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+    <Parameter Name="PKID" Type="numeric" Mode="In" />
+    <Parameter Name="FromDate" Type="varchar" Mode="In" />
+    <Parameter Name="ToDate" Type="varchar" Mode="In" />
+  </Function>
   <Function Name="GetUsefulLinks" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo" />
   <Function Name="GetUserByXml" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo" />
   <Function Name="GetUserDefault" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo" />
+  <Function Name="GetUserNameByXML" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo" />
+  <Function Name="GetUserNameforUsageRepByXml" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo" />
   <Function Name="GetUserQuestionMaster" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
     <Parameter Name="UserFKID" Type="numeric" Mode="In" />
   </Function>
@@ -1237,6 +1649,16 @@ warning 6002: The table/view 'pfizer.dbo.vw_MeetingReminderReadstatus' does not 
     <Parameter Name="PKID" Type="numeric" Mode="In" />
   </Function>
   <Function Name="getUserTeamLink" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo" />
+  <Function Name="IncludeDoctor" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+    <Parameter Name="XmlStr" Type="text" Mode="In" />
+    <Parameter Name="UserFKID" Type="numeric" Mode="In" />
+    <Parameter Name="TerFKID" Type="numeric" Mode="In" />
+  </Function>
+  <Function Name="IncludeOtherCustomer" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+    <Parameter Name="XmlStr" Type="varchar" Mode="In" />
+    <Parameter Name="UserFKID" Type="numeric" Mode="In" />
+    <Parameter Name="TerFKID" Type="numeric" Mode="In" />
+  </Function>
   <Function Name="InputAllocationAck" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
     <Parameter Name="XmlStr" Type="varchar" Mode="In" />
   </Function>
@@ -1245,16 +1667,57 @@ warning 6002: The table/view 'pfizer.dbo.vw_MeetingReminderReadstatus' does not 
     <Parameter Name="UserFKID" Type="numeric" Mode="In" />
     <Parameter Name="TerritoryFKID" Type="numeric" Mode="In" />
   </Function>
+  <Function Name="insertRoleBasedMenu" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+    <Parameter Name="RoleId" Type="varchar" Mode="In" />
+    <Parameter Name="xmlQuery" Type="ntext" Mode="In" />
+  </Function>
   <Function Name="LoginLock" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
     <Parameter Name="Loginname" Type="varchar" Mode="In" />
   </Function>
+  <Function Name="MVCAddSpecializationProductlinkMasterNew" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+    <Parameter Name="SpecializationFKID" Type="numeric" Mode="In" />
+    <Parameter Name="TeamFKID" Type="numeric" Mode="In" />
+    <Parameter Name="StrXML" Type="ntext" Mode="In" />
+    <Parameter Name="CreatedBy" Type="numeric" Mode="In" />
+  </Function>
+  <Function Name="MVCGetSpecializationandProductByXml" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+    <Parameter Name="SpecialityFKID" Type="bigint" Mode="In" />
+    <Parameter Name="TeamFKID" Type="bigint" Mode="In" />
+  </Function>
+  <Function Name="MVCGetSpecializationNameByXml" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo" />
+  <Function Name="MVCGetTeamsBySpecialityXML" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+    <Parameter Name="SpecFKID" Type="numeric" Mode="In" />
+  </Function>
+  <Function Name="PrescGetHospital" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+    <Parameter Name="PSOFKID" Type="numeric" Mode="In" />
+  </Function>
+  <Function Name="PrescGetStockist" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+    <Parameter Name="PSOFKID" Type="numeric" Mode="In" />
+  </Function>
   <Function Name="RR_GetAllTeam" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo" />
+  <Function Name="RR_GetSpecialization" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+    <Parameter Name="TerritoryFKID" Type="numeric" Mode="In" />
+  </Function>
   <Function Name="RR_InsertUserReminderLink" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
     <Parameter Name="XmlStr" Type="ntext" Mode="In" />
     <Parameter Name="UserFKID" Type="int" Mode="In" />
   </Function>
+  <Function Name="SampleAckRpt_Admin" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+    <Parameter Name="FromDate" Type="datetime" Mode="In" />
+    <Parameter Name="ToDate" Type="datetime" Mode="In" />
+    <Parameter Name="Pending" Type="int" Mode="In" />
+    <Parameter Name="All" Type="int" Mode="In" />
+  </Function>
   <Function Name="SampleAllocationAck" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
     <Parameter Name="XmlStr" Type="varchar" Mode="In" />
+  </Function>
+  <Function Name="Searchaudittrial" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+    <Parameter Name="UserFKId" Type="int" Mode="In" />
+    <Parameter Name="FromDate" Type="datetime" Mode="In" />
+    <Parameter Name="ToDate" Type="datetime" Mode="In" />
+  </Function>
+  <Function Name="SearchCycleByYear" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+    <Parameter Name="CycleYear" Type="varchar" Mode="In" />
   </Function>
   <Function Name="ShowOpinionPollRating" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
     <Parameter Name="PKID" Type="int" Mode="In" />
@@ -1311,7 +1774,36 @@ warning 6002: The table/view 'pfizer.dbo.vw_MeetingReminderReadstatus' does not 
     <Parameter Name="Email" Type="varchar" Mode="In" />
     <Parameter Name="Isactive" Type="char" Mode="In" />
   </Function>
+  <Function Name="SubmitDoctor" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+    <Parameter Name="XmlStr" Type="ntext" Mode="In" />
+    <Parameter Name="UserFKID" Type="numeric" Mode="In" />
+  </Function>
+  <Function Name="submitOtherCustomer" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+    <Parameter Name="XmlStr" Type="ntext" Mode="In" />
+    <Parameter Name="UserFKID" Type="numeric" Mode="In" />
+  </Function>
+  <Function Name="SummeryReportPSO" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+    <Parameter Name="userid" Type="bigint" Mode="In" />
+  </Function>
+  <Function Name="SummeryReportReportingUsers" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+    <Parameter Name="userid" Type="bigint" Mode="In" />
+  </Function>
+  <Function Name="SummeryReportReportingUsersData" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+    <Parameter Name="userid" Type="bigint" Mode="In" />
+  </Function>
+  <Function Name="TeamPSOList" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+    <Parameter Name="teamfkid" Type="bigint" Mode="In" />
+  </Function>
+  <Function Name="TeamsForCallVolumeReport" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo" />
   <Function Name="TimeSetting" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo" />
+  <Function Name="TrackSheetReportFromJobs" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+    <Parameter Name="PSOFKID" Type="int" Mode="In" />
+    <Parameter Name="Year" Type="int" Mode="In" />
+  </Function>
+  <Function Name="TrackSheetReportFromJobsForFTM" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+    <Parameter Name="FTMFKID" Type="int" Mode="In" />
+    <Parameter Name="Year" Type="int" Mode="In" />
+  </Function>
   <Function Name="UpdateOpinionPollAnswer" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
     <Parameter Name="OpFKID" Type="numeric" Mode="In" />
     <Parameter Name="Feedback" Type="numeric" Mode="In" />
@@ -1349,9 +1841,49 @@ warning 6002: The table/view 'pfizer.dbo.vw_MeetingReminderReadstatus' does not 
   <Function Name="USP_DELETE_UNLOCKUSERDETAILS" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
     <Parameter Name="GetPKID" Type="varchar(max)" Mode="In" />
   </Function>
+  <Function Name="usp_DMGetChemistRpt" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+    <Parameter Name="input" Type="numeric" Mode="In" />
+    <Parameter Name="Custype" Type="varchar" Mode="In" />
+    <Parameter Name="flag" Type="char" Mode="In" />
+    <Parameter Name="UserId" Type="numeric" Mode="In" />
+    <Parameter Name="psoid" Type="int" Mode="In" />
+    <Parameter Name="roleId" Type="int" Mode="In" />
+  </Function>
+  <Function Name="usp_DMGetDoctorRpt" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+    <Parameter Name="input" Type="numeric" Mode="In" />
+    <Parameter Name="Custype" Type="varchar" Mode="In" />
+    <Parameter Name="flag" Type="char" Mode="In" />
+    <Parameter Name="UserId" Type="numeric" Mode="In" />
+    <Parameter Name="psoid" Type="int" Mode="In" />
+    <Parameter Name="roleId" Type="int" Mode="In" />
+  </Function>
+  <Function Name="usp_DMGetHospitalRpt" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+    <Parameter Name="input" Type="numeric" Mode="In" />
+    <Parameter Name="Custype" Type="varchar" Mode="In" />
+    <Parameter Name="flag" Type="char" Mode="In" />
+    <Parameter Name="UserId" Type="numeric" Mode="In" />
+    <Parameter Name="psoid" Type="int" Mode="In" />
+    <Parameter Name="roleId" Type="int" Mode="In" />
+  </Function>
+  <Function Name="usp_DMGetStockistRpt" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+    <Parameter Name="input" Type="numeric" Mode="In" />
+    <Parameter Name="Custype" Type="varchar" Mode="In" />
+    <Parameter Name="flag" Type="char" Mode="In" />
+    <Parameter Name="UserId" Type="numeric" Mode="In" />
+    <Parameter Name="psoid" Type="int" Mode="In" />
+    <Parameter Name="roleId" Type="int" Mode="In" />
+  </Function>
   <Function Name="USP_GET_ACTIVITY_MASTER" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo" />
   <Function Name="USP_GET_BRICKMASTER" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo" />
   <Function Name="usp_Get_CampTypeMaster" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo" />
+  <Function Name="usp_Get_CustomerTerritory" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+    <Parameter Name="input" Type="numeric" Mode="In" />
+    <Parameter Name="Custype" Type="varchar" Mode="In" />
+    <Parameter Name="flag" Type="char" Mode="In" />
+    <Parameter Name="UserId" Type="numeric" Mode="In" />
+    <Parameter Name="psoid" Type="int" Mode="In" />
+    <Parameter Name="roleId" Type="int" Mode="In" />
+  </Function>
   <Function Name="USP_GET_CYCLE_DEFINITION_MASTER" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo" />
   <Function Name="USP_GET_CYCLE_SETTING_MASTER" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo" />
   <Function Name="USP_GET_EVALUATIONMASTER" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo" />
@@ -1387,7 +1919,68 @@ warning 6002: The table/view 'pfizer.dbo.vw_MeetingReminderReadstatus' does not 
   <Function Name="USP_GET_TeamRegionLink" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo" />
   <Function Name="USP_GET_TERRITORY_MASTER" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo" />
   <Function Name="USP_GET_TerritoryHQLink" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo" />
+  <Function Name="usp_Get_UserName" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+    <Parameter Name="input" Type="numeric" Mode="In" />
+    <Parameter Name="Custype" Type="varchar" Mode="In" />
+    <Parameter Name="flag" Type="char" Mode="In" />
+    <Parameter Name="UserId" Type="numeric" Mode="In" />
+    <Parameter Name="psoid" Type="int" Mode="In" />
+    <Parameter Name="roleId" Type="int" Mode="In" />
+  </Function>
+  <Function Name="USP_GetAllDetailsFromDoctorMaster" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+    <Parameter Name="userfkid" Type="int" Mode="In" />
+    <Parameter Name="TerritoryFkid" Type="int" Mode="In" />
+  </Function>
+  <Function Name="USP_GetAreaDetailsPCL" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+    <Parameter Name="TerritoryFKID" Type="int" Mode="In" />
+  </Function>
+  <Function Name="usp_GetChemistRpt" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+    <Parameter Name="input" Type="numeric" Mode="In" />
+    <Parameter Name="Custype" Type="varchar" Mode="In" />
+    <Parameter Name="flag" Type="char" Mode="In" />
+    <Parameter Name="UserId" Type="numeric" Mode="In" />
+    <Parameter Name="psoid" Type="int" Mode="In" />
+    <Parameter Name="roleId" Type="int" Mode="In" />
+  </Function>
+  <Function Name="usp_GetCustTerritory" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+    <Parameter Name="input" Type="numeric" Mode="In" />
+    <Parameter Name="Custype" Type="varchar" Mode="In" />
+    <Parameter Name="flag" Type="char" Mode="In" />
+    <Parameter Name="UserId" Type="numeric" Mode="In" />
+    <Parameter Name="psoid" Type="int" Mode="In" />
+    <Parameter Name="roleId" Type="int" Mode="In" />
+  </Function>
+  <Function Name="usp_GetDoctorRpt" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+    <Parameter Name="input" Type="numeric" Mode="In" />
+    <Parameter Name="Custype" Type="varchar" Mode="In" />
+    <Parameter Name="flag" Type="char" Mode="In" />
+    <Parameter Name="UserId" Type="numeric" Mode="In" />
+    <Parameter Name="psoid" Type="int" Mode="In" />
+    <Parameter Name="roleId" Type="int" Mode="In" />
+  </Function>
+  <Function Name="usp_GetHospitalRpt" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+    <Parameter Name="input" Type="numeric" Mode="In" />
+    <Parameter Name="Custype" Type="varchar" Mode="In" />
+    <Parameter Name="flag" Type="char" Mode="In" />
+    <Parameter Name="UserId" Type="numeric" Mode="In" />
+    <Parameter Name="psoid" Type="int" Mode="In" />
+    <Parameter Name="roleId" Type="int" Mode="In" />
+  </Function>
   <Function Name="USP_GETLOGDEAILS" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo" />
+  <Function Name="usp_GetPSOName" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+    <Parameter Name="input" Type="numeric" Mode="In" />
+    <Parameter Name="Custype" Type="varchar" Mode="In" />
+    <Parameter Name="flag" Type="char" Mode="In" />
+    <Parameter Name="UserId" Type="numeric" Mode="In" />
+    <Parameter Name="psoid" Type="int" Mode="In" />
+    <Parameter Name="roleId" Type="int" Mode="In" />
+  </Function>
+  <Function Name="USP_GetPSONameForCustomer" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo" />
+  <Function Name="Usp_GetPSOsForCyclePlanRetailerUnlock" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+    <Parameter Name="CycleFKID" Type="int" Mode="In" />
+    <Parameter Name="DivPKID" Type="int" Mode="In" />
+    <Parameter Name="TeamPKID" Type="int" Mode="In" />
+  </Function>
   <Function Name="Usp_GetPSOsForCyclePlanUnlock" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
     <Parameter Name="CycleFKID" Type="int" Mode="In" />
     <Parameter Name="DivPKID" Type="int" Mode="In" />
@@ -1395,9 +1988,40 @@ warning 6002: The table/view 'pfizer.dbo.vw_MeetingReminderReadstatus' does not 
   </Function>
   <Function Name="usp_GetRBMMaster" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo" />
   <Function Name="usp_GetSalesHierarchy" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo" />
+  <Function Name="usp_getSpecialization" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+    <Parameter Name="PSOFKID" Type="numeric" Mode="In" />
+  </Function>
+  <Function Name="USP_GetSpecializationCode" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+    <Parameter Name="Specifaction" Type="varchar" Mode="In" />
+  </Function>
+  <Function Name="usp_GetStockistRpt" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+    <Parameter Name="input" Type="numeric" Mode="In" />
+    <Parameter Name="Custype" Type="varchar" Mode="In" />
+    <Parameter Name="flag" Type="char" Mode="In" />
+    <Parameter Name="UserId" Type="numeric" Mode="In" />
+    <Parameter Name="psoid" Type="int" Mode="In" />
+    <Parameter Name="roleId" Type="int" Mode="In" />
+  </Function>
   <Function Name="usp_GetTerritory" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo" />
   <Function Name="USP_MoleculeProductMasterGrid" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo" />
   <Function Name="usp_ReconcileSettings" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo" />
+  <Function Name="usp_SELECT_CustList_COUNT_ForDashboard" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+    <Parameter Name="CustId" Type="int" Mode="In" />
+  </Function>
+  <Function Name="usp_SELECT_CustPSO_COUNT_BYDM" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+    <Parameter Name="CustId" Type="int" Mode="In" />
+    <Parameter Name="LoginCustId" Type="int" Mode="In" />
+    <Parameter Name="RoleId" Type="int" Mode="In" />
+  </Function>
+  <Function Name="usp_SELECT_PSOList_COUNTBy_DM_ForDashboard" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+    <Parameter Name="CustId" Type="int" Mode="In" />
+    <Parameter Name="RoleId" Type="int" Mode="In" />
+  </Function>
+  <Function Name="USP_sp_CFSAReportforPSO" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+    <Parameter Name="FromDate" Type="varchar" Mode="In" />
+    <Parameter Name="ToDate" Type="varchar" Mode="In" />
+    <Parameter Name="PsoFKID" Type="text" Mode="In" />
+  </Function>
   <Function Name="USP_UPDATE_NODETYPEMASTER" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
     <Parameter Name="oper" Type="varchar" Mode="In" />
     <Parameter Name="NodetypeFKID" Type="varchar(max)" Mode="In" />
@@ -1425,6 +2049,14 @@ warning 6002: The table/view 'pfizer.dbo.vw_MeetingReminderReadstatus' does not 
     <Parameter Name="CreatedBy" Type="varchar(max)" Mode="In" />
     <Parameter Name="ModifiedBy" Type="varchar(max)" Mode="In" />
   </Function>
+  <Function Name="Usp_UpdtForUnLockingCyclePlan" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+    <Parameter Name="XmlStr" Type="text" Mode="In" />
+  </Function>
+  <Function Name="Usp_UpdtForUnLockingCyclePlanRetailer" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+    <Parameter Name="UserFKID" Type="numeric" Mode="In" />
+    <Parameter Name="CycleFKID" Type="numeric" Mode="In" />
+    <Parameter Name="XmlStr" Type="text" Mode="In" />
+  </Function>
   <Function Name="uspGetHolidayMaster" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo" />
   <Function Name="uspGetInputMaster" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo" />
   <Function Name="uspGetInputType" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo" />
@@ -1432,6 +2064,7 @@ warning 6002: The table/view 'pfizer.dbo.vw_MeetingReminderReadstatus' does not 
   <EntityContainer Name="pfizerModelStoreContainer">
     <EntitySet Name="ActivityMaster" EntityType="Self.ActivityMaster" Schema="dbo" store:Type="Tables" />
     <EntitySet Name="AreaMaster" EntityType="Self.AreaMaster" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="ChemistMaster" EntityType="Self.ChemistMaster" Schema="dbo" store:Type="Tables" />
     <EntitySet Name="CityMaster" EntityType="Self.CityMaster" Schema="dbo" store:Type="Tables" />
     <EntitySet Name="CycleDefinitionMaster" EntityType="Self.CycleDefinitionMaster" Schema="dbo" store:Type="Tables" />
     <EntitySet Name="CycleMaster" EntityType="Self.CycleMaster" Schema="dbo" store:Type="Tables" />

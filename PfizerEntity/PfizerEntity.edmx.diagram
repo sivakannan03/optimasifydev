@@ -44,6 +44,7 @@
         <EntityTypeShape EntityType="pfizerModel.Notification" Width="1.5" PointX="16.375" PointY="9.75" />
         <EntityTypeShape EntityType="pfizerModel.Masters_Hospitalmaster_tb" Width="1.5" PointX="10.375" PointY="16.75" />
         <EntityTypeShape EntityType="pfizerModel.Masters_Stockistmaster_Tb" Width="1.5" PointX="16.375" PointY="13.75" />
+        <EntityTypeShape EntityType="pfizerModel.ChemistMaster" Width="1.5" PointX="18.375" PointY="0.75" />
       </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>
