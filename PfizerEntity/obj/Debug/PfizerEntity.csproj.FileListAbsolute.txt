@@ -187,6 +187,8 @@ E:\OptimaSifyDev\optimasifydev\PfizerEntity\bin\Debug\System.Web.Razor.xml
 E:\OptimaSifyDev\optimasifydev\PfizerEntity\bin\Debug\System.Web.WebPages.xml
 E:\OptimaSifyDev\optimasifydev\PfizerEntity\bin\Debug\System.Web.WebPages.Deployment.xml
 E:\OptimaSifyDev\optimasifydev\PfizerEntity\bin\Debug\System.Web.WebPages.Razor.xml
-E:\OptimaSifyDev\optimasifydev\PfizerEntity\obj\Debug\PfizerEntity.csprojResolveAssemblyReference.cache
 E:\OptimaSifyDev\optimasifydev\PfizerEntity\obj\Debug\PfizerEntity.dll
 E:\OptimaSifyDev\optimasifydev\PfizerEntity\obj\Debug\PfizerEntity.pdb
+E:\OptimaSifyDev\optimasifydev\PfizerEntity\bin\Debug\EntityFramework.SqlServerCompact.dll
+E:\OptimaSifyDev\optimasifydev\PfizerEntity\bin\Debug\System.Data.SqlServerCe.dll
+E:\OptimaSifyDev\optimasifydev\PfizerEntity\bin\Debug\EntityFramework.SqlServerCompact.xml
